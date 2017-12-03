@@ -2,6 +2,6 @@
 <resources>
     <color name="colorPrimary">#fffafa</color>
     <color name="colorPrimaryDark">#A9A9A9</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="actionbar_text_color">#A9A9A9</color>
+    <color name="colorAccent">#FF799B7B</color>
+    <color name="actionbar_text_color">#a9a9a9</color>
 </resources>
