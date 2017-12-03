@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappenedWebAPI", "ItHappenedWebAPI\ItHappenedWebAPI.csproj", "{C752375D-5D8B-425C-8FB7-08BE8127205A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappenedDomain", "ItHappenedDomain\ItHappenedDomain.csproj", "{9C374B7A-674A-4987-9D73-5C009CC5C9DC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C752375D-5D8B-425C-8FB7-08BE8127205A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C752375D-5D8B-425C-8FB7-08BE8127205A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C752375D-5D8B-425C-8FB7-08BE8127205A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C752375D-5D8B-425C-8FB7-08BE8127205A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C374B7A-674A-4987-9D73-5C009CC5C9DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C374B7A-674A-4987-9D73-5C009CC5C9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C374B7A-674A-4987-9D73-5C009CC5C9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C374B7A-674A-4987-9D73-5C009CC5C9DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8A68AAE8-AF78-420B-9A1A-9B221B09EF83}
+	EndGlobalSection
+EndGlobal
