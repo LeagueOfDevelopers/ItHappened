@@ -4,11 +4,8 @@ using System.Text;
 
 namespace ItHappenedDomain.Domain
 {
-  enum EventCustomization
+  abstract class Customization
   {
-    Unknown = 0,
-    Scale = 1,
-    Measure = 2,
-    Comment = 3
+    public string CustomizationName { get; set; }
   }
 }
