@@ -3,13 +3,25 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:title="Menu" />
+            android:id="@+id/proile_settings"
+            android:icon="@mipmap/prf_settings"
+            android:title="@string/profile_settings" />
         <item
-            android:title="Menu" />
+            android:id="@+id/my_events"
+            android:icon="@mipmap/events"
+            android:title="@string/my_events" />
         <item
-            android:title="Menu" />
+            android:id="@+id/statistics"
+            android:icon="@mipmap/statistics"
+            android:title="@string/statistics" />
         <item
-            android:title="Menu" />
+            android:id="@+id/events_history"
+            android:icon="@mipmap/history"
+            android:title="@string/events_history" />
+        <item
+            android:id="@+id/synchronisation"
+            android:icon="@android:drawable/ic_popup_sync"
+            android:title="@string/synchronisation" />
     </group>
 
 </menu>
