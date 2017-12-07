@@ -1,16 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ItHappenedDomain.Domain
 {
-  class Scale : Customization
+  public class Scale : Customization
   {
-    public Scale(string customizationName)
+    public Scale(string customizationName, TrackingCustomization isOptional)
     {
       CustomizationName = customizationName;
+      Optional = isOptional;
     }
 
-    private int _scale;
+    public void SetValue(int mark)
+    {
+      if (mark<1 || mark>10)
+        throw new ArgumentOutOfRangeException("Scale out of range");
+      scale = mark;
+    }
+    public override object GetContent()
+    {
+      return scale;
+    }
+
+    private int scale;
+   
   }
 }

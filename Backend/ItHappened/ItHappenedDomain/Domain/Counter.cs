@@ -1,16 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ItHappenedDomain.Domain
+﻿namespace ItHappenedDomain.Domain
 {
-  class Counter : Customization
+  public class Counter : Customization
   {
-    public Counter(string customizationName)
+    public Counter(string customizationName, TrackingCustomization isOptional)
     {
       CustomizationName = customizationName;
+      Optional = isOptional;
     }
 
-    private int _counter;
+    public void SetCount(int count)
+    {
+      _count = count;
+    }
+
+    public override object GetContent()
+    {
+      return _count;
+    }
+
+    private int _count;
+
   }
 }
