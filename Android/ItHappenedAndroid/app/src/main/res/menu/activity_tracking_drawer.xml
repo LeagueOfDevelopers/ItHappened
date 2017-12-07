@@ -2,10 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/proile_settings"
-            android:icon="@mipmap/prf_settings"
-            android:title="@string/profile_settings" />
+
         <item
             android:id="@+id/my_events"
             android:icon="@mipmap/events"
@@ -18,6 +15,10 @@
             android:id="@+id/events_history"
             android:icon="@mipmap/history"
             android:title="@string/events_history" />
+        <item
+            android:id="@+id/proile_settings"
+            android:icon="@mipmap/prf_settings"
+            android:title="@string/profile_settings" />
         <item
             android:id="@+id/synchronisation"
             android:icon="@android:drawable/ic_popup_sync"

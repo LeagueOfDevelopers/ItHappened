@@ -13,4 +13,6 @@
     <string name="statistics">Статистика</string>
     <string name="events_history">История событий</string>
     <string name="synchronisation">Синхронизация</string>
+
+    <string name="hint_for_addnewtracking_button">Your title</string>
 </resources>
