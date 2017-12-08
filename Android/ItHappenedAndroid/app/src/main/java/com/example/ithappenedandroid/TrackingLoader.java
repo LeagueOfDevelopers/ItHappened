@@ -13,7 +13,7 @@ public class TrackingLoader implements DataLoader {
     public List<Tracking> loadingData() {
 
         for(int i=0;i<100;i++){
-            trackings.add(new Tracking("Cобытие"));
+            //trackings.add(new Tracking("Cобытие"));
         }
 
         return trackings;

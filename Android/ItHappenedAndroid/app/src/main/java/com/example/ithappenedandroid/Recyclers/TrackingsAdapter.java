@@ -39,7 +39,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
         final Tracking tracking = trackings.get(position);
 
-        holder.trackingTitle.setText(tracking.getTitle());
+        holder.trackingTitle.setText(tracking.GetTrackingName());
 
     }
 
