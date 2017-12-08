@@ -7,7 +7,6 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- Menu items-->
     <string name="profile_settings">Настройки профиля</string>
     <string name="my_events">Мои события</string>
     <string name="statistics">Статистика</string>
