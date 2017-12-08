@@ -4,11 +4,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-<<<<<<< HEAD
     android:background="#FFFFFFFF"
-=======
-    android:background="@android:color/transparent"
->>>>>>> ea548b86e762c3ec8aa394ab828d628c5091d8b0
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
