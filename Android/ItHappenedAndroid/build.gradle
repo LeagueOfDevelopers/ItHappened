@@ -2,9 +2,12 @@
 
 buildscript {
     repositories {
-        jcenter()
+        jcenter(){
+            url "http://jcenter.bintray.com"
+        }
     }
     dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.android.tools.build:gradle:3.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
