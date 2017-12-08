@@ -13,5 +13,11 @@
     <string name="events_history">История событий</string>
     <string name="synchronisation">Синхронизация</string>
 
+    <string-array name="toggle_array">
+    <item>Обязательно</item>
+    <item>Необязательно</item>
+    <item>Не выбрано</item>
+</string-array>
+
     <string name="hint_for_addnewtracking_button">Your title</string>
 </resources>
