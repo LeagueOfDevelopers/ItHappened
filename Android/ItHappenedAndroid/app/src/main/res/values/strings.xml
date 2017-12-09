@@ -7,12 +7,17 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- Menu items-->
     <string name="profile_settings">Настройки профиля</string>
     <string name="my_events">Мои события</string>
     <string name="statistics">Статистика</string>
     <string name="events_history">История событий</string>
     <string name="synchronisation">Синхронизация</string>
+
+    <string-array name="toggle_array">
+    <item>Обязательно</item>
+    <item>Необязательно</item>
+    <item>Не выбрано</item>
+</string-array>
 
     <string name="hint_for_addnewtracking_button">Your title</string>
 </resources>
