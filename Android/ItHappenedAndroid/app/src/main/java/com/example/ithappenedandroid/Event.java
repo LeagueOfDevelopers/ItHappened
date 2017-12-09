@@ -10,30 +10,32 @@ import java.util.UUID;
 
 public class Event
 {
-    public Event()
+    public Event(UUID ID, Double count, Integer scale, String comment)
     {
-        _eventId = UUID.randomUUID();
-        _eventDate = TimeZone.getDefault();
+        eventId = ID;
+        eventDate = TimeZone.getDefault();
+        this.count = count;
+        this.scale = scale;
+        this.comment = comment;
     }
 
-    public void SetValueOfCounter(Integer count) { _count = count;}
-    public void SetValueOfScale(Integer scale)
+    public void EditCount(Double count) { count = count;}
+    public void EditValueOfScale(Integer scale)
     {
-        if (scale > 10 || scale<1)
-            throw new IndexOutOfBoundsException("Value of scale out of range");
-        _scale = scale;
+
+        scale = scale;
     }
-    public void WriteComment(String comment) { _comment = comment;}
+    public void EditComment(String comment) { comment = comment;}
 
-    public TimeZone GetEventDate() {return _eventDate;}
-    public UUID GetEventId() {return _eventId;}
-    public Integer GetCount() {return _count;}
-    public Integer GetScale() {return _scale;}
-    public String GetComment() {return _comment;}
+    public TimeZone GetEventDate() {return eventDate;}
+    public UUID GetEventId() {return eventId;}
+    public Double GetCount() {return count;}
+    public Integer GetScale() {return scale;}
+    public String GetComment() {return comment;}
 
-    private UUID _eventId;
-    private TimeZone _eventDate;
-    private Integer _count;
-    private Integer _scale;
-    private String _comment;
+    private UUID eventId;
+    private TimeZone eventDate;
+    private Double count;
+    private Integer scale;
+    private String comment;
 }

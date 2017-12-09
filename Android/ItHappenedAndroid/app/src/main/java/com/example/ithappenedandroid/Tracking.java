@@ -1,6 +1,5 @@
 package com.example.ithappenedandroid;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -13,43 +12,46 @@ public class Tracking {
                     TrackingCustomization scale,
                     TrackingCustomization comment)
     {
-        _trackingName = trackingName;
-        _counter = counter;
-        _scale = scale;
-        _comment = comment;
-        _trackingId = UUID.randomUUID();
-        _trackingDate = TimeZone.getDefault();
-        _eventCollection = new ArrayList<Event>();
+        this.trackingName = trackingName;
+        this.counter = counter;
+        this.scale = scale;
+        this.comment = comment;
+        trackingId = UUID.randomUUID();
+        trackingDate = TimeZone.getDefault();
+        eventCollection = new ArrayList<Event>();
     }
 
-    public UUID AddEvent (Event newEvent)
+    public void AddEvent (Event newEvent)
     {
-        if (newEvent.GetCount() == null && _counter == TrackingCustomization.Counter)
-            throw new IllegalArgumentException("Non-optional parameters can not be empty");
-        if (newEvent.GetCount() != null && _counter == TrackingCustomization.Unknown)
-            throw new IllegalArgumentException("template does not have customization \"Counter\"");
-        if (newEvent.GetScale() == null && _scale == TrackingCustomization.Scale)
-            throw new IllegalArgumentException("Non-optional parameters can not be empty");
-        if (newEvent.GetScale() != null && _scale == TrackingCustomization.Unknown)
-            throw new IllegalArgumentException("template does not have customization \"Scale\"");
-        if (newEvent.GetComment() == null && _comment == TrackingCustomization.Comment)
-            throw new IllegalArgumentException("Non-optional parameters can not be empty");
-        if (newEvent.GetComment() != null && _comment == TrackingCustomization.Unknown)
-            throw new IllegalArgumentException("template does not have customization \"Comment\"");
-        _eventCollection.add(newEvent);
-        return newEvent.GetEventId();
+        CustomizationCheck(newEvent.GetCount(), counter);
+        CustomizationCheck(newEvent.GetScale(), scale);
+        CustomizationCheck(newEvent.GetComment(), comment);
+        eventCollection.add(newEvent);
     }
 
-    public String GetTrackingName() {return _trackingName;}
-    public UUID GetTrackingID() {return _trackingId;}
-    public TimeZone GetTrackingDate () {return _trackingDate;};
-    public List<Event> GetEventCollection() { return _eventCollection;}
+    private void CustomizationCheck(Object value, TrackingCustomization customization)
+    {
+        if (value == null && customization == TrackingCustomization.Required)
+        {
+            throw new IllegalArgumentException("Non-optional parameters can not be empty");
+        }
 
-    private String _trackingName;
-    private UUID _trackingId;
-    private TimeZone _trackingDate;
-    private TrackingCustomization _counter;
-    private TrackingCustomization _scale;
-    private TrackingCustomization _comment;
-    private List<Event> _eventCollection;
+        if (value != null && customization == TrackingCustomization.None)
+        {
+            throw new IllegalArgumentException("None customizations can not take a value");
+        }
+    }
+
+    public String GetTrackingName() {return trackingName;}
+    public UUID GetTrackingID() {return trackingId;}
+    public TimeZone GetTrackingDate () {return trackingDate;};
+    public List<Event> GetEventCollection() { return eventCollection;}
+
+    private String trackingName;
+    private UUID trackingId;
+    private TimeZone trackingDate;
+    private TrackingCustomization counter;
+    private TrackingCustomization scale;
+    private TrackingCustomization comment;
+    private List<Event> eventCollection;
 }

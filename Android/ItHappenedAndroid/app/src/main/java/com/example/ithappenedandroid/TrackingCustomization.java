@@ -6,11 +6,7 @@ package com.example.ithappenedandroid;
 
 public enum TrackingCustomization
 {
-    Unknown,
-    Counter,
-    Scale,
-    Comment,
-    OptionalCounter,
-    OptionalScale,
-    OptionalComment
+    None,
+    Optional,
+    Required
 }
