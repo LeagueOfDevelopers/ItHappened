@@ -1,4 +1,4 @@
-package com.example.ithappenedandroid;
+package com.example.ithappenedandroid.Domain;
 
 /**
  * Created by Ded on 09.12.2017.
@@ -13,6 +13,6 @@ public class Scale
         scale = scaleValue;
     }
     public Integer GetScaleValue () {return scale;}
-
+    public void ChangeScaleValue (Integer value) {scale = value;}
     private Integer scale;
 }

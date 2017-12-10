@@ -1,4 +1,4 @@
-package com.example.ithappenedandroid;
+package com.example.ithappenedandroid.Domain;
 
 /**
  * Created by Ded on 08.12.2017.

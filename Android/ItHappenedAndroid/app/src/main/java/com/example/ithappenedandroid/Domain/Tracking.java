@@ -1,4 +1,4 @@
-package com.example.ithappenedandroid;
+package com.example.ithappenedandroid.Domain;
 
 import java.util.ArrayList;
 import java.util.List;

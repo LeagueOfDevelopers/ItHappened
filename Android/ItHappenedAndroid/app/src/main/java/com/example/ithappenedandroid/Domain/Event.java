@@ -1,4 +1,4 @@
-package com.example.ithappenedandroid;
+package com.example.ithappenedandroid.Domain;
 
 import java.time.OffsetDateTime;
 import java.util.TimeZone;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class Event
 {
-    public Event(UUID ID, Double count, Integer scale, String comment)
+    public Event(UUID ID, Double count, Scale scale, String comment)
     {
         eventId = ID;
         eventDate = TimeZone.getDefault();
@@ -22,20 +22,19 @@ public class Event
     public void EditCount(Double count) { count = count;}
     public void EditValueOfScale(Integer scale)
     {
-
-        scale = scale;
+        this.scale.ChangeScaleValue(scale);
     }
     public void EditComment(String comment) { comment = comment;}
 
     public TimeZone GetEventDate() {return eventDate;}
     public UUID GetEventId() {return eventId;}
     public Double GetCount() {return count;}
-    public Integer GetScale() {return scale;}
+    public Scale GetScale() {return scale;}
     public String GetComment() {return comment;}
 
     private UUID eventId;
     private TimeZone eventDate;
     private Double count;
-    private Integer scale;
+    private Scale scale;
     private String comment;
 }
