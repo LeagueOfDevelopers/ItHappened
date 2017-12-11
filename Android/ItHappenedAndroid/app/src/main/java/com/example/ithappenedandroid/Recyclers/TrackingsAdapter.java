@@ -8,11 +8,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.ithappenedandroid.Activities.TrackingActivity;
 import com.example.ithappenedandroid.R;
-import com.example.ithappenedandroid.Tracking;
-
-import org.w3c.dom.Text;
+import com.example.ithappenedandroid.Domain.Tracking;
 
 import java.util.List;
 

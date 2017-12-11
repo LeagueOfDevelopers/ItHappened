@@ -1,6 +1,6 @@
 package com.example.ithappenedandroid.Interfaces;
 
-import com.example.ithappenedandroid.Tracking;
+import com.example.ithappenedandroid.Domain.Tracking;
 
 import java.util.List;
 
