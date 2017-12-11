@@ -33,5 +33,4 @@ dependencies {
     compile 'com.android.support:design:26.+'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
-    implementation 'com.android.support:mediarouter-v7:27.0.2'
 }
