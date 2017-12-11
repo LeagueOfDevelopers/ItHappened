@@ -7,6 +7,9 @@
     android:layout_height="wrap_content">
 
     <EditText
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:id="@+id/titleOfTracking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,25 +23,17 @@
         android:layout_below="@id/titleOfTracking"
         android:id="@+id/scale">
 
-    <RelativeLayout
+        <RelativeLayout
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp">
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Шкала"
-            />
-        <it.beppi.tristatetogglebutton_library.TriStateToggleButton
-        android:layout_width="60dp"
-        android:layout_height="30dp"
-        android:id="@+id/tstb_1"
-            app:tbMidColor="@color/actionbar_text_color"
-            android:layout_alignParentRight="true"
-            app:tbDefaultStatus="off"
-        />
-    </RelativeLayout>
+            android:layout_marginTop="30dp">
+            <Button
+                android:textColor="#FFFFFF"
+                android:text="Scale customisation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
     </LinearLayout>
 
 
@@ -53,19 +48,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Текст"
-                />
-            <it.beppi.tristatetogglebutton_library.TriStateToggleButton
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:id="@+id/tstb_2"
-                app:tbMidColor="@color/actionbar_text_color"
-                android:layout_alignParentRight="true"
-                app:tbDefaultStatus="off"
-                />
+            <Button
+                android:textColor="#FFFFFF"
+                android:text="Text customisation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -73,29 +60,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/number"
+        android:id="@+id/rating"
         android:layout_below="@id/scale">
 
-            <RelativeLayout
-                android:layout_below="@id/text"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp">
+
+            <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="70dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Оценка"
-                    />
-                <it.beppi.tristatetogglebutton_library.TriStateToggleButton
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/tstb_3"
-                    app:tbMidColor="@color/actionbar_text_color"
-                    android:layout_alignParentRight="true"
-                    app:tbOffColor="#FFFFFF"
-                    app:tbDefaultStatus="off"
-                    />
-    </RelativeLayout>
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="Rating customisation"
+                android:textColor="#FFFFFF" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+
+        <Button
+            android:text="Add"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:layout_marginBottom="10dp"/>
+
     </LinearLayout>
 
 
