@@ -11,9 +11,9 @@ import java.util.UUID;
 
 public class Event
 {
-    public Event(UUID ID, Optional<Double> count, Optional<Scale> scale, Optional<String> comment)
+    public Event(UUID eventId, Optional<Double> count, Optional<Scale> scale, Optional<String> comment)
     {
-        eventId = ID;
+        this.eventId = eventId;
         eventDate = TimeZone.getDefault();
         this.count = count;
         this.scale = scale;

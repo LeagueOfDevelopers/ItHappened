@@ -29,7 +29,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.ofNullable(1.1);
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -50,7 +50,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.ofNullable(1.1);
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -72,7 +72,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -94,7 +94,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
 
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
@@ -118,7 +118,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -139,7 +139,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.Required;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Integer scaleValue = 5;
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
@@ -161,7 +161,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.Optional;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Integer scaleValue = 5;
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
@@ -184,7 +184,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.Required;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -206,7 +206,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.Optional;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -228,7 +228,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Integer scaleValue = 5;
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
@@ -250,7 +250,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Required;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
 
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
@@ -272,7 +272,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Optional;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.ofNullable("comment");
@@ -294,7 +294,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Required;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -316,7 +316,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Optional;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
@@ -338,7 +338,7 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
 
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();

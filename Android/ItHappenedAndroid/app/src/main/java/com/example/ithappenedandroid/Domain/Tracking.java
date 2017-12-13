@@ -12,6 +12,7 @@ import java.util.UUID;
 public class Tracking {
 
     public Tracking(String trackingName,
+                    UUID trackingId,
                     TrackingCustomization counter,
                     TrackingCustomization scale,
                     TrackingCustomization comment)
@@ -20,7 +21,7 @@ public class Tracking {
         this.counter = counter;
         this.scale = scale;
         this.comment = comment;
-        trackingId = UUID.randomUUID();
+        this.trackingId = trackingId;
         trackingDate = TimeZone.getDefault();
         eventCollection = new ArrayList<Event>();
     }
