@@ -6,6 +6,7 @@ import com.example.ithappenedandroid.Interfaces.DataLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TrackingLoader implements DataLoader {
 
@@ -15,7 +16,7 @@ public class TrackingLoader implements DataLoader {
     public List<Tracking> loadingData() {
 
         for(int i=0;i<100;i++){
-            trackings.add(new Tracking("Cобытие", TrackingCustomization.Required,TrackingCustomization.None, TrackingCustomization.None));
+            trackings.add(new Tracking("Cобытие", UUID.randomUUID(), TrackingCustomization.Required,TrackingCustomization.None, TrackingCustomization.None));
         }
 
         return trackings;

@@ -1,0 +1,48 @@
+package com.example.ithappenedandroid.Application;
+
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
+import com.example.ithappenedandroid.Domain.Event;
+import com.example.ithappenedandroid.Domain.Tracking;
+import com.example.ithappenedandroid.Domain.TrackingCustomization;
+import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
+
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+
+
+
+/**
+ * Created by Ded on 12.12.2017.
+ */
+
+public class TrackingService
+{
+    public TrackingService(String userNickname, TrackingRepository trackingRepository)
+    {
+        this.userNickname = userNickname;
+        trackingCollection = trackingRepository;
+    }
+
+    public void AddTracking(Tracking newTracking)
+    {
+        trackingCollection.AddNewTracking(newTracking);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void AddEvent(UUID trackingId, Event newEvent)
+    {
+        Tracking tracking = trackingCollection.GetTracking(trackingId);
+        tracking.AddEvent(newEvent);
+        trackingCollection.ChangeTracking(tracking);
+    }
+
+    public List<Tracking> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}
+
+    private TrackingRepository trackingCollection;
+    private String userNickname;
+}

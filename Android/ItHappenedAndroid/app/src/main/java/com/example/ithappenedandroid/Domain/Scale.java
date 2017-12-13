@@ -13,6 +13,5 @@ public class Scale
         scale = scaleValue;
     }
     public Integer GetScaleValue () {return scale;}
-    public void ChangeScaleValue (Integer value) {scale = value;}
     private Integer scale;
 }

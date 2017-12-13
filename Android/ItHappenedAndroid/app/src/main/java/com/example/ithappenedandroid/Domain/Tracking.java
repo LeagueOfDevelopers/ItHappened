@@ -1,13 +1,18 @@
 package com.example.ithappenedandroid.Domain;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 
 public class Tracking {
 
     public Tracking(String trackingName,
+                    UUID trackingId,
                     TrackingCustomization counter,
                     TrackingCustomization scale,
                     TrackingCustomization comment)
@@ -16,11 +21,12 @@ public class Tracking {
         this.counter = counter;
         this.scale = scale;
         this.comment = comment;
-        trackingId = UUID.randomUUID();
+        this.trackingId = trackingId;
         trackingDate = TimeZone.getDefault();
         eventCollection = new ArrayList<Event>();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddEvent (Event newEvent)
     {
         CustomizationCheck(newEvent.GetCount(), counter);
@@ -29,14 +35,15 @@ public class Tracking {
         eventCollection.add(newEvent);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void CustomizationCheck(Object value, TrackingCustomization customization)
     {
-        if (value == null && customization == TrackingCustomization.Required)
+        if (value == Optional.empty() && customization == TrackingCustomization.Required)
         {
             throw new IllegalArgumentException("Non-optional parameters can not be empty");
         }
 
-        if (value != null && customization == TrackingCustomization.None)
+        if (value != Optional.empty() && customization == TrackingCustomization.None)
         {
             throw new IllegalArgumentException("None customizations can not take a value");
         }
