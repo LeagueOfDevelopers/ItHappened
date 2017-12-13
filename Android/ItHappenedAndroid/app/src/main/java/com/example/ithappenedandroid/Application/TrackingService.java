@@ -6,6 +6,7 @@ import android.support.annotation.RequiresApi;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
+import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -21,44 +22,27 @@ import java.util.UUID;
 
 public class TrackingService
 {
-    public TrackingService(String userNickname)
+    public TrackingService(String userNickname, TrackingRepository trackingRepository)
     {
         this.userNickname = userNickname;
-        trackingCollection = new ArrayList<Tracking>();
+        trackingCollection = trackingRepository;
     }
 
     public void AddTracking(Tracking newTracking)
     {
-        for (Tracking item: trackingCollection)
-        {
-            if (item.GetTrackingID() == newTracking.GetTrackingID() )
-                throw new IllegalArgumentException("Tracking with such ID does not exist");
-        }
-        trackingCollection.add(newTracking);
+        trackingCollection.AddNewTracking(newTracking);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddEvent(UUID trackingId, Event newEvent)
     {
-        int index = 0;
-        boolean contains = false;
-        for (Iterator<Tracking> i = trackingCollection.iterator(); i.hasNext();)
-        {
-            Tracking item = i.next();
-            if (item.GetTrackingID() == trackingId)
-            {
-                contains = true;
-                break;
-            }
-            index++;
-        }
-        if (contains)
-            trackingCollection.get(index).AddEvent(newEvent);
-        else throw new IllegalArgumentException("Event with such ID does not exist");
+        Tracking tracking = trackingCollection.GetTracking(trackingId);
+        tracking.AddEvent(newEvent);
+        trackingCollection.ChangeTracking(tracking);
     }
 
-    public List<Tracking> GetTrackingCollection() {return  trackingCollection;}
+    public List<Tracking> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}
 
-    private List<Tracking> trackingCollection;
+    private TrackingRepository trackingCollection;
     private String userNickname;
 }

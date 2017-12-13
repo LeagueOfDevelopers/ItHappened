@@ -5,6 +5,7 @@ import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Scale;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
+import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,10 +28,12 @@ public class TrackingServiceUnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
+        TrackingRepository trackingRepository = new TrackingRepository();
+
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        TrackingService service = new TrackingService(userNickname);
+        TrackingService service = new TrackingService(userNickname, trackingRepository);
         service.AddTracking(newTracking);
 
         List<Tracking> trackingCollectionInService = service.GetTrackingCollection();
@@ -49,10 +52,11 @@ public class TrackingServiceUnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
+        TrackingRepository trackingRepository = new TrackingRepository();
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        TrackingService service = new TrackingService(userNickname);
+        TrackingService service = new TrackingService(userNickname, trackingRepository);
         service.AddTracking(newTracking);
 
         UUID eventId = UUID.randomUUID();
