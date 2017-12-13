@@ -13,8 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import ch.lambdaj.Lambda;
-import ch.lambdaj.collection.LambdaList;
 
 
 /**
