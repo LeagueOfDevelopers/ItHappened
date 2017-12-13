@@ -1,6 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply plugin: 'java'
-
 buildscript {
     repositories {
 
@@ -11,11 +9,29 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        
-        testCompile 'junit:junit:4.12'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.junit.platform.gradle.plugin'
+ 
+repositories {
+    mavenCentral()
+}
+ 
+dependencies {
+    testCompile(
+            'org.junit.jupiter:junit-jupiter-api:5.0.1'
+    )
+    testRuntime(
+            'org.junit.jupiter:junit-jupiter-engine:5.0.1',
+            'org.junit.vintage:junit-vintage-engine:4.12.1',
+            'org.junit.platform:junit-platform-launcher:1.0.1',
+            'org.junit.platform:junit-platform-runner:1.0.1'
+    )
 }
 
 allprojects {
