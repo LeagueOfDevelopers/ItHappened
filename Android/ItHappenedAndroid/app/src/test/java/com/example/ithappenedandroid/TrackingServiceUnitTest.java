@@ -5,7 +5,7 @@ import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Scale;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
-import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
+import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,12 +28,12 @@ public class TrackingServiceUnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
         service.AddTracking(newTracking);
 
         List<Tracking> trackingCollectionInService = service.GetTrackingCollection();
@@ -52,11 +52,11 @@ public class TrackingServiceUnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
         service.AddTracking(newTracking);
 
         UUID eventId = UUID.randomUUID();
@@ -85,11 +85,11 @@ public class TrackingServiceUnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
         service.AddTracking(newTracking);
 
         try { service.AddTracking(newTracking);}
@@ -105,8 +105,8 @@ public class TrackingServiceUnitTest {
     public void GetTrackingCollectionFromServiceWithoutTracking_ReturnedCollectionDoesNotHaveValues()
     {
         String userNickname = "Name";
-        TrackingRepository trackingRepository = new TrackingRepository();
-        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
         List<Tracking> emptyCollection = new ArrayList<Tracking>();
         List<Tracking> returnedCollection;
 

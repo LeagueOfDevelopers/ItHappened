@@ -3,7 +3,7 @@ package com.example.ithappenedandroid;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
-import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
+import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import java.util.UUID;
  * Created by Ded on 14.12.2017.
  */
 
-public class TrackingRepositoryUnitTest
+public class InMemoryTrackingRepositoryUnitTest
 {
     @Test
     public void AddNewTrackingToTrackingRepositoryAndGetBackThisTracking_ThereIsNoException()
@@ -27,13 +27,13 @@ public class TrackingRepositoryUnitTest
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking tracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        trackingRepository.AddNewTracking(tracking);
+        inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
-        Tracking receivedBackTracking = trackingRepository.GetTracking(trackingID);
+        Tracking receivedBackTracking = inMemoryTrackingRepositoryImpl.GetTracking(trackingID);
 
         Assert.assertEquals(tracking, receivedBackTracking);
     }
@@ -47,16 +47,16 @@ public class TrackingRepositoryUnitTest
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking tracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        trackingRepository.AddNewTracking(tracking);
+        inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
         UUID newId = UUID.randomUUID();
         try
         {
-            Tracking receivedBackTracking = trackingRepository.GetTracking(newId);
+            Tracking receivedBackTracking = inMemoryTrackingRepositoryImpl.GetTracking(newId);
         }
         catch (IllegalArgumentException e) { thrown = true; }
 
@@ -66,11 +66,11 @@ public class TrackingRepositoryUnitTest
     @Test
     public void UseMethodGetTrackingCollection_MustReturnTrackingCollection()
     {
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
         List<Tracking> collection = new ArrayList<>();
         List<Tracking> returnedTrackingCollection;
 
-        returnedTrackingCollection = trackingRepository.GetTrackingCollection();
+        returnedTrackingCollection = inMemoryTrackingRepositoryImpl.GetTrackingCollection();
 
         Assert.assertArrayEquals(collection.toArray(), returnedTrackingCollection.toArray());
     }
@@ -84,13 +84,13 @@ public class TrackingRepositoryUnitTest
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        trackingRepository.AddNewTracking(newTracking);
+        inMemoryTrackingRepositoryImpl.AddNewTracking(newTracking);
 
-        try { trackingRepository.AddNewTracking(newTracking);}
+        try { inMemoryTrackingRepositoryImpl.AddNewTracking(newTracking);}
         catch ( IllegalArgumentException e)
         {
             thrown = true;
@@ -107,16 +107,16 @@ public class TrackingRepositoryUnitTest
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking tracking = new Tracking(trackingName, trackingID, count, scale, comment);
         Tracking returnedChangedTracking;
 
-        trackingRepository.AddNewTracking(tracking);
+        inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
         tracking.AddEvent(new Event(UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
-        trackingRepository.ChangeTracking(tracking);
-        returnedChangedTracking = trackingRepository.GetTracking(trackingID);
+        inMemoryTrackingRepositoryImpl.ChangeTracking(tracking);
+        returnedChangedTracking = inMemoryTrackingRepositoryImpl.GetTracking(trackingID);
 
         Assert.assertEquals(tracking, returnedChangedTracking);
     }
@@ -130,16 +130,16 @@ public class TrackingRepositoryUnitTest
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking tracking = new Tracking(trackingName, trackingID, count, scale, comment);
         Tracking newTracking = new Tracking(trackingName, UUID.randomUUID(), count, scale, comment);
 
-        trackingRepository.AddNewTracking(tracking);
+        inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
         tracking.AddEvent(new Event(UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
         try {
-            trackingRepository.ChangeTracking(newTracking);
+            inMemoryTrackingRepositoryImpl.ChangeTracking(newTracking);
         }
         catch (IllegalArgumentException e) { thrown = true; }
         Assert.assertTrue(thrown);

@@ -5,13 +5,8 @@ import android.support.annotation.RequiresApi;
 
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
-import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
-import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
