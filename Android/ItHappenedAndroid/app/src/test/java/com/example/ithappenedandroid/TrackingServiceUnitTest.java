@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class TrackingServiceUnitTest {
     @Test
-    public void AddNewTrackingTotrackingService_NewTrackingInTrcakingCollection() {
+    public void AddNewTrackingToTrackingService_NewTrackingInTrcakingCollection() {
         String userNickname = "Name";
         TrackingCustomization count = TrackingCustomization.None;
         TrackingCustomization scale = TrackingCustomization.None;
@@ -74,4 +74,49 @@ public class TrackingServiceUnitTest {
 
         Assert.assertArrayEquals(eventCollectionInTracking.toArray(), eventCollectionMustBe.toArray());
     }
+
+    @Test
+    public void AddExistingTrackingToTrackingService_ThrowException()
+    {
+        boolean thrown = false;
+        String userNickname = "Name";
+        TrackingCustomization count = TrackingCustomization.None;
+        TrackingCustomization scale = TrackingCustomization.None;
+        TrackingCustomization comment = TrackingCustomization.None;
+        UUID trackingID = UUID.randomUUID();
+        String trackingName = "Tracking name";
+        TrackingRepository trackingRepository = new TrackingRepository();
+
+        Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
+
+        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        service.AddTracking(newTracking);
+
+        try { service.AddTracking(newTracking);}
+        catch ( IllegalArgumentException e)
+        {
+            thrown = true;
+        }
+
+        Assert.assertTrue(thrown);
+    }
+
+    @Test
+    public void GetTrackingCollectionFromServiceWithoutTracking_ReturnedCollectionDoesNotHaveValues()
+    {
+        String userNickname = "Name";
+        TrackingRepository trackingRepository = new TrackingRepository();
+        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        List<Tracking> emptyCollection = new ArrayList<Tracking>();
+        List<Tracking> returnedCollection;
+
+        returnedCollection = service.GetTrackingCollection();
+
+        Assert.assertEquals(emptyCollection, returnedCollection);
+    }
+
+
+
 }
+
+

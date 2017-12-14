@@ -6,6 +6,7 @@ import android.support.annotation.RequiresApi;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
+import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
 
 import java.util.ArrayList;
@@ -16,13 +17,9 @@ import java.util.UUID;
 
 
 
-/**
- * Created by Ded on 12.12.2017.
- */
-
 public class TrackingService
 {
-    public TrackingService(String userNickname, TrackingRepository trackingRepository)
+    public TrackingService(String userNickname, ITrackingRepository trackingRepository)
     {
         this.userNickname = userNickname;
         trackingCollection = trackingRepository;
@@ -43,6 +40,6 @@ public class TrackingService
 
     public List<Tracking> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}
 
-    private TrackingRepository trackingCollection;
+    private ITrackingRepository trackingCollection;
     private String userNickname;
 }
