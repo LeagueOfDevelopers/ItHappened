@@ -21,7 +21,9 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <activity android:name=".Activities.AddNewTrackingActivity"/>
+        <activity android:name=".Activities.AddNewTrackingActivity"
+            android:theme="@style/Theme.MyBack">
+        </activity>
     </application>
 
 </manifest>

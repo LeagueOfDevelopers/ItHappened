@@ -41,4 +41,8 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="Theme.MyBack" parent="AppTheme">
+        <item name="android:homeAsUpIndicator">@mipmap/back_key</item>
+    </style>
+
 </resources>
