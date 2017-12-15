@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Activities;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -14,7 +15,7 @@ import android.view.MenuItem;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
 
-public class TrackingActivity extends AppCompatActivity
+public class TrackingsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TrackingsFragment trackFrg;
@@ -74,9 +75,9 @@ public class TrackingActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        /*if (id == R.id.nav_camera) {
-            // Handle the camera action
-        }*/
+        if (id == R.id.events_history) {
+            startActivity(new Intent(this, EventsActivity.class));
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

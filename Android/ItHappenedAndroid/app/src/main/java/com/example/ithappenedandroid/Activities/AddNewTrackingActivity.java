@@ -38,13 +38,14 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Отслеживать");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, TrackingActivity.class));
+                startActivity(new Intent(this, TrackingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

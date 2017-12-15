@@ -39,7 +39,7 @@ public class TrackingsFragment extends Fragment {
         trackingsRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         trackLoad = new TrackingLoader();
-        trackAdpt = new TrackingsAdapter(trackLoad.loadingData(),getActivity());
+        trackAdpt = new TrackingsAdapter(trackLoad.loadingTrackings(),getActivity());
         trackingsRecycler.setAdapter(trackAdpt);
 
         addTracking = (FloatingActionButton) getActivity().findViewById(R.id.addNewTracking);
