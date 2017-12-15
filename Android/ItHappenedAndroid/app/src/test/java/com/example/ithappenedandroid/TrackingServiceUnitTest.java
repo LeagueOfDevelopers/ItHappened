@@ -5,7 +5,7 @@ import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Scale;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
-import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
+import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,19 +21,19 @@ import java.util.UUID;
 
 public class TrackingServiceUnitTest {
     @Test
-    public void AddNewTrackingTotrackingService_NewTrackingInTrcakingCollection() {
+    public void AddNewTrackingToTrackingService_NewTrackingInTrcakingCollection() {
         String userNickname = "Name";
         TrackingCustomization count = TrackingCustomization.None;
         TrackingCustomization scale = TrackingCustomization.None;
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
         service.AddTracking(newTracking);
 
         List<Tracking> trackingCollectionInService = service.GetTrackingCollection();
@@ -52,11 +52,11 @@ public class TrackingServiceUnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingID = UUID.randomUUID();
         String trackingName = "Tracking name";
-        TrackingRepository trackingRepository = new TrackingRepository();
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
 
         Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
 
-        TrackingService service = new TrackingService(userNickname, trackingRepository);
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
         service.AddTracking(newTracking);
 
         UUID eventId = UUID.randomUUID();
@@ -74,4 +74,49 @@ public class TrackingServiceUnitTest {
 
         Assert.assertArrayEquals(eventCollectionInTracking.toArray(), eventCollectionMustBe.toArray());
     }
+
+    @Test
+    public void AddExistingTrackingToTrackingService_ThrowException()
+    {
+        boolean thrown = false;
+        String userNickname = "Name";
+        TrackingCustomization count = TrackingCustomization.None;
+        TrackingCustomization scale = TrackingCustomization.None;
+        TrackingCustomization comment = TrackingCustomization.None;
+        UUID trackingID = UUID.randomUUID();
+        String trackingName = "Tracking name";
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
+
+        Tracking newTracking = new Tracking(trackingName, trackingID, count, scale, comment);
+
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
+        service.AddTracking(newTracking);
+
+        try { service.AddTracking(newTracking);}
+        catch ( IllegalArgumentException e)
+        {
+            thrown = true;
+        }
+
+        Assert.assertTrue(thrown);
+    }
+
+    @Test
+    public void GetTrackingCollectionFromServiceWithoutTracking_ReturnedCollectionDoesNotHaveValues()
+    {
+        String userNickname = "Name";
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
+        TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
+        List<Tracking> emptyCollection = new ArrayList<Tracking>();
+        List<Tracking> returnedCollection;
+
+        returnedCollection = service.GetTrackingCollection();
+
+        Assert.assertEquals(emptyCollection, returnedCollection);
+    }
+
+
+
 }
+
+
