@@ -4,9 +4,10 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="4dp"
         android:id="@+id/evetsRec"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
