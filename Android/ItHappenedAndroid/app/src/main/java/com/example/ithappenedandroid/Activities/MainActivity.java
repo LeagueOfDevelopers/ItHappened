@@ -21,14 +21,14 @@ public class MainActivity extends AppCompatActivity {
         startTrackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, TrackingsActivity.class);
+                Intent intent = new Intent(MainActivity.this, UserActionsActivity.class);
                 startActivity(intent);
             }
         });
     }
 
     public void onClick(){
-        Intent intent = new Intent(getApplicationContext(), TrackingsActivity.class);
+        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
         startActivity(intent);
     }
 }

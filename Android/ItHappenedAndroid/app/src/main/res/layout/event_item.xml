@@ -31,7 +31,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="Сахар в крови"
-                    android:textSize="15sp"
+                    android:textSize="18sp"
                     android:textColor="#FFFFFF"
                     >
                 </TextView>
@@ -40,13 +40,13 @@
                     android:id="@+id/eventDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/TrackingTitle"
-                    android:layout_toRightOf="@+id/TrackingTitle"
                     android:padding="7dp"
                     android:text="14.12.2017 22:54"
                     android:textColor="#FFFFFF"
-                    android:textSize="15sp" />
+                    android:textSize="18sp" />
 
             </RelativeLayout>
 

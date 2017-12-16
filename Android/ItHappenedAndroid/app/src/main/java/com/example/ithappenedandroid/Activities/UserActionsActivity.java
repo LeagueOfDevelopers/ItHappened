@@ -1,7 +1,6 @@
 package com.example.ithappenedandroid.Activities;
 
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,10 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
 
-public class TrackingsActivity extends AppCompatActivity
+public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TrackingsFragment trackFrg;
@@ -31,6 +31,8 @@ public class TrackingsActivity extends AppCompatActivity
         fTrans = getFragmentManager().beginTransaction();
         fTrans.replace(R.id.trackingsFrg, trackFrg);
         fTrans.commit();
+
+        setTitle("Мои отслеживания");
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
@@ -52,7 +54,12 @@ public class TrackingsActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            setTitle("Мои отслеживания");
+            trackFrg = new TrackingsFragment();
+
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.commit();
         }
     }
 
@@ -75,12 +82,28 @@ public class TrackingsActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if(id == R.id.my_events){
+            trackFrg = new TrackingsFragment();
+
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.commit();
+
+            setTitle("Мои отслеживания");
+        }
+
         if (id == R.id.events_history) {
-            startActivity(new Intent(this, EventsActivity.class));
+            setTitle("История событий");
+            EventsFragment eventsFrg = new EventsFragment();
+
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, eventsFrg);
+            fTrans.commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
