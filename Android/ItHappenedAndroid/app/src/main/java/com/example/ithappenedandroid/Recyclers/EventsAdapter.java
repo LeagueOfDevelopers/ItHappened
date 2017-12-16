@@ -13,10 +13,6 @@ import com.example.ithappenedandroid.R;
 
 import java.util.List;
 
-/**
- * Created by Пользователь on 15.12.2017.
- */
-
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
     private List<Event> events;
