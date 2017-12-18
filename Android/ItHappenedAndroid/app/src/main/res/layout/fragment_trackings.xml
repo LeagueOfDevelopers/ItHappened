@@ -22,6 +22,7 @@
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
+        app:layout_behavior="com.example.ithappenedandroid.ButtonsEffects.FAB_Float_on_Scroll"
         android:id="@+id/addNewTracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

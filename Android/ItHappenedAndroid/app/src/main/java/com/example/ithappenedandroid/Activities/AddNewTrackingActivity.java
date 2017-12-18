@@ -172,7 +172,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
                 trackingTitle = trackingTitleControl.getText().toString();
 
-                if(trackingTitle!=null) {
+                if(trackingTitle!="") {
 
                     trackingRepository = RepositorySingleton.getInstance();
 
