@@ -45,4 +45,9 @@
         <item name="android:homeAsUpIndicator">@mipmap/back_key</item>
     </style>
 
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#dddddd</item>
+        <item name="colorControlActivated">#fff666</item>
+    </style>
+
 </resources>

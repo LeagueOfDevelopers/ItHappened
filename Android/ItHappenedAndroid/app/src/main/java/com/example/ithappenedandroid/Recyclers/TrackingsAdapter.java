@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,6 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         final Tracking tracking = trackings.get(position);
-
         holder.trackingTitle.setText(tracking.GetTrackingName());
 
         holder.itemLL.setOnClickListener(new View.OnClickListener(){
@@ -51,6 +51,10 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
             public void onClick(View view) {
 
                 eventsForTrackFrg = new EventsForTrackingFragment();
+                final Tracking tracking = trackings.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putInt("position", position);
+                eventsForTrackFrg.setArguments(bundle);
 
                 FragmentManager manager = ((Activity) context).getFragmentManager();
                 fTrans = manager.beginTransaction();

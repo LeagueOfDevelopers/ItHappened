@@ -17,7 +17,7 @@ import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.TrackingsAdapter;
-import com.example.ithappenedandroid.RepositorySingleton;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.example.ithappenedandroid.TrackingLoader;
 
 public class TrackingsFragment extends Fragment {
@@ -43,7 +43,7 @@ public class TrackingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //test user and test collection
-        trackingCollection = RepositorySingleton.getInstance();
+        trackingCollection = StaticInMemoryRepository.getInstance();
         userName = "testUser";
         trackingService = new TrackingService(userName, trackingCollection);
 
@@ -51,7 +51,7 @@ public class TrackingsFragment extends Fragment {
         trackingsRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         //trackLoad = new TrackingLoader();
-        trackAdpt = new TrackingsAdapter(trackingCollection.GetTrackingCollection(),getActivity());
+        trackAdpt = new TrackingsAdapter(trackingService.GetTrackingCollection(),getActivity());
         trackingsRecycler.setAdapter(trackAdpt);
 
         addTracking = (FloatingActionButton) getActivity().findViewById(R.id.addNewTracking);

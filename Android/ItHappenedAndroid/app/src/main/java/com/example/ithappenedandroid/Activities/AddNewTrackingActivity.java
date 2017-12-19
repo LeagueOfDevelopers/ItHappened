@@ -18,7 +18,7 @@ import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
-import com.example.ithappenedandroid.RepositorySingleton;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
 
 import java.util.UUID;
 
@@ -172,13 +172,11 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
                 trackingTitle = trackingTitleControl.getText().toString();
 
-                if(trackingTitle!="") {
-
-                    trackingRepository = RepositorySingleton.getInstance();
+                    trackingRepository = StaticInMemoryRepository.getInstance();
 
 
                     //set properties of scale
-                    switch (stateForRating) {
+                    switch (stateForScale) {
                         case 0:
                             scaleCustom = TrackingCustomization.None;
                             break;
@@ -216,14 +214,15 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                             break;
                     }
 
-                    Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), ratingCustom, scaleCustom, textCustom);
+                    UUID trackingId = UUID.randomUUID();
+
+                Toast.makeText(getApplicationContext(), trackingId.toString(), Toast.LENGTH_LONG).show();
+
+                    Tracking newTracking = new Tracking(trackingTitle, trackingId, ratingCustom, scaleCustom, textCustom);
                     trackingRepository.AddNewTracking(newTracking);
 
                     Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                     startActivity(intent);
-                }else{
-                    Toast.makeText(getApplicationContext(), "Введите название!", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 

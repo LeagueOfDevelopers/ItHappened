@@ -3,14 +3,15 @@ package com.example.ithappenedandroid;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
 
-public class RepositorySingleton {
+public class StaticInMemoryRepository {
 
-    private static ITrackingRepository instance;
+    private static ITrackingRepository instance = new InMemoryTrackingRepository();
+
+    private StaticInMemoryRepository(){
+
+    }
 
     public static ITrackingRepository getInstance(){
-        if(instance == null){
-            instance = new InMemoryTrackingRepository();
-        }
         return instance;
     }
 
