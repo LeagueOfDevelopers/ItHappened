@@ -39,9 +39,8 @@ public class TrackingsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         //test user and test collection
         trackingCollection = StaticInMemoryRepository.getInstance();
         userName = "testUser";
@@ -64,5 +63,12 @@ public class TrackingsFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
     }
 }

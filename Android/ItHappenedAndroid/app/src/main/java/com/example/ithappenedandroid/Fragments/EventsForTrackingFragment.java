@@ -34,10 +34,11 @@ public class EventsForTrackingFragment extends Fragment {
     EventsAdapter eventsAdpt;
 
     FloatingActionButton addNewEvent;
+    Tracking thisTracking;
 
     List<Event> events;
 
-    ITrackingRepository trackingsCollection;
+    ITrackingRepository trackingsCollection = StaticInMemoryRepository.getInstance();;
     TrackingService trackingService;
     int trackingPosition;
 
@@ -52,20 +53,27 @@ public class EventsForTrackingFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         Bundle bundle = this.getArguments();
 
         if(bundle!=null){
             trackingPosition = bundle.getInt("position");
         }
 
-        trackingsCollection = StaticInMemoryRepository.getInstance();
+
         trackingService = new TrackingService("testUser", trackingsCollection);
 
-        Tracking thisTracking = trackingsCollection.GetTrackingCollection().get(trackingPosition);
+        thisTracking = trackingsCollection.GetTrackingCollection().get(trackingPosition);
 
         events = trackingsCollection.GetTrackingCollection().get(trackingPosition).GetEventCollection();
 
-        eventsRecycler = (RecyclerView) view.findViewById(R.id.eventsForTrackingRV);
+        eventsRecycler = (RecyclerView) getActivity().findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         eventsAdpt = new EventsAdapter(events , getActivity());
         eventsRecycler.setAdapter(eventsAdpt);
@@ -79,12 +87,11 @@ public class EventsForTrackingFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), AddNewEventActivity.class);
                 intent.putExtra("tracking", trackingPosition);
+                intent.putExtra("trackingId", thisTracking.GetTrackingID().toString());
 
                 startActivity(intent);
 
             }
         });
-
     }
-
 }
