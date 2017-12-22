@@ -1,6 +1,10 @@
 package com.example.ithappenedandroid.Recyclers;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +12,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Domain.Tracking;
+import com.example.ithappenedandroid.Fragments.EventsForTrackingFragment;
+import com.example.ithappenedandroid.R;
 
 import java.util.List;
 
@@ -17,6 +22,9 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
     private List<Tracking> trackings;
     private Context context;
+    FragmentManager fManage;
+    FragmentTransaction fTrans;
+    EventsForTrackingFragment eventsForTrackFrg;
 
 
     public TrackingsAdapter(List<Tracking> trackings, Context context) {
@@ -32,11 +40,29 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         final Tracking tracking = trackings.get(position);
-
         holder.trackingTitle.setText(tracking.GetTrackingName());
+
+        holder.itemLL.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+
+                eventsForTrackFrg = new EventsForTrackingFragment();
+                final Tracking tracking = trackings.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putInt("position", position);
+                eventsForTrackFrg.setArguments(bundle);
+
+                FragmentManager manager = ((Activity) context).getFragmentManager();
+                fTrans = manager.beginTransaction();
+                fTrans.replace(R.id.trackingsFrg, eventsForTrackFrg);
+                fTrans.commit();
+
+            }
+        });
 
     }
 

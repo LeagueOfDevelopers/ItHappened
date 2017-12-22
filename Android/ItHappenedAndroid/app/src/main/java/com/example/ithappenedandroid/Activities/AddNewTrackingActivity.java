@@ -8,16 +8,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.ithappenedandroid.Domain.Tracking;
+import com.example.ithappenedandroid.Domain.TrackingCustomization;
+import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
+
+import java.util.UUID;
 
 public class AddNewTrackingActivity extends AppCompatActivity {
+
+    ITrackingRepository trackingRepository;
 
     LinearLayout scaleCstm;
     LinearLayout textCstm;
     LinearLayout ratingCstm;
+
+    EditText trackingTitleControl;
 
     CardView scaleCard;
     CardView textCard;
@@ -26,6 +39,13 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     TextView scaleText;
     TextView textText;
     TextView ratingText;
+
+    TrackingCustomization textCustom;
+    TrackingCustomization scaleCustom;
+    TrackingCustomization ratingCustom;
+    String trackingTitle;
+
+    Button addTrackingBtn;
 
     int stateForScale;
     int stateForText;
@@ -38,13 +58,14 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Отслеживать");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, TrackingActivity.class));
+                startActivity(new Intent(this, UserActionsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -54,6 +75,10 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
+
+        addTrackingBtn = (Button) findViewById(R.id.addTrack);
+
+        trackingTitleControl = (EditText) findViewById(R.id.titleOfTracking);
 
         scaleCstm = (LinearLayout) findViewById(R.id.scale);
         textCstm = (LinearLayout) findViewById(R.id.text);
@@ -138,6 +163,66 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                         ratingText.setText("Не выбрано");
                         break;
                 }
+            }
+        });
+
+        addTrackingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                trackingTitle = trackingTitleControl.getText().toString();
+
+                    trackingRepository = StaticInMemoryRepository.getInstance();
+
+
+                    //set properties of scale
+                    switch (stateForScale) {
+                        case 0:
+                            scaleCustom = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            scaleCustom = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            scaleCustom = TrackingCustomization.Required;
+                            break;
+                    }
+
+                    //set properties of text
+                    switch (stateForText) {
+                        case 0:
+                            textCustom = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            textCustom = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            textCustom = TrackingCustomization.Required;
+                            break;
+                    }
+
+                    //set properties of rating
+                    switch (stateForRating) {
+                        case 0:
+                            ratingCustom = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            ratingCustom = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            ratingCustom = TrackingCustomization.Required;
+                            break;
+                    }
+
+                    UUID trackingId = UUID.randomUUID();
+
+                Toast.makeText(getApplicationContext(), trackingId.toString(), Toast.LENGTH_LONG).show();
+
+                    Tracking newTracking = new Tracking(trackingTitle, trackingId, ratingCustom, scaleCustom, textCustom);
+                    trackingRepository.AddNewTracking(newTracking);
+
+                    Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                    startActivity(intent);
             }
         });
 

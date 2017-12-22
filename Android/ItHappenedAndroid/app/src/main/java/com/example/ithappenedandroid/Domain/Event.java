@@ -1,13 +1,8 @@
 package com.example.ithappenedandroid.Domain;
 
-import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
-
-/**
- * Created by Ded on 08.12.2017.
- */
 
 public class Event
 {

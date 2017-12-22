@@ -13,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ithappenedandroid.Activities.AddNewTrackingActivity;
+import com.example.ithappenedandroid.Application.TrackingService;
+import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.TrackingsAdapter;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.example.ithappenedandroid.TrackingLoader;
 
 public class TrackingsFragment extends Fragment {
@@ -24,6 +27,10 @@ public class TrackingsFragment extends Fragment {
     TrackingsAdapter trackAdpt;
     TrackingLoader trackLoad;
     FloatingActionButton addTracking;
+    ITrackingRepository trackingCollection;
+    String userName;
+    TrackingService trackingService;
+
 
     @Nullable
     @Override
@@ -32,14 +39,18 @@ public class TrackingsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //test user and test collection
+        trackingCollection = StaticInMemoryRepository.getInstance();
+        userName = "testUser";
+        trackingService = new TrackingService(userName, trackingCollection);
 
         trackingsRecycler = (RecyclerView)getActivity().findViewById(R.id.tracingsRV);
         trackingsRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
-        trackLoad = new TrackingLoader();
-        trackAdpt = new TrackingsAdapter(trackLoad.loadingData(),getActivity());
+        //trackLoad = new TrackingLoader();
+        trackAdpt = new TrackingsAdapter(trackingService.GetTrackingCollection(),getActivity());
         trackingsRecycler.setAdapter(trackAdpt);
 
         addTracking = (FloatingActionButton) getActivity().findViewById(R.id.addNewTracking);
@@ -52,5 +63,12 @@ public class TrackingsFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
     }
 }

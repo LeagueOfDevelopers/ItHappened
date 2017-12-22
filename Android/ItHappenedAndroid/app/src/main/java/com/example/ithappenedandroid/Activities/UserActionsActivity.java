@@ -11,10 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
 
-public class TrackingActivity extends AppCompatActivity
+public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TrackingsFragment trackFrg;
@@ -30,6 +31,8 @@ public class TrackingActivity extends AppCompatActivity
         fTrans = getFragmentManager().beginTransaction();
         fTrans.replace(R.id.trackingsFrg, trackFrg);
         fTrans.commit();
+
+        setTitle("Мои отслеживания");
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
@@ -51,19 +54,19 @@ public class TrackingActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            setTitle("Мои отслеживания");
+            trackFrg = new TrackingsFragment();
+
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.commit();
         }
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
 
         return super.onOptionsItemSelected(item);
     }
@@ -71,15 +74,31 @@ public class TrackingActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        /*if (id == R.id.nav_camera) {
-            // Handle the camera action
-        }*/
+        if(id == R.id.my_events){
+            trackFrg = new TrackingsFragment();
+
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.commit();
+
+            setTitle("Мои отслеживания");
+        }
+
+        if (id == R.id.events_history) {
+            setTitle("История событий");
+            EventsFragment eventsFrg = new EventsFragment();
+
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, eventsFrg);
+            fTrans.commit();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

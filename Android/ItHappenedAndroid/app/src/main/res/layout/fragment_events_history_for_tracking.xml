@@ -8,12 +8,12 @@
 
     <LinearLayout
 
-        android:id="@+id/trackingsLL"
+        android:id="@+id/eventsForTrackingLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/tracingsRV"
+            android:id="@+id/eventsForTrackingRV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
@@ -23,12 +23,12 @@
 
     <android.support.design.widget.FloatingActionButton
         app:layout_behavior="com.example.ithappenedandroid.ButtonsEffects.FAB_Float_on_Scroll"
-        android:id="@+id/addNewTracking"
+        android:id="@+id/addNewEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:elevation="5dp"
+        app:elevation="10dp"
         app:fabSize="normal"
         app:srcCompat="@mipmap/plus_button" />
 

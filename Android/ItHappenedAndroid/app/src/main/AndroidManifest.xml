@@ -17,11 +17,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.TrackingActivity"
+            android:name=".Activities.UserActionsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity android:name=".Activities.AddNewTrackingActivity"
+            android:theme="@style/Theme.MyBack">
+        </activity>
+        <activity android:name=".Activities.AddNewEventActivity"
             android:theme="@style/Theme.MyBack">
         </activity>
     </application>
