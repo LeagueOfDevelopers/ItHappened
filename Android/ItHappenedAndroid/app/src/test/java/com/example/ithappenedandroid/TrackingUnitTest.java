@@ -34,7 +34,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
         tracking.AddEvent(newEvent);
 
         List<Event> eventCollectionInTracking = tracking.GetEventCollection();
@@ -55,7 +55,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
         tracking.AddEvent(newEvent);
 
         List<Event> eventCollectionInTracking = tracking.GetEventCollection();
@@ -72,12 +72,12 @@ public class TrackingUnitTest
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
+        Tracking tracking = new Tracking(trackingname, UUID.randomUUID(),  countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try { tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }
@@ -100,7 +100,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try{ tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e)
@@ -123,7 +123,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try{ tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }
@@ -145,7 +145,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
         tracking.AddEvent(newEvent);
 
         List<Event> eventCollectionInTracking = tracking.GetEventCollection();
@@ -167,7 +167,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
         tracking.AddEvent(newEvent);
 
         List<Event> eventCollectionInTracking = tracking.GetEventCollection();
@@ -189,7 +189,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try { tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }
@@ -211,7 +211,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try{ tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }
@@ -234,7 +234,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try{ tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }
@@ -256,7 +256,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.ofNullable("comment");
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
         tracking.AddEvent(newEvent);
 
         List<Event> eventCollectionInTracking = tracking.GetEventCollection();
@@ -277,7 +277,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.ofNullable("comment");
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
         tracking.AddEvent(newEvent);
 
         List<Event> eventCollectionInTracking = tracking.GetEventCollection();
@@ -299,7 +299,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try { tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }
@@ -321,7 +321,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try{ tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }
@@ -344,7 +344,7 @@ public class TrackingUnitTest
         Optional<Scale> scale = Optional.empty();
         Optional<String> comment = Optional.ofNullable("comment");
 
-        Event newEvent = new Event(UUID.randomUUID(), count, scale, comment);
+        Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
 
         try{ tracking.AddEvent(newEvent); }
         catch (IllegalArgumentException e) { thrown = true; }

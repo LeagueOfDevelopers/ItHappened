@@ -114,7 +114,7 @@ public class InMemoryTrackingRepositoryUnitTest
 
         inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
-        tracking.AddEvent(new Event(UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
+        tracking.AddEvent(new Event(UUID.randomUUID(), UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
         inMemoryTrackingRepositoryImpl.ChangeTracking(tracking);
         returnedChangedTracking = inMemoryTrackingRepositoryImpl.GetTracking(trackingID);
 
@@ -137,7 +137,7 @@ public class InMemoryTrackingRepositoryUnitTest
 
         inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
-        tracking.AddEvent(new Event(UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
+        tracking.AddEvent(new Event(UUID.randomUUID(), UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
         try {
             inMemoryTrackingRepositoryImpl.ChangeTracking(newTracking);
         }

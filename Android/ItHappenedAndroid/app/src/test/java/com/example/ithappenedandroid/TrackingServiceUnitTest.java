@@ -64,7 +64,7 @@ public class TrackingServiceUnitTest {
         Optional<Scale> scaleInEvent = Optional.empty();
         Optional<String> commentInEvent = Optional.empty();
 
-        Event newEvent = new Event(eventId, countInEvent, scaleInEvent, commentInEvent);
+        Event newEvent = new Event(eventId, trackingID, countInEvent, scaleInEvent, commentInEvent);
 
         service.AddEvent(trackingID, newEvent);
 
