@@ -23,7 +23,7 @@ public class InMemoryTrackingRepository implements ITrackingRepository
     {
         Optional<Tracking> tracking;
         tracking = trackingCollection.stream()
-                .filter((item) -> item.GetTrackingID() == trackingId)
+                .filter((item) -> item.GetTrackingID().equals(trackingId))
                 .findFirst();
         if (tracking.isPresent())
             return tracking.get();
@@ -43,7 +43,7 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         boolean contains = false;
         for (Tracking item: trackingCollection)
         {
-            if (item.GetTrackingID() == tracking.GetTrackingID())
+            if (item.GetTrackingID().equals(tracking.GetTrackingID()))
             {
                 contains = true;
                 break;
@@ -59,7 +59,7 @@ public class InMemoryTrackingRepository implements ITrackingRepository
     public void AddNewTracking(Tracking tracking)
     {
         if (!trackingCollection.stream()
-                .anyMatch((item) -> item.GetTrackingID() == tracking.GetTrackingID()))
+                .anyMatch((item) -> item.GetTrackingID().equals(tracking.GetTrackingID())))
             trackingCollection.add(tracking);
         else throw new IllegalArgumentException("Tracking with such ID already exists");
     }

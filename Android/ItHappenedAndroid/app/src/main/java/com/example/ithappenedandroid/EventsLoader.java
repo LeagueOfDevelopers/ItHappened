@@ -26,7 +26,7 @@ public class EventsLoader implements IDataLoader {
         Optional<String> comment = Optional.empty();
 
         for(int i=0;i<15;i++){
-            Event event = new Event(
+            Event event = new Event(UUID.randomUUID(),
                     UUID.randomUUID(),
                     count,
                     scale,

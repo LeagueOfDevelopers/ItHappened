@@ -231,7 +231,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                 Optional<Scale> rating = Optional.ofNullable(newScale);
                 Optional<Double> scale = Optional.of(scaleForEvent);
 
-                Event newEvent = new Event(UUID.randomUUID(), scale, rating, comment);
+                Event newEvent = new Event(trackingId, UUID.randomUUID(), scale, rating, comment);
                 trackingId = UUID.fromString(id);
                 trackingService.AddEvent(trackingId, newEvent);
 
