@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -114,7 +113,7 @@ public class InMemoryTrackingRepositoryUnitTest
 
         inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
-        tracking.AddEvent(new Event(UUID.randomUUID(), UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
+        tracking.AddEvent(new Event(UUID.randomUUID(), UUID.randomUUID(), null, null, null));
         inMemoryTrackingRepositoryImpl.ChangeTracking(tracking);
         returnedChangedTracking = inMemoryTrackingRepositoryImpl.GetTracking(trackingID);
 
@@ -137,7 +136,7 @@ public class InMemoryTrackingRepositoryUnitTest
 
         inMemoryTrackingRepositoryImpl.AddNewTracking(tracking);
 
-        tracking.AddEvent(new Event(UUID.randomUUID(), UUID.randomUUID(), Optional.empty(), Optional.empty(), Optional.empty()));
+        tracking.AddEvent(new Event(UUID.randomUUID(), UUID.randomUUID(), null, null, null));
         try {
             inMemoryTrackingRepositoryImpl.ChangeTracking(newTracking);
         }

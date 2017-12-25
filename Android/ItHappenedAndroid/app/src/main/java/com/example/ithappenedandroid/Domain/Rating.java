@@ -4,9 +4,9 @@ package com.example.ithappenedandroid.Domain;
  * Created by Ded on 09.12.2017.
  */
 
-public class Scale
+public class Rating
 {
-    public Scale(Integer ratingValue)
+    public Rating(Integer ratingValue)
     {
         if (ratingValue > 10 || ratingValue<1)
             throw new IndexOutOfBoundsException("Value of scale out of range");

@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 
 import com.example.ithappenedandroid.Application.TrackingService;
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -229,8 +229,8 @@ public class AddNewEventActivity extends AppCompatActivity {
 
                 Optional<String> comment = Optional.ofNullable(commentForEvent);
                 int intRating = (int) ratingForEvent;
-                Scale newScale = new Scale(7);
-                Optional<Scale> rating = Optional.ofNullable(newScale);
+                Rating newRating = new Rating(7);
+                Optional<Rating> rating = Optional.ofNullable(newRating);
                 Optional<Double> scale = Optional.of(scaleForEvent);
 
                 //Event newEvent = new Event(trackingId, UUID.randomUUID(), scale, rating, comment);

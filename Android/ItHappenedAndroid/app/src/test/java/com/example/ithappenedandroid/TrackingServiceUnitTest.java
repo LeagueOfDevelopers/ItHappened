@@ -2,7 +2,7 @@ package com.example.ithappenedandroid;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -61,11 +60,8 @@ public class TrackingServiceUnitTest {
         service.AddTracking(newTracking);
 
         UUID eventId = UUID.randomUUID();
-        Optional<Double> countInEvent = Optional.empty();
-        Optional<Scale> scaleInEvent = Optional.empty();
-        Optional<String> commentInEvent = Optional.empty();
 
-        Event newEvent = new Event(eventId, trackingID, countInEvent, scaleInEvent, commentInEvent);
+        Event newEvent = new Event(eventId, trackingID, null, null, null);
 
         service.AddEvent(trackingID, newEvent);
 
@@ -131,13 +127,13 @@ public class TrackingServiceUnitTest {
         TrackingService service = new TrackingService(userNickname, inMemoryTrackingRepositoryImpl);
         service.AddTracking(newTracking);
 
-        Optional<TrackingCustomization> newCount = Optional.ofNullable(TrackingCustomization.Required);
-        Optional<TrackingCustomization> newScale = Optional.ofNullable(TrackingCustomization.Required);
-        Optional<TrackingCustomization> newComment = Optional.ofNullable(TrackingCustomization.Required);
-        Optional<String> newTrackingName = Optional.ofNullable("New tracking name");
+        TrackingCustomization newScale = TrackingCustomization.Required;
+        TrackingCustomization newRating = TrackingCustomization.Required;
+        TrackingCustomization newComment = TrackingCustomization.Required;
+        String newTrackingName = "New tracking name";
 
-        service.EditTracking(trackingID, newCount, newScale, newComment, newTrackingName);
-        newTracking.EditTracking(newCount, newScale, newComment, newTrackingName);
+        service.EditTracking(trackingID, newScale, newRating, newComment, newTrackingName);
+        newTracking.EditTracking(newScale, newRating, newComment, newTrackingName);
 
         List<Tracking> trackingCollectionInService = service.GetTrackingCollection();
 
@@ -160,22 +156,22 @@ public class TrackingServiceUnitTest {
         service.AddTracking(newTracking);
 
         UUID eventId = UUID.randomUUID();
-        Optional<Double> eventCount = Optional.ofNullable(1.0);
-        Optional<Scale> eventScale = Optional.ofNullable(new Scale(1));
-        Optional<String> eventComment = Optional.ofNullable("comment");
+        Double eventScale = 1.0;
+        Rating eventRating = new Rating(1);
+        String eventComment = "comment";
 
-        Event newEvent = new Event(eventId, trackingID, eventCount, eventScale, eventComment);
+        Event newEvent = new Event(eventId, trackingID, eventScale, eventRating, eventComment);
 
         service.AddEvent(trackingID, newEvent);
 
-        Optional<Double> newEventCount = Optional.ofNullable(2.0);
-        Optional<Scale> newEventScale = Optional.ofNullable(new Scale(2));
-        Optional<String> newEventComment = Optional.ofNullable("new comment");
-        Optional<TimeZone> newEventDate = Optional.ofNullable(TimeZone.getDefault());
+        Double newEventScale = 2.0;
+        Rating newEventRating = new Rating(2);
+        String newEventComment = "new comment";
+        TimeZone newEventDate = TimeZone.getDefault();
 
-        service.EditEvent(trackingID, eventId, newEventCount, newEventScale, newEventComment, newEventDate);
-        Event editedEvent = new Event (eventId, trackingID, newEventCount, newEventScale, newEventComment);
-        editedEvent.EditDate(newEventDate.get());
+        service.EditEvent(trackingID, eventId, newEventScale, newEventRating, newEventComment, newEventDate);
+        Event editedEvent = new Event (eventId, trackingID, newEventScale, newEventRating, newEventComment);
+        editedEvent.EditDate(newEventDate);
 
         List<Event> eventCollection = service.GetTrackingCollection().get(0).GetEventCollection();
 

@@ -9,13 +9,13 @@ public class Tracking {
 
     public Tracking(String trackingName,
                     UUID trackingId,
-                    TrackingCustomization counter,
                     TrackingCustomization scale,
+                    TrackingCustomization rating,
                     TrackingCustomization comment)
     {
         this.trackingName = trackingName;
-        this.counter = counter;
         this.scale = scale;
+        this.rating = rating;
         this.comment = comment;
         this.trackingId = trackingId;
         trackingDate = TimeZone.getDefault();
@@ -24,15 +24,15 @@ public class Tracking {
 
     public Tracking(String trackingName,
                     UUID trackingId,
-                    TrackingCustomization counter,
                     TrackingCustomization scale,
+                    TrackingCustomization rating,
                     TrackingCustomization comment,
                     TimeZone trackingDate,
                     List<Event> eventCollection)
     {
         this.trackingName = trackingName;
-        this.counter = counter;
         this.scale = scale;
+        this.rating = rating;
         this.comment = comment;
         this.trackingId = trackingId;
         this.trackingDate = trackingDate;
@@ -42,15 +42,15 @@ public class Tracking {
 
     public void AddEvent (Event newEvent)
     {
-        //CustomizationCheck(newEvent.GetCount(), counter);
-        //CustomizationCheck(newEvent.GetScale(), scale);
-        //CustomizationCheck(newEvent.GetComment(), comment);
+        CustomizationCheck(newEvent.GetScale(), scale);
+        CustomizationCheck(newEvent.GetRating(), rating);
+        CustomizationCheck(newEvent.GetComment(), comment);
         eventCollection.add(newEvent);
     }
 
     public void EditEvent(UUID eventId,
-                          Double newCount,
-                          Scale newScale,
+                          Double newScale,
+                          Rating newRating,
                           String newComment,
                           TimeZone newDate)
     {
@@ -69,10 +69,10 @@ public class Tracking {
         }
         if (!contains)
             throw new IllegalArgumentException("Event with such id doesn't exist");
-        if (ChangesCheck(newCount, counter))
-            editedEvent.EditCount(newCount);
         if (ChangesCheck(newScale, scale))
-            editedEvent.EditValueOfScale(newScale);
+            editedEvent.EditScale(newScale);
+        if (ChangesCheck(newRating, rating))
+            editedEvent.EditValueOfRating(newRating);
         if (ChangesCheck(newComment, comment))
             editedEvent.EditComment(newComment);
         if (newDate!=null)
@@ -80,15 +80,15 @@ public class Tracking {
         eventCollection.set(index, editedEvent);
     }
 
-    public void EditTracking(TrackingCustomization editedCounter,
-                             TrackingCustomization editedScale,
+    public void EditTracking(TrackingCustomization editedScale,
+                             TrackingCustomization editedRating,
                              TrackingCustomization editedComment,
                              String editedTrackingName)
     {
-        if (editedCounter != null)
-            counter = editedCounter;
         if (editedScale != null)
             scale = editedScale;
+        if (editedRating != null)
+            rating = editedRating;
         if (editedComment != null)
             comment = editedComment;
         if (editedTrackingName != null)
@@ -119,15 +119,15 @@ public class Tracking {
     public UUID GetTrackingID() {return trackingId;}
     public TimeZone GetTrackingDate () {return trackingDate;}
     public List<Event> GetEventCollection() { return eventCollection;}
-    public TrackingCustomization GetCounterCustomization(){ return counter;}
+    public TrackingCustomization GetCounterCustomization(){ return scale;}
     public TrackingCustomization GetCommentCustomization(){ return comment;}
-    public TrackingCustomization GetScaleCustomization(){ return scale;}
+    public TrackingCustomization GetScaleCustomization(){ return rating;}
 
     private String trackingName;
     private UUID trackingId;
     private TimeZone trackingDate;
-    private TrackingCustomization counter;
     private TrackingCustomization scale;
+    private TrackingCustomization rating;
     private TrackingCustomization comment;
 
     private List<Event> eventCollection;

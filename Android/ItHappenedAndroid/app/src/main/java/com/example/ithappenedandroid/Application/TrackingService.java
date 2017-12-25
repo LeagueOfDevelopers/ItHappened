@@ -1,13 +1,12 @@
 package com.example.ithappenedandroid.Application;
 
 import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -45,13 +44,13 @@ public class TrackingService
     }
 
     public void EditEvent(UUID trackingId, UUID eventId,
-                          Double newCount,
-                          Scale newScale,
+                          Double newScale,
+                          Rating newRating,
                           String newComment,
                           TimeZone newDate)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditEvent(eventId, newCount, newScale, newComment, newDate);
+        tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
         trackingCollection.ChangeTracking(tracking);
     }
 
