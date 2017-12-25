@@ -20,8 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 
 import com.example.ithappenedandroid.Application.TrackingService;
-import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Rating;
+import com.example.ithappenedandroid.Domain.Scale;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -230,15 +229,15 @@ public class AddNewEventActivity extends AppCompatActivity {
 
                 Optional<String> comment = Optional.ofNullable(commentForEvent);
                 int intRating = (int) ratingForEvent;
-                Rating newRating = new Rating(7);
-                Optional<Rating> rating = Optional.ofNullable(newRating);
+                Scale newScale = new Scale(7);
+                Optional<Scale> rating = Optional.ofNullable(newScale);
                 Optional<Double> scale = Optional.of(scaleForEvent);
 
-                Event newEvent = new Event(trackingId, UUID.randomUUID(), scale, rating, comment);
+                //Event newEvent = new Event(trackingId, UUID.randomUUID(), scale, rating, comment);
                 trackingId = UUID.fromString(id);
                 //trackingService.AddEvent(trackingId, newEvent);
                 Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));
-                thisTracking.AddEvent(newEvent);
+                //thisTracking.AddEvent(newEvent);
 
 
             }

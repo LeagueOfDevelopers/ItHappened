@@ -1,10 +1,7 @@
 package com.example.ithappenedandroid.Application;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Rating;
+import com.example.ithappenedandroid.Domain.Scale;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -29,19 +26,17 @@ public class TrackingService
         trackingCollection.AddNewTracking(newTracking);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditTracking(UUID trackingId,
-                             Optional<TrackingCustomization> editedCounter,
-                             Optional<TrackingCustomization> editedScale,
-                             Optional<TrackingCustomization> editedComment,
-                             Optional<String> editedTrackingName)
+                             TrackingCustomization editedCounter,
+                             TrackingCustomization editedScale,
+                             TrackingCustomization editedComment,
+                             String editedTrackingName)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
         tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName);
         trackingCollection.ChangeTracking(tracking);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddEvent(UUID trackingId, Event newEvent)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
@@ -49,15 +44,14 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditEvent(UUID trackingId, UUID eventId,
-                          Optional<Double> newCount,
-                          Optional<Rating> newRating,
-                          Optional<String> newComment,
-                          Optional<TimeZone> newDate)
+                          Double newCount,
+                          Scale newScale,
+                          String newComment,
+                          TimeZone newDate)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditEvent(eventId, newCount, newRating, newComment, newDate);
+        tracking.EditEvent(eventId, newCount, newScale, newComment, newDate);
         trackingCollection.ChangeTracking(tracking);
     }
 

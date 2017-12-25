@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textForCustomisation"
-        android:id="@+id/rating">
+        android:id="@+id/scale">
 
         <RelativeLayout
 
@@ -95,7 +95,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rating"
+        android:layout_below="@id/scale"
         android:id="@+id/text">
 
         <RelativeLayout
@@ -149,7 +149,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text"
-        android:id="@+id/rating">
+        android:id="@+id/scale">
 
         <RelativeLayout
 
