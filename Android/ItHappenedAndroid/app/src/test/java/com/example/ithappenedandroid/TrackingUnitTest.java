@@ -335,7 +335,7 @@ public class TrackingUnitTest {
 
         tracking.EditTracking(newScale, null, null, null);
 
-        Assert.assertEquals(tracking.GetCounterCustomization(), TrackingCustomization.Required);
+        Assert.assertEquals(tracking.GetScaleCustomization(), TrackingCustomization.Required);
     }
 
     @Test
