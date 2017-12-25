@@ -220,11 +220,8 @@ public class AddNewEventActivity extends AppCompatActivity {
 
                 Event newEvent = new Event( UUID.randomUUID(),trackingId, scale, newRating, comment);
                 trackingId = UUID.fromString(id);
+                trackingService = new TrackingService("someName", trackingCollection);
                 trackingService.AddEvent(trackingId, newEvent);
-                Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));
-                thisTracking.AddEvent(newEvent);
-
-
             }
         });
     }
