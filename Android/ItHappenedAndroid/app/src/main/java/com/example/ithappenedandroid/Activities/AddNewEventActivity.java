@@ -21,7 +21,7 @@ import android.widget.RatingBar;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -68,6 +68,8 @@ public class AddNewEventActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Добавить событие");
 
+
+
         trackingService = new TrackingService("thisUser", trackingCollection);
 
 
@@ -78,7 +80,8 @@ public class AddNewEventActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         trackingPosition = intent.getExtras().getInt("tracking");
-        Tracking thisTracking = trackingCollection.GetTrackingCollection().get(trackingPosition);
+        id = intent.getStringExtra("trackingId");
+        Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));
 
         if(thisTracking.GetCommentCustomization() == TrackingCustomization.Required || thisTracking.GetCommentCustomization() == TrackingCustomization.Optional){
             commentControl = new EditText(getApplication());
@@ -128,7 +131,7 @@ public class AddNewEventActivity extends AppCompatActivity {
 
             ratingControl = new RatingBar(getApplication());
             ratingControl.setNumStars(5);
-            ratingControl.setStepSize(1);
+            ratingControl.setStepSize(1/2);
 
             LayerDrawable stars = (LayerDrawable) ratingControl.getProgressDrawable();
             stars.getDrawable(2).setColorFilter(getResources().getColor(R.color.color_for_not_definetly), PorterDuff.Mode.SRC_ATOP);
@@ -227,18 +230,19 @@ public class AddNewEventActivity extends AppCompatActivity {
 
                 Optional<String> comment = Optional.ofNullable(commentForEvent);
                 int intRating = (int) ratingForEvent;
-                Scale newScale = new Scale(7);
-                Optional<Scale> rating = Optional.ofNullable(newScale);
+                Rating newRating = new Rating(7);
+                Optional<Rating> rating = Optional.ofNullable(newRating);
                 Optional<Double> scale = Optional.of(scaleForEvent);
 
-                Event newEvent = new Event(UUID.randomUUID(), scale, rating, comment);
+                Event newEvent = new Event(trackingId, UUID.randomUUID(), scale, rating, comment);
                 trackingId = UUID.fromString(id);
-                trackingService.AddEvent(trackingId, newEvent);
+                //trackingService.AddEvent(trackingId, newEvent);
+                Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));
+                thisTracking.AddEvent(newEvent);
 
 
             }
         });
-
     }
 
     @Override

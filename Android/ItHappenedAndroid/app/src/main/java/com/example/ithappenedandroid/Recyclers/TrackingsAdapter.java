@@ -52,8 +52,9 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
                 eventsForTrackFrg = new EventsForTrackingFragment();
                 final Tracking tracking = trackings.get(position);
+                String id = tracking.GetTrackingID().toString();
                 Bundle bundle = new Bundle();
-                bundle.putInt("position", position);
+                bundle.putString("id", id);
                 eventsForTrackFrg.setArguments(bundle);
 
                 FragmentManager manager = ((Activity) context).getFragmentManager();

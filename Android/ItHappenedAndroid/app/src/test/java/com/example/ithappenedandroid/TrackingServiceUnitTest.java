@@ -2,7 +2,7 @@ package com.example.ithappenedandroid;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
@@ -61,7 +61,7 @@ public class TrackingServiceUnitTest {
 
         UUID eventId = UUID.randomUUID();
         Optional<Double> countInEvent = Optional.empty();
-        Optional<Scale> scaleInEvent = Optional.empty();
+        Optional<Rating> scaleInEvent = Optional.empty();
         Optional<String> commentInEvent = Optional.empty();
 
         Event newEvent = new Event(eventId, trackingID, countInEvent, scaleInEvent, commentInEvent);

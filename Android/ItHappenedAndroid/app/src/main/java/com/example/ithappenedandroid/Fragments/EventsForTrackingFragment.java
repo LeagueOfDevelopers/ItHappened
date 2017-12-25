@@ -23,10 +23,7 @@ import com.example.ithappenedandroid.Recyclers.EventsAdapter;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
 import java.util.List;
-
-/**
- * Created by Пользователь on 16.12.2017.
- */
+import java.util.UUID;
 
 public class EventsForTrackingFragment extends Fragment {
 
@@ -37,6 +34,7 @@ public class EventsForTrackingFragment extends Fragment {
     Tracking thisTracking;
 
     List<Event> events;
+    UUID trackingId;
 
     ITrackingRepository trackingsCollection = StaticInMemoryRepository.getInstance();;
     TrackingService trackingService;
@@ -52,30 +50,27 @@ public class EventsForTrackingFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
-
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onResume() {
         super.onResume();
         Bundle bundle = this.getArguments();
 
         if(bundle!=null){
-            trackingPosition = bundle.getInt("position");
+            trackingId = UUID.fromString(bundle.getString("id"));
         }
-
 
         trackingService = new TrackingService("testUser", trackingsCollection);
 
-        thisTracking = trackingsCollection.GetTrackingCollection().get(trackingPosition);
+        thisTracking = trackingsCollection.GetTracking(trackingId);
 
-        events = trackingsCollection.GetTrackingCollection().get(trackingPosition).GetEventCollection();
+        events = thisTracking.GetEventCollection();
 
         eventsRecycler = (RecyclerView) getActivity().findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        eventsAdpt = new EventsAdapter(events , getActivity());
+        eventsAdpt = new EventsAdapter(events , getActivity(), trackingId, 0);
         eventsRecycler.setAdapter(eventsAdpt);
 
 
@@ -86,7 +81,6 @@ public class EventsForTrackingFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent intent = new Intent(getActivity(), AddNewEventActivity.class);
-                intent.putExtra("tracking", trackingPosition);
                 intent.putExtra("trackingId", thisTracking.GetTrackingID().toString());
 
                 startActivity(intent);

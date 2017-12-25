@@ -34,7 +34,7 @@ public class EventsFragment extends Fragment {
         eventsLoad = new EventsLoader();
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        eventsAdpt = new EventsAdapter(eventsLoad.loadingEvents(), getActivity());
+        //eventsAdpt = new EventsAdapter(eventsLoad.loadingEvents(), getActivity(), null);
         eventsRecycler.setAdapter(eventsAdpt);
 
     }

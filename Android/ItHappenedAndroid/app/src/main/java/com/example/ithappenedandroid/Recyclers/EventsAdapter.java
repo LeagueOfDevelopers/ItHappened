@@ -9,18 +9,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ithappenedandroid.Domain.Event;
+import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
     private List<Event> events;
     private Context context;
+    UUID trackingId;
+    private int state = 0;
 
-    public EventsAdapter(List<Event> events, Context context) {
+    public EventsAdapter(List<Event> events, Context context, UUID trackingId, int state) {
         this.events = events;
         this.context = context;
+        this.trackingId=trackingId;
+        this.state = state;
     }
 
     @Override
@@ -37,13 +44,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         final Event event = events.get(position);
 
+        ITrackingRepository trackingRepository = StaticInMemoryRepository.getInstance();
+
+
         /*Tracking tracking = new Tracking("Сахар в крови",
                 UUID.randomUUID(),
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None);*/
 
-        holder.trackingTitle.setText("Сахар в крови");
+        holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
         //holder.eventDate.setText(event.GetEventDate().toString());
 
     }

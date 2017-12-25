@@ -1,15 +1,12 @@
 package com.example.ithappenedandroid;
 
-import android.support.annotation.Nullable;
-
 import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -31,7 +28,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.ofNullable(1.1);
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -52,7 +49,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.ofNullable(1.1);
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -74,7 +71,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(),  countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -97,7 +94,7 @@ public class TrackingUnitTest
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
 
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -120,7 +117,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -142,7 +139,7 @@ public class TrackingUnitTest
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Integer scaleValue = 5;
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
+        Optional<Rating> scale = Optional.ofNullable(new Rating(scaleValue));
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -164,7 +161,7 @@ public class TrackingUnitTest
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Integer scaleValue = 5;
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
+        Optional<Rating> scale = Optional.ofNullable(new Rating(scaleValue));
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -186,7 +183,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -208,7 +205,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -231,7 +228,7 @@ public class TrackingUnitTest
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Integer scaleValue = 5;
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.ofNullable(new Scale(scaleValue));
+        Optional<Rating> scale = Optional.ofNullable(new Rating(scaleValue));
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -253,7 +250,7 @@ public class TrackingUnitTest
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
 
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.ofNullable("comment");
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -274,7 +271,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.ofNullable("comment");
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -296,7 +293,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -318,7 +315,7 @@ public class TrackingUnitTest
 
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);
@@ -341,7 +338,7 @@ public class TrackingUnitTest
         Tracking tracking = new Tracking(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization);
 
         Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
+        Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.ofNullable("comment");
 
         Event newEvent = new Event(UUID.randomUUID(), UUID.randomUUID(), count, scale, comment);

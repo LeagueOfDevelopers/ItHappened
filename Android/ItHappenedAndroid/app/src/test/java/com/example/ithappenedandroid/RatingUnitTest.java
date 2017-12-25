@@ -1,6 +1,6 @@
 package com.example.ithappenedandroid;
 
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 
 import junit.framework.Assert;
 
@@ -10,16 +10,16 @@ import org.junit.Test;
  * Created by Ded on 12.12.2017.
  */
 
-public class ScaleUnitTest
+public class RatingUnitTest
 {
     @Test
     public void CreateScaleWithValueLessThen1__ThrowException ()
     {
         Integer scaleValue = 0;
-        Scale scale;
+        Rating rating;
         boolean thrown = false;
 
-        try { scale = new Scale(scaleValue);}
+        try { rating = new Rating(scaleValue);}
         catch (IndexOutOfBoundsException e) { thrown = true; }
 
         Assert.assertTrue(thrown);
@@ -29,10 +29,10 @@ public class ScaleUnitTest
     public void CreateScaleWithValueMoreThan10_ThrowException ()
     {
         Integer scaleValue = 11;
-        Scale scale;
+        Rating rating;
         boolean thrown = false;
 
-        try { scale = new Scale(scaleValue);}
+        try { rating = new Rating(scaleValue);}
         catch (IndexOutOfBoundsException e) { thrown = true; }
 
         Assert.assertTrue(thrown);
@@ -42,10 +42,10 @@ public class ScaleUnitTest
     public void ScaleWithValueLessThan11AndMoreThan0_ThereIsNoException ()
     {
         Integer scaleValue = 10;
-        Scale scale;
+        Rating rating;
         boolean thrown = false;
 
-        try { scale = new Scale(scaleValue);}
+        try { rating = new Rating(scaleValue);}
         catch (IndexOutOfBoundsException e) { thrown = true; }
 
         Assert.assertFalse(thrown);

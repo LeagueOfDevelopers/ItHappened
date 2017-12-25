@@ -47,16 +47,16 @@ public class Tracking {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddEvent (Event newEvent)
     {
-        CustomizationCheck(newEvent.GetCount(), counter);
-        CustomizationCheck(newEvent.GetScale(), scale);
-        CustomizationCheck(newEvent.GetComment(), comment);
+        //CustomizationCheck(newEvent.GetCount(), counter);
+        //CustomizationCheck(newEvent.GetScale(), scale);
+        //CustomizationCheck(newEvent.GetComment(), comment);
         eventCollection.add(newEvent);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditEvent(UUID eventId,
                           Optional<Double> newCount,
-                          Optional<Scale> newScale,
+                          Optional<Rating> newScale,
                           Optional<String> newComment,
                           Optional<TimeZone> newDate)
     {

@@ -23,7 +23,7 @@ public class InMemoryTrackingRepository implements ITrackingRepository
     {
         Optional<Tracking> tracking;
         tracking = trackingCollection.stream()
-                .filter((item) -> item.GetTrackingID() == trackingId)
+                .filter((item) -> item.GetTrackingID().equals(trackingId))
                 .findFirst();
         if (tracking.isPresent())
             return tracking.get();

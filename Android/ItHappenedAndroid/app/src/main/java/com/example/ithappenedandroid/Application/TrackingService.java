@@ -4,7 +4,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.example.ithappenedandroid.Domain.Event;
-import com.example.ithappenedandroid.Domain.Scale;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -52,12 +52,12 @@ public class TrackingService
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditEvent(UUID trackingId, UUID eventId,
                           Optional<Double> newCount,
-                          Optional<Scale> newScale,
+                          Optional<Rating> newRating,
                           Optional<String> newComment,
                           Optional<TimeZone> newDate)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditEvent(eventId, newCount, newScale, newComment, newDate);
+        tracking.EditEvent(eventId, newCount, newRating, newComment, newDate);
         trackingCollection.ChangeTracking(tracking);
     }
 
