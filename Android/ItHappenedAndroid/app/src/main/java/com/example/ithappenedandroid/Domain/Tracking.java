@@ -119,9 +119,9 @@ public class Tracking {
     public UUID GetTrackingID() {return trackingId;}
     public TimeZone GetTrackingDate () {return trackingDate;}
     public List<Event> GetEventCollection() { return eventCollection;}
-    public TrackingCustomization GetCounterCustomization(){ return scale;}
+    public TrackingCustomization GetScaleCustomization(){ return scale;}
     public TrackingCustomization GetCommentCustomization(){ return comment;}
-    public TrackingCustomization GetScaleCustomization(){ return rating;}
+    public TrackingCustomization GetRatingCustomization(){ return rating;}
 
     private String trackingName;
     private UUID trackingId;

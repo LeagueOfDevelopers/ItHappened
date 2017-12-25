@@ -85,6 +85,7 @@ public class AddNewEventActivity extends AppCompatActivity {
         if(thisTracking.GetCommentCustomization() == TrackingCustomization.Required || thisTracking.GetCommentCustomization() == TrackingCustomization.Optional){
             commentControl = new EditText(getApplication());
             commentControl.setHint("Ваш комментарий");
+            commentControl.setTextColor(getResources().getColor(R.color.cardview_dark_background));
             commentControl.setHintTextColor(getResources().getColor(R.color.colorPrimaryDark));
             if(thisTracking.GetCommentCustomization() == TrackingCustomization.Required){
 
@@ -105,13 +106,13 @@ public class AddNewEventActivity extends AppCompatActivity {
             textCustomControl.addView(commentControl);
         }
 
-        if(thisTracking.GetCounterCustomization() == TrackingCustomization.Required ){
+        if(thisTracking.GetRatingCustomization() == TrackingCustomization.Required ){
 
             stateForRating = 2;
 
             ratingControl = new RatingBar(getApplication());
             ratingControl.setNumStars(5);
-            ratingControl.setStepSize(1);
+            ratingControl.setStepSize(1/2);
 
             LayerDrawable stars = (LayerDrawable) ratingControl.getProgressDrawable();
             stars.getDrawable(2).setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
@@ -124,7 +125,7 @@ public class AddNewEventActivity extends AppCompatActivity {
             ratingCustomControl.addView(ratingControl);
         }
 
-        if(thisTracking.GetCounterCustomization() == TrackingCustomization.Optional ){
+        if(thisTracking.GetRatingCustomization() == TrackingCustomization.Optional ){
 
             stateForRating = 1;
 
@@ -146,6 +147,7 @@ public class AddNewEventActivity extends AppCompatActivity {
         if(thisTracking.GetScaleCustomization() == TrackingCustomization.Required || thisTracking.GetScaleCustomization() == TrackingCustomization.Optional){
             scaleControl = new EditText(getApplication());
             scaleControl.setHint("Ваше число");
+            scaleControl.setTextColor(getResources().getColor(R.color.cardview_dark_background));
             scaleControl.setInputType(InputType.TYPE_CLASS_NUMBER);
             KeyListener keyListener = DigitsKeyListener.getInstance("1234567890");
             scaleControl.setKeyListener(keyListener);
@@ -234,9 +236,9 @@ public class AddNewEventActivity extends AppCompatActivity {
 
                 Event newEvent = new Event(trackingId, UUID.randomUUID(), scale, rating, comment);
                 trackingId = UUID.fromString(id);
-                trackingService.AddEvent(trackingId, newEvent);
+                //trackingService.AddEvent(trackingId, newEvent);
                 Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));
-                //thisTracking.AddEvent(newEvent);
+                thisTracking.AddEvent(newEvent);
 
 
             }
