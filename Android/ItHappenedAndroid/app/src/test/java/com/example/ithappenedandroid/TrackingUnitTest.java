@@ -335,7 +335,7 @@ public class TrackingUnitTest {
 
         tracking.EditTracking(newScale, null, null, null);
 
-        Assert.assertEquals(tracking.GetCounterCustomization(), TrackingCustomization.Required);
+        Assert.assertEquals(tracking.GetScaleCustomization(), TrackingCustomization.Required);
     }
 
     @Test
@@ -348,11 +348,11 @@ public class TrackingUnitTest {
         String trackingName = "name";
         Tracking tracking = new Tracking(trackingName, trackingId, counter, scale, comment);
 
-        TrackingCustomization newScale = TrackingCustomization.Required;
+        TrackingCustomization newRating = TrackingCustomization.Required;
 
-        tracking.EditTracking(null, newScale, null, null);
+        tracking.EditTracking(null, newRating, null, null);
 
-        Assert.assertEquals(tracking.GetScaleCustomization(), TrackingCustomization.Required);
+        Assert.assertEquals(tracking.GetRatingCustomization(), TrackingCustomization.Required);
     }
 
     @Test

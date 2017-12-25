@@ -82,6 +82,8 @@ public class AddNewEventActivity extends AppCompatActivity {
         id = intent.getStringExtra("trackingId");
         Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));
 
+        //добавляем контрол для комментария
+
         if(thisTracking.GetCommentCustomization() == TrackingCustomization.Required || thisTracking.GetCommentCustomization() == TrackingCustomization.Optional){
             commentControl = new EditText(getApplication());
             commentControl.setHint("Ваш комментарий");
@@ -105,6 +107,8 @@ public class AddNewEventActivity extends AppCompatActivity {
             commentControl.setLayoutParams(commentLayoutParams);
             textCustomControl.addView(commentControl);
         }
+
+        //добавляем контрол для рейтинга
 
         if(thisTracking.GetRatingCustomization() == TrackingCustomization.Required ){
 
@@ -144,6 +148,9 @@ public class AddNewEventActivity extends AppCompatActivity {
             ratingCustomControl.addView(ratingControl);
         }
 
+
+        //добавляем контрол для шкалы
+
         if(thisTracking.GetScaleCustomization() == TrackingCustomization.Required || thisTracking.GetScaleCustomization() == TrackingCustomization.Optional){
             scaleControl = new EditText(getApplication());
             scaleControl.setHint("Ваше число");
@@ -182,59 +189,25 @@ public class AddNewEventActivity extends AppCompatActivity {
             public void onClick(View view) {
                 UUID trackingId = UUID.fromString(id);
 
-                if(stateForComment == 2){
-
-                    if(commentControl.getText().toString()!=""){
-
-                    }else{
-
+                if(stateForComment<3){
                         commentForEvent = commentControl.getText().toString();
-
-                    }
                 }
 
-                if(stateForComment == 1 && commentControl.getText().toString()!=""){
-                    commentForEvent = commentControl.getText().toString();
-                }
-
-                if(stateForScale == 2){
-
-                    if(scaleControl.getText().toString()!=""){
-
-                    }else{
-
+                if(stateForScale<3){
                         scaleForEvent = Integer.getInteger(scaleControl.getText().toString());
-
-                    }
                 }
 
-                if(stateForScale == 1 && scaleControl.getText().toString()!=""){
-                    scaleForEvent = Integer.getInteger(scaleControl.getText().toString());
-                }
-
-
-                if(stateForRating == 2){
-
-                    if(ratingControl.getRating()!=0){
-
-                    }else{
-
+                if(stateForRating <3){
                         ratingForEvent = ratingControl.getRating();
-
-                    }
                 }
 
-                if(stateForRating == 1 && ratingControl.getRating()!=0){
-                    ratingForEvent = ratingControl.getRating();
-                }
 
                 String comment = commentForEvent;
-                int intRating = (int) ratingForEvent;
-                Rating newRating = new Rating(7);
-                Rating rating = newRating;
                 Double scale = scaleForEvent;
+                int intRating = (int) ratingForEvent;
+                Rating newRating = new Rating(intRating);
 
-                Event newEvent = new Event(trackingId, UUID.randomUUID(), scale, rating, comment);
+                Event newEvent = new Event( UUID.randomUUID(),trackingId, scale, newRating, comment);
                 trackingId = UUID.fromString(id);
                 //trackingService.AddEvent(trackingId, newEvent);
                 Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));

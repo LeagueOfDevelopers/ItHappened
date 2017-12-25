@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
@@ -215,8 +214,6 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     }
 
                     UUID trackingId = UUID.randomUUID();
-
-                Toast.makeText(getApplicationContext(), trackingId.toString(), Toast.LENGTH_LONG).show();
 
                     Tracking newTracking = new Tracking(trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
                     trackingRepository.AddNewTracking(newTracking);
