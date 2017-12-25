@@ -50,4 +50,17 @@ public class RatingUnitTest
 
         Assert.assertFalse(thrown);
     }
+
+    @Test
+    public void ValueOfRatingIsNull_ThereIsNoException ()
+    {
+        Integer scaleValue = null;
+        Rating rating;
+        boolean thrown = false;
+
+        try { rating = new Rating(scaleValue);}
+        catch (NullPointerException e) { thrown = true; }
+
+        Assert.assertFalse(thrown);
+    }
 }
