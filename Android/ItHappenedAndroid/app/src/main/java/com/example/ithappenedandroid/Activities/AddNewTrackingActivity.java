@@ -218,7 +218,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), trackingId.toString(), Toast.LENGTH_LONG).show();
 
-                    Tracking newTracking = new Tracking(trackingTitle, trackingId, ratingCustom, scaleCustom, textCustom);
+                    Tracking newTracking = new Tracking(trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
                     trackingRepository.AddNewTracking(newTracking);
 
                     Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
