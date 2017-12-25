@@ -8,7 +8,7 @@ public class Rating
 {
     public Rating(Integer ratingValue)
     {
-        if (ratingValue == null)
+        if (ratingValue == 0)
             rating = ratingValue;
         else if (ratingValue > 10 || ratingValue<1)
             throw new IndexOutOfBoundsException("Value of scale out of range");

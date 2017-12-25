@@ -50,8 +50,8 @@ public class AddNewEventActivity extends AppCompatActivity {
     int stateForScale = 0;
 
     String commentForEvent;
-    float ratingForEvent;
-    double scaleForEvent;
+    Float ratingForEvent;
+    Double scaleForEvent;
 
     int trackingPosition;
     ITrackingRepository trackingCollection;
@@ -187,29 +187,40 @@ public class AddNewEventActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
+                String textRating;
+                int intRating;
+                Rating newRating;
+
                 UUID trackingId = UUID.fromString(id);
 
-                if(stateForComment<3){
+                if(stateForComment!=0){
                         commentForEvent = commentControl.getText().toString();
+                }else{
+                    commentForEvent = null;
                 }
 
-                if(stateForScale<3){
-                        scaleForEvent = Integer.getInteger(scaleControl.getText().toString());
+                if(stateForScale!=0){
+                        scaleForEvent = Double.parseDouble(scaleControl.getText().toString());
+                }else{
+                    scaleForEvent = null;
                 }
 
-                if(stateForRating <3){
+                if(stateForRating!=0){
                         ratingForEvent = ratingControl.getRating();
+                        textRating = ratingControl.toString();
+                        intRating = Integer.parseInt(textRating);
+                        newRating = new Rating(intRating);
+                }else{
+                    newRating = null;
                 }
 
 
                 String comment = commentForEvent;
                 Double scale = scaleForEvent;
-                int intRating = (int) ratingForEvent;
-                Rating newRating = new Rating(intRating);
 
                 Event newEvent = new Event( UUID.randomUUID(),trackingId, scale, newRating, comment);
                 trackingId = UUID.fromString(id);
-                //trackingService.AddEvent(trackingId, newEvent);
+                trackingService.AddEvent(trackingId, newEvent);
                 Tracking thisTracking = trackingCollection.GetTracking(UUID.fromString(id));
                 thisTracking.AddEvent(newEvent);
 
