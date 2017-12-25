@@ -21,9 +21,9 @@ public class EventsLoader implements IDataLoader {
     @Override
     public List<Event> loadingEvents() {
 
-        Optional<Double> count = Optional.empty();
-        Optional<Scale> scale = Optional.empty();
-        Optional<String> comment = Optional.empty();
+        Double count = null;
+        Scale scale = null;
+        String comment = null;
 
         for(int i=0;i<15;i++){
             Event event = new Event(UUID.randomUUID(),

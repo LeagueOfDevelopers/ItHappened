@@ -29,19 +29,17 @@ public class TrackingService
         trackingCollection.AddNewTracking(newTracking);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditTracking(UUID trackingId,
-                             Optional<TrackingCustomization> editedCounter,
-                             Optional<TrackingCustomization> editedScale,
-                             Optional<TrackingCustomization> editedComment,
-                             Optional<String> editedTrackingName)
+                             TrackingCustomization editedCounter,
+                             TrackingCustomization editedScale,
+                             TrackingCustomization editedComment,
+                             String editedTrackingName)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
         tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName);
         trackingCollection.ChangeTracking(tracking);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddEvent(UUID trackingId, Event newEvent)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
@@ -49,12 +47,11 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditEvent(UUID trackingId, UUID eventId,
-                          Optional<Double> newCount,
-                          Optional<Scale> newScale,
-                          Optional<String> newComment,
-                          Optional<TimeZone> newDate)
+                          Double newCount,
+                          Scale newScale,
+                          String newComment,
+                          TimeZone newDate)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
         tracking.EditEvent(eventId, newCount, newScale, newComment, newDate);

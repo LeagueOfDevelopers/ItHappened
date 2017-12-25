@@ -44,7 +44,6 @@ public class Tracking {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddEvent (Event newEvent)
     {
         CustomizationCheck(newEvent.GetCount(), counter);
@@ -53,64 +52,68 @@ public class Tracking {
         eventCollection.add(newEvent);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditEvent(UUID eventId,
-                          Optional<Double> newCount,
-                          Optional<Scale> newScale,
-                          Optional<String> newComment,
-                          Optional<TimeZone> newDate)
+                          Double newCount,
+                          Scale newScale,
+                          String newComment,
+                          TimeZone newDate)
     {
-        Optional<Event> eventOptional;
-        Event editedEvent;
-        eventOptional = eventCollection.stream().filter((event -> event.GetEventId() == eventId)).findFirst();
-        if (!eventOptional.isPresent())
+        Event editedEvent = null;
+        int index = 0;
+        boolean contains = false;
+        for (Event event: eventCollection)
+        {
+            if (event.GetEventId().equals(eventId))
+            {
+                contains = true;
+                editedEvent = event;
+                break;
+            }
+            index++;
+        }
+        if (!contains)
             throw new IllegalArgumentException("Event with such id doesn't exist");
-        editedEvent = eventOptional.get();
         if (ChangesCheck(newCount, counter))
             editedEvent.EditCount(newCount);
         if (ChangesCheck(newScale, scale))
             editedEvent.EditValueOfScale(newScale);
         if (ChangesCheck(newComment, comment))
             editedEvent.EditComment(newComment);
-        if (newDate.isPresent())
-            editedEvent.EditDate(newDate.get());
-        int index = eventCollection.indexOf(eventOptional.get());
+        if (newDate!=null)
+            editedEvent.EditDate(newDate);
         eventCollection.set(index, editedEvent);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void EditTracking(Optional<TrackingCustomization> editedCounter,
-                             Optional<TrackingCustomization> editedScale,
-                             Optional<TrackingCustomization> editedComment,
-                             Optional<String> editedTrackingName)
+    public void EditTracking(TrackingCustomization editedCounter,
+                             TrackingCustomization editedScale,
+                             TrackingCustomization editedComment,
+                             String editedTrackingName)
     {
-        if (editedCounter.isPresent())
-            counter = editedCounter.get();
-        if (editedScale.isPresent())
-            scale = editedScale.get();
-        if (editedComment.isPresent())
-            comment = editedComment.get();
-        if (editedTrackingName.isPresent())
-            trackingName = editedTrackingName.get();
+        if (editedCounter != null)
+            counter = editedCounter;
+        if (editedScale != null)
+            scale = editedScale;
+        if (editedComment != null)
+            comment = editedComment;
+        if (editedTrackingName != null)
+            trackingName = editedTrackingName;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private boolean ChangesCheck(Object value, TrackingCustomization customization)
     {
-        if (value != Optional.empty() && customization != TrackingCustomization.None)
+        if (value != null && customization != TrackingCustomization.None)
             return true;
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void CustomizationCheck(Object value, TrackingCustomization customization)
     {
-        if (value == Optional.empty() && customization == TrackingCustomization.Required)
+        if (value == null && customization == TrackingCustomization.Required)
         {
             throw new IllegalArgumentException("Non-optional parameters can not be empty");
         }
 
-        if (value != Optional.empty() && customization == TrackingCustomization.None)
+        if (value != null && customization == TrackingCustomization.None)
         {
             throw new IllegalArgumentException("None customizations can not take a value");
         }

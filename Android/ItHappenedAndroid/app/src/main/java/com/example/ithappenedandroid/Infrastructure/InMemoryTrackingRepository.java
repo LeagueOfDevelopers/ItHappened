@@ -18,16 +18,17 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         trackingCollection = new ArrayList<Tracking>();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public Tracking GetTracking(UUID trackingId)
     {
-        Optional<Tracking> tracking;
-        tracking = trackingCollection.stream()
-                .filter((item) -> item.GetTrackingID().equals(trackingId))
-                .findFirst();
-        if (tracking.isPresent())
-            return tracking.get();
-        else throw new IllegalArgumentException("Tracking with such ID does not exist");
+        boolean contains = false;
+        for (Tracking item: trackingCollection)
+        {
+            if (item.GetTrackingID().equals(trackingId))
+            {
+                return item;
+            }
+        }
+        throw new IllegalArgumentException("Tracking with such ID doesn't exists");
     }
 
     public List<Tracking> GetTrackingCollection()
@@ -35,10 +36,8 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         return trackingCollection;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void ChangeTracking(final Tracking tracking)
     {
-
         int index = 0;
         boolean contains = false;
         for (Tracking item: trackingCollection)
@@ -55,11 +54,18 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         else throw new IllegalArgumentException("Tracking with such ID doesn't exists");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddNewTracking(Tracking tracking)
     {
-        if (!trackingCollection.stream()
-                .anyMatch((item) -> item.GetTrackingID().equals(tracking.GetTrackingID())))
+        boolean contains = false;
+        for (Tracking item: trackingCollection)
+        {
+            if (item.GetTrackingID().equals(tracking.GetTrackingID()))
+            {
+                contains = true;
+                break;
+            }
+        }
+        if (!contains)
             trackingCollection.add(tracking);
         else throw new IllegalArgumentException("Tracking with such ID already exists");
     }
