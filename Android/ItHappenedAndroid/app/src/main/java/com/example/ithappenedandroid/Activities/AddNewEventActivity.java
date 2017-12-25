@@ -50,7 +50,7 @@ public class AddNewEventActivity extends AppCompatActivity {
     int stateForScale = 0;
 
     String commentForEvent;
-    Float ratingForEvent;
+    int ratingForEvent;
     Double scaleForEvent;
 
     int trackingPosition;
@@ -206,10 +206,8 @@ public class AddNewEventActivity extends AppCompatActivity {
                 }
 
                 if(stateForRating!=0){
-                        ratingForEvent = ratingControl.getRating();
-                        textRating = ratingControl.toString();
-                        intRating = Integer.parseInt(textRating);
-                        newRating = new Rating(intRating);
+                        ratingForEvent = (int) ratingControl.getRating();
+                        newRating = new Rating(ratingForEvent);
                 }else{
                     newRating = null;
                 }
