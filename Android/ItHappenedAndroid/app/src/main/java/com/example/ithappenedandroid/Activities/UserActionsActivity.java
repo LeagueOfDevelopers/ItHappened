@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Activities;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.example.ithappenedandroid.Fragments.EventsForTrackingFragment;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
@@ -19,18 +21,16 @@ public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TrackingsFragment trackFrg;
+    EventsForTrackingFragment eventsFrg;
     FragmentTransaction fTrans;
+    int activity_state=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
-
-        trackFrg = new TrackingsFragment();
-
-        fTrans = getFragmentManager().beginTransaction();
-        fTrans.replace(R.id.trackingsFrg, trackFrg);
-        fTrans.commit();
+        Intent intent = getIntent();
+        intent.getIntExtra("state", activity_state);
 
         setTitle("Мои отслеживания");
 
@@ -46,6 +46,29 @@ public class UserActionsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        Intent intent = getIntent();
+        if(intent.getStringExtra("state")!=null) {
+            activity_state = Integer.parseInt(intent.getStringExtra("state"));
+        }
+
+        if(activity_state==0) {
+            trackFrg = new TrackingsFragment();
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.commit();
+        }else{
+            eventsFrg = new EventsForTrackingFragment();
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, eventsFrg);
+            fTrans.commit();
+            setTitle("Мои события");
+        }
     }
 
     @Override

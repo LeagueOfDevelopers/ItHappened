@@ -278,6 +278,9 @@ public class AddNewEventActivity extends AppCompatActivity {
                 if(flag_for_comment&&flag_for_rating&&flag_for_scale) {
                     try {
                         trackingService.AddEvent(trackingId, newEvent);
+                        Intent intent1 = new Intent(getApplicationContext() ,UserActionsActivity.class);
+                        intent.putExtra("state", "1");
+                        startActivity(intent1);
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), "Введите обязательные данные о событии", Toast.LENGTH_SHORT).show();
                     }
