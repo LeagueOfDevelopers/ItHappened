@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Event;
@@ -187,28 +188,80 @@ public class AddNewEventActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
+
+                boolean flag_for_comment = false;
+                boolean flag_for_scale = false;
+                boolean flag_for_rating = false;
+
                 String textRating;
                 int intRating;
-                Rating newRating;
+                Rating newRating = new Rating(null);
 
                 UUID trackingId = UUID.fromString(id);
 
-                if(stateForComment!=0){
+                //Обрабатываем состояние кастомизации комментария
+                if (stateForComment == 2) {
+                    if(!commentControl.getText().toString().isEmpty()) {
                         commentForEvent = commentControl.getText().toString();
-                }else{
+                        flag_for_comment = true;
+                    }
+                }
+                if (stateForComment == 1) {
+                    flag_for_comment = true;
+                    if (commentControl.getText().toString().isEmpty()) {
+                        commentForEvent = null;
+                    } else {
+                        commentForEvent = commentControl.getText().toString();
+                    }
+                }
+                if (stateForComment == 0) {
+                    flag_for_comment = true;
                     commentForEvent = null;
                 }
 
-                if(stateForScale!=0){
+
+                //обрабатываем состояние кастомизации шкалы
+                if (stateForScale == 2) {
+                    if (!scaleControl.getText().toString().isEmpty()) {
                         scaleForEvent = Double.parseDouble(scaleControl.getText().toString());
-                }else{
+                        flag_for_scale = true;
+                    }
+                }
+                        //Toast.makeText(getApplicationContext(), "Введите обязательные данные о событии", Toast.LENGTH_SHORT).show();
+                if (stateForScale == 1) {
+                    flag_for_scale = true;
+                    if(scaleControl.getText().toString().isEmpty()){
+                        scaleForEvent = null;
+                    }else{
+                        scaleForEvent = Double.parseDouble(scaleControl.getText().toString());
+                    }
+                }
+                if (stateForScale == 0) {
+                    flag_for_scale = true;
                     scaleForEvent = null;
                 }
 
-                if(stateForRating!=0){
+
+                //обрабатываем состояние кастомизации рейтинга
+                if (stateForRating == 2) {
+                    if((int) ratingControl.getRating()!=0) {
                         ratingForEvent = (int) ratingControl.getRating();
                         newRating = new Rating(ratingForEvent);
-                }else{
+                        flag_for_rating=true;
+                    }
+                }
+                if(stateForRating == 1) {
+                    flag_for_rating = true;
+                    if ((int) ratingControl.getRating() != 0) {
+                        ratingForEvent = (int) ratingControl.getRating();
+                        newRating = new Rating(ratingForEvent);
+                    } else {
+                        newRating = null;
+                    }
+                }
+
+                if(stateForRating==0){
+                    flag_for_rating = true;
                     newRating = null;
                 }
 
@@ -216,10 +269,21 @@ public class AddNewEventActivity extends AppCompatActivity {
                 String comment = commentForEvent;
                 Double scale = scaleForEvent;
 
-                Event newEvent = new Event( UUID.randomUUID(),trackingId, scale, newRating, comment);
+                Event newEvent = new Event(UUID.randomUUID(), trackingId, scale, newRating, comment);
                 trackingId = UUID.fromString(id);
-                trackingService = new TrackingService("someName", trackingCollection);
-                trackingService.AddEvent(trackingId, newEvent);
+                trackingService = new
+
+                        TrackingService("someName", trackingCollection);
+
+                if(flag_for_comment&&flag_for_rating&&flag_for_scale) {
+                    try {
+                        trackingService.AddEvent(trackingId, newEvent);
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "Введите обязательные данные о событии", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Введите обязательные данные о событии", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
