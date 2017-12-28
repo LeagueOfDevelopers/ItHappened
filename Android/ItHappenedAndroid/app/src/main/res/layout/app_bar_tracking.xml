@@ -22,16 +22,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="57dp">
 
     <include
         layout="@layout/content_tracking"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </android.support.design.widget.CoordinatorLayout>
