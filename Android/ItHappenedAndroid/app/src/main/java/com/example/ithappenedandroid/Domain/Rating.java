@@ -14,6 +14,8 @@ public class Rating
             throw new IndexOutOfBoundsException("Value of scale out of range");
         rating = ratingValue;
     }
+
     public Integer GetRatingValue () {return rating;}
+
     private Integer rating;
 }
