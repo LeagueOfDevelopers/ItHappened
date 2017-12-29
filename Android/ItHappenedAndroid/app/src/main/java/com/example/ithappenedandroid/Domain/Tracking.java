@@ -76,7 +76,7 @@ public class Tracking {
         if (ChangesCheck(newComment, comment))
             editedEvent.EditComment(newComment);
         if (newDate!=null)
-            editedEvent.EditDate(newDate);
+           // editedEvent.EditDate(newDate);
         eventCollection.set(index, editedEvent);
     }
 

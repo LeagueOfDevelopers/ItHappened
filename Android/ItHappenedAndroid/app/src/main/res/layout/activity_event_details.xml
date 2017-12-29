@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/hintComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Комментарий: "
+            android:padding="15dp"
+            android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/yourComment"
+        android:layout_below="@+id/hintComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:textSize="17sp"/>
+
+    <TextView
+        android:id="@+id/hintRating"
+        android:layout_below="@+id/yourComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:padding="15dp"
+        android:text="Оценка: "/>
+
+    <android.support.v7.widget.AppCompatRatingBar
+        android:id="@+id/yourRating"
+        style="@style/RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hintRating"
+        android:numStars="5"
+        android:isIndicator="true"
+        android:layout_margin="7dp" />
+
+    <TextView
+        android:id="@+id/hintScale"
+        android:layout_below="@+id/yourRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:padding="15dp"
+        android:text="Шкала: " />
+
+    <TextView
+        android:id="@+id/yourScale"
+        android:layout_below="@+id/hintScale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:padding="15dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="7dp"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:padding="7dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:text="Изменить"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

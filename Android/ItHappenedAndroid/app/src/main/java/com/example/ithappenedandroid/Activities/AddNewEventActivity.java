@@ -245,7 +245,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                 //обрабатываем состояние кастомизации рейтинга
                 if (stateForRating == 2) {
                     if((int) ratingControl.getRating()!=0) {
-                        ratingForEvent = (int) ratingControl.getRating();
+                        ratingForEvent = (int) ratingControl.getRating()*2;
                         newRating = new Rating(ratingForEvent);
                         flag_for_rating=true;
                     }
@@ -253,7 +253,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                 if(stateForRating == 1) {
                     flag_for_rating = true;
                     if ((int) ratingControl.getRating() != 0) {
-                        ratingForEvent = (int) ratingControl.getRating();
+                        ratingForEvent = (int) ratingControl.getRating()*2;
                         newRating = new Rating(ratingForEvent);
                     } else {
                         newRating = null;

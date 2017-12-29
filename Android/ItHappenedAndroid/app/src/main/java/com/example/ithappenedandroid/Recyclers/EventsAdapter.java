@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Recyclers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.ithappenedandroid.Activities.EventDetailsActivity;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +51,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         UUID trackingId = event.GetTrackingId();
 
         holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
-        //holder.eventDate.setText(event.GetEventDate().toString());
+
+        holder.itemLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, EventDetailsActivity.class);
+                intent.putExtra("trackingId", event.GetTrackingId().toString());
+                intent.putExtra("eventId", event.GetEventId().toString());
+                context.startActivity(intent);
+            }
+        });
+
+        Date eventDate = event.GetEventDate();
+
+        holder.eventDate.setText(eventDate.toLocaleString());
 
     }
 
