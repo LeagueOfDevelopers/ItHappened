@@ -115,6 +115,16 @@ public class Tracking {
         }
     }
 
+    public Event GetEvent(UUID eventId)
+    {
+        for (Event item: eventCollection) {
+            if (item.GetEventId().equals(eventId))
+                return item;
+        }
+        throw new IllegalArgumentException("Event with such ID doesn't exist");
+    }
+
+
     public String GetTrackingName() {return trackingName;}
     public UUID GetTrackingID() {return trackingId;}
     public TimeZone GetTrackingDate () {return trackingDate;}

@@ -1,11 +1,13 @@
 package com.example.ithappenedandroid.Application;
 
+import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -52,6 +54,23 @@ public class TrackingService
         Tracking tracking = trackingCollection.GetTracking(trackingId);
         tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
         trackingCollection.ChangeTracking(tracking);
+    }
+
+    public List<Event> FilterEventCollection (UUID trackingId, Date from, Date to,
+                                              Comparison scaleComparison, Double scale,
+                                              Comparison ratingComparison, Rating rating)
+    {
+        List<Event> events = trackingCollection.FilterEvents(trackingId, from, to,
+                scaleComparison, scale,
+                ratingComparison, rating);
+        return events;
+    }
+
+    public Event GetEvent (UUID trackingId, UUID eventId)
+    {
+        Tracking tracking = trackingCollection.GetTracking(trackingId);
+        Event event = tracking.GetEvent(eventId);
+        return event;
     }
 
     public List<Tracking> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}

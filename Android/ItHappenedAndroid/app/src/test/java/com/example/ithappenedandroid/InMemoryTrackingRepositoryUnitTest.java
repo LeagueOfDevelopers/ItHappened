@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid;
 
 import com.example.ithappenedandroid.Domain.Event;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
@@ -144,6 +145,51 @@ public class InMemoryTrackingRepositoryUnitTest
         Assert.assertTrue(thrown);
     }
 
+    @Test
+    public void FilterEventsWithOutFiltersMustReturnAllEvents()
+    {
+        InMemoryTrackingRepository repository = new InMemoryTrackingRepository();
+        UUID firstTrackingId = UUID.randomUUID();
+        UUID secondTrackingId = UUID.randomUUID();
 
+        Tracking firstTracking = new Tracking("name",
+                firstTrackingId,
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                TrackingCustomization.None);
+        Tracking secondTracking = new Tracking("name",
+                secondTrackingId,
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                TrackingCustomization.None);
 
+        Event firstEventOfFirstTracking = new Event(firstTrackingId,
+                UUID.randomUUID(), null, new Rating(null), null);
+        Event secondEventOfFirstTracking = new Event(firstTrackingId,
+                UUID.randomUUID(), null, new Rating(null), null);
+        Event firstEventOfSecondTracking = new Event(firstTrackingId,
+                UUID.randomUUID(), null, new Rating(null), null);
+        Event secondEventOfSecondTracking = new Event(firstTrackingId,
+                UUID.randomUUID(), null, new Rating(null), null);
+
+        List<Event> eventCollectionMustBe = new ArrayList<Event>();
+        eventCollectionMustBe.add(firstEventOfFirstTracking);
+        eventCollectionMustBe.add(secondEventOfFirstTracking);
+        eventCollectionMustBe.add(firstEventOfSecondTracking);
+        eventCollectionMustBe.add(secondEventOfSecondTracking);
+
+        firstTracking.AddEvent(firstEventOfFirstTracking);
+        firstTracking.AddEvent(secondEventOfFirstTracking);
+        secondTracking.AddEvent(firstEventOfSecondTracking);
+        secondTracking.AddEvent(secondEventOfSecondTracking);
+
+        repository.AddNewTracking(firstTracking);
+        repository.AddNewTracking(secondTracking);
+
+        List<Event> eventCollectionInRepository = repository.FilterEvents(null, null, null,
+                null, null,
+                null, null);
+
+        Assert.assertArrayEquals(eventCollectionInRepository.toArray(), eventCollectionMustBe.toArray());
+    }
 }
