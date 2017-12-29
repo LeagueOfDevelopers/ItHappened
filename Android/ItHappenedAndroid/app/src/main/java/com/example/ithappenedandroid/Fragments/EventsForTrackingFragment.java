@@ -70,7 +70,7 @@ public class EventsForTrackingFragment extends Fragment {
 
         eventsRecycler = (RecyclerView) getActivity().findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        eventsAdpt = new EventsAdapter(events , getActivity(), trackingId, 0);
+        eventsAdpt = new EventsAdapter(events , getActivity(), 0);
         eventsRecycler.setAdapter(eventsAdpt);
 
 

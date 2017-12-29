@@ -20,13 +20,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     private List<Event> events;
     private Context context;
-    UUID trackingId;
     private int state = 0;
 
-    public EventsAdapter(List<Event> events, Context context, UUID trackingId, int state) {
+    public EventsAdapter(List<Event> events, Context context, int state) {
         this.events = events;
         this.context = context;
-        this.trackingId=trackingId;
         this.state = state;
     }
 
@@ -47,11 +45,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         ITrackingRepository trackingRepository = StaticInMemoryRepository.getInstance();
 
 
-        /*Tracking tracking = new Tracking("Сахар в крови",
-                UUID.randomUUID(),
-                TrackingCustomization.None,
-                TrackingCustomization.None,
-                TrackingCustomization.None);*/
+        UUID trackingId = event.GetTrackingId();
 
         holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
         //holder.eventDate.setText(event.GetEventDate().toString());

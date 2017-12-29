@@ -27,6 +27,11 @@
         <activity android:name=".Activities.AddNewEventActivity"
             android:theme="@style/Theme.MyBack">
         </activity>
+
+        <activity android:name=".Activities.FiltersActivity"
+            android:theme="@style/Theme.MyBack">
+        </activity>
+
     </application>
 
 </manifest>

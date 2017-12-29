@@ -4,7 +4,6 @@ import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
-import com.google.common.base.Equivalence;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
