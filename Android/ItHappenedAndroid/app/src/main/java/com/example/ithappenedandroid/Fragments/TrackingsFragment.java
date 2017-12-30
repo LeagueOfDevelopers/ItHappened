@@ -1,7 +1,8 @@
 package com.example.ithappenedandroid.Fragments;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.Fragment;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,14 +19,12 @@ import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.TrackingsAdapter;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
-import com.example.ithappenedandroid.TrackingLoader;
 
 public class TrackingsFragment extends Fragment {
 
     FragmentTransaction fTrans;
     RecyclerView trackingsRecycler;
     TrackingsAdapter trackAdpt;
-    TrackingLoader trackLoad;
     FloatingActionButton addTracking;
     ITrackingRepository trackingCollection;
     String userName;
