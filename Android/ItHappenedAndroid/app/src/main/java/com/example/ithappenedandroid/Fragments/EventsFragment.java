@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.ithappenedandroid.Application.TrackingService;
@@ -24,10 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class EventsFragment extends Fragment {
+public class EventsFragment extends Fragment{
 
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
+
+    Button dateFrom;
+    Button dateTo;
 
     Spinner trackingsSpinner;
     TrackingService trackingService;
@@ -67,6 +71,17 @@ public class EventsFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trackingsSpinner.setAdapter(adapter);
 
+        dateFrom = (Button) view.findViewById(R.id.dateFromButton);
+        dateTo = (Button) view.findViewById(R.id.dateToButton);
 
+       /* dateFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                DialogFragment picker = new DatePickerFragment();
+                picker.show(fragmentManager, "tag");
+            }
+        });*/
     }
+
 }

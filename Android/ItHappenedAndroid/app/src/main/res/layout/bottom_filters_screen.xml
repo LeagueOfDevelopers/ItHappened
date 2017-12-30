@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="340dp"
+    android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:scrollbars="vertical"
@@ -12,6 +12,7 @@
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <TextView
+        android:id="@+id/filtersText"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/colorAccent"
@@ -19,9 +20,18 @@
         android:text="Фильтры"
         android:textColor="@android:color/white" />
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/addFiltersButton"
+        android:layout_below="@id/filtersText">
     <RelativeLayout
+        android:layout_above="@+id/addFiltersButton"
+        android:layout_below="@id/filtersText"
         xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:scrollbars="vertical"
+        android:isScrollContainer="true"
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/textForEvents"
@@ -48,6 +58,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="17dp"
             android:id="@+id/textForDate"
             android:layout_below="@id/spinnerForEvents"
             android:layout_width="match_parent"
@@ -69,6 +80,7 @@
             android:layout_height="wrap_content"
             />
         <Button
+            android:id="@+id/dateFromButton"
             android:background="@drawable/button"
             android:layout_below="@id/textForDate"
             android:layout_alignParentEnd="true"
@@ -87,6 +99,7 @@
         />
 
         <Button
+            android:id="@+id/dateToButton"
             android:background="@drawable/button"
             android:layout_below="@id/dateFrom"
             android:layout_alignParentEnd="true"
@@ -97,6 +110,68 @@
             android:text="До"
             android:textColor="#FFFFFF"/>
 
-    </RelativeLayout>
+        <TextView
+            android:layout_marginTop="17dp"
+            android:id="@+id/textForScale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Шкала:"
+            android:textSize="19sp"
+            android:layout_below="@id/dateTo"/>
 
-</LinearLayout>
+        <android.support.v7.widget.AppCompatSpinner
+            android:layout_marginTop="6dp"
+            android:id="@+id/hintsForScale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textForScale"></android.support.v7.widget.AppCompatSpinner>
+        <EditText
+            android:id="@+id/scaleFilter"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:hint="Шкала"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/textForScale"
+            />
+
+        <TextView
+            android:layout_marginTop="17dp"
+            android:id="@+id/textForRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Оценка:"
+            android:textSize="19sp"
+            android:layout_below="@id/scaleFilter"/>
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/hintsForRating"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textForRating"></android.support.v7.widget.AppCompatSpinner>
+
+        <RatingBar
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/textForRating"
+            />
+    </RelativeLayout>
+    </ScrollView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/addFiltersButton"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/button"
+            android:layout_margin="5dp"
+            android:textColor="#FFFFFF"
+            android:text="Добавить фильтры"/>
+
+
+
+</RelativeLayout>
