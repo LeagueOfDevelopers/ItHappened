@@ -1,6 +1,8 @@
 package com.example.ithappenedandroid.Fragments;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -74,14 +76,23 @@ public class EventsFragment extends Fragment{
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
 
-       /* dateFrom.setOnClickListener(new View.OnClickListener() {
+        dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment();
                 picker.show(fragmentManager, "tag");
             }
-        });*/
+        });
+
+        dateTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                DialogFragment picker = new DatePickerFragment();
+                picker.show(fragmentManager, "tag");
+            }
+        });
     }
 
 }
