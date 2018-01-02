@@ -36,6 +36,8 @@ public class EventsFragment extends Fragment{
     Button dateTo;
 
     Spinner trackingsSpinner;
+    Spinner hintsForScaleSpinner;
+    Spinner hintsForRatingSpinner;
     TrackingService trackingService;
 
     ITrackingRepository collection = StaticInMemoryRepository.getInstance();
@@ -81,7 +83,7 @@ public class EventsFragment extends Fragment{
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment();
-                picker.show(fragmentManager, "tag");
+                picker.show(fragmentManager, "from");
             }
         });
 
@@ -90,9 +92,23 @@ public class EventsFragment extends Fragment{
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment();
-                picker.show(fragmentManager, "tag");
+                picker.show(fragmentManager, "to");
             }
         });
+
+        String[] hints = new String[]{">","<","="};
+
+        hintsForScaleSpinner = (Spinner) view.findViewById(R.id.hintsForScale);
+        hintsForRatingSpinner = (Spinner) view.findViewById(R.id.hintsForRating);
+
+        ArrayAdapter<String> hintsForScaleAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, hints);
+        hintsForScaleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        hintsForScaleSpinner.setAdapter(hintsForScaleAdapter);
+
+        ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, hints);
+        hintsForRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
+
     }
 
 }

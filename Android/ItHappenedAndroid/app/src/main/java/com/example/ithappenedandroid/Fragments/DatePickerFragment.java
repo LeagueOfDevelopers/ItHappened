@@ -15,6 +15,8 @@ import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    String formattedDate;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
@@ -31,7 +33,11 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         c.set(year, month, day);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = sdf.format(c.getTime());
+        formattedDate = sdf.format(c.getTime());
+    }
+
+    public String getFormattedDate(){
+        return formattedDate;
     }
 
 }
