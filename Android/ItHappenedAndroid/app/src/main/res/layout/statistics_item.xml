@@ -28,8 +28,9 @@
                 android:id="@+id/TrackingTitleForStatistics"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="7dp"
@@ -43,6 +44,50 @@
     android:layout_below="@+id/TrackingTitleForStatistics"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"></com.github.mikephil.charting.charts.LineChart>
+            <TextView
+                android:layout_below="@id/graphForScale"
+                android:text="Комментариев: "
+                android:id="@+id/hintForCommentStatistics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:padding="7dp"/>
+
+            <TextView
+                android:id="@+id/countOfComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/graphForScale"
+                android:layout_toEndOf="@+id/hintForCommentStatistics"
+                android:layout_toRightOf="@+id/hintForCommentStatistics"
+                android:padding="7dp"
+                android:text="10"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_below="@id/countOfComments"
+                android:textSize="18sp"
+                android:padding="7dp"
+                android:id="@+id/hintForRatingStat"
+                android:text="Средняя оценка: "
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/avrgRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/hintForRatingStat"
+                android:layout_alignBottom="@+id/hintForRatingStat"
+                android:layout_toEndOf="@+id/hintForRatingStat"
+                android:layout_toRightOf="@+id/hintForRatingStat"
+                android:padding="7dp"
+                android:text="7.5"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
 
 
         </RelativeLayout>
