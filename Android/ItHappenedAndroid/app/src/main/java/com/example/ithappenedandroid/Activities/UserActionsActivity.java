@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.example.ithappenedandroid.Fragments.EventsForTrackingFragment;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
+import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
 
@@ -116,6 +117,15 @@ public class UserActionsActivity extends AppCompatActivity
 
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, eventsFrg);
+            fTrans.commit();
+        }
+
+        if(id == R.id.statistics){
+            setTitle("Статистика");
+            StatisticsFragment statFrg = new StatisticsFragment();
+
+            fTrans = getFragmentManager().beginTransaction();
+            fTrans.replace(R.id.trackingsFrg, statFrg);
             fTrans.commit();
         }
 

@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -52,7 +53,7 @@ public class Tracking {
                           Double newScale,
                           Rating newRating,
                           String newComment,
-                          TimeZone newDate)
+                          Date newDate)
     {
         Event editedEvent = null;
         int index = 0;
@@ -76,7 +77,7 @@ public class Tracking {
         if (ChangesCheck(newComment, comment))
             editedEvent.EditComment(newComment);
         if (newDate!=null)
-           // editedEvent.EditDate(newDate);
+            editedEvent.EditDate(newDate);
         eventCollection.set(index, editedEvent);
     }
 

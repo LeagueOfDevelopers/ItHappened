@@ -19,7 +19,7 @@
 
 
         <RelativeLayout
-            android:id="@+id/eventRL"
+            android:id="@+id/statisticsRL"
             android:layout_gravity="left"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -39,6 +39,7 @@
                 android:textSize="18sp"></TextView>
 
 <com.github.mikephil.charting.charts.LineChart
+    android:id="@+id/graphForScale"
     android:layout_below="@+id/TrackingTitleForStatistics"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"></com.github.mikephil.charting.charts.LineChart>
