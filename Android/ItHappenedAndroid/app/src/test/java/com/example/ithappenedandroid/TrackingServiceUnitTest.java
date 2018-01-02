@@ -11,6 +11,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -167,7 +169,7 @@ public class TrackingServiceUnitTest {
         Double newEventScale = 2.0;
         Rating newEventRating = new Rating(2);
         String newEventComment = "new comment";
-        TimeZone newEventDate = TimeZone.getDefault();
+        Date newEventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         service.EditEvent(trackingID, eventId, newEventScale, newEventRating, newEventComment, newEventDate);
         Event editedEvent = new Event (eventId, trackingID, newEventScale, newEventRating, newEventComment);

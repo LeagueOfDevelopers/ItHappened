@@ -82,28 +82,56 @@ public class InMemoryTrackingRepository implements ITrackingRepository
 
         filteredEvents = notFilteredEvents;
 
-        if (!NullCheck(trackingId)) {
+        if (trackingId != null) {
             for (Event event : notFilteredEvents) {
                 if (event.GetTrackingId().equals(trackingId))
                     filteredEvents.add(event);
             }
         }
 
-        if (!NullCheck(dateFrom) && !NullCheck(dateTo)){
+        if (dateFrom != null && dateTo != null){
             notFilteredEvents = filteredEvents;
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
-                
+                if (event.GetEventDate().compareTo(dateFrom) >= 0 && event.GetEventDate().compareTo(dateTo) <=0)
+                    filteredEvents.add(event);
+            }
+        }
+
+        if (scaleComparison != null && scale != null) {
+            notFilteredEvents = filteredEvents;
+            filteredEvents.clear();
+            for (Event event : notFilteredEvents) {
+                if (CompareValues(scaleComparison, event.GetScale(), scale))
+                    filteredEvents.add(event);
+            }
+        }
+
+        if (ratingComparison != null && rating != null) {
+            notFilteredEvents = filteredEvents;
+            filteredEvents.clear();
+            for (Event event : notFilteredEvents) {
+                if (CompareValues(ratingComparison, event.GetRating().GetRatingValue().doubleValue(), scale))
+                    filteredEvents.add(event);
             }
         }
 
         return  filteredEvents;
     }
 
-    private boolean NullCheck(Object obj)
+    private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)
     {
-        if (obj == null)
-            return true;
+        if (comparison == Comparison.Less)
+        {
+            if (firstValue <= secondValue)
+                return true;
+            return false;
+        }
+        if (comparison == Comparison.More)
+        {
+            if (firstValue >= secondValue)
+                return true;
+        }
         return false;
     }
 
