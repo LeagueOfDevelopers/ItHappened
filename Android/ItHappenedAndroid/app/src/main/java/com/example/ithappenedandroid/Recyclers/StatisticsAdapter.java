@@ -15,7 +15,11 @@ import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.ViewHolder> {
@@ -79,6 +83,31 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                 viewHolder.avrgRating.setText(""+avrgRatingNumber);
             }
         }
+
+
+        List<Entry> entries = new ArrayList<Entry>();
+        int count = 1;
+
+        if(tracking.GetScaleCustomization()!=TrackingCustomization.None) {
+            for (int i = 0; i < events.size(); i++) {
+                if (events.get(i).GetScale() != null) {
+                    Entry entry = new Entry(count, (float) events.get(i).GetScale().doubleValue());
+                    count++;
+                    entries.add(entry);
+                }
+            }
+            LineDataSet data = new LineDataSet(entries, "Data");
+            data.setFillAlpha(110);
+            LineData lineData = new LineData(data);
+
+            LineChart chart = viewHolder.scaleChart;
+            chart.setData(lineData);
+            chart.invalidate();
+
+        }else{
+            viewHolder.scaleChart.setMinimumHeight(30);
+        }
+        count=0;
 
     }
 
