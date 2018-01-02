@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.ithappenedandroid.Application.TrackingService;
@@ -16,11 +15,7 @@ import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.ViewHolder> {
@@ -85,29 +80,6 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             }
         }
 
-
-        List<Entry> entries = new ArrayList<Entry>();
-        int count = 1;
-
-        if(tracking.GetScaleCustomization()!=TrackingCustomization.None) {
-            for (int i = 0; i < events.size(); i++) {
-                if (events.get(i).GetScale() != null) {
-                    Entry entry = new Entry(count, (float) events.get(i).GetScale().doubleValue());
-                    count++;
-                    entries.add(entry);
-                }
-            }
-            LineDataSet data = new LineDataSet(entries, "Шкала");
-            data.setFillAlpha(110);
-            LineData lineData = new LineData(data);
-
-            LineChart chart = viewHolder.scaleChart;
-            chart.setData(lineData);
-            chart.invalidate();
-
-        }
-        count=0;
-
     }
 
     @Override
@@ -121,7 +93,6 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
         LineChart scaleChart;
         TextView commentCount;
         TextView avrgRating;
-        FrameLayout graphLL;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -129,9 +100,6 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             trackingTitle = (TextView) itemView.findViewById(R.id.TrackingTitleForStatistics);
             commentCount = (TextView) itemView.findViewById(R.id.countOfComments);
             avrgRating = (TextView) itemView.findViewById(R.id.avrgRating);
-            graphLL = (FrameLayout) itemView.findViewById(R.id.graphLL);
-            scaleChart.setNoDataText("У этого отслеживания нет шкалы");
-            scaleChart.setNoDataTextColor(R.color.colorPrimaryDark);
         }
     }
 
