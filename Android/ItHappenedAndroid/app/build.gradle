@@ -27,9 +27,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    configurations.all{
-        resolutionStrategy.force 'com.google.guava:guava:21.+'
-    }
 }
 
 dependencies {
@@ -43,7 +40,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
-    compile 'com.google.guava:guava:21.+'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
     compile files('build/intermediates/rs/debug/lib/lambdaj-2.4-with-dependencies.jar')

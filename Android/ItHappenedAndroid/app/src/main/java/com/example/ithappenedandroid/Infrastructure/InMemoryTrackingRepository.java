@@ -4,11 +4,8 @@ import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
-import com.google.common.collect.Iterables;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +20,6 @@ public class InMemoryTrackingRepository implements ITrackingRepository
 
     public Tracking GetTracking(UUID trackingId)
     {
-        boolean contains = false;
         for (Tracking item: trackingCollection)
         {
             if (item.GetTrackingID().equals(trackingId))
@@ -78,63 +74,30 @@ public class InMemoryTrackingRepository implements ITrackingRepository
                                     Comparison scaleComparison, Double scale,
                                     Comparison ratingComparison, Rating rating)
     {
-        List<Event> events = new ArrayList<Event>();
+        List<Event> notFilteredEvents = new ArrayList<Event>();
+        List<Event> filteredEvents = new ArrayList<Event>();
         for (Tracking trackig : trackingCollection) {
-            events.addAll(trackig.GetEventCollection());
+            notFilteredEvents.addAll(trackig.GetEventCollection());
         }
 
-        Iterable<Event> iterable = events;
+        filteredEvents = notFilteredEvents;
 
-        if (!NullCheck(trackingId))
-        {
-            iterable = Iterables.filter(iterable, (event) -> event.GetTrackingId().equals(trackingId));
-        }
-
-        if (!NullCheck(dateFrom) && !NullCheck(dateTo))
-        {
-            iterable = Iterables.
-                    filter(iterable, (event) -> event.GetEventDate().equals(dateTo) && event.GetEventDate().equals(dateFrom));
-        }
-
-        if (!NullCheck(scaleComparison) && !NullCheck(scale))
-        {
-            if (scaleComparison == Comparison.Less)
-            {
-                iterable = Iterables.
-                        filter(iterable, (event) -> event.GetScale() < scale);
-            }
-            if (scaleComparison == Comparison.Equal)
-            {
-                iterable = Iterables.
-                        filter(iterable, (event) -> event.GetScale().equals(scale));
-            }
-            if (scaleComparison == Comparison.More)
-            {
-                iterable = Iterables.
-                        filter(iterable, (event) -> event.GetScale() > scale);
+        if (!NullCheck(trackingId)) {
+            for (Event event : notFilteredEvents) {
+                if (event.GetTrackingId().equals(trackingId))
+                    filteredEvents.add(event);
             }
         }
 
-        if (!NullCheck(ratingComparison) && !NullCheck(rating))
-        {
-            if (ratingComparison == Comparison.Less)
-            {
-                iterable = Iterables.
-                        filter(iterable, (event) -> event.GetRating().GetRatingValue() < rating.GetRatingValue());
-            }
-            if (ratingComparison == Comparison.Equal)
-            {
-                iterable = Iterables.
-                        filter(iterable, (event) -> event.GetRating().GetRatingValue().equals(rating.GetRatingValue()));
-            }
-            if (ratingComparison == Comparison.More)
-            {
-                iterable = Iterables.
-                        filter(iterable, (event) -> event.GetRating().GetRatingValue() > rating.GetRatingValue());
+        if (!NullCheck(dateFrom) && !NullCheck(dateTo)){
+            notFilteredEvents = filteredEvents;
+            filteredEvents.clear();
+            for (Event event : notFilteredEvents) {
+                
             }
         }
-        events = Arrays.asList(Iterables.toArray(iterable, Event.class));
-        return  events;
+
+        return  filteredEvents;
     }
 
     private boolean NullCheck(Object obj)
