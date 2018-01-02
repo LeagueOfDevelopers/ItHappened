@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.ithappenedandroid.Application.TrackingService;
@@ -96,7 +97,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                     entries.add(entry);
                 }
             }
-            LineDataSet data = new LineDataSet(entries, "Data");
+            LineDataSet data = new LineDataSet(entries, "Шкала");
             data.setFillAlpha(110);
             LineData lineData = new LineData(data);
 
@@ -104,8 +105,6 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             chart.setData(lineData);
             chart.invalidate();
 
-        }else{
-            viewHolder.scaleChart.setMinimumHeight(30);
         }
         count=0;
 
@@ -122,6 +121,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
         LineChart scaleChart;
         TextView commentCount;
         TextView avrgRating;
+        FrameLayout graphLL;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -129,6 +129,9 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             trackingTitle = (TextView) itemView.findViewById(R.id.TrackingTitleForStatistics);
             commentCount = (TextView) itemView.findViewById(R.id.countOfComments);
             avrgRating = (TextView) itemView.findViewById(R.id.avrgRating);
+            graphLL = (FrameLayout) itemView.findViewById(R.id.graphLL);
+            scaleChart.setNoDataText("У этого отслеживания нет шкалы");
+            scaleChart.setNoDataTextColor(R.color.colorPrimaryDark);
         }
     }
 

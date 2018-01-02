@@ -34,13 +34,20 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="25sp"></TextView>
 
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/graphLL"
+    android:layout_below="@id/TrackingTitleForStatistics">
 <com.github.mikephil.charting.charts.LineChart
     android:id="@+id/graphForScale"
     android:layout_below="@+id/TrackingTitleForStatistics"
     android:layout_width="match_parent"
     android:layout_height="300dp"></com.github.mikephil.charting.charts.LineChart>
+</FrameLayout>
             <TextView
-                android:layout_below="@id/graphForScale"
+                android:layout_below="@id/graphLL"
                 android:text="Комментариев: "
                 android:id="@+id/hintForCommentStatistics"
                 android:layout_width="wrap_content"
@@ -53,7 +60,7 @@
                 android:id="@+id/countOfComments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/graphForScale"
+                android:layout_below="@+id/graphLL"
                 android:layout_toEndOf="@+id/hintForCommentStatistics"
                 android:layout_toRightOf="@+id/hintForCommentStatistics"
                 android:padding="7dp"
