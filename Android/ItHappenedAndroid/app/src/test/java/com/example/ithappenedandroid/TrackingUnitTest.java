@@ -9,6 +9,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -506,7 +508,7 @@ public class TrackingUnitTest {
 
         Event event = new Event(eventId, trackingID, null, null, null);
 
-        TimeZone newDate = TimeZone.getDefault();
+        Date newDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         tracking.AddEvent(event);
         tracking.EditEvent(eventId, null, null, null, newDate);
