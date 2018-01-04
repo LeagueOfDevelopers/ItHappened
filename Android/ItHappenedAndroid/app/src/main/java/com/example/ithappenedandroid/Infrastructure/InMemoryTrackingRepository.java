@@ -23,6 +23,7 @@ public class InMemoryTrackingRepository implements ITrackingRepository
     {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         for (Tracking item: trackingCollection)
         {
             if (item.GetTrackingID().equals(trackingId))
@@ -34,6 +35,8 @@ public class InMemoryTrackingRepository implements ITrackingRepository
 =======
 =======
 >>>>>>> parent of 525bbbf... removed stream api and optional
+=======
+>>>>>>> parent of 525bbbf... removed stream api and optional
         Optional<Tracking> tracking;
         tracking = trackingCollection.stream()
                 .filter((item) -> item.GetTrackingID().equals(trackingId))
@@ -42,6 +45,9 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             return tracking.get();
         else throw new IllegalArgumentException("Tracking with such ID does not exist");
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 525bbbf... removed stream api and optional
+=======
 >>>>>>> parent of 525bbbf... removed stream api and optional
 =======
 >>>>>>> parent of 525bbbf... removed stream api and optional

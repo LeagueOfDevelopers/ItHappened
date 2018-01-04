@@ -54,6 +54,7 @@ public class Tracking {
     public void EditEvent(UUID eventId,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                           Double newScale,
                           Rating newRating,
                           String newComment,
@@ -61,11 +62,16 @@ public class Tracking {
 =======
 =======
 >>>>>>> parent of 525bbbf... removed stream api and optional
+=======
+>>>>>>> parent of 525bbbf... removed stream api and optional
                           Optional<Double> newCount,
                           Optional<Scale> newScale,
                           Optional<String> newComment,
                           Optional<TimeZone> newDate)
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 525bbbf... removed stream api and optional
+=======
 >>>>>>> parent of 525bbbf... removed stream api and optional
 =======
 >>>>>>> parent of 525bbbf... removed stream api and optional
@@ -77,7 +83,10 @@ public class Tracking {
             throw new IllegalArgumentException("Event with such id doesn't exist");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 525bbbf... removed stream api and optional
 =======
 >>>>>>> parent of 525bbbf... removed stream api and optional
         editedEvent = eventOptional.get();
@@ -96,6 +105,7 @@ public class Tracking {
         eventCollection.set(index, editedEvent);
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     public void EditTracking(TrackingCustomization editedScale,
@@ -126,6 +136,14 @@ public class Tracking {
                              Optional<String> editedTrackingName)
     {
 >>>>>>> parent of 525bbbf... removed stream api and optional
+=======
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void EditTracking(Optional<TrackingCustomization> editedCounter,
+                             Optional<TrackingCustomization> editedScale,
+                             Optional<TrackingCustomization> editedComment,
+                             Optional<String> editedTrackingName)
+    {
+>>>>>>> parent of 525bbbf... removed stream api and optional
         if (editedCounter.isPresent())
             counter = editedCounter.get();
         if (editedScale.isPresent())
@@ -135,6 +153,9 @@ public class Tracking {
         if (editedTrackingName.isPresent())
             trackingName = editedTrackingName.get();
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 525bbbf... removed stream api and optional
+=======
 >>>>>>> parent of 525bbbf... removed stream api and optional
 =======
 >>>>>>> parent of 525bbbf... removed stream api and optional
