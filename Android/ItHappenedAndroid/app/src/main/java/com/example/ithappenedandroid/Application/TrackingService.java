@@ -49,15 +49,21 @@ public class TrackingService
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditEvent(UUID trackingId, UUID eventId,
 <<<<<<< HEAD
+<<<<<<< HEAD
                           Double newScale,
                           Rating newRating,
                           String newComment,
                           Date newDate)
 =======
+=======
+>>>>>>> parent of 525bbbf... removed stream api and optional
                           Optional<Double> newCount,
                           Optional<Scale> newScale,
                           Optional<String> newComment,
                           Optional<TimeZone> newDate)
+<<<<<<< HEAD
+>>>>>>> parent of 525bbbf... removed stream api and optional
+=======
 >>>>>>> parent of 525bbbf... removed stream api and optional
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
