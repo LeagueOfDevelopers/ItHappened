@@ -1,10 +1,12 @@
 package com.example.ithappenedandroid.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.app.DialogFragment;
 import android.widget.DatePicker;
+import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,9 +15,17 @@ import java.util.Calendar;
  * Created by Пользователь on 30.12.2017.
  */
 
+@SuppressLint("ValidFragment")
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     String formattedDate;
+
+    EditText date;
+
+    @SuppressLint("ValidFragment")
+    public DatePickerFragment(EditText date){
+        this.date = date;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,7 +43,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         c.set(year, month, day);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        formattedDate = sdf.format(c.getTime());
+        date.setText(sdf.format(c.getTime()));
     }
 
     public String getFormattedDate(){
