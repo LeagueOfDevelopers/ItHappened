@@ -18,8 +18,10 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         trackingCollection = new ArrayList<Tracking>();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Tracking GetTracking(UUID trackingId)
     {
+<<<<<<< HEAD
         for (Tracking item: trackingCollection)
         {
             if (item.GetTrackingID().equals(trackingId))
@@ -28,6 +30,15 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             }
         }
         throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+=======
+        Optional<Tracking> tracking;
+        tracking = trackingCollection.stream()
+                .filter((item) -> item.GetTrackingID().equals(trackingId))
+                .findFirst();
+        if (tracking.isPresent())
+            return tracking.get();
+        else throw new IllegalArgumentException("Tracking with such ID does not exist");
+>>>>>>> parent of 525bbbf... removed stream api and optional
     }
 
     public List<Tracking> GetTrackingCollection()
@@ -35,8 +46,10 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         return trackingCollection;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void ChangeTracking(final Tracking tracking)
     {
+
         int index = 0;
         boolean contains = false;
         for (Tracking item: trackingCollection)
@@ -53,18 +66,11 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         else throw new IllegalArgumentException("Tracking with such ID doesn't exists");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddNewTracking(Tracking tracking)
     {
-        boolean contains = false;
-        for (Tracking item: trackingCollection)
-        {
-            if (item.GetTrackingID().equals(tracking.GetTrackingID()))
-            {
-                contains = true;
-                break;
-            }
-        }
-        if (!contains)
+        if (!trackingCollection.stream()
+                .anyMatch((item) -> item.GetTrackingID().equals(tracking.GetTrackingID())))
             trackingCollection.add(tracking);
         else throw new IllegalArgumentException("Tracking with such ID already exists");
     }

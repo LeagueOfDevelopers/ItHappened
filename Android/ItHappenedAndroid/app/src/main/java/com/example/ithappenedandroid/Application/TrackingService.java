@@ -26,17 +26,19 @@ public class TrackingService
         trackingCollection.AddNewTracking(newTracking);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditTracking(UUID trackingId,
-                             TrackingCustomization editedCounter,
-                             TrackingCustomization editedScale,
-                             TrackingCustomization editedComment,
-                             String editedTrackingName)
+                             Optional<TrackingCustomization> editedCounter,
+                             Optional<TrackingCustomization> editedScale,
+                             Optional<TrackingCustomization> editedComment,
+                             Optional<String> editedTrackingName)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
         tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName);
         trackingCollection.ChangeTracking(tracking);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddEvent(UUID trackingId, Event newEvent)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
@@ -44,11 +46,19 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void EditEvent(UUID trackingId, UUID eventId,
+<<<<<<< HEAD
                           Double newScale,
                           Rating newRating,
                           String newComment,
                           Date newDate)
+=======
+                          Optional<Double> newCount,
+                          Optional<Scale> newScale,
+                          Optional<String> newComment,
+                          Optional<TimeZone> newDate)
+>>>>>>> parent of 525bbbf... removed stream api and optional
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
         tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
