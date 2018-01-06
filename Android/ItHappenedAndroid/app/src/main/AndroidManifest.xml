@@ -28,14 +28,12 @@
             android:theme="@style/Theme.MyBack">
         </activity>
 
-        <activity android:name=".Activities.FiltersActivity"
-            android:theme="@style/Theme.MyBack">
-        </activity>
-
         <activity android:name=".Activities.EventDetailsActivity"
             android:theme="@style/Theme.MyBack">
-
         </activity>
+
+        <activity android:name=".Activities.EditEventActivity"
+            android:theme="@style/Theme.MyBack"></activity>
 
     </application>
 

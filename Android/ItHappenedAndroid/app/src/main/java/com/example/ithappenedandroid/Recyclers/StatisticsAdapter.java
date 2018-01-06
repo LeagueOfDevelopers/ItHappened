@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Recyclers;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,6 +133,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             graphLL = (FrameLayout) itemView.findViewById(R.id.graphLL);
             scaleChart.setNoDataText("У этого отслеживания нет шкалы");
             scaleChart.setNoDataTextColor(R.color.colorPrimaryDark);
+            scaleChart.setNoDataTextTypeface(Typeface.SANS_SERIF);
         }
     }
 

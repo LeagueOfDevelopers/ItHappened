@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.ithappenedandroid.Application.TrackingService;
@@ -27,13 +28,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class EventsFragment extends Fragment{
+public class EventsFragment extends Fragment  {
 
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
+    int myYear;
+    int myMonth;
+    int myDay;
 
     Button dateFrom;
     Button dateTo;
+
+    EditText dateFromText;
+    EditText dateToText;
 
     Spinner trackingsSpinner;
     Spinner hintsForScaleSpinner;
@@ -78,20 +85,27 @@ public class EventsFragment extends Fragment{
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
 
+        dateFromText = (EditText) view.findViewById(R.id.dateFrom);
+        dateToText = (EditText) view.findViewById(R.id.dateTo);
+
+
+
         dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
-                DialogFragment picker = new DatePickerFragment();
+                DialogFragment picker = new DatePickerFragment(dateFromText);
                 picker.show(fragmentManager, "from");
             }
         });
+
+
 
         dateTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
-                DialogFragment picker = new DatePickerFragment();
+                DialogFragment picker = new DatePickerFragment(dateToText);
                 picker.show(fragmentManager, "to");
             }
         });
@@ -110,5 +124,4 @@ public class EventsFragment extends Fragment{
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
     }
-
 }
