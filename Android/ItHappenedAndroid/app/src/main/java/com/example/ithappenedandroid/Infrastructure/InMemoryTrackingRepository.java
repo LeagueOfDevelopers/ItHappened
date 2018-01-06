@@ -18,12 +18,8 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         trackingCollection = new ArrayList<Tracking>();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public Tracking GetTracking(UUID trackingId)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         for (Tracking item: trackingCollection)
         {
             if (item.GetTrackingID().equals(trackingId))
@@ -32,25 +28,6 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             }
         }
         throw new IllegalArgumentException("Tracking with such ID doesn't exists");
-=======
-=======
->>>>>>> parent of 525bbbf... removed stream api and optional
-=======
->>>>>>> parent of 525bbbf... removed stream api and optional
-        Optional<Tracking> tracking;
-        tracking = trackingCollection.stream()
-                .filter((item) -> item.GetTrackingID().equals(trackingId))
-                .findFirst();
-        if (tracking.isPresent())
-            return tracking.get();
-        else throw new IllegalArgumentException("Tracking with such ID does not exist");
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 525bbbf... removed stream api and optional
-=======
->>>>>>> parent of 525bbbf... removed stream api and optional
-=======
->>>>>>> parent of 525bbbf... removed stream api and optional
     }
 
     public List<Tracking> GetTrackingCollection()
@@ -58,10 +35,8 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         return trackingCollection;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void ChangeTracking(final Tracking tracking)
     {
-
         int index = 0;
         boolean contains = false;
         for (Tracking item: trackingCollection)
@@ -78,11 +53,18 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         else throw new IllegalArgumentException("Tracking with such ID doesn't exists");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void AddNewTracking(Tracking tracking)
     {
-        if (!trackingCollection.stream()
-                .anyMatch((item) -> item.GetTrackingID().equals(tracking.GetTrackingID())))
+        boolean contains = false;
+        for (Tracking item: trackingCollection)
+        {
+            if (item.GetTrackingID().equals(tracking.GetTrackingID()))
+            {
+                contains = true;
+                break;
+            }
+        }
+        if (!contains)
             trackingCollection.add(tracking);
         else throw new IllegalArgumentException("Tracking with such ID already exists");
     }
@@ -98,9 +80,10 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             notFilteredEvents.addAll(trackig.GetEventCollection());
         }
 
-        filteredEvents = notFilteredEvents;
+        filteredEvents.addAll(notFilteredEvents);
 
         if (trackingId != null) {
+            filteredEvents.clear();
             for (Event event : notFilteredEvents) {
                 if (event.GetTrackingId().equals(trackingId))
                     filteredEvents.add(event);
@@ -108,7 +91,8 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         }
 
         if (dateFrom != null && dateTo != null){
-            notFilteredEvents = filteredEvents;
+            notFilteredEvents.clear();
+            notFilteredEvents.addAll(filteredEvents);
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
                 if (event.GetEventDate().compareTo(dateFrom) >= 0 && event.GetEventDate().compareTo(dateTo) <=0)
@@ -117,7 +101,8 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         }
 
         if (scaleComparison != null && scale != null) {
-            notFilteredEvents = filteredEvents;
+            notFilteredEvents.clear();
+            notFilteredEvents.addAll(filteredEvents);
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
                 if (CompareValues(scaleComparison, event.GetScale(), scale))
@@ -126,10 +111,12 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         }
 
         if (ratingComparison != null && rating != null) {
-            notFilteredEvents = filteredEvents;
+            notFilteredEvents.clear();
+            notFilteredEvents.addAll(filteredEvents);
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
-                if (CompareValues(ratingComparison, event.GetRating().GetRatingValue().doubleValue(), scale))
+                if (CompareValues(ratingComparison, event.GetRating().GetRatingValue().doubleValue(),
+                        rating.GetRatingValue().doubleValue()))
                     filteredEvents.add(event);
             }
         }
@@ -141,13 +128,19 @@ public class InMemoryTrackingRepository implements ITrackingRepository
     {
         if (comparison == Comparison.Less)
         {
-            if (firstValue <= secondValue)
+            if (firstValue < secondValue)
+                return true;
+            return false;
+        }
+        if (comparison == Comparison.Equal)
+        {
+            if (firstValue.equals(secondValue))
                 return true;
             return false;
         }
         if (comparison == Comparison.More)
         {
-            if (firstValue >= secondValue)
+            if (firstValue > secondValue)
                 return true;
         }
         return false;

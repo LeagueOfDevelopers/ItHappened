@@ -6,5 +6,6 @@ package com.example.ithappenedandroid.Domain;
 
 public enum Comparison {
     More,
+    Equal,
     Less
 }
