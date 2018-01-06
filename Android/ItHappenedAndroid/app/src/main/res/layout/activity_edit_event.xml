@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/hintForDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Дата:"
+        android:textSize="20sp"
+        android:layout_margin="7dp"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <Button
+        android:id="@+id/editDateButton"
+        android:layout_margin="7dp"
+        android:layout_below="@+id/hintForDate"
+        android:background="@drawable/button"
+        android:textColor="#FFFFFF"
+        android:text="Изменить"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/editedDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editDateButton"
+        android:layout_alignBottom="@+id/editDateButton"
+        android:layout_toEndOf="@+id/editDateButton"
+        android:layout_toRightOf="@+id/editDateButton"
+        android:text="Ваша изменная дата"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp" />
+
+</RelativeLayout>

@@ -3,12 +3,12 @@ package com.example.ithappenedandroid.Fragments;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.os.Bundle;
 import android.app.DialogFragment;
+import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -22,9 +22,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     EditText date;
 
+    TextView datetext;
+
     @SuppressLint("ValidFragment")
     public DatePickerFragment(EditText date){
         this.date = date;
+    }
+
+    public DatePickerFragment(TextView datetext){
+        this.datetext = datetext;
     }
 
     @Override
@@ -41,9 +47,12 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        date.setText(sdf.format(c.getTime()));
+        if(date!=null) {
+            date.setText(c.getTime().toLocaleString());
+        }
+        if(datetext!=null){
+            datetext.setText(c.getTime().toLocaleString());
+        }
     }
 
     public String getFormattedDate(){

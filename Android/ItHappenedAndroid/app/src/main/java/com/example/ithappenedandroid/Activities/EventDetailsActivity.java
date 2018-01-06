@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -17,15 +19,14 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 
 import java.util.UUID;
 
-/**
- * Created by Пользователь on 29.12.2017.
- */
 
 public class EventDetailsActivity extends AppCompatActivity {
 
     TextView yourComment;
     TextView yourScale;
     RatingBar yourRating;
+
+    Button editEvent;
 
     UUID trackingId;
     UUID eventId;
@@ -37,13 +38,25 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
-        yourComment = (TextView) findViewById(R.id.yourComment);
-        yourScale = (TextView) findViewById(R.id.yourScale);
-        yourRating = (RatingBar) findViewById(R.id.yourRating);
-
         Intent intent = getIntent();
         trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
         eventId = UUID.fromString(intent.getStringExtra("eventId"));
+
+        yourComment = (TextView) findViewById(R.id.yourComment);
+        yourScale = (TextView) findViewById(R.id.yourScale);
+        yourRating = (RatingBar) findViewById(R.id.yourRating);
+        editEvent = (Button) findViewById(R.id.editEventButton);
+
+        editEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
+                intent.putExtra("eventId", eventId.toString());
+                intent.putExtra("trackingId", trackingId.toString());
+                startActivity(intent);
+            }
+        });
+
 
         Tracking thisTracking = collection.GetTracking(trackingId);
         Event thisEvent = trackingSercvice.GetEvent(trackingId, eventId);

@@ -30,9 +30,6 @@ import java.util.UUID;
 
 public class EventsFragment extends Fragment  {
 
-    int DIALOG_DATE_FROM = 1;
-    int DIALOG_DATE_TO = 2;
-
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
     int myYear;
