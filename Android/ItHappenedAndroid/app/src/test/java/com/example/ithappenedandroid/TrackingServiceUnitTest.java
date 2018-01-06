@@ -179,6 +179,112 @@ public class TrackingServiceUnitTest {
 
         Assert.assertEquals(eventCollection.get(0), newEvent);
     }
+
+    @Test
+    public void RemoveEventFromCollection()
+    {
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
+        TrackingService service = new TrackingService("name", inMemoryTrackingRepositoryImpl);
+
+        UUID trackingId = UUID.randomUUID();
+
+        Tracking tracking = new Tracking("name", trackingId,
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                TrackingCustomization.None);
+
+        UUID firstEventId = UUID.randomUUID();
+        UUID secondEventId = UUID.randomUUID();
+
+        Event firstEvent = new Event(firstEventId, trackingId,
+                null, null, null);
+        Event secondEvent = new Event(secondEventId, trackingId,
+                null, null, null);
+
+        tracking.AddEvent(firstEvent);
+        tracking.AddEvent(secondEvent);
+
+        service.AddTracking(tracking);
+
+        List<Event> eventCollectionMustBe = new ArrayList<>();
+        eventCollectionMustBe.add(firstEvent);
+
+        service.RemoveEvent(trackingId, secondEventId);
+
+        List<Event> eventCollectionInTracking = service.GetTrackingCollection().get(0).GetEventCollection();
+        Assert.assertArrayEquals(eventCollectionMustBe.toArray(), eventCollectionInTracking.toArray());
+    }
+
+    @Test
+    public void RemoveDoesNotExistingEventFromCollection_ThrowException()
+    {
+        boolean thrown = false;
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
+        TrackingService service = new TrackingService("name", inMemoryTrackingRepositoryImpl);
+
+        UUID trackingId = UUID.randomUUID();
+
+        Tracking tracking = new Tracking("name", trackingId,
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                TrackingCustomization.None);
+
+        UUID firstEventId = UUID.randomUUID();
+        UUID IdOFDoesNotExistEvent = UUID.randomUUID();
+
+        Event firstEvent = new Event(firstEventId, trackingId,
+                null, null, null);
+
+        tracking.AddEvent(firstEvent);
+
+        service.AddTracking(tracking);
+
+        try {
+            service.RemoveEvent(trackingId, IdOFDoesNotExistEvent);
+        }
+        catch (IllegalArgumentException e)
+        {
+            thrown = true;
+        }
+
+        Assert.assertTrue(thrown);
+    }
+
+    @Test
+    public void RemoveEventFromCollectionOfDoesNotExistingTracking_ThrowException()
+    {
+        boolean thrown = false;
+        InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
+        TrackingService service = new TrackingService("name", inMemoryTrackingRepositoryImpl);
+
+        UUID trackingId = UUID.randomUUID();
+
+        Tracking tracking = new Tracking("name", trackingId,
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                TrackingCustomization.None);
+
+        UUID firstEventId = UUID.randomUUID();
+        UUID IdOfDoesNotTracking = UUID.randomUUID();
+
+        Event firstEvent = new Event(firstEventId, trackingId,
+                null, null, null);
+
+        tracking.AddEvent(firstEvent);
+
+        service.AddTracking(tracking);
+
+        try {
+            service.RemoveEvent(IdOfDoesNotTracking, firstEventId);
+        }
+        catch (IllegalArgumentException e)
+        {
+            thrown = true;
+        }
+
+        Assert.assertTrue(thrown);
+    }
+
 }
 
 

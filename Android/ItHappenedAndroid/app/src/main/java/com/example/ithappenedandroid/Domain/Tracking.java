@@ -49,6 +49,18 @@ public class Tracking {
         eventCollection.add(newEvent);
     }
 
+    public void RemoveEvent (UUID eventID)
+    {
+        Event deletionEvent = null;
+        for (Event event: eventCollection) {
+            if (event.GetEventId().equals(eventID))
+                deletionEvent = event;
+        }
+        if (deletionEvent == null)
+            throw new IllegalArgumentException ("Event with such id dosn't exist");
+        eventCollection.remove(deletionEvent);
+    }
+
     public void EditEvent(UUID eventId,
                           Double newScale,
                           Rating newRating,
