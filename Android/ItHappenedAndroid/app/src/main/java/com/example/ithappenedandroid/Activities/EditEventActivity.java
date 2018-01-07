@@ -13,9 +13,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Event;
+import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Fragments.DatePickerFragment;
@@ -23,6 +25,8 @@ import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -251,6 +255,72 @@ public class EditEventActivity extends AppCompatActivity {
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Boolean commentFlag = true;
+                Boolean ratingFlag = true;
+                Boolean scaleFlag = true;
+
+                String comment = null;
+                Double scale = null;
+                Rating rating = null;
+
+                if(commentState == 1&&!commentControlWidget.getText().toString().isEmpty()){
+                    comment = commentControlWidget.getText().toString();
+                }
+
+                if(ratingState == 1 && ratingControlWidget.getRating()!=0){
+                    rating = new Rating((int)ratingControlWidget.getRating()*2);
+                }
+
+                if(scaleState == 1 && !scaleControlWidget.getText().toString().isEmpty()){
+                    scale = Double.parseDouble(scaleControlWidget.getText().toString());
+                }
+
+                if(commentState == 2 && commentControlWidget.getText().toString().isEmpty()){
+                    commentFlag = false;
+                }
+
+                if(commentState == 2 && !commentControlWidget.getText().toString().isEmpty()){
+                    comment = commentControlWidget.getText().toString();
+                }
+
+                if(ratingState == 2 && ratingControlWidget.getRating() == 0){
+                    ratingFlag = false;
+                }
+
+                if(ratingState == 2 && ratingControlWidget.getRating() != 0){
+                    rating = new Rating((int)ratingControlWidget.getRating()*2);
+                }
+
+                if(scaleState == 2 && scaleControlWidget.getText().toString().isEmpty()){
+                    scaleFlag = false;
+                }
+
+                if(scaleState == 2 && !scaleControlWidget.getText().toString().isEmpty()){
+                    scale = Double.parseDouble(scaleControlWidget.getText().toString());
+                }
+
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy 'г.' HH:mm:ss a");
+
+                try{
+                    editedDate = simpleDateFormat.parse(editedDateText.getText().toString());
+                }catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Exception", Toast.LENGTH_SHORT).show();
+                }
+
+                if(commentFlag && ratingFlag && scaleFlag){
+                    try{
+                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, editedDate);
+                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                        startActivity(intent);
+                    }catch (Exception e){
+                        Toast.makeText(getApplicationContext(), "Exception", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Введите обязательные данные о событие", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
