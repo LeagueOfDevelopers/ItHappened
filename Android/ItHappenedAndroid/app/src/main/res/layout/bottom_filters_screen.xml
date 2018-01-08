@@ -126,14 +126,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textForScale"></android.support.v7.widget.AppCompatSpinner>
+
         <EditText
             android:id="@+id/scaleFilter"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:hint="Шкала"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/textForScale"
-            />
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/textForScale"
+            android:hint="Шкала" />
 
         <TextView
             android:layout_marginTop="17dp"
@@ -153,12 +154,12 @@
             android:layout_below="@id/textForRating"></android.support.v7.widget.AppCompatSpinner>
 
         <RatingBar
-            android:layout_marginTop="3dp"
+            android:id="@+id/ratingFilter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/textForRating"
-            />
+            android:layout_marginTop="3dp" />
     </RelativeLayout>
     </ScrollView>
 

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.DigitsKeyListener;
+import android.text.method.KeyListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -219,8 +221,10 @@ public class EditEventActivity extends AppCompatActivity {
             scaleControl.addView(scaleHintText);
 
             scaleControlWidget = new EditText(this);
-            scaleControlWidget.setText(event.GetComment());
+            scaleControlWidget.setText(event.GetScale().toString());
             scaleControlWidget.setTextColor(getResources().getColor(R.color.cardview_dark_background));
+            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890");
+            scaleControlWidget.setKeyListener(keyListener);
 
             if(tracking.GetScaleCustomization()==TrackingCustomization.Optional){
                 scaleState = 1;
