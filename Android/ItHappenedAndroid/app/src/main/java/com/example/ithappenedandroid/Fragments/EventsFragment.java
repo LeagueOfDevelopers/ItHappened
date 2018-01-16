@@ -76,6 +76,9 @@ public class EventsFragment extends Fragment  {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
+        behavior.setHideable(false);
+
         filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
