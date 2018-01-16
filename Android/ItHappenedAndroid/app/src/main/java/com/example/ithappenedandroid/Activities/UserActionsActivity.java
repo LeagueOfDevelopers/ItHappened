@@ -61,12 +61,12 @@ public class UserActionsActivity extends AppCompatActivity
         if(activity_state==0) {
             trackFrg = new TrackingsFragment();
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
             fTrans.commit();
         }else{
             eventsFrg = new EventsForTrackingFragment();
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, eventsFrg);
+            fTrans.replace(R.id.trackingsFrg, eventsFrg).addToBackStack(null);
             fTrans.commit();
             setTitle("Мои события");
         }
@@ -82,7 +82,7 @@ public class UserActionsActivity extends AppCompatActivity
             trackFrg = new TrackingsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
             fTrans.commit();
         }
     }
