@@ -1,14 +1,13 @@
 package com.example.ithappenedandroid.Fragments;
 
-import android.app.FragmentTransaction;
 import android.app.Fragment;
-
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,7 @@ public class TrackingsFragment extends Fragment {
         trackingService = new TrackingService(userName, trackingCollection);
 
         trackingsRecycler = (RecyclerView)getActivity().findViewById(R.id.tracingsRV);
-        trackingsRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         //trackLoad = new TrackingLoader();
         trackAdpt = new TrackingsAdapter(trackingService.GetTrackingCollection(),getActivity());
