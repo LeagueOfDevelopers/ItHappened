@@ -106,6 +106,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        setTitle(collection.GetTracking(trackingId).GetTrackingName());
+    }
+
     public void cancelClicked() {
     }
 }
