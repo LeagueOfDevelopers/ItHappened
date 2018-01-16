@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Comparison;
@@ -52,8 +53,8 @@ public class EventsFragment extends Fragment  {
 
     Button addFilters;
 
-    EditText dateFromText;
-    EditText dateToText;
+    TextView dateFromText;
+    TextView dateToText;
     EditText scaleFilter;
 
     RatingBar ratingFilter;
@@ -106,8 +107,8 @@ public class EventsFragment extends Fragment  {
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
 
-        dateFromText = (EditText) view.findViewById(R.id.dateFrom);
-        dateToText = (EditText) view.findViewById(R.id.dateTo);
+        dateFromText = (TextView) view.findViewById(R.id.dateFrom);
+        dateToText = (TextView) view.findViewById(R.id.dateTo);
 
 
 
