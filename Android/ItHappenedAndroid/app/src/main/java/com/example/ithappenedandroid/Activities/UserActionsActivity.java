@@ -33,7 +33,6 @@ public class UserActionsActivity extends AppCompatActivity
         Intent intent = getIntent();
         intent.getIntExtra("state", activity_state);
 
-        setTitle("Мои отслеживания");
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
@@ -52,6 +51,7 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        setTitle("Мои отслеживания");
 
         Intent intent = getIntent();
         if(intent.getStringExtra("state")!=null) {

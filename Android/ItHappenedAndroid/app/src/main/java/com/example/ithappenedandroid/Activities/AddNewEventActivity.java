@@ -63,12 +63,6 @@ public class AddNewEventActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Добавить событие");
-
-
 
         trackingService = new TrackingService("thisUser", trackingCollection);
 
@@ -291,6 +285,8 @@ public class AddNewEventActivity extends AppCompatActivity {
         });
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -305,7 +301,10 @@ public class AddNewEventActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Добавить событие");
 
 
 

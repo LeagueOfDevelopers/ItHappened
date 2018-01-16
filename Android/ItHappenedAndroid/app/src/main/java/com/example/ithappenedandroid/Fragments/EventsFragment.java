@@ -76,10 +76,9 @@ public class EventsFragment extends Fragment  {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setHideable(false);
-
-        filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
@@ -200,7 +199,7 @@ public class EventsFragment extends Fragment  {
                 eventsRecycler.setAdapter(eventsAdpt);
 
                 BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
-                behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
             }
         });

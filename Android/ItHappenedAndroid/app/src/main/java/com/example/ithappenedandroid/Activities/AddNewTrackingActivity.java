@@ -54,10 +54,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addnewtracking);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Отслеживать");
+
     }
 
     @Override
@@ -74,6 +71,11 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Отслеживать");
 
         addTrackingBtn = (Button) findViewById(R.id.addTrack);
 
