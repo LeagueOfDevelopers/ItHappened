@@ -272,6 +272,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                 if(flag_for_comment&&flag_for_rating&&flag_for_scale) {
                     try {
                         trackingService.AddEvent(trackingId, newEvent);
+                        Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                         Intent intent1 = new Intent(getApplicationContext() ,UserActionsActivity.class);
                         intent.putExtra("state", "1");
                         startActivity(intent1);
