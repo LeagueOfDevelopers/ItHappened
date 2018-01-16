@@ -68,6 +68,8 @@ public class EventsForTrackingFragment extends Fragment {
 
         events = thisTracking.GetEventCollection();
 
+        getActivity().setTitle(thisTracking.GetTrackingName());
+
         eventsRecycler = (RecyclerView) getActivity().findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         eventsAdpt = new EventsAdapter(events , getActivity(), 0);

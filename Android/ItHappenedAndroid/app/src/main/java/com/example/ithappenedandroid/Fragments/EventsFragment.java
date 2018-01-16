@@ -72,6 +72,12 @@ public class EventsFragment extends Fragment  {
         return inflater.inflate(R.layout.fragment_events_history, null);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("История событий");
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -204,6 +210,8 @@ public class EventsFragment extends Fragment  {
 
             }
         });
+
+
 
     }
 }
