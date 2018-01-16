@@ -11,14 +11,42 @@
     app:behavior_peekHeight="40dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    <TextView
+    <RelativeLayout
         android:id="@+id/filtersText"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/colorAccent"
-        android:gravity="center"
-        android:text="Фильтры"
-        android:textColor="@android:color/white" />
+
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/filtersHint"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Фильтры"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/filtersHint"
+            android:src="@drawable/hint_up"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/filtersHint"
+            android:src="@drawable/hint_up"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"/>
+
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
