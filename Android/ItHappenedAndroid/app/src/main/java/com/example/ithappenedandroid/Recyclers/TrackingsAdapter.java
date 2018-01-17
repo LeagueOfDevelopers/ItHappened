@@ -7,9 +7,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.ithappenedandroid.Domain.Tracking;
@@ -18,7 +21,7 @@ import com.example.ithappenedandroid.R;
 
 import java.util.List;
 
-public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.ViewHolder> {
+public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.ViewHolder> implements View.OnCreateContextMenuListener{
 
     private List<Tracking> trackings;
     private Context context;
@@ -64,11 +67,40 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
             }
         });
 
+
+        holder.itemLL.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                PopupMenu popup = new PopupMenu(view.getContext(), view);
+
+                popup.inflate(R.menu.context_menu);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return false;
+                    }
+                });
+                popup.show();
+
+                return false;
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return trackings.size();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo contextMenuInfo) {
+
+        menu.setHeaderTitle("Select The Action");
+        menu.add(0, v.getId(), 0, "Call");//groupId, itemId, order, title
+        menu.add(0, v.getId(), 0, "SMS");
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
