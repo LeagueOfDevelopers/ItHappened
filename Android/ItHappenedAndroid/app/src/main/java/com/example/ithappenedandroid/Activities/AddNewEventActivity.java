@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ithappenedandroid.Application.TrackingService;
@@ -39,6 +40,14 @@ public class AddNewEventActivity extends AppCompatActivity {
     LinearLayout textCustomControl;
     LinearLayout scaleCustomControl;
     LinearLayout ratingCustomControl;
+
+    LinearLayout hintForComment;
+    LinearLayout hintForRating;
+    LinearLayout hintForScale;
+
+    TextView hintForCommentText;
+    TextView hintForRatingText;
+    TextView hintForScaleText;
 
     Button addNewEvent;
 
@@ -72,6 +81,10 @@ public class AddNewEventActivity extends AppCompatActivity {
         scaleCustomControl = (LinearLayout) findViewById(R.id.scaleControl);
         ratingCustomControl = (LinearLayout) findViewById(R.id.ratingControl);
 
+        hintForComment = (LinearLayout) findViewById(R.id.hintForNewComment);
+        hintForRating = (LinearLayout) findViewById(R.id.hintForNewRating);
+        hintForScale = (LinearLayout) findViewById(R.id.hintForNewScale);
+
         Intent intent = getIntent();
         trackingPosition = intent.getExtras().getInt("tracking");
         id = intent.getStringExtra("trackingId");
@@ -80,6 +93,21 @@ public class AddNewEventActivity extends AppCompatActivity {
         //добавляем контрол для комментария
 
         if(thisTracking.GetCommentCustomization() == TrackingCustomization.Required || thisTracking.GetCommentCustomization() == TrackingCustomization.Optional){
+
+            hintForCommentText = new TextView(this);
+            hintForCommentText.setText("Добавьте комментарий:");
+            hintForCommentText.setTextSize(20);
+            hintForCommentText.setPadding(10, 10, 10, 10);
+            hintForCommentText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
+            LinearLayout.LayoutParams commentHint = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            commentHint.setMargins(10, 40, 10, 10);
+
+            hintForCommentText.setLayoutParams(commentHint);
+            hintForComment.addView(hintForCommentText);
+
             commentControl = new EditText(getApplication());
             commentControl.setHint("Ваш комментарий");
             commentControl.setTextColor(getResources().getColor(R.color.cardview_dark_background));
@@ -99,6 +127,9 @@ public class AddNewEventActivity extends AppCompatActivity {
             }
             LinearLayout.LayoutParams commentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            commentLayoutParams.setMargins(10,40,10,10);
+
             commentControl.setLayoutParams(commentLayoutParams);
             textCustomControl.addView(commentControl);
         }
@@ -106,6 +137,20 @@ public class AddNewEventActivity extends AppCompatActivity {
         //добавляем контрол для рейтинга
 
         if(thisTracking.GetRatingCustomization() == TrackingCustomization.Required ){
+
+            hintForRatingText = new TextView(this);
+            hintForRatingText.setText("Добавьте оценку:");
+            hintForRatingText.setTextSize(20);
+            hintForRatingText.setPadding(10, 10, 10, 10);
+            hintForRatingText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
+            LinearLayout.LayoutParams ratingHint = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            ratingHint.setMargins(10, 40, 10, 10);
+
+            hintForRatingText.setLayoutParams(ratingHint);
+            hintForRating.addView(hintForRatingText);
 
             stateForRating = 2;
 
@@ -120,11 +165,28 @@ public class AddNewEventActivity extends AppCompatActivity {
 
             LinearLayout.LayoutParams ratingLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            ratingLayoutParams.setMargins(10,40,10,10);
+
             ratingControl.setLayoutParams(ratingLayoutParams);
             ratingCustomControl.addView(ratingControl);
         }
 
         if(thisTracking.GetRatingCustomization() == TrackingCustomization.Optional ){
+
+            hintForRatingText = new TextView(this);
+            hintForRatingText.setText("Добавьте оценку:");
+            hintForRatingText.setTextSize(20);
+            hintForRatingText.setPadding(10, 10, 10, 10);
+            hintForRatingText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
+            LinearLayout.LayoutParams ratingHint = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            ratingHint.setMargins(10, 40, 10, 10);
+
+            hintForRatingText.setLayoutParams(ratingHint);
+            hintForRating.addView(hintForRatingText);
 
             stateForRating = 1;
 
@@ -139,6 +201,9 @@ public class AddNewEventActivity extends AppCompatActivity {
 
             LinearLayout.LayoutParams ratingLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            ratingLayoutParams.setMargins(10,40,10,10);
+
             ratingControl.setLayoutParams(ratingLayoutParams);
             ratingCustomControl.addView(ratingControl);
         }
@@ -147,6 +212,21 @@ public class AddNewEventActivity extends AppCompatActivity {
         //добавляем контрол для шкалы
 
         if(thisTracking.GetScaleCustomization() == TrackingCustomization.Required || thisTracking.GetScaleCustomization() == TrackingCustomization.Optional){
+
+            hintForScaleText = new TextView(this);
+            hintForScaleText.setText("Добавьте шкалу:");
+            hintForScaleText.setTextSize(20);
+            hintForScaleText.setPadding(10, 10, 10, 10);
+            hintForScaleText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
+            LinearLayout.LayoutParams scaleHint = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            scaleHint.setMargins(10, 40, 10, 10);
+
+            hintForScaleText.setLayoutParams(scaleHint);
+            hintForScale.addView(hintForScaleText);
+
             scaleControl = new EditText(getApplication());
             scaleControl.setHint("Ваше число");
             scaleControl.setTextColor(getResources().getColor(R.color.cardview_dark_background));
@@ -169,9 +249,12 @@ public class AddNewEventActivity extends AppCompatActivity {
                 stateForScale = 1;
 
             }
-            LinearLayout.LayoutParams commentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams scaleLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            scaleControl.setLayoutParams(commentLayoutParams);
+
+            scaleLayoutParams.setMargins(10,40,10,10);
+
+            scaleControl.setLayoutParams(scaleLayoutParams);
             scaleCustomControl.addView(scaleControl);
         }
 
