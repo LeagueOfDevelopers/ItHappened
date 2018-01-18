@@ -35,6 +35,9 @@
         <activity android:name=".Activities.EditEventActivity"
             android:theme="@style/Theme.MyBack"></activity>
 
+        <activity android:name=".Activities.EditTrackingActivity"
+            android:theme="@style/Theme.MyBack"></activity>
+
     </application>
 
 </manifest>

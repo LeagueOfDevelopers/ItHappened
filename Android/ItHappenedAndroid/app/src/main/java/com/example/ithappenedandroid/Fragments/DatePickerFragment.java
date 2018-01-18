@@ -24,10 +24,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     TextView datetext;
 
-    @SuppressLint("ValidFragment")
-    public DatePickerFragment(EditText date){
-        this.date = date;
-    }
+    TimePickerFragment timePickerFragment;
 
     public DatePickerFragment(TextView datetext){
         this.datetext = datetext;
@@ -47,11 +44,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
-        if(date!=null) {
-            date.setText(c.getTime().toLocaleString());
-        }
         if(datetext!=null){
-            datetext.setText(c.getTime().toLocaleString());
+
+            timePickerFragment = new TimePickerFragment(datetext, c);
+            timePickerFragment.show(getFragmentManager(), "TimePicker");
         }
     }
 

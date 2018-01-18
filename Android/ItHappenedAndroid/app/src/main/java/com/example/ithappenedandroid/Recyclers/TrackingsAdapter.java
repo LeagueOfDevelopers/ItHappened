@@ -4,21 +4,27 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.ithappenedandroid.Activities.EditTrackingActivity;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Fragments.EventsForTrackingFragment;
 import com.example.ithappenedandroid.R;
 
 import java.util.List;
 
-public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.ViewHolder> {
+public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.ViewHolder> implements View.OnCreateContextMenuListener{
 
     private List<Tracking> trackings;
     private Context context;
@@ -56,12 +62,64 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                 Bundle bundle = new Bundle();
                 bundle.putString("id", id);
                 eventsForTrackFrg.setArguments(bundle);
-
                 FragmentManager manager = ((Activity) context).getFragmentManager();
                 fTrans = manager.beginTransaction();
                 fTrans.replace(R.id.trackingsFrg, eventsForTrackFrg);
                 fTrans.commit();
 
+            }
+        });
+
+
+        holder.itemLL.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                PopupMenu popup = new PopupMenu(view.getContext(), view);
+
+                popup.inflate(R.menu.context_menu);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        int id = menuItem.getItemId();
+
+                        switch (id){
+                            case R.id.history_for_tracking:
+                                eventsForTrackFrg = new EventsForTrackingFragment();
+                                String trackId = tracking.GetTrackingID().toString();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("id", trackId);
+                                eventsForTrackFrg.setArguments(bundle);
+                                FragmentManager manager = ((Activity) context).getFragmentManager();
+                                fTrans = manager.beginTransaction();
+                                fTrans.replace(R.id.trackingsFrg, eventsForTrackFrg);
+                                fTrans.commit();
+
+                                return true;
+
+                            case R.id.edit_tracking:
+                                String trackIdForEdit = tracking.GetTrackingID().toString();
+
+                                Intent intent = new Intent((Activity) context, EditTrackingActivity.class);
+                                intent.putExtra("trackingId", trackIdForEdit);
+                                context.startActivity(intent);
+
+                                return true;
+
+                            case R.id.delete_tracking:
+                                Toast.makeText(context, "Удаление отлеживания", Toast.LENGTH_SHORT).show();
+                                return true;
+
+                        }
+
+
+                        return false;
+                    }
+                });
+                popup.show();
+
+                return false;
             }
         });
 
@@ -72,15 +130,24 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
         return trackings.size();
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo contextMenuInfo) {
+
+        menu.setHeaderTitle("Select The Action");
+        menu.add(0, v.getId(), 0, "Call");//groupId, itemId, order, title
+        menu.add(0, v.getId(), 0, "SMS");
+
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView trackingTitle;
-        LinearLayout itemLL;
+        CardView itemLL;
 
         public ViewHolder(View itemView) {
             super(itemView);
             trackingTitle = (TextView) itemView.findViewById(R.id.TracingTitle);
-            itemLL = (LinearLayout) itemView.findViewById(R.id.itemLL);
+            itemLL = (CardView) itemView.findViewById(R.id.itemLL);
         }
     }
 

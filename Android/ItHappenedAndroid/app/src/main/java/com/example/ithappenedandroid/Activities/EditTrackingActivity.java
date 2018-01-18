@@ -10,10 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -22,13 +23,20 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 
 import java.util.UUID;
 
-public class AddNewTrackingActivity extends AppCompatActivity {
+/**
+ * Created by Пользователь on 18.01.2018.
+ */
 
-    ITrackingRepository trackingRepository;
+public class EditTrackingActivity extends AppCompatActivity {
 
-    LinearLayout scaleCstm;
-    LinearLayout textCstm;
-    LinearLayout ratingCstm;
+    ITrackingRepository trackingRepository = StaticInMemoryRepository.getInstance();
+    TrackingService trackingService = new TrackingService("testUser", trackingRepository);
+
+    UUID trackingId;
+
+    RelativeLayout scaleCstm;
+    RelativeLayout textCstm;
+    RelativeLayout ratingCstm;
 
     EditText trackingTitleControl;
 
@@ -45,7 +53,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     TrackingCustomization ratingCustom;
     String trackingTitle;
 
-    Button addTrackingBtn;
+    Button editTrackingBtn;
 
     int stateForScale;
     int stateForText;
@@ -54,7 +62,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addnewtracking);
+        setContentView(R.layout.activity_edit_tracking);
 
     }
 
@@ -76,27 +84,33 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Отслеживать");
+        actionBar.setTitle("Изменить отслеживание");
 
-        addTrackingBtn = (Button) findViewById(R.id.addTrack);
+        Intent intent = getIntent();
+        trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
+        Tracking editableTracking = trackingRepository.GetTracking(trackingId);
+
+        editTrackingBtn = (Button) findViewById(R.id.editTrack);
 
         trackingTitleControl = (EditText) findViewById(R.id.editTitleOfTracking);
 
-        scaleCstm = (LinearLayout) findViewById(R.id.scale);
-        textCstm = (LinearLayout) findViewById(R.id.text);
-        ratingCstm = (LinearLayout) findViewById(R.id.rating);
+        scaleCstm = (RelativeLayout) findViewById(R.id.editSclCust);
+        textCstm = (RelativeLayout) findViewById(R.id.editTextCstm);
+        ratingCstm = (RelativeLayout) findViewById(R.id.editRtCust);
 
-        scaleCard = (CardView) findViewById(R.id.scaleCard);
-        textCard = (CardView) findViewById(R.id.textCard);
-        ratingCard = (CardView) findViewById(R.id.ratingCard);
+        scaleCard = (CardView) findViewById(R.id.editScaleCard);
+        textCard = (CardView) findViewById(R.id.editTextCard);
+        ratingCard = (CardView) findViewById(R.id.editRatingCard);
 
-        scaleText = (TextView) findViewById(R.id.scaleEn);
-        textText = (TextView) findViewById(R.id.textEn);
-        ratingText = (TextView) findViewById(R.id.rtEn);
+        scaleText = (TextView) findViewById(R.id.editScaleEn);
+        textText = (TextView) findViewById(R.id.editTextEn);
+        ratingText = (TextView) findViewById(R.id.rtEnEdit);
 
-        stateForScale = 0;
-        stateForText = 0;
-        stateForRating = 0;
+        stateForScale = setLayoutStyle(editableTracking.GetScaleCustomization(), scaleText, scaleCard);
+        stateForText = setLayoutStyle(editableTracking.GetCommentCustomization(), textText, textCard);
+        stateForRating = setLayoutStyle(editableTracking.GetRatingCustomization(), ratingText, ratingCard);
+
+        trackingTitleControl.setText(editableTracking.GetTrackingName());
 
         scaleCstm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,64 +182,92 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             }
         });
 
-        addTrackingBtn.setOnClickListener(new View.OnClickListener() {
+        editTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 trackingTitle = trackingTitleControl.getText().toString();
 
-                    trackingRepository = StaticInMemoryRepository.getInstance();
+                //set properties of scale
+                switch (stateForScale) {
+                    case 0:
+                        scaleCustom = TrackingCustomization.None;
+                        break;
+                    case 1:
+                        scaleCustom = TrackingCustomization.Optional;
+                        break;
+                    case 2:
+                        scaleCustom = TrackingCustomization.Required;
+                        break;
+                }
 
+                //set properties of text
+                switch (stateForText) {
+                    case 0:
+                        textCustom = TrackingCustomization.None;
+                        break;
+                    case 1:
+                        textCustom = TrackingCustomization.Optional;
+                        break;
+                    case 2:
+                        textCustom = TrackingCustomization.Required;
+                        break;
+                }
 
-                    //set properties of scale
-                    switch (stateForScale) {
-                        case 0:
-                            scaleCustom = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            scaleCustom = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            scaleCustom = TrackingCustomization.Required;
-                            break;
-                    }
+                //set properties of rating
+                switch (stateForRating) {
+                    case 0:
+                        ratingCustom = TrackingCustomization.None;
+                        break;
+                    case 1:
+                        ratingCustom = TrackingCustomization.Optional;
+                        break;
+                    case 2:
+                        ratingCustom = TrackingCustomization.Required;
+                        break;
+                }
 
-                    //set properties of text
-                    switch (stateForText) {
-                        case 0:
-                            textCustom = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            textCustom = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            textCustom = TrackingCustomization.Required;
-                            break;
-                    }
+                Intent intent = getIntent();
 
-                    //set properties of rating
-                    switch (stateForRating) {
-                        case 0:
-                            ratingCustom = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            ratingCustom = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            ratingCustom = TrackingCustomization.Required;
-                            break;
-                    }
+                trackingService.EditTracking(trackingId, scaleCustom, ratingCustom, textCustom, trackingTitleControl.getText().toString());
+                Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
 
-                    UUID trackingId = UUID.randomUUID();
-
-                    Tracking newTracking = new Tracking(trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
-                    trackingRepository.AddNewTracking(newTracking);
-                Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                    startActivity(intent);
+                Intent intent1 = new Intent(getApplicationContext(), UserActionsActivity.class);
+                startActivity(intent1);
             }
         });
 
     }
+
+    private int setLayoutStyle(TrackingCustomization customization, TextView text, CardView card){
+
+        int state = 0;
+
+        switch (customization){
+            case None:
+                text.setText("Не выбрано");
+                card.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
+                state = 0;
+                break;
+
+            case Optional:
+                text.setText("Опционально");
+                card.setCardBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                state = 1;
+                break;
+
+            case Required:
+                text.setText("Обязательно");
+                ratingCard.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
+                state = 2;
+                break;
+
+        }
+
+    return state;
+
+    }
+
+
+
 }

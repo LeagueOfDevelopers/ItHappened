@@ -35,4 +35,56 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp" />
 
+    <LinearLayout
+        android:layout_below="@id/editDateButton"
+        android:id="@+id/editCommentHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/editCommentHint"
+        android:id="@+id/editCommentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/editCommentLayout"
+        android:id="@+id/editRatingHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/editRatingHint"
+        android:id="@+id/editRatingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/editRatingLayout"
+        android:id="@+id/editScaleHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/editScaleHint"
+        android:id="@+id/editScaleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button"
+        android:layout_margin="7dp"
+        android:id="@+id/editEventBtn"
+        android:text="Редактировать"
+        android:textColor="#FFFFFF"/>
+
 </RelativeLayout>

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.ithappenedandroid.Activities.AddNewEventActivity;
 import com.example.ithappenedandroid.Application.TrackingService;
@@ -29,6 +30,8 @@ public class EventsForTrackingFragment extends Fragment {
 
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
+
+    TextView hintForEvents;
 
     FloatingActionButton addNewEvent;
     Tracking thisTracking;
@@ -58,6 +61,12 @@ public class EventsForTrackingFragment extends Fragment {
         super.onResume();
         Bundle bundle = this.getArguments();
 
+        hintForEvents = (TextView) getActivity().findViewById(R.id.hintForEventsFragment);
+
+        if(trackingsCollection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
+            hintForEvents.setVisibility(View.INVISIBLE);
+        }
+
         if(bundle!=null){
             trackingId = UUID.fromString(bundle.getString("id"));
         }
@@ -67,6 +76,8 @@ public class EventsForTrackingFragment extends Fragment {
         thisTracking = trackingsCollection.GetTracking(trackingId);
 
         events = thisTracking.GetEventCollection();
+
+        getActivity().setTitle(thisTracking.GetTrackingName());
 
         eventsRecycler = (RecyclerView) getActivity().findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));

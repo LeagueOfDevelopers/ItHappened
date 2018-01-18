@@ -3,16 +3,20 @@ package com.example.ithappenedandroid.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Domain.TrackingCustomization;
+import com.example.ithappenedandroid.Fragments.DeleteEventDialog;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
@@ -27,6 +31,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     RatingBar yourRating;
 
     Button editEvent;
+    Button deleteEvent;
 
     UUID trackingId;
     UUID eventId;
@@ -46,6 +51,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         yourScale = (TextView) findViewById(R.id.yourScale);
         yourRating = (RatingBar) findViewById(R.id.yourRating);
         editEvent = (Button) findViewById(R.id.editEventButton);
+        deleteEvent = (Button) findViewById(R.id.deleteEventButton);
 
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +60,14 @@ public class EventDetailsActivity extends AppCompatActivity {
                 intent.putExtra("eventId", eventId.toString());
                 intent.putExtra("trackingId", trackingId.toString());
                 startActivity(intent);
+            }
+        });
+
+        deleteEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeleteEventDialog delete = new DeleteEventDialog();
+                delete.show(getFragmentManager(), "DeleteEvent");
             }
         });
 
@@ -83,5 +97,37 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    public void okClicked() {
+
+        trackingSercvice.RemoveEvent(trackingId, eventId);
+        Toast.makeText(this, "Событие удалено", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, UserActionsActivity.class);
+        startActivity(intent);
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        setTitle(collection.GetTracking(trackingId).GetTrackingName());
+    }
+
+    public void cancelClicked() {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, UserActionsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

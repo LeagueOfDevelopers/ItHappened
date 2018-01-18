@@ -27,13 +27,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp">
-        <TextView
-            android:layout_marginLeft="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Отслеживание по:"
-            android:textSize="20sp"
-            />
+            <TextView
+                android:layout_marginLeft="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Отслеживание по:"
+                android:textSize="20sp"
+                />
         </RelativeLayout>
     </LinearLayout>
 
@@ -47,45 +47,47 @@
 
         <RelativeLayout
 
-            android:id="@+id/sclCust"
+            android:id="@+id/editSclCust"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp">
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimaryDark">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Шкале"
-                android:paddingLeft="10dp"
-                android:textColor="#FFFFFF"
-                android:textAllCaps="true"
-                android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:textSize="20sp"/>
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Шкале"
+                android:textAllCaps="true"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
 
             <android.support.v7.widget.CardView
-                android:id="@+id/scaleCard"
-                android:layout_marginRight="10dp"
-                app:cardBackgroundColor="#DCDCDC"
+                android:id="@+id/editScaleCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                app:cardCornerRadius="10dp"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                app:cardBackgroundColor="#DCDCDC"
+                app:cardCornerRadius="10dp">
+
                 <TextView
-                    android:id="@+id/scaleEn"
+                    android:id="@+id/editScaleEn"
                     android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:paddingLeft="100dp"
+                    android:paddingRight="20dp"
                     android:text="Не выбрано"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textColor="#FFFFFF"
-                    android:padding="4dp"
-                    android:paddingLeft="100dp"
-                    android:paddingRight="20dp"
-                    android:textSize="15sp"
-                    android:layout_height="wrap_content" />
+                    android:textSize="15sp" />
             </android.support.v7.widget.CardView>
         </RelativeLayout>
     </LinearLayout>
@@ -100,45 +102,47 @@
 
         <RelativeLayout
 
-            android:id="@+id/textCstm"
+            android:id="@+id/editTextCstm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp">
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Комментарию"
-                android:paddingLeft="10dp"
-                android:textColor="#FFFFFF"
-                android:textAllCaps="true"
-                android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:textSize="20sp"/>
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Комментарию"
+                android:textAllCaps="true"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
 
             <android.support.v7.widget.CardView
-                android:id="@+id/textCard"
-                android:layout_marginRight="10dp"
-                app:cardBackgroundColor="#DCDCDC"
+                android:id="@+id/editTextCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                app:cardCornerRadius="10dp"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                app:cardBackgroundColor="#DCDCDC"
+                app:cardCornerRadius="10dp">
+
                 <TextView
-                    android:id="@+id/textEn"
+                    android:id="@+id/editTextEn"
                     android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:paddingLeft="100dp"
+                    android:paddingRight="20dp"
                     android:text="Не выбрано"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textColor="#FFFFFF"
-                    android:padding="4dp"
-                    android:paddingLeft="100dp"
-                    android:paddingRight="20dp"
-                    android:textSize="15sp"
-                    android:layout_height="wrap_content" />
+                    android:textSize="15sp" />
             </android.support.v7.widget.CardView>
         </RelativeLayout>
     </LinearLayout>
@@ -153,7 +157,7 @@
 
         <RelativeLayout
 
-            android:id="@+id/rtCust"
+            android:id="@+id/editRtCust"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
@@ -172,7 +176,7 @@
                 android:textSize="20sp"/>
 
             <android.support.v7.widget.CardView
-                android:id="@+id/ratingCard"
+                android:id="@+id/editRatingCard"
                 android:layout_marginRight="10dp"
                 app:cardBackgroundColor="#DCDCDC"
                 android:layout_width="wrap_content"
@@ -181,7 +185,7 @@
                 app:cardCornerRadius="10dp"
                 android:layout_centerVertical="true">
                 <TextView
-                    android:id="@+id/rtEn"
+                    android:id="@+id/rtEnEdit"
                     android:layout_width="150dp"
                     android:text="Не выбрано"
                     android:textAlignment="center"
@@ -204,12 +208,12 @@
         >
 
         <Button
-            android:id="@+id/addTrack"
+            android:id="@+id/editTrack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:background="@drawable/button"
-            android:text="Добавить"
+            android:text="Изменить"
             android:textColor="#FFFFFF"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"/>
