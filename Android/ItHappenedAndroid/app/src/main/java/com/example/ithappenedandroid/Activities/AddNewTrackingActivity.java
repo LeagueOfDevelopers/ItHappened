@@ -80,7 +80,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
         addTrackingBtn = (Button) findViewById(R.id.addTrack);
 
-        trackingTitleControl = (EditText) findViewById(R.id.titleOfTracking);
+        trackingTitleControl = (EditText) findViewById(R.id.editTitleOfTracking);
 
         scaleCstm = (LinearLayout) findViewById(R.id.scale);
         textCstm = (LinearLayout) findViewById(R.id.text);

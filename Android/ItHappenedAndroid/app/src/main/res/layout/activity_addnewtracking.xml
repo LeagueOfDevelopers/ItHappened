@@ -10,7 +10,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:id="@+id/titleOfTracking"
+        android:id="@+id/editTitleOfTracking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -21,7 +21,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/titleOfTracking"
+        android:layout_below="@+id/editTitleOfTracking"
         android:id="@+id/textForCustomisation">
         <RelativeLayout
             android:layout_width="match_parent"
