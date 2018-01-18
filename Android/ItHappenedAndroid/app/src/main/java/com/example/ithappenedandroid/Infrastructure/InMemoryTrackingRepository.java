@@ -115,9 +115,10 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             notFilteredEvents.addAll(filteredEvents);
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
-                if (CompareValues(ratingComparison, event.GetRating().GetRatingValue().doubleValue(),
-                        rating.GetRatingValue().doubleValue()))
-                    filteredEvents.add(event);
+                if (event.GetRating() != null)
+                    if (CompareValues(ratingComparison, event.GetRating().GetRatingValue().doubleValue(),
+                            rating.GetRatingValue().doubleValue()))
+                        filteredEvents.add(event);
             }
         }
 

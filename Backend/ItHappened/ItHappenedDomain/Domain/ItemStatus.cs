@@ -4,10 +4,9 @@ using System.Text;
 
 namespace ItHappenedDomain.Domain
 {
-  enum TrackingCustomization
+  public enum ItemStatus
   {
-    Scale = 0,
-    Rating = 1,
-    Comment = 2
+    Exist = 0,
+    Deleted = 1
   }
 }

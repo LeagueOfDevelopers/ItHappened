@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ItHappenedDomain.Domain
 {
   public class Event
   {
-    public Event(IDictionary<string, Customization> customizations, DateTimeOffset eventDate)
-    {
-      Customizations = customizations;
-      _eventDate = eventDate;
-    }
-    public IDictionary<string, Customization> Customizations { get; private set; }
-    private readonly DateTimeOffset _eventDate;
-
-    
+    public Guid EventId { private set; get; }
+    public Guid trackingId { private set; get; }
+    private DateTimeOffset eventDate;
+    private Double scale;
+    private Rating rating;
+    private String comment;
+    public DateTimeOffset DateOfChange { private set; get; }
+    public ItemStatus Status { private set; get; }
   }
 }

@@ -4,10 +4,8 @@ using System.Text;
 
 namespace ItHappenedDomain.Domain
 {
-  enum TrackingCustomization
+  class Rating
   {
-    Scale = 0,
-    Rating = 1,
-    Comment = 2
+    private int rating;
   }
 }

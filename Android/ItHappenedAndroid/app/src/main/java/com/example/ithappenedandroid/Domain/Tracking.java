@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Domain;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -19,7 +20,7 @@ public class Tracking {
         this.rating = rating;
         this.comment = comment;
         this.trackingId = trackingId;
-        trackingDate = TimeZone.getDefault();
+        trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         eventCollection = new ArrayList<Event>();
     }
 
@@ -28,7 +29,7 @@ public class Tracking {
                     TrackingCustomization scale,
                     TrackingCustomization rating,
                     TrackingCustomization comment,
-                    TimeZone trackingDate,
+                    Date trackingDate,
                     List<Event> eventCollection)
     {
         this.trackingName = trackingName;
@@ -140,7 +141,7 @@ public class Tracking {
 
     public String GetTrackingName() {return trackingName;}
     public UUID GetTrackingID() {return trackingId;}
-    public TimeZone GetTrackingDate () {return trackingDate;}
+    public Date GetTrackingDate () {return trackingDate;}
     public List<Event> GetEventCollection() { return eventCollection;}
     public TrackingCustomization GetScaleCustomization(){ return scale;}
     public TrackingCustomization GetCommentCustomization(){ return comment;}
@@ -148,7 +149,7 @@ public class Tracking {
 
     private String trackingName;
     private UUID trackingId;
-    private TimeZone trackingDate;
+    private Date trackingDate;
     private TrackingCustomization scale;
     private TrackingCustomization rating;
     private TrackingCustomization comment;
