@@ -78,6 +78,24 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        int id = menuItem.getItemId();
+
+                        switch (id){
+                            case R.id.history_for_tracking:
+                                eventsForTrackFrg = new EventsForTrackingFragment();
+                                String trackId = tracking.GetTrackingID().toString();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("id", trackId);
+                                eventsForTrackFrg.setArguments(bundle);
+                                FragmentManager manager = ((Activity) context).getFragmentManager();
+                                fTrans = manager.beginTransaction();
+                                fTrans.replace(R.id.trackingsFrg, eventsForTrackFrg);
+                                fTrans.commit();
+
+                        }
+
+
                         return false;
                     }
                 });
