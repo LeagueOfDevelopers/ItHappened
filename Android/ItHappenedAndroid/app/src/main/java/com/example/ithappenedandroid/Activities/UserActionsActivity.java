@@ -17,6 +17,10 @@ import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
+import com.example.ithappenedandroid.Retrofit.RetrofitRequests;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
+
+import java.util.UUID;
 
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -127,6 +131,11 @@ public class UserActionsActivity extends AppCompatActivity
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, statFrg);
             fTrans.commit();
+        }
+
+        if(id == R.id.synchronisation){
+            RetrofitRequests requests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), UUID.randomUUID());
+            requests.syncData();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
