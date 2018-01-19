@@ -1,5 +1,7 @@
 package com.example.ithappenedandroid.Domain;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -147,12 +149,18 @@ public class Tracking {
     public TrackingCustomization GetCommentCustomization(){ return comment;}
     public TrackingCustomization GetRatingCustomization(){ return rating;}
 
+    @Expose
     private String trackingName;
+    @Expose
     private UUID trackingId;
+    @Expose
     private Date trackingDate;
+    @Expose
     private TrackingCustomization scale;
+    @Expose
     private TrackingCustomization rating;
+    @Expose
     private TrackingCustomization comment;
-
+    @Expose
     private List<Event> eventCollection;
 }

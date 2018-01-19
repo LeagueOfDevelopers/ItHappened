@@ -1,5 +1,7 @@
 package com.example.ithappenedandroid.Domain;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -29,10 +31,16 @@ public class Event
     public String GetComment() {return comment;}
     public UUID GetTrackingId() { return trackingId; }
 
+    @Expose
     private UUID eventId;
+    @Expose
     private UUID trackingId;
+    @Expose
     private Date eventDate;
+    @Expose
     private Double scale;
+    @Expose
     private Rating rating;
+    @Expose
     private String comment;
 }
