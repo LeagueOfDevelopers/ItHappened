@@ -32,7 +32,8 @@ public class Tracking {
                     TrackingCustomization rating,
                     TrackingCustomization comment,
                     Date trackingDate,
-                    List<Event> eventCollection)
+                    List<Event> eventCollection,
+                    boolean status, Date changeDate)
     {
         this.trackingName = trackingName;
         this.scale = scale;
@@ -41,6 +42,8 @@ public class Tracking {
         this.trackingId = trackingId;
         this.trackingDate = trackingDate;
         this.eventCollection = eventCollection;
+        dateOfChange = changeDate;
+        isDeleted = status;
     }
 
 
@@ -50,18 +53,24 @@ public class Tracking {
         CustomizationCheck(newEvent.GetRating(), rating);
         CustomizationCheck(newEvent.GetComment(), comment);
         eventCollection.add(newEvent);
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
     public void RemoveEvent (UUID eventID)
     {
-        Event deletionEvent = null;
+        Integer deletionEvent = null;
+        Integer i=0;
         for (Event event: eventCollection) {
             if (event.GetEventId().equals(eventID))
-                deletionEvent = event;
+                deletionEvent =i;
+            i++;
         }
         if (deletionEvent == null)
             throw new IllegalArgumentException ("Event with such id dosn't exist");
-        eventCollection.remove(deletionEvent);
+        Event event = eventCollection.get(deletionEvent);
+        event.RemoveEvent();
+        eventCollection.set(deletionEvent, event);
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
     public void EditEvent(UUID eventId,
@@ -94,6 +103,7 @@ public class Tracking {
         if (newDate!=null)
             editedEvent.EditDate(newDate);
         eventCollection.set(index, editedEvent);
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
     public void EditTracking(TrackingCustomization editedScale,
@@ -109,6 +119,7 @@ public class Tracking {
             comment = editedComment;
         if (editedTrackingName != null)
             trackingName = editedTrackingName;
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
     private boolean ChangesCheck(Object value, TrackingCustomization customization)
@@ -140,6 +151,11 @@ public class Tracking {
         throw new IllegalArgumentException("Event with such ID doesn't exist");
     }
 
+    public void DeleteTracking()
+    {
+        isDeleted = true;
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+    }
 
     public String GetTrackingName() {return trackingName;}
     public UUID GetTrackingID() {return trackingId;}
@@ -148,6 +164,7 @@ public class Tracking {
     public TrackingCustomization GetScaleCustomization(){ return scale;}
     public TrackingCustomization GetCommentCustomization(){ return comment;}
     public TrackingCustomization GetRatingCustomization(){ return rating;}
+    public boolean GetStatus() { return isDeleted; }
 
     @Expose
     private String trackingName;

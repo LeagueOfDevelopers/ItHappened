@@ -72,6 +72,13 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
+    public void RemoveTracking(UUID trackingId)
+    {
+        Tracking tracking = trackingCollection.GetTracking(trackingId);
+        tracking.DeleteTracking();
+        trackingCollection.ChangeTracking(tracking);
+    }
+
     public Event GetEvent (UUID trackingId, UUID eventId)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);

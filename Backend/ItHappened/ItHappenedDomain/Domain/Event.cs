@@ -13,6 +13,6 @@ namespace ItHappenedDomain.Domain
     private Rating rating;
     private String comment;
     public DateTimeOffset DateOfChange { private set; get; }
-    public ItemStatus Status { private set; get; }
+    private bool isDeleted;
   }
 }

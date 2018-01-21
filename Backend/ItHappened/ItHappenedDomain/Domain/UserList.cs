@@ -1,22 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ItHappenedDomain.AuthServices;
 
 namespace ItHappenedDomain.Domain
 {
   public class UserList
   {
-    public UserList(Dictionary<Guid, User> userCollection)
+    public UserList(Dictionary<string, User> userCollection)
     {
-      this.userCollection = userCollection;
+      this._userCollection = userCollection;
     }
 
-    public List<Tracking> ChangeTrackingCollection(Guid userId, List<Tracking> trackingCollection)
+    public string SignUp(string idToken)
     {
-      return userCollection[userId].ChangeTrackingCollection(trackingCollection);
+      GoogleResponseJson response = new GoogleResponseJson();
+      GoogleIdTokenVerifyer verifyer = new GoogleIdTokenVerifyer();
+      response = verifyer.Verify(idToken);
+      if (response.IsEmpty)
+        return null;
+      User newUser = new User(response.sub);
+      _userCollection.Add(response.sub, newUser);
+      return response.sub;
     }
 
-    private Dictionary<Guid, User> userCollection;
+    public List<Tracking> ChangeTrackingCollection(string userId, List<Tracking> trackingCollection)
+    {
+      return _userCollection[userId].ChangeTrackingCollection(trackingCollection);
+    }
+
+    private readonly Dictionary<string, User> _userCollection;
 
   }
 }

@@ -9,10 +9,10 @@ namespace ItHappenedDomain.Domain
 {
   public class User
   {
-    public User(Guid userId, List<Tracking> trackingCollection)
+    public User(string userId)
     {
       UserId = userId;
-      _trackingCollection = new TrackingRepository(trackingCollection);
+      _trackingCollection = new TrackingCollection();
     }
 
     public List<Tracking> ChangeTrackingCollection(List<Tracking> trackingCollection)
@@ -20,7 +20,7 @@ namespace ItHappenedDomain.Domain
       return _trackingCollection.ChangeTrackingCollection(trackingCollection);
     }
 
-    public Guid UserId { private set; get; }
-    private TrackingRepository _trackingCollection;
+    public string UserId { private set; get; }
+    private TrackingCollection _trackingCollection;
   }
 }
