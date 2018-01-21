@@ -59,6 +59,9 @@ public class EventsForTrackingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        
+
         Bundle bundle = this.getArguments();
 
         hintForEvents = (TextView) getActivity().findViewById(R.id.hintForEventsFragment);
