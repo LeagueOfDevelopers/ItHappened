@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.example.ithappenedandroid.Fragments.EventsForTrackingFragment;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
@@ -26,7 +25,6 @@ public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TrackingsFragment trackFrg;
-    EventsForTrackingFragment eventsFrg;
     FragmentTransaction fTrans;
     int activity_state=0;
 
@@ -67,14 +65,7 @@ public class UserActionsActivity extends AppCompatActivity
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
             fTrans.commit();
-        }else{
-            eventsFrg = new EventsForTrackingFragment();
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, eventsFrg).addToBackStack(null);
-            fTrans.commit();
-            setTitle("Мои события");
-        }
-    }
+        }   }
 
     @Override
     public void onBackPressed() {

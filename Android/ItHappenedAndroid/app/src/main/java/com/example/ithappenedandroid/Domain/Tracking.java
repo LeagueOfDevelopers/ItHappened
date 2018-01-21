@@ -180,4 +180,8 @@ public class Tracking {
     private TrackingCustomization comment;
     @Expose
     private List<Event> eventCollection;
+    @Expose
+    private Date dateOfChange;
+    @Expose
+    private Boolean isDeleted;
 }
