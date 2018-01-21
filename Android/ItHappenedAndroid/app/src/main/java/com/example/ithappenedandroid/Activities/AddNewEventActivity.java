@@ -95,7 +95,13 @@ public class AddNewEventActivity extends AppCompatActivity {
         if(thisTracking.GetCommentCustomization() == TrackingCustomization.Required || thisTracking.GetCommentCustomization() == TrackingCustomization.Optional){
 
             hintForCommentText = new TextView(this);
-            hintForCommentText.setText("Добавьте комментарий:");
+
+            if(thisTracking.GetCommentCustomization() == TrackingCustomization.Required) {
+                hintForCommentText.setText("Добавьте комментарий (обязательно):");
+            }else{
+                hintForCommentText.setText("Добавьте комментарий (необязательно):");
+            }
+
             hintForCommentText.setTextSize(20);
             hintForCommentText.setPadding(10, 10, 10, 10);
             hintForCommentText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -139,7 +145,7 @@ public class AddNewEventActivity extends AppCompatActivity {
         if(thisTracking.GetRatingCustomization() == TrackingCustomization.Required ){
 
             hintForRatingText = new TextView(this);
-            hintForRatingText.setText("Добавьте оценку:");
+            hintForRatingText.setText("Добавьте оценку (обязательно):");
             hintForRatingText.setTextSize(20);
             hintForRatingText.setPadding(10, 10, 10, 10);
             hintForRatingText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -172,10 +178,10 @@ public class AddNewEventActivity extends AppCompatActivity {
             ratingCustomControl.addView(ratingControl);
         }
 
-        if(thisTracking.GetRatingCustomization() == TrackingCustomization.Optional ){
+        if(thisTracking.GetRatingCustomization() == TrackingCustomization.Optional){
 
             hintForRatingText = new TextView(this);
-            hintForRatingText.setText("Добавьте оценку:");
+            hintForRatingText.setText("Добавьте оценку (необязательно):");
             hintForRatingText.setTextSize(20);
             hintForRatingText.setPadding(10, 10, 10, 10);
             hintForRatingText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -214,7 +220,11 @@ public class AddNewEventActivity extends AppCompatActivity {
         if(thisTracking.GetScaleCustomization() == TrackingCustomization.Required || thisTracking.GetScaleCustomization() == TrackingCustomization.Optional){
 
             hintForScaleText = new TextView(this);
-            hintForScaleText.setText("Добавьте шкалу:");
+            if(thisTracking.GetScaleCustomization() == TrackingCustomization.Required) {
+                hintForScaleText.setText("Добавьте шкалу (обязательно):");
+            }else{
+                hintForScaleText.setText("Добавьте шкалу (необязательно):");
+            }
             hintForScaleText.setTextSize(20);
             hintForScaleText.setPadding(10, 10, 10, 10);
             hintForScaleText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -231,7 +241,7 @@ public class AddNewEventActivity extends AppCompatActivity {
             scaleControl.setHint("Ваше число");
             scaleControl.setTextColor(getResources().getColor(R.color.cardview_dark_background));
             scaleControl.setInputType(InputType.TYPE_CLASS_NUMBER);
-            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890");
+            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.");
             scaleControl.setKeyListener(keyListener);
             scaleControl.setHintTextColor(getResources().getColor(R.color.colorPrimaryDark));
             if(thisTracking.GetScaleCustomization() == TrackingCustomization.Required){
