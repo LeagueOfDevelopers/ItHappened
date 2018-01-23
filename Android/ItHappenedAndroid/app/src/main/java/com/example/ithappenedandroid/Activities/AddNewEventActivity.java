@@ -370,10 +370,33 @@ public class AddNewEventActivity extends AppCompatActivity {
                         intent.putExtra("state", "1");
                         startActivity(intent1);
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), "Введите обязательные данные о событии", Toast.LENGTH_SHORT).show();
+
+                        String toastMessage = "Введите обязательные данные о событии: ";
+                        if(flag_for_comment == false){
+                            toastMessage+="комментарий, ";
+                        }
+                        if(flag_for_rating==false){
+                            toastMessage+="оценку, ";
+                        }
+                        if(flag_for_scale == false){
+                            toastMessage+="шкалу, ";
+                        }
+
+                        Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2), Toast.LENGTH_SHORT).show();
                     }
                 }else{
-                    Toast.makeText(getApplicationContext(), "Введите обязательные данные о событии", Toast.LENGTH_SHORT).show();
+                    String toastMessage = "Введите обязательные данные о событии: ";
+                    if(flag_for_comment == false){
+                        toastMessage+="комментарий, ";
+                    }
+                    if(flag_for_rating==false){
+                        toastMessage+="оценку, ";
+                    }
+                    if(flag_for_scale == false){
+                        toastMessage+="шкалу, ";
+                    }
+
+                    Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2), Toast.LENGTH_SHORT).show();
                 }
             }
         });
