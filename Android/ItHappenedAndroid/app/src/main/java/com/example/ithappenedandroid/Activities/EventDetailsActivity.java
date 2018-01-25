@@ -81,19 +81,33 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         if((commentCustomization == TrackingCustomization.None)||((commentCustomization == TrackingCustomization.Optional)&&(thisEvent.GetComment()==null))){
             yourComment.setText("У этого события нет комментария");
-        }else{
-            yourComment.setText(thisEvent.GetComment());
+        }else {
+            if (thisEvent.GetComment() != null) {
+                yourComment.setText(thisEvent.GetComment());
+            }else{
+                yourComment.setText("У этого события нет комментария");
+            }
         }
 
         if((scaleCustomization == TrackingCustomization.None)||((scaleCustomization == TrackingCustomization.Optional)&&(thisEvent.GetScale()==null))){
             yourScale.setText("У этого события нет шкалы");
         }else{
-            yourScale.setText(thisEvent.GetScale().toString());
-        }
+            if(thisEvent.GetScale()!=null) {
+                yourScale.setText(thisEvent.GetScale().toString());
+            }else{
+                yourScale.setText("У этого события нет шкалы");
+            }
+            }
+
 
         if((ratingCustomization == TrackingCustomization.None)||((ratingCustomization == TrackingCustomization.Optional)&&(thisEvent.GetRating()==null))){
-        }else{
-            yourRating.setRating(thisEvent.GetRating().GetRatingValue()/2);
+            yourRating.setRating(0);
+        }else {
+            if (thisEvent.GetRating() != null) {
+                yourRating.setRating(thisEvent.GetRating().GetRatingValue() / 2);
+            }else{
+                yourRating.setRating(0);
+            }
         }
 
 

@@ -1,20 +1,17 @@
-package com.example.ithappenedandroid.Fragments;
+package com.example.ithappenedandroid.Activities;
 
-import android.app.Fragment;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ithappenedandroid.Activities.AddNewEventActivity;
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
@@ -26,7 +23,7 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 import java.util.List;
 import java.util.UUID;
 
-public class EventsForTrackingFragment extends Fragment {
+public class EventsForTrackingActivity extends AppCompatActivity {
 
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
@@ -43,60 +40,68 @@ public class EventsForTrackingFragment extends Fragment {
     TrackingService trackingService;
     int trackingPosition;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_events_history_for_tracking, null);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_events_history_for_tracking);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onResume() {
         super.onResume();
-        Bundle bundle = this.getArguments();
 
-        hintForEvents = (TextView) getActivity().findViewById(R.id.hintForEventsFragment);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+        Intent intent = getIntent();
+
+        hintForEvents = (TextView) findViewById(R.id.hintForEventsFragment);
 
         if(trackingsCollection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
             hintForEvents.setVisibility(View.INVISIBLE);
         }
 
-        if(bundle!=null){
-            trackingId = UUID.fromString(bundle.getString("id"));
-        }
+            trackingId = UUID.fromString(intent.getStringExtra("id"));
 
         trackingService = new TrackingService("testUser", trackingsCollection);
 
         thisTracking = trackingsCollection.GetTracking(trackingId);
+        actionBar.setTitle(thisTracking.GetTrackingName());
 
         events = thisTracking.GetEventCollection();
+        setTitle(thisTracking.GetTrackingName());
 
-        getActivity().setTitle(thisTracking.GetTrackingName());
-
-        eventsRecycler = (RecyclerView) getActivity().findViewById(R.id.eventsForTrackingRV);
-        eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        eventsAdpt = new EventsAdapter(events , getActivity(), 0);
+        eventsRecycler = (RecyclerView) findViewById(R.id.eventsForTrackingRV);
+        eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        eventsAdpt = new EventsAdapter(events , this, 0);
         eventsRecycler.setAdapter(eventsAdpt);
 
 
-        addNewEvent = (FloatingActionButton) getActivity().findViewById(R.id.addNewEvent);
+        addNewEvent = (FloatingActionButton) findViewById(R.id.addNewEvent);
 
         addNewEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getActivity(), AddNewEventActivity.class);
+                Intent intent = new Intent(getApplicationContext(), AddNewEventActivity.class);
                 intent.putExtra("trackingId", thisTracking.GetTrackingID().toString());
 
                 startActivity(intent);
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, UserActionsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

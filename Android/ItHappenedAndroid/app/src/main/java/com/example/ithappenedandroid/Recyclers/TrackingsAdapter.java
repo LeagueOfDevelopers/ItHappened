@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -18,8 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ithappenedandroid.Activities.EditTrackingActivity;
+import com.example.ithappenedandroid.Activities.EventsForTrackingActivity;
 import com.example.ithappenedandroid.Domain.Tracking;
-import com.example.ithappenedandroid.Fragments.EventsForTrackingFragment;
 import com.example.ithappenedandroid.R;
 
 import java.util.List;
@@ -30,7 +29,6 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     private Context context;
     FragmentManager fManage;
     FragmentTransaction fTrans;
-    EventsForTrackingFragment eventsForTrackFrg;
 
 
     public TrackingsAdapter(List<Tracking> trackings, Context context) {
@@ -56,16 +54,12 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
             @Override
             public void onClick(View view) {
 
-                eventsForTrackFrg = new EventsForTrackingFragment();
                 final Tracking tracking = trackings.get(position);
                 String id = tracking.GetTrackingID().toString();
-                Bundle bundle = new Bundle();
-                bundle.putString("id", id);
-                eventsForTrackFrg.setArguments(bundle);
-                FragmentManager manager = ((Activity) context).getFragmentManager();
-                fTrans = manager.beginTransaction();
-                fTrans.replace(R.id.trackingsFrg, eventsForTrackFrg);
-                fTrans.commit();
+                Intent intent = new Intent(context, EventsForTrackingActivity.class);
+                String trackId = tracking.GetTrackingID().toString();
+                intent.putExtra("id", trackId);
+                context.startActivity(intent);
 
             }
         });
@@ -86,24 +80,19 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
                         switch (id){
                             case R.id.history_for_tracking:
-                                eventsForTrackFrg = new EventsForTrackingFragment();
+                                Intent intent = new Intent(context, EventsForTrackingActivity.class);
                                 String trackId = tracking.GetTrackingID().toString();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("id", trackId);
-                                eventsForTrackFrg.setArguments(bundle);
-                                FragmentManager manager = ((Activity) context).getFragmentManager();
-                                fTrans = manager.beginTransaction();
-                                fTrans.replace(R.id.trackingsFrg, eventsForTrackFrg);
-                                fTrans.commit();
+                                intent.putExtra("id", trackId);
+                                context.startActivity(intent);
 
                                 return true;
 
                             case R.id.edit_tracking:
                                 String trackIdForEdit = tracking.GetTrackingID().toString();
 
-                                Intent intent = new Intent((Activity) context, EditTrackingActivity.class);
-                                intent.putExtra("trackingId", trackIdForEdit);
-                                context.startActivity(intent);
+                                Intent intent1 = new Intent((Activity) context, EditTrackingActivity.class);
+                                intent1.putExtra("trackingId", trackIdForEdit);
+                                context.startActivity(intent1);
 
                                 return true;
 
