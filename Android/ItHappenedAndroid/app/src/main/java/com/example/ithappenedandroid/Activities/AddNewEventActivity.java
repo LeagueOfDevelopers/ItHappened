@@ -382,7 +382,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                             toastMessage+="шкалу, ";
                         }
 
-                        Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2)+"!", Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     String toastMessage = "Введите обязательные данные о событии: ";
@@ -396,7 +396,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                         toastMessage+="шкалу, ";
                     }
 
-                    Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2)+"!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
