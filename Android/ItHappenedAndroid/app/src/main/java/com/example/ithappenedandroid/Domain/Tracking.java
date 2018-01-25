@@ -164,7 +164,18 @@ public class Tracking {
     public TrackingCustomization GetScaleCustomization(){ return scale;}
     public TrackingCustomization GetCommentCustomization(){ return comment;}
     public TrackingCustomization GetRatingCustomization(){ return rating;}
+    public Date GetDateOfChange() {return dateOfChange; }
     public boolean GetStatus() { return isDeleted; }
+
+    public void SetTrackingName(String name) { trackingName = name;}
+    public void SetTrackingID(UUID id) { trackingId = id;}
+    public void SetTrackingDate (Date date) { trackingDate = date;}
+    public void SetEventCollection(List<Event> eventList) { eventCollection = eventList;}
+    public void SetScaleCustomization(TrackingCustomization scl){  scale = scl;}
+    public void SetCommentCustomization(TrackingCustomization comm){ comment = comm;}
+    public void SetRatingCustomization(TrackingCustomization rat){ rating = rat;}
+    public void SetDateOfChange(Date date) { dateOfChange = date; }
+    public void SetStatus(boolean status) { isDeleted = status; }
 
     @Expose
     private String trackingName;
@@ -180,4 +191,8 @@ public class Tracking {
     private TrackingCustomization comment;
     @Expose
     private List<Event> eventCollection;
+    @Expose
+    private Date dateOfChange;
+    @Expose
+    private boolean isDeleted = false;
 }

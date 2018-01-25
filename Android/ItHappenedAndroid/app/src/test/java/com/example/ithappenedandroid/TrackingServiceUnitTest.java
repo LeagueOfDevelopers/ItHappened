@@ -181,7 +181,7 @@ public class TrackingServiceUnitTest {
     }
 
     @Test
-    public void RemoveEventFromCollection()
+    public void DeleteEvent_EventStatusIsDeleted()
     {
         InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
         TrackingService service = new TrackingService("name", inMemoryTrackingRepositoryImpl);
@@ -208,6 +208,8 @@ public class TrackingServiceUnitTest {
 
         List<Event> eventCollectionMustBe = new ArrayList<>();
         eventCollectionMustBe.add(firstEvent);
+        secondEvent.RemoveEvent();
+        eventCollectionMustBe.add(secondEvent);
 
         service.RemoveEvent(trackingId, secondEventId);
 
@@ -216,7 +218,7 @@ public class TrackingServiceUnitTest {
     }
 
     @Test
-    public void RemoveDoesNotExistingEventFromCollection_ThrowException()
+    public void DaleteDoesNotExistingEventFromCollection_ThrowException()
     {
         boolean thrown = false;
         InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();
@@ -251,7 +253,7 @@ public class TrackingServiceUnitTest {
     }
 
     @Test
-    public void RemoveEventFromCollectionOfDoesNotExistingTracking_ThrowException()
+    public void DeleteEventOfDoesNotExistingTracking_ThrowException()
     {
         boolean thrown = false;
         InMemoryTrackingRepository inMemoryTrackingRepositoryImpl = new InMemoryTrackingRepository();

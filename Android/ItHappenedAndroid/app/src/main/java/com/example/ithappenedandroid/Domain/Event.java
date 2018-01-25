@@ -65,6 +65,17 @@ public class Event
     public Rating GetRating() {return rating;}
     public String GetComment() {return comment;}
     public UUID GetTrackingId() { return trackingId; }
+    public Date GetDateOfChange() {return dateOfChange; }
+    public boolean GetStatus() { return isDeleted; }
+
+    public void SetEventDate(Date date) { eventDate = date ;}
+    public void SetEventId(UUID id) { eventId = id; }
+    public void SetScale(Double scl) { scale = scl;}
+    public void SetRating(Rating  rtng) { rating = rtng; }
+    public void SetComment(String comm) { comment = comm; }
+    public void SetTrackingId(UUID id) { trackingId = id; }
+    public void SetDateOfChange(Date date) { dateOfChange = date; }
+    public void SetStatus(boolean status) { isDeleted = status; }
 
     @Expose
     private UUID eventId;
@@ -78,6 +89,8 @@ public class Event
     private Rating rating;
     @Expose
     private String comment;
+    @Expose
     private Date dateOfChange;
+    @Expose
     private boolean isDeleted = false;
 }
