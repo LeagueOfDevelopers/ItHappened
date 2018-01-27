@@ -367,7 +367,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                         trackingService.AddEvent(trackingId, newEvent);
                         Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                         Intent intent1 = new Intent(getApplicationContext() ,UserActionsActivity.class);
-                        intent.putExtra("state", "1");
+                        intent1.putExtra("state", "1");
                         startActivity(intent1);
                     } catch (Exception e) {
 

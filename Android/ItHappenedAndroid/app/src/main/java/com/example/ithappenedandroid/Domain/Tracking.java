@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class Tracking extends RealmObject {
-
-    public Tracking(){}
 
     public Tracking(String trackingName,
                     UUID trackingId,
@@ -28,7 +27,7 @@ public class Tracking extends RealmObject {
         SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        eventCollection = new ArrayList<Event>();
+        eventCollection = new RealmList<>();
     }
 
     public Tracking(String trackingName,
@@ -46,7 +45,8 @@ public class Tracking extends RealmObject {
         SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
         this.trackingDate = trackingDate;
-        this.eventCollection = eventCollection;
+        this.eventCollection = new RealmList<>();
+        this.eventCollection.addAll(eventCollection);
         dateOfChange = changeDate;
         isDeleted = status;
     }
@@ -179,7 +179,10 @@ public class Tracking extends RealmObject {
     public void SetTrackingName(String name) { trackingName = name;}
     public void SetTrackingID(UUID id) { trackingId = id.toString();}
     public void SetTrackingDate (Date date) { trackingDate = date;}
-    public void SetEventCollection(List<Event> eventList) { eventCollection = eventList;}
+    public void SetEventCollection(List<Event> eventList) {
+        eventCollection = new RealmList<>();
+        eventCollection.addAll(eventList);
+    }
     public void SetScaleCustomization(TrackingCustomization scl){  scale = scl.toString();}
     public void SetCommentCustomization(TrackingCustomization comm){ comment = comm.toString();}
     public void SetRatingCustomization(TrackingCustomization rat){ rating = rat.toString();}
@@ -200,7 +203,7 @@ public class Tracking extends RealmObject {
     @Expose
     private String comment;
     @Expose
-    private List<Event> eventCollection;
+    private RealmList<Event> eventCollection;
     @Expose
     private Date dateOfChange;
     @Expose

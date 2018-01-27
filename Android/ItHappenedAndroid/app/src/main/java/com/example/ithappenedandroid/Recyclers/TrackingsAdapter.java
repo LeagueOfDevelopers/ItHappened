@@ -44,7 +44,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Tracking tracking = trackings.get(position);
         holder.trackingTitle.setText(tracking.GetTrackingName());

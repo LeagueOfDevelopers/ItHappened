@@ -100,7 +100,7 @@ public class EventsFragment extends Fragment  {
 
         trackingService = new TrackingService("testUser", collection);
 
-        ArrayList<UUID> idCollection = new ArrayList<UUID>();
+        final ArrayList<UUID> idCollection = new ArrayList<UUID>();
         ArrayList<String> strings = new ArrayList<String>();
 
         List<Tracking> trackings = new ArrayList<>();
@@ -145,7 +145,7 @@ public class EventsFragment extends Fragment  {
         });
 
         String[] hints = new String[]{">","<","="};
-        Comparison[] comparisons = new Comparison[] {Comparison.More, Comparison.Less, Comparison.Equal};
+        final Comparison[] comparisons = new Comparison[] {Comparison.More, Comparison.Less, Comparison.Equal};
 
         hintsForScaleSpinner = (Spinner) view.findViewById(R.id.hintsForScale);
         hintsForRatingSpinner = (Spinner) view.findViewById(R.id.hintsForRating);
