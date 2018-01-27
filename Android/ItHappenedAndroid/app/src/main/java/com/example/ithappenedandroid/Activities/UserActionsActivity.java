@@ -1,7 +1,6 @@
 package com.example.ithappenedandroid.Activities;
 
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -26,14 +25,11 @@ public class UserActionsActivity extends AppCompatActivity
 
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
-    int activity_state=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
-        Intent intent = getIntent();
-        intent.getIntExtra("state", activity_state);
 
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,18 +50,11 @@ public class UserActionsActivity extends AppCompatActivity
     protected void onPostResume() {
         super.onPostResume();
         setTitle("Мои отслеживания");
-
-        Intent intent = getIntent();
-        if(intent.getStringExtra("state")!=null) {
-            activity_state = Integer.parseInt(intent.getStringExtra("state"));
-        }
-
-        if(activity_state==0) {
             trackFrg = new TrackingsFragment();
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
             fTrans.commit();
-        }   }
+        }
 
     @Override
     public void onBackPressed() {
