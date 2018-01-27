@@ -2,7 +2,6 @@ package com.example.ithappenedandroid.Domain;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
