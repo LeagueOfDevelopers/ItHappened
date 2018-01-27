@@ -17,6 +17,10 @@ public class Rating extends RealmObject
         rating = ratingValue;
     }
 
+    public Rating(){
+
+    }
+
     public Integer GetRatingValue () {return rating;}
 
     private Integer rating;

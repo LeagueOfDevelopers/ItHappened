@@ -1,7 +1,5 @@
 package com.example.ithappenedandroid.Domain;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.Expose;
 
 import java.util.Calendar;
@@ -9,7 +7,6 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import io.realm.Realm;
 import io.realm.RealmObject;
 
 public class Event extends RealmObject
@@ -26,6 +23,8 @@ public class Event extends RealmObject
         this.trackingId = trackingID.toString();
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
+
+    public Event(){}
 
     public Event(UUID eventId, UUID trackingID,
                  Double scale, Rating rating, String comment,
