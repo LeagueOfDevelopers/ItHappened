@@ -49,6 +49,10 @@ public class Tracking extends RealmObject {
         isDeleted = status;
     }
 
+    public Tracking(){
+
+    }
+
 
     public void AddEvent (Event newEvent)
     {
