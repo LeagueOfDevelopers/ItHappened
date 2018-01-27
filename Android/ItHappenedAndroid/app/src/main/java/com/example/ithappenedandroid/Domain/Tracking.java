@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-public class Tracking {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Tracking extends RealmObject {
 
     public Tracking(String trackingName,
                     UUID trackingId,
@@ -21,7 +24,7 @@ public class Tracking {
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
-        this.trackingId = trackingId;
+        this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         eventCollection = new ArrayList<Event>();
     }
@@ -39,7 +42,7 @@ public class Tracking {
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
-        this.trackingId = trackingId;
+        this.trackingId = trackingId.toString();
         this.trackingDate = trackingDate;
         this.eventCollection = eventCollection;
         dateOfChange = changeDate;
@@ -158,7 +161,7 @@ public class Tracking {
     }
 
     public String GetTrackingName() {return trackingName;}
-    public UUID GetTrackingID() {return trackingId;}
+    public UUID GetTrackingID() {return UUID.fromString(trackingId);}
     public Date GetTrackingDate () {return trackingDate;}
     public List<Event> GetEventCollection() { return eventCollection;}
     public TrackingCustomization GetScaleCustomization(){ return scale;}
@@ -168,7 +171,7 @@ public class Tracking {
     public boolean GetStatus() { return isDeleted; }
 
     public void SetTrackingName(String name) { trackingName = name;}
-    public void SetTrackingID(UUID id) { trackingId = id;}
+    public void SetTrackingID(UUID id) { trackingId = id.toString();}
     public void SetTrackingDate (Date date) { trackingDate = date;}
     public void SetEventCollection(List<Event> eventList) { eventCollection = eventList;}
     public void SetScaleCustomization(TrackingCustomization scl){  scale = scl;}
@@ -179,8 +182,9 @@ public class Tracking {
 
     @Expose
     private String trackingName;
+    @PrimaryKey
     @Expose
-    private UUID trackingId;
+    private String trackingId;
     @Expose
     private Date trackingDate;
     @Expose

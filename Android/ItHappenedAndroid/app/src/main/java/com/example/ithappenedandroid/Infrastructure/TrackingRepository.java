@@ -1,10 +1,6 @@
 package com.example.ithappenedandroid.Infrastructure;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
 import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
@@ -18,18 +14,26 @@ import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmModel;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 
+/**
+ * Created by Ded on 25.01.2018.
+ */
 
-public class InMemoryTrackingRepository implements ITrackingRepository
-{
-    public InMemoryTrackingRepository()
+public class TrackingRepository implements ITrackingRepository{
+
+    public TrackingRepository(Context cntxt)
     {
-        trackingCollection = new ArrayList<Tracking>();
+        context = cntxt;
+        Realm.init(context);
     }
 
     public Tracking GetTracking(UUID trackingId)
     {
+        List<Tracking> trackingCollection = GetTrackingCollection();
+
         for (Tracking item: trackingCollection)
         {
             if (item.GetTrackingID().equals(trackingId))
@@ -42,30 +46,18 @@ public class InMemoryTrackingRepository implements ITrackingRepository
 
     public List<Tracking> GetTrackingCollection()
     {
+        onCreate();
+        RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
+        List<Tracking> trackingCollection = realm.copyFromRealm(results);
         return trackingCollection;
-    }
-
-    public void ChangeTracking(final Tracking tracking)
-    {
-
-        int index = 0;
-        boolean contains = false;
-        for (Tracking item: trackingCollection)
-        {
-            if (item.GetTrackingID().equals(tracking.GetTrackingID()))
-            {
-                contains = true;
-                break;
-            }
-            index++;
-        }
-        if (contains)
-            trackingCollection.set(index, tracking);
-        else throw new IllegalArgumentException("Tracking with such ID doesn't exists");
     }
 
     public void AddNewTracking(Tracking tracking)
     {
+        onCreate();
+        realm.beginTransaction();
+        RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
+        List<Tracking> trackingCollection = realm.copyFromRealm(results);
         boolean contains = false;
         for (Tracking item: trackingCollection)
         {
@@ -76,15 +68,20 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             }
         }
         if (!contains)
-            trackingCollection.add(tracking);
-        else throw new IllegalArgumentException("Tracking with such ID already exists");
-    }
+            realm.copyToRealm(tracking);
 
+        else throw new IllegalArgumentException("Tracking with such ID already exists");
+        realm.commitTransaction();
+    }
 
     public List<Event> FilterEvents(UUID trackingId, Date dateFrom, Date dateTo,
                                     Comparison scaleComparison, Double scale,
-                                    Comparison ratingComparison, Rating rating)
-    {
+                                    Comparison ratingComparison, Rating rating) {
+
+        onCreate();
+        RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
+        List<Tracking> trackingCollection = realm.copyFromRealm(results);
+
         List<Event> notFilteredEvents = new ArrayList<Event>();
         List<Event> filteredEvents = new ArrayList<Event>();
         for (Tracking trackig : trackingCollection) {
@@ -101,12 +98,12 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             }
         }
 
-        if (dateFrom != null && dateTo != null){
+        if (dateFrom != null && dateTo != null) {
             notFilteredEvents.clear();
             notFilteredEvents.addAll(filteredEvents);
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
-                if (event.GetEventDate().compareTo(dateFrom) >= 0 && event.GetEventDate().compareTo(dateTo) <=0)
+                if (event.GetEventDate().compareTo(dateFrom) >= 0 && event.GetEventDate().compareTo(dateTo) <= 0)
                     filteredEvents.add(event);
             }
         }
@@ -133,7 +130,7 @@ public class InMemoryTrackingRepository implements ITrackingRepository
             }
         }
 
-        return  filteredEvents;
+        return filteredEvents;
     }
 
     private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)
@@ -158,5 +155,29 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         return false;
     }
 
-    private List<Tracking> trackingCollection;
+    public void ChangeTracking(final Tracking tracking) {
+        onCreate();
+        realm.beginTransaction();
+        RealmResults<Tracking> result = realm.where(Tracking.class)
+                .equalTo("trackingId", tracking.GetTrackingID().toString())
+                .findAll();
+        if (result.isEmpty())
+            throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+        result.deleteFromRealm(0);
+        realm.copyToRealm(tracking);
+        realm.commitTransaction();
+    }
+
+    private void onCreate()
+    {
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("ItHappened.realm")
+                .build();
+
+        realm = Realm.getInstance(config);
+    }
+
+
+    Context context;
+    Realm realm;
 }

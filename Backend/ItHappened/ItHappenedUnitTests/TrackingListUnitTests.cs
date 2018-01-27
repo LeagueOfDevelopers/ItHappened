@@ -13,14 +13,7 @@ namespace ItHappenedUnitTests
   public class TrackingListUnitTests
   {
 
-    [TestMethod]
-    public void SendTrackingCollectionToChangeTrackingCollection_CollectionMustReturnChangedCollection()
-    {
-      Event _event = new Event
-      {
-         
-      }
-    }
+   
 
   }
 }
