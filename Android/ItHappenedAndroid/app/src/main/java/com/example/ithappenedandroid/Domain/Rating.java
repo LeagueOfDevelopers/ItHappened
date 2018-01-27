@@ -1,10 +1,12 @@
 package com.example.ithappenedandroid.Domain;
 
+import io.realm.RealmObject;
+
 /**
  * Created by Ded on 09.12.2017.
  */
 
-public class Rating
+public class Rating extends RealmObject
 {
     public Rating(Integer ratingValue)
     {

@@ -14,6 +14,8 @@ import io.realm.annotations.PrimaryKey;
 
 public class Tracking extends RealmObject {
 
+    public Tracking(){}
+
     public Tracking(String trackingName,
                     UUID trackingId,
                     TrackingCustomization scale,
@@ -21,9 +23,9 @@ public class Tracking extends RealmObject {
                     TrackingCustomization comment)
     {
         this.trackingName = trackingName;
-        this.scale = scale;
-        this.rating = rating;
-        this.comment = comment;
+        SetScaleCustomization(scale);
+        SetRatingCustomization(rating);
+        SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         eventCollection = new ArrayList<Event>();
@@ -39,9 +41,9 @@ public class Tracking extends RealmObject {
                     boolean status, Date changeDate)
     {
         this.trackingName = trackingName;
-        this.scale = scale;
-        this.rating = rating;
-        this.comment = comment;
+        SetScaleCustomization(scale);
+        SetRatingCustomization(rating);
+        SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
         this.trackingDate = trackingDate;
         this.eventCollection = eventCollection;
@@ -52,9 +54,9 @@ public class Tracking extends RealmObject {
 
     public void AddEvent (Event newEvent)
     {
-        CustomizationCheck(newEvent.GetScale(), scale);
-        CustomizationCheck(newEvent.GetRating(), rating);
-        CustomizationCheck(newEvent.GetComment(), comment);
+        CustomizationCheck(newEvent.GetScale(), GetScaleCustomization());
+        CustomizationCheck(newEvent.GetRating(), GetRatingCustomization());
+        CustomizationCheck(newEvent.GetComment(), GetCommentCustomization());
         eventCollection.add(newEvent);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
@@ -97,11 +99,11 @@ public class Tracking extends RealmObject {
         }
         if (!contains)
             throw new IllegalArgumentException("Event with such id doesn't exist");
-        if (ChangesCheck(newScale, scale))
+        if (ChangesCheck(newScale, GetScaleCustomization()))
             editedEvent.EditScale(newScale);
-        if (ChangesCheck(newRating, rating))
+        if (ChangesCheck(newRating, GetRatingCustomization()))
             editedEvent.EditValueOfRating(newRating);
-        if (ChangesCheck(newComment, comment))
+        if (ChangesCheck(newComment, GetCommentCustomization()))
             editedEvent.EditComment(newComment);
         if (newDate!=null)
             editedEvent.EditDate(newDate);
@@ -115,11 +117,11 @@ public class Tracking extends RealmObject {
                              String editedTrackingName)
     {
         if (editedScale != null)
-            scale = editedScale;
+            SetScaleCustomization(editedScale);
         if (editedRating != null)
-            rating = editedRating;
+            SetRatingCustomization(editedRating);
         if (editedComment != null)
-            comment = editedComment;
+            SetCommentCustomization(editedComment);
         if (editedTrackingName != null)
             trackingName = editedTrackingName;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
@@ -164,9 +166,9 @@ public class Tracking extends RealmObject {
     public UUID GetTrackingID() {return UUID.fromString(trackingId);}
     public Date GetTrackingDate () {return trackingDate;}
     public List<Event> GetEventCollection() { return eventCollection;}
-    public TrackingCustomization GetScaleCustomization(){ return scale;}
-    public TrackingCustomization GetCommentCustomization(){ return comment;}
-    public TrackingCustomization GetRatingCustomization(){ return rating;}
+    public TrackingCustomization GetScaleCustomization(){ return TrackingCustomization.valueOf(scale);}
+    public TrackingCustomization GetCommentCustomization(){ return TrackingCustomization.valueOf(comment);}
+    public TrackingCustomization GetRatingCustomization(){ return TrackingCustomization.valueOf(rating);}
     public Date GetDateOfChange() {return dateOfChange; }
     public boolean GetStatus() { return isDeleted; }
 
@@ -174,9 +176,9 @@ public class Tracking extends RealmObject {
     public void SetTrackingID(UUID id) { trackingId = id.toString();}
     public void SetTrackingDate (Date date) { trackingDate = date;}
     public void SetEventCollection(List<Event> eventList) { eventCollection = eventList;}
-    public void SetScaleCustomization(TrackingCustomization scl){  scale = scl;}
-    public void SetCommentCustomization(TrackingCustomization comm){ comment = comm;}
-    public void SetRatingCustomization(TrackingCustomization rat){ rating = rat;}
+    public void SetScaleCustomization(TrackingCustomization scl){  scale = scl.toString();}
+    public void SetCommentCustomization(TrackingCustomization comm){ comment = comm.toString();}
+    public void SetRatingCustomization(TrackingCustomization rat){ rating = rat.toString();}
     public void SetDateOfChange(Date date) { dateOfChange = date; }
     public void SetStatus(boolean status) { isDeleted = status; }
 
@@ -188,11 +190,11 @@ public class Tracking extends RealmObject {
     @Expose
     private Date trackingDate;
     @Expose
-    private TrackingCustomization scale;
+    private String scale;
     @Expose
-    private TrackingCustomization rating;
+    private String rating;
     @Expose
-    private TrackingCustomization comment;
+    private String comment;
     @Expose
     private List<Event> eventCollection;
     @Expose

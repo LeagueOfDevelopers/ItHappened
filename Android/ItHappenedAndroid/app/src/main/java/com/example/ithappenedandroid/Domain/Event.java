@@ -14,6 +14,8 @@ import io.realm.RealmObject;
 
 public class Event extends RealmObject
 {
+    public Event(){}
+
     public Event(UUID eventId, UUID trackingID, Double scale, Rating rating, String comment)
     {
         this.eventId = eventId.toString();
