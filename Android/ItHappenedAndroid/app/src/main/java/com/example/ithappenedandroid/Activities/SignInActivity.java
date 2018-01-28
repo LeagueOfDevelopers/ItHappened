@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
@@ -93,11 +92,13 @@ public class SignInActivity extends Activity {
                         return token;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
-                        startActivityForResult(userAuthEx.getIntent(), 123);
+                        startActivityForResult(userAuthEx.getIntent(), 228);
                     } catch (IOException ioEx) {
-                        Log.d(TAG, "IOException");
+                        //Log.d(TAG, "IOException");
+                        Toast.makeText(getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
                     } catch (GoogleAuthException fatalAuthEx) {
-                        Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
+                        //Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
+                        Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                     return token;
                 }
