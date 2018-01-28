@@ -4,8 +4,14 @@ using System.Text;
 
 namespace ItHappenedDomain.Domain
 {
-  class Rating
+  public class Rating
   {
+
     private int rating;
+
+    public Rating(int rating)
+    {
+      this.rating = rating;
+    }
   }
 }

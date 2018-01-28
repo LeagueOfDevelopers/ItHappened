@@ -14,5 +14,17 @@ namespace ItHappenedDomain.Domain
     private String comment;
     public DateTimeOffset DateOfChange { private set; get; }
     private bool isDeleted;
+
+    public Event(Guid eventId, Guid trackingId, DateTimeOffset eventDate, double scale, Rating rating, string comment, DateTimeOffset dateOfChange, bool isDeleted)
+    {
+      EventId = eventId;
+      this.trackingId = trackingId;
+      this.eventDate = eventDate;
+      this.scale = scale;
+      this.rating = rating;
+      this.comment = comment;
+      DateOfChange = dateOfChange;
+      this.isDeleted = isDeleted;
+    }
   }
 }

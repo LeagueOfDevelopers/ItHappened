@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ItHappenedDomain.Infrastructure
 {
-  class TrackingCollection
+  public class TrackingCollection
   {
     public TrackingCollection()
     {

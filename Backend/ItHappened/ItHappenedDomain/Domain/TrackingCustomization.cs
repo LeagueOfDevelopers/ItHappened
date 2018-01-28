@@ -4,10 +4,10 @@ using System.Text;
 
 namespace ItHappenedDomain.Domain
 {
-  enum TrackingCustomization
+  public enum TrackingCustomization
   {
-    Scale = 0,
-    Rating = 1,
-    Comment = 2
+    None = 0,
+    Optional = 1,
+    Required = 2
   }
 }

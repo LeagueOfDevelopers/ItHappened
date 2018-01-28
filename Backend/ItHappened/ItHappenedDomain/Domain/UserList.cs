@@ -7,9 +7,9 @@ namespace ItHappenedDomain.Domain
 {
   public class UserList
   {
-    public UserList(Dictionary<string, User> userCollection)
+    public UserList()
     {
-      this._userCollection = userCollection;
+      this._userCollection = new Dictionary<string, User>();
     }
 
     public string SignUp(string idToken)
@@ -21,7 +21,7 @@ namespace ItHappenedDomain.Domain
         return null;
       User newUser = new User(response.sub);
       _userCollection.Add(response.sub, newUser);
-      return response.sub;
+      return response.email;
     }
 
     public List<Tracking> ChangeTrackingCollection(string userId, List<Tracking> trackingCollection)

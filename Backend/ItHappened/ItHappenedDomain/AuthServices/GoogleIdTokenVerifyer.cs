@@ -11,7 +11,7 @@ namespace ItHappenedDomain.AuthServices
   {
     public GoogleResponseJson Verify(string idToken)
     {
-      string uri = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + idToken;
+      string uri = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + idToken;
       HttpClient httpClient = new HttpClient(new HttpClientHandler());
       var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri)).Result;
       string responseValue = String.Empty;
