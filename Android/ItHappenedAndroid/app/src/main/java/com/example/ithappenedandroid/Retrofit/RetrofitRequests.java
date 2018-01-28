@@ -29,7 +29,7 @@ public class RetrofitRequests {
         this.userId = userId;
     }
 
-    public void syncData(){
+    public void syncData() {
 
         List<Tracking> trackingCollection = trackingRepository.GetTrackingCollection();
 
@@ -45,5 +45,35 @@ public class RetrofitRequests {
             }
         });
 
+    }
+
+    public String userRegistration(String idToken) {
+
+        final String userId = "";
+
+        ItHappenedApplication.getApi().UserRegistration(idToken).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response != null) {
+                    final String id = response.body();
+                    setUserAndReturn(userId, id);
+                    Toast.makeText(context, id, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable throwable) {
+                Toast.makeText(context, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return userId;
+
+    }
+
+    private void setUserAndReturn(String returned,String id){
+        returned = id;
     }
 }

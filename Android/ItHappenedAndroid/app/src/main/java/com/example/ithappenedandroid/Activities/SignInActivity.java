@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ithappenedandroid.R;
+import com.example.ithappenedandroid.Retrofit.RetrofitRequests;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -19,6 +21,7 @@ import com.google.android.gms.common.SignInButton;
 import com.nvanbenschoten.motion.ParallaxImageView;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class SignInActivity extends Activity {
 
@@ -83,13 +86,13 @@ public class SignInActivity extends Activity {
                 @Override
                 protected String doInBackground(Void... params) {
 
-                    String token = "";
+                    String idToken = "";
 
                     try {
-                        token = GoogleAuthUtil.getToken(SignInActivity.this, accountName,
+                        idToken = GoogleAuthUtil.getToken(SignInActivity.this, accountName,
                                 SCOPES);
-                        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
-                        return token;
+                        Toast.makeText(getApplicationContext(), idToken, Toast.LENGTH_SHORT).show();
+                        return idToken;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
                         startActivityForResult(userAuthEx.getIntent(), 228);
@@ -100,12 +103,12 @@ public class SignInActivity extends Activity {
                         //Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
-                    return token;
+                    return idToken;
                 }
 
                 @Override
-                protected void onPostExecute(String token) {
-                    reg(token);
+                protected void onPostExecute(String idToken) {
+                    reg(idToken);
                 }
             };
 
@@ -113,7 +116,10 @@ public class SignInActivity extends Activity {
         }
     }
 
-    private void reg(String token){
-        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
+    private void reg(String idToken){
+        //Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
+        RetrofitRequests retrofitRequests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), UUID.randomUUID());
+        String userId = retrofitRequests.userRegistration(idToken);
+        Toast.makeText(getApplicationContext(), userId, Toast.LENGTH_SHORT).show();
     }
 }

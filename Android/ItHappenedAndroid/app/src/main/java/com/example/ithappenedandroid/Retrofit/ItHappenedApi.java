@@ -16,6 +16,9 @@ import retrofit2.http.Path;
 
 public interface ItHappenedApi {
 
+    @POST("{idToken}")
+    Call<String> UserRegistration(@Path("idToken")String idToken);
+
     @POST("synchronization/{userId}")
     Call<List<Tracking>> SynchronizeData(@Path("userId")UUID userId, @Body List<Tracking> trackingColletion);
 

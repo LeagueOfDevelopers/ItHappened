@@ -28,7 +28,7 @@ public class ItHappenedApplication extends Application {
         client.addInterceptor(loggingInterceptor);
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://base_url")
+                .baseUrl("http://85.143.104.47:1080")
                 .client(client.build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
