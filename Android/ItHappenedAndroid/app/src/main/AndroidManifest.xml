@@ -44,6 +44,9 @@
         <activity android:name=".Activities.EventsForTrackingActivity"
             android:theme="@style/Theme.MyBack"></activity>
 
+        <activity android:name=".Activities.SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>

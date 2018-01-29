@@ -2,7 +2,9 @@ package com.example.ithappenedandroid.Activities;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -42,30 +44,36 @@ public class SignInActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        String id = sharedPreferences.getString("UserId", "");
+        if(id == "") {
+            findControlsById();
+            mainBackground.registerSensorManager();
+            AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
+            animation.setDuration(3000);
+            animation.setFillAfter(true);
+            mainTitle.setAnimation(animation);
 
-        findControlsById();
-        mainBackground.registerSensorManager();
-        AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
-        animation.setDuration(3000);
-        animation.setFillAfter(true);
-        mainTitle.setAnimation(animation);
+            mainBackground.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                    startActivity(intent);
+                }
+            });
 
-        mainBackground.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
-                        false, null, null, null, null);
-                startActivityForResult(intent, 228);
-            }
-        });
+            signIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
+                            false, null, null, null, null);
+                    startActivityForResult(intent, 228);
+                }
+            });
+        }else{
+            Intent intent = new Intent(this, UserActionsActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void findControlsById(){
@@ -91,7 +99,6 @@ public class SignInActivity extends Activity {
                     try {
                         idToken = GoogleAuthUtil.getToken(SignInActivity.this, accountName,
                                 SCOPES);
-                        Toast.makeText(getApplicationContext(), idToken, Toast.LENGTH_SHORT).show();
                         return idToken;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
@@ -117,9 +124,7 @@ public class SignInActivity extends Activity {
     }
 
     private void reg(String idToken){
-        //Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
         RetrofitRequests retrofitRequests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), UUID.randomUUID());
         String userId = retrofitRequests.userRegistration(idToken);
-        Toast.makeText(getApplicationContext(), userId, Toast.LENGTH_SHORT).show();
     }
 }

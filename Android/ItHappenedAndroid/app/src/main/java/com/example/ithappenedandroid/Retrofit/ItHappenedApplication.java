@@ -2,6 +2,9 @@ package com.example.ithappenedandroid.Retrofit;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -27,10 +30,12 @@ public class ItHappenedApplication extends Application {
 
         client.addInterceptor(loggingInterceptor);
 
+        Gson gson = new GsonBuilder().setLenient().create();
+
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://85.143.104.47:1080")
+                .baseUrl("http://85.143.104.47:1080/")
                 .client(client.build())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         itHappenedApi = retrofit.create(ItHappenedApi.class);
