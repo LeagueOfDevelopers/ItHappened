@@ -20,9 +20,13 @@ namespace ItHappenedDomain.Domain
       if (response.IsEmpty)
         return null;
       User newUser = new User(response.sub);
-      _userCollection.Add(response.sub, newUser);
+      if (_userCollection.ContainsKey(response.email))
+        return response.email;
+      _userCollection.Add(response.email, newUser);
       return response.email;
     }
+
+
 
     public List<Tracking> ChangeTrackingCollection(string userId, List<Tracking> trackingCollection)
     {
