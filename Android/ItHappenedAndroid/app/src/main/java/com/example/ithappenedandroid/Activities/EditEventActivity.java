@@ -221,7 +221,7 @@ public class EditEventActivity extends AppCompatActivity {
             scaleControlWidget = new EditText(this);
             scaleControlWidget.setText(event.GetScale().toString());
             scaleControlWidget.setTextColor(getResources().getColor(R.color.cardview_dark_background));
-            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890");
+            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.");
             scaleControlWidget.setKeyListener(keyListener);
 
             if(tracking.GetScaleCustomization()==TrackingCustomization.Optional){
@@ -309,7 +309,6 @@ public class EditEventActivity extends AppCompatActivity {
                     editedDate = simpleDateFormat.parse(editedDateText.getText().toString());
                 }catch (ParseException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Exception", Toast.LENGTH_SHORT).show();
                 }
 
                 if(commentFlag && ratingFlag && scaleFlag){
@@ -319,10 +318,21 @@ public class EditEventActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }catch (Exception e){
-                        Toast.makeText(getApplicationContext(), "Exception", Toast.LENGTH_SHORT).show();
+
                     }
                 }else{
-                    Toast.makeText(getApplicationContext(), "Введите обязательные данные о событие", Toast.LENGTH_SHORT).show();
+                    String toastMessage = "Введите обязательные данные о событии: ";
+                    if(commentFlag == false){
+                        toastMessage+="комментарий, ";
+                    }
+                    if(ratingFlag==false){
+                        toastMessage+="оценку, ";
+                    }
+                    if(scaleFlag == false){
+                        toastMessage+="шкалу, ";
+                    }
+
+                    Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2)+"!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
