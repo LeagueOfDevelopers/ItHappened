@@ -15,10 +15,13 @@ import android.widget.TextView;
 
 import com.example.ithappenedandroid.Activities.AddNewTrackingActivity;
 import com.example.ithappenedandroid.Application.TrackingService;
+import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.TrackingsAdapter;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
+
+import java.util.List;
 
 public class TrackingsFragment extends Fragment {
 
@@ -50,8 +53,16 @@ public class TrackingsFragment extends Fragment {
         trackingsRecycler = (RecyclerView)getActivity().findViewById(R.id.tracingsRV);
         trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
+        List<Tracking> visibleTrackings = trackingService.GetTrackingCollection();
+
+        for(int i =0;i<visibleTrackings.size();i++){
+            if(visibleTrackings.get(i).GetStatus()==true){
+                visibleTrackings.remove(i);
+            }
+        }
+
         //trackLoad = new TrackingLoader();
-        trackAdpt = new TrackingsAdapter(trackingService.GetTrackingCollection(),getActivity());
+        trackAdpt = new TrackingsAdapter(visibleTrackings,getActivity());
         trackingsRecycler.setAdapter(trackAdpt);
 
         addTracking = (FloatingActionButton) getActivity().findViewById(R.id.addNewTracking);

@@ -71,6 +71,13 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         actionBar.setTitle(thisTracking.GetTrackingName());
 
         events = thisTracking.GetEventCollection();
+
+        for(int i=0;i<events.size();i++){
+            if(events.get(i).GetStatus()==true){
+                events.remove(i);
+            }
+        }
+
         setTitle(thisTracking.GetTrackingName());
 
         eventsRecycler = (RecyclerView) findViewById(R.id.eventsForTrackingRV);
