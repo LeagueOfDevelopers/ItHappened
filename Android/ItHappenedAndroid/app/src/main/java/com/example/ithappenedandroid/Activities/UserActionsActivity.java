@@ -12,7 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
@@ -24,6 +24,7 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    TextView userNickname;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
 
@@ -33,7 +34,8 @@ public class UserActionsActivity extends AppCompatActivity
         setContentView(R.layout.activity_tracking);
 
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        Toast.makeText(getApplicationContext(), sharedPreferences.getString("UserId",""),Toast.LENGTH_SHORT).show();
+        userNickname = (TextView) findViewById(R.id.userNickname);
+        userNickname.setText(sharedPreferences.getString("UserId",""));
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
