@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    TextView userNickname;
+    TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
 
@@ -32,10 +33,6 @@ public class UserActionsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
-
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        userNickname = (TextView) findViewById(R.id.userNickname);
-        userNickname.setText(sharedPreferences.getString("UserId",""));
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
@@ -82,6 +79,16 @@ public class UserActionsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_tracking_drawer, menu);
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        userNick = (TextView) findViewById(R.id.userNickname);
+        userNick.setText(sharedPreferences.getString("UserId",""));
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
