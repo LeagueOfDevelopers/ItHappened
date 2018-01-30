@@ -2,6 +2,7 @@ package com.example.ithappenedandroid.Activities;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,13 +15,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Retrofit.RetrofitRequests;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
+
+import java.util.UUID;
 
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -134,6 +139,19 @@ public class UserActionsActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void okClicked(UUID trackingId) {
+
+        TrackingService trackingService = new TrackingService("",StaticInMemoryRepository.getInstance());
+        trackingService.RemoveTracking(trackingId);
+        Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, UserActionsActivity.class);
+        startActivity(intent);
+
+    }
+
+    public void cancelClicked() {
     }
 
 }
