@@ -1,6 +1,8 @@
 package com.example.ithappenedandroid.Activities;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
@@ -17,8 +20,6 @@ import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Retrofit.RetrofitRequests;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
-
-import java.util.UUID;
 
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +31,9 @@ public class UserActionsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        Toast.makeText(getApplicationContext(), sharedPreferences.getString("UserId",""),Toast.LENGTH_SHORT).show();
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
@@ -113,7 +117,8 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(id == R.id.synchronisation){
-            RetrofitRequests requests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), UUID.randomUUID());
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+            RetrofitRequests requests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
             requests.syncData();
         }
 

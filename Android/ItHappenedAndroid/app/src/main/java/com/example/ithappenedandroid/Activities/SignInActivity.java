@@ -23,7 +23,6 @@ import com.google.android.gms.common.SignInButton;
 import com.nvanbenschoten.motion.ParallaxImageView;
 
 import java.io.IOException;
-import java.util.UUID;
 
 public class SignInActivity extends Activity {
 
@@ -124,7 +123,7 @@ public class SignInActivity extends Activity {
     }
 
     private void reg(String idToken){
-        RetrofitRequests retrofitRequests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), UUID.randomUUID());
+        RetrofitRequests retrofitRequests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), null);
         String userId = retrofitRequests.userRegistration(idToken);
     }
 }

@@ -10,7 +10,6 @@ import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,9 +23,9 @@ public class RetrofitRequests {
 
     ITrackingRepository trackingRepository;
     Context context;
-    UUID userId;
+    String userId;
 
-    public RetrofitRequests(ITrackingRepository trackingRepository, Context context, UUID userId) {
+    public RetrofitRequests(ITrackingRepository trackingRepository, Context context, String userId) {
         this.trackingRepository = trackingRepository;
         this.context = context;
         this.userId = userId;

@@ -3,7 +3,6 @@ package com.example.ithappenedandroid.Retrofit;
 import com.example.ithappenedandroid.Domain.Tracking;
 
 import java.util.List;
-import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,6 +15,6 @@ public interface ItHappenedApi {
     Call<String> SignUp(@Path("idToken")String idToken);
 
     @POST("synchronization/{userId}")
-    Call<List<Tracking>> SynchronizeData(@Path("userId")UUID userId, @Body List<Tracking> trackingColletion);
+    Call<List<Tracking>> SynchronizeData(@Path("userId")String userId, @Body List<Tracking> trackingColletion);
 
 }
