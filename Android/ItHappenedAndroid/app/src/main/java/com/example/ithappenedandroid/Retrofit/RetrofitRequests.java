@@ -1,11 +1,9 @@
 package com.example.ithappenedandroid.Retrofit;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.example.ithappenedandroid.Activities.SplashScreenActivity;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 
@@ -66,8 +64,6 @@ public class RetrofitRequests {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("UserId", id);
                     editor.commit();
-                    Intent intent = new Intent(context, SplashScreenActivity.class);
-                    context.startActivity(intent);
                 } else {
                     Toast.makeText(context, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
                 }
