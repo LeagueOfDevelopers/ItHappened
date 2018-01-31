@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class EditTrackingActivity extends AppCompatActivity {
 
-    ITrackingRepository trackingRepository = StaticInMemoryRepository.getInstance();
+    ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
     TrackingService trackingService = new TrackingService("testUser", trackingRepository);
 
     UUID trackingId;

@@ -1,17 +1,20 @@
 package com.example.ithappenedandroid;
 
+import android.content.Context;
+
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
+import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
 
 public class StaticInMemoryRepository {
 
-    private static ITrackingRepository instance = new InMemoryTrackingRepository();
+    private ITrackingRepository instance;
 
-    private StaticInMemoryRepository(){
-
+    public StaticInMemoryRepository(Context context){
+        instance = new TrackingRepository(context);
     }
 
-    public static ITrackingRepository getInstance(){
+    public ITrackingRepository getInstance(){
         return instance;
     }
 

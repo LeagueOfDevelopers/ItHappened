@@ -45,7 +45,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         final Event event = events.get(position);
 
-        ITrackingRepository trackingRepository = StaticInMemoryRepository.getInstance();
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(context);
+
+        ITrackingRepository trackingRepository = repository.getInstance();
 
 
         UUID trackingId = event.GetTrackingId();

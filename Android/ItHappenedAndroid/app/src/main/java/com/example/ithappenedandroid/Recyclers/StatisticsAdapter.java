@@ -29,13 +29,15 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
     List<Tracking> trackings;
     Context context;
 
-    ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
+    ITrackingRepository trackingCollection;
     TrackingService trackingService = new TrackingService("textUser", trackingCollection);
 
 
     public StatisticsAdapter(List<Tracking> trackings, Context context) {
         this.trackings = trackings;
         this.context = context;
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(context);
+        trackingCollection = repository.getInstance();
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.example.ithappenedandroid.Fragments;
 
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +16,10 @@ import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.StatisticsAdapter;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class StatisticsFragment extends Fragment {
 
-    ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
+    ITrackingRepository trackingCollection = new StaticInMemoryRepository(getContext()).getInstance();
     RecyclerView statisticsRecycler;
 
     @Override

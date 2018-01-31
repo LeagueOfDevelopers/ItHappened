@@ -3,8 +3,10 @@ package com.example.ithappenedandroid.Fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -39,11 +41,13 @@ public class TrackingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_trackings, null);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //test user and test collection
-        trackingCollection = StaticInMemoryRepository.getInstance();
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(getContext());
+        trackingCollection = repository.getInstance();
         userName = "testUser";
         trackingService = new TrackingService(userName, trackingCollection);
 

@@ -174,7 +174,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
                 trackingTitle = trackingTitleControl.getText().toString();
 
-                    trackingRepository = StaticInMemoryRepository.getInstance();
+                    trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
 
 
                     //set properties of scale

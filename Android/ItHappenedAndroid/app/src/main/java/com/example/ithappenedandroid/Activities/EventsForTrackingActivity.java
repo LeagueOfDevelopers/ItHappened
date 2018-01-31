@@ -36,7 +36,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     List<Event> events;
     UUID trackingId;
 
-    ITrackingRepository trackingsCollection = StaticInMemoryRepository.getInstance();;
+    ITrackingRepository trackingsCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
     TrackingService trackingService;
     int trackingPosition;
 

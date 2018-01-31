@@ -118,7 +118,7 @@ public class SignInActivity extends Activity {
 
     private void reg(String idToken){
         //Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
-        RetrofitRequests retrofitRequests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), UUID.randomUUID());
+        RetrofitRequests retrofitRequests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), UUID.randomUUID());
         String userId = retrofitRequests.userRegistration(idToken);
         Toast.makeText(getApplicationContext(), userId, Toast.LENGTH_SHORT).show();
     }

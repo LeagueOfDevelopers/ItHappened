@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class EventsFragment extends Fragment  {
 
     RecyclerView eventsRecycler;
@@ -66,7 +67,7 @@ public class EventsFragment extends Fragment  {
     Spinner hintsForRatingSpinner;
     TrackingService trackingService;
 
-    ITrackingRepository collection = StaticInMemoryRepository.getInstance();
+    ITrackingRepository collection = new StaticInMemoryRepository(getContext()).getInstance();
 
     @Nullable
     @Override

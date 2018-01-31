@@ -114,7 +114,7 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(id == R.id.synchronisation){
-            RetrofitRequests requests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), UUID.randomUUID());
+            RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), UUID.randomUUID());
             requests.syncData();
         }
 

@@ -35,7 +35,6 @@ import java.util.UUID;
 public class AddNewEventActivity extends AppCompatActivity {
 
     TrackingService trackingService;
-    ITrackingRepository TrackingCollection = StaticInMemoryRepository.getInstance();
 
     LinearLayout textCustomControl;
     LinearLayout scaleCustomControl;
@@ -73,10 +72,10 @@ public class AddNewEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
 
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext());
+        trackingCollection = repository.getInstance();
         trackingService = new TrackingService("thisUser", trackingCollection);
 
-
-        trackingCollection = StaticInMemoryRepository.getInstance();
         textCustomControl = (LinearLayout) findViewById(R.id.commentControl);
         scaleCustomControl = (LinearLayout) findViewById(R.id.scaleControl);
         ratingCustomControl = (LinearLayout) findViewById(R.id.ratingControl);

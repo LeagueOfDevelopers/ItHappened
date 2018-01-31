@@ -64,7 +64,7 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout ratingControl;
     LinearLayout scaleControl;
 
-    ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
+    ITrackingRepository trackingCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
     TrackingService trackingService = new TrackingService("testUser", trackingCollection);
 
     UUID trackingId;

@@ -35,7 +35,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection = StaticInMemoryRepository.getInstance();
+    ITrackingRepository collection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
     TrackingService trackingSercvice = new TrackingService("testUser", collection);
 
     @Override
