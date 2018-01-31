@@ -14,11 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ithappenedandroid.Activities.EditTrackingActivity;
 import com.example.ithappenedandroid.Activities.EventsForTrackingActivity;
 import com.example.ithappenedandroid.Domain.Tracking;
+import com.example.ithappenedandroid.Fragments.DeleteTrackingFragment;
 import com.example.ithappenedandroid.R;
 
 import java.util.List;
@@ -97,7 +97,8 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                                 return true;
 
                             case R.id.delete_tracking:
-                                Toast.makeText(context, "Удаление отлеживания", Toast.LENGTH_SHORT).show();
+                                DeleteTrackingFragment delete = new DeleteTrackingFragment(tracking.GetTrackingID());
+                                delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
                                 return true;
 
                         }

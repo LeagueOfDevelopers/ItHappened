@@ -1,6 +1,9 @@
 package com.example.ithappenedandroid.Activities;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -9,8 +12,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
@@ -23,6 +30,7 @@ import java.util.UUID;
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
 
@@ -30,7 +38,6 @@ public class UserActionsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
-
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
@@ -79,6 +86,16 @@ public class UserActionsActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_tracking_drawer, menu);
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        userNick = (TextView) findViewById(R.id.userNickname);
+        userNick.setText(sharedPreferences.getString("UserId",""));
+        return true;
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -114,13 +131,27 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(id == R.id.synchronisation){
-            RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), UUID.randomUUID());
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+            RetrofitRequests requests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
             requests.syncData();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void okClicked(UUID trackingId) {
+
+        TrackingService trackingService = new TrackingService("",StaticInMemoryRepository.getInstance());
+        trackingService.RemoveTracking(trackingId);
+        Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, UserActionsActivity.class);
+        startActivity(intent);
+
+    }
+
+    public void cancelClicked() {
     }
 
 }
