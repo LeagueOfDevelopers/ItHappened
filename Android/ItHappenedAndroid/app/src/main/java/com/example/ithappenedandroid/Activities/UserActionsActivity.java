@@ -132,7 +132,7 @@ public class UserActionsActivity extends AppCompatActivity
 
         if(id == R.id.synchronisation){
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-            RetrofitRequests requests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
+            RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
             requests.syncData();
         }
 
@@ -143,7 +143,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     public void okClicked(UUID trackingId) {
 
-        TrackingService trackingService = new TrackingService("",StaticInMemoryRepository.getInstance());
+        TrackingService trackingService = new TrackingService("",new StaticInMemoryRepository(getApplicationContext()).getInstance());
         trackingService.RemoveTracking(trackingId);
         Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, UserActionsActivity.class);

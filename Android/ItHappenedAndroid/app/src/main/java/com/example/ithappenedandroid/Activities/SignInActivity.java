@@ -123,7 +123,7 @@ public class SignInActivity extends Activity {
     }
 
     private void reg(String idToken){
-        RetrofitRequests retrofitRequests = new RetrofitRequests(StaticInMemoryRepository.getInstance(), getApplicationContext(), null);
+        RetrofitRequests retrofitRequests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), null);
         String userId = retrofitRequests.userRegistration(idToken);
         Intent intent = new Intent(getApplicationContext(), SplashScreenActivity.class);
         startActivity(intent);
