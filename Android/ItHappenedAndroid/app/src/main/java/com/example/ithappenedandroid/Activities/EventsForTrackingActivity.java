@@ -20,6 +20,7 @@ import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.EventsAdapter;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     List<Event> events;
     UUID trackingId;
 
-    ITrackingRepository trackingsCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+    ITrackingRepository trackingsCollection;
     TrackingService trackingService;
     int trackingPosition;
 
@@ -49,6 +50,8 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        trackingsCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -72,9 +75,11 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         events = thisTracking.GetEventCollection();
 
+        List<Event> visibleEvents = new ArrayList<>();
+
         for(int i=0;i<events.size();i++){
-            if(events.get(i).GetStatus()==true){
-                events.remove(i);
+            if(!events.get(i).GetStatus()){
+                visibleEvents.add(events.get(i));
             }
         }
 
@@ -82,7 +87,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         eventsRecycler = (RecyclerView) findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsAdpt = new EventsAdapter(events , this, 0);
+        eventsAdpt = new EventsAdapter(visibleEvents , this, 0);
         eventsRecycler.setAdapter(eventsAdpt);
 
 

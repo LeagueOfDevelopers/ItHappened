@@ -143,7 +143,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     public void okClicked(UUID trackingId) {
 
-        TrackingService trackingService = new TrackingService("",new StaticInMemoryRepository(getApplicationContext()).getInstance());
+        TrackingService trackingService = new TrackingService("", new StaticInMemoryRepository(getApplicationContext()).getInstance());
         trackingService.RemoveTracking(trackingId);
         Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, UserActionsActivity.class);

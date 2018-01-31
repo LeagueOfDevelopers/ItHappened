@@ -83,12 +83,8 @@ public class EventsFragment extends Fragment  {
         if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
             hintForEventsHistory.setVisibility(View.INVISIBLE);
         }
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = getView();
 
         filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
@@ -217,8 +213,11 @@ public class EventsFragment extends Fragment  {
 
             }
         });
+    }
+
 
 
 
     }
-}
+
+

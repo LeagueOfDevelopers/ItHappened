@@ -3,10 +3,8 @@ package com.example.ithappenedandroid.Fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -23,6 +21,7 @@ import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.TrackingsAdapter;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrackingsFragment extends Fragment {
@@ -44,24 +43,34 @@ public class TrackingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_trackings, null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //test user and test collection
-        StaticInMemoryRepository repository = new StaticInMemoryRepository(getContext());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        hintForTrackings = (TextView) getActivity().findViewById(R.id.hintForTrackingsFragment);
+
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(getActivity().getApplicationContext());
         trackingCollection = repository.getInstance();
         userName = "testUser";
         trackingService = new TrackingService(userName, trackingCollection);
 
+        if(trackingCollection.GetTrackingCollection().size()!=0){
+            hintForTrackings.setVisibility(View.INVISIBLE);
+        }
+
         trackingsRecycler = (RecyclerView)getActivity().findViewById(R.id.tracingsRV);
         trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        List<Tracking> visibleTrackings = trackingService.GetTrackingCollection();
+        List<Tracking> allTrackings = trackingService.GetTrackingCollection();
+        List<Tracking> visibleTrackings = new ArrayList<>();
 
-        for(int i =0;i<visibleTrackings.size();i++){
-            if(visibleTrackings.get(i).GetStatus()==true){
-                visibleTrackings.remove(i);
+        for(int i =0;i<allTrackings.size();i++){
+            if(!allTrackings.get(i).GetStatus()){
+                visibleTrackings.add(allTrackings.get(i));
             }
         }
 
@@ -79,15 +88,6 @@ public class TrackingsFragment extends Fragment {
 
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        hintForTrackings = (TextView) getActivity().findViewById(R.id.hintForTrackingsFragment);
-        if(trackingCollection.GetTrackingCollection().size()!=0){
-            hintForTrackings.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override

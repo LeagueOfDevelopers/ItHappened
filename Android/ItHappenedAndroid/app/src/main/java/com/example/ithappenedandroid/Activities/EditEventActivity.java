@@ -64,8 +64,8 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout ratingControl;
     LinearLayout scaleControl;
 
-    ITrackingRepository trackingCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
-    TrackingService trackingService = new TrackingService("testUser", trackingCollection);
+    ITrackingRepository trackingCollection;
+    TrackingService trackingService;
 
     UUID trackingId;
     UUID eventId;
@@ -80,6 +80,10 @@ public class EditEventActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
+
+
+        trackingCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        trackingService = new TrackingService("testUser", trackingCollection);
 
 
         editDate = (Button) findViewById(R.id.editDateButton);

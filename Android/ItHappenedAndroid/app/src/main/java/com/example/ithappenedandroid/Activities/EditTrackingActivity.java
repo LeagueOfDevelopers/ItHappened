@@ -29,8 +29,8 @@ import java.util.UUID;
 
 public class EditTrackingActivity extends AppCompatActivity {
 
-    ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
-    TrackingService trackingService = new TrackingService("testUser", trackingRepository);
+    ITrackingRepository trackingRepository;
+    TrackingService trackingService;
 
     UUID trackingId;
 
@@ -80,6 +80,9 @@ public class EditTrackingActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
+
+        trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        trackingService = new TrackingService("testUser", trackingRepository);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);

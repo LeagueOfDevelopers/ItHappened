@@ -35,13 +35,16 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
-    TrackingService trackingSercvice = new TrackingService("testUser", collection);
+    ITrackingRepository collection;
+    TrackingService trackingSercvice;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
+        collection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        trackingSercvice = new TrackingService("testUser", collection);
 
         Intent intent = getIntent();
         trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
