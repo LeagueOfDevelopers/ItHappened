@@ -3,6 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" android:layout_marginBottom="64dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/hintForDate"
         android:layout_width="match_parent"
@@ -77,6 +85,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"></LinearLayout>
 
+        </RelativeLayout>
+
+    </ScrollView>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -84,7 +96,7 @@
         android:background="@drawable/button"
         android:layout_margin="7dp"
         android:id="@+id/editEventBtn"
-        android:text="Редактировать"
+        android:text="Изменить"
         android:textColor="#FFFFFF"/>
 
 </RelativeLayout>
