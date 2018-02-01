@@ -261,7 +261,7 @@ public class EditTrackingActivity extends AppCompatActivity {
 
             case Required:
                 text.setText("Обязательно");
-                ratingCard.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
+                card.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
                 state = 2;
                 break;
 
