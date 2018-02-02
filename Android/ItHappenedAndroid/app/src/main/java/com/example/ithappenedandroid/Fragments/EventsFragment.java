@@ -20,6 +20,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Comparison;
@@ -50,6 +51,9 @@ public class EventsFragment extends Fragment  {
     TextView hintForEventsHistory;
 
     RelativeLayout filtersScreen;
+    RelativeLayout filtersHint;
+
+    int stateForHint;
 
     Button dateFrom;
     Button dateTo;
@@ -87,8 +91,31 @@ public class EventsFragment extends Fragment  {
         View view = getView();
 
         filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setHideable(false);
+
+        filtersHint = (RelativeLayout) getActivity().findViewById(R.id.filtersText);
+
+        stateForHint = 0;
+
+        filtersHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (stateForHint){
+                    case 0:
+                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        stateForHint = 1;
+                        break;
+                    case 1:
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        stateForHint = 0;
+                        break;
+                        default:
+                            Toast.makeText(getActivity(), "Потяните вверх!",Toast.LENGTH_SHORT).show();
+                            break;
+                }
+            }
+        });
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
