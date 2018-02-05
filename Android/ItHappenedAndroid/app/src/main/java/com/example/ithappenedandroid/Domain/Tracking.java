@@ -70,7 +70,7 @@ public class Tracking extends RealmObject {
         Integer deletionEvent = null;
         Integer i=0;
         for (Event event: eventCollection) {
-            if (event.GetEventId().equals(eventID))
+            if (event.getEventId().equals(eventID))
                 deletionEvent =i;
             i++;
         }
@@ -199,7 +199,7 @@ public class Tracking extends RealmObject {
         this.comment = comment;
     }
 
-    public List<Event> getEventCollection() {
+    public RealmList<Event> getEventCollection() {
         return eventCollection;
     }
 
@@ -281,7 +281,7 @@ public class Tracking extends RealmObject {
     @SerializedName("comment")
     private String comment;
     @Expose
-    @SerializedName("EventCollection")
+    @SerializedName("eventCollection")
     private RealmList<Event> eventCollection;
     @Expose
     @SerializedName("dateOfChange")
