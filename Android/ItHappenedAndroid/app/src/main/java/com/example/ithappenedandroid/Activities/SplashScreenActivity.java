@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.example.ithappenedandroid.R;
 
@@ -28,7 +27,6 @@ public class SplashScreenActivity extends Activity {
             public void run() {
                 Intent mainIntent = new Intent(SplashScreenActivity.this, UserActionsActivity.class);
                 SplashScreenActivity.this.startActivity(mainIntent);
-                Toast.makeText(getApplicationContext(), "Добро пожаловать!", Toast.LENGTH_SHORT).show();
                 SplashScreenActivity.this.finish();
             }
         }, SPLASH_DISPLAY_LENGTH);

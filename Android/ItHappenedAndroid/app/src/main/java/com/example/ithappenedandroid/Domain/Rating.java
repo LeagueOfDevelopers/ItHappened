@@ -1,5 +1,8 @@
 package com.example.ithappenedandroid.Domain;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 
 /**
@@ -23,5 +26,15 @@ public class Rating extends RealmObject
 
     public Integer GetRatingValue () {return rating;}
 
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    @Expose
+    @SerializedName("rating")
     private Integer rating;
 }

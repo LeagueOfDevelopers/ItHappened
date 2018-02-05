@@ -37,8 +37,11 @@ public class RetrofitRequests {
             @Override
             public void onResponse(Call<List<Tracking>> call, Response<List<Tracking>> response) {
                 if (response.body() != null) {
+                    trackingRepository.SaveTrackingCollection(response.body());
                     Toast.makeText(context, "Синхронизация прошла успешно", Toast.LENGTH_SHORT).show();
                 }else{
+
+                    Toast.makeText(context, "На время теста response.body()==null("+" "+response,Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -53,13 +56,13 @@ public class RetrofitRequests {
 
     public String userRegistration(String idToken) {
 
-        final String userId = null;
-
         ItHappenedApplication.getApi().SignUp(idToken).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response != null) {
                     final String id = response.body();
+                    setUserId(id);
+                    syncWithReg(id);
                     SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("UserId", id);
@@ -75,11 +78,44 @@ public class RetrofitRequests {
             }
         });
 
+
+
         return userId;
 
     }
 
-    private void setUserAndReturn(String returned,String id){
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    private void syncWithReg(String userId){
+
+        List<Tracking> trackingCollection = trackingRepository.GetTrackingCollection();
+
+        ItHappenedApplication.getApi().SynchronizeData(userId, trackingCollection).enqueue(new Callback<List<Tracking>>() {
+            @Override
+            public void onResponse(Call<List<Tracking>> call, Response<List<Tracking>> response) {
+                if (response.body() != null) {
+                    trackingRepository.SaveTrackingCollection(response.body());
+                    Toast.makeText(context, "Синхронизация прошла успешно", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "На время теста response.body()==null("+" "+response,Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Tracking>> call, Throwable throwable) {
+                Toast.makeText(context, "Проверьте подключение к интернету!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void setUserAndReturn(String returned, String id){
         returned = id;
     }
 }

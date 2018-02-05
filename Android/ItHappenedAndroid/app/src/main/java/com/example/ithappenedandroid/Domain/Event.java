@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Domain;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -81,20 +82,92 @@ public class Event extends RealmObject
     public void SetDateOfChange(Date date) { dateOfChange = date; }
     public void SetStatus(boolean status) { isDeleted = status; }
 
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
+    }
+
+    public Date getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public Double getScale() {
+        return scale;
+    }
+
+    public void setScale(Double scale) {
+        this.scale = scale;
+    }
+
+    public Rating getRating() {
+        return rating;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Date getDateOfChange() {
+        return dateOfChange;
+    }
+
+    public void setDateOfChange(Date dateOfChange) {
+        this.dateOfChange = dateOfChange;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     @Expose
+    @SerializedName("EventId")
     private String eventId;
     @Expose
+    @SerializedName("trackingId")
     private String trackingId;
     @Expose
+    @SerializedName("eventDate")
     private Date eventDate;
     @Expose
+    @SerializedName("scale")
     private Double scale;
     @Expose
+    @SerializedName("rating")
     private Rating rating;
     @Expose
+    @SerializedName("comment")
     private String comment;
     @Expose
+    @SerializedName("DateOfChange")
     private Date dateOfChange;
     @Expose
+    @SerializedName("isDeleted")
     private boolean isDeleted = false;
 }
