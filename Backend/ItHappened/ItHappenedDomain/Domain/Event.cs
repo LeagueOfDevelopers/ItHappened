@@ -6,24 +6,27 @@ namespace ItHappenedDomain.Domain
 {
   public class Event
   {
-    public Guid EventId { private set; get; }
-    public Guid trackingId { private set; get; }
-    private DateTimeOffset eventDate;
-    private Double scale;
-    private Rating rating;
-    private String comment;
-    public DateTimeOffset DateOfChange { private set; get; }
-    private bool isDeleted;
+    public string eventId { set; get; }
+    public string trackingId { set; get; }
+    public DateTimeOffset eventDate { set; get; }
+    public Double scale { set; get; }
+    public Rating rating { set; get; }
+    public String comment { set; get; }
+    public DateTimeOffset dateOfChange { set; get; }
+    public bool isDeleted { set; get; }
 
-    public Event(Guid eventId, Guid trackingId, DateTimeOffset eventDate, double scale, Rating rating, string comment, DateTimeOffset dateOfChange, bool isDeleted)
+    public Event(string eventId, string trackingId, 
+      DateTimeOffset eventDate, 
+      double scale, Rating rating, string comment, 
+      DateTimeOffset dateOfChange, bool isDeleted)
     {
-      EventId = eventId;
+      this.eventId = eventId;
       this.trackingId = trackingId;
       this.eventDate = eventDate;
       this.scale = scale;
       this.rating = rating;
       this.comment = comment;
-      DateOfChange = dateOfChange;
+      this.dateOfChange = dateOfChange;
       this.isDeleted = isDeleted;
     }
   }

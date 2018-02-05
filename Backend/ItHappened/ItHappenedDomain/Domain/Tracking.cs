@@ -6,17 +6,22 @@ namespace ItHappenedDomain.Domain
 {
   public class Tracking
   {
-    
-    private String trackingName;
-    public Guid trackingId { private set; get; }
-    private DateTimeOffset trackingDate;
-    private TrackingCustomization scale;
-    private TrackingCustomization rating;
-    private TrackingCustomization comment;
-    public DateTimeOffset dateOfChange { private set; get; }
-    private bool isDeleted;
+    public string trackingName { set; get; }
+    public string trackingId { set; get; }
+    public DateTimeOffset trackingDate { set; get; }
+    public string scale { set; get; }
+    public string rating { set; get; }
+    public string comment { set; get; }
+    public DateTimeOffset dateOfChange { set; get; }
+    public bool isDeleted { set; get; }
 
-    public Tracking(string trackingName, Guid trackingId, DateTimeOffset trackingDate, TrackingCustomization scale, TrackingCustomization rating, TrackingCustomization comment, DateTimeOffset dateOfChange, bool isDeleted, List<Event> eventCollection)
+    public Tracking(string trackingName, string trackingId, 
+      DateTimeOffset trackingDate, 
+      string scale, 
+      string rating, 
+      string comment, 
+      DateTimeOffset dateOfChange, bool isDeleted, 
+      List<Event> eventCollection)
     {
       this.trackingName = trackingName;
       this.trackingId = trackingId;

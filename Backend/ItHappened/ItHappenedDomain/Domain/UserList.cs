@@ -19,14 +19,21 @@ namespace ItHappenedDomain.Domain
       response = verifyer.Verify(idToken);
       if (response.IsEmpty)
         return null;
-      User newUser = new User(response.sub);
+      User newUser = new User(response.email);
       if (_userCollection.ContainsKey(response.email))
         return response.email;
       _userCollection.Add(response.email, newUser);
       return response.email;
     }
 
-
+    public string Reg(string id)
+    {
+      if (_userCollection.ContainsKey(id))
+        return id;
+      User newUser = new User(id);
+      _userCollection.Add(id, newUser);
+      return id;
+    }
 
     public List<Tracking> ChangeTrackingCollection(string userId, List<Tracking> trackingCollection)
     {

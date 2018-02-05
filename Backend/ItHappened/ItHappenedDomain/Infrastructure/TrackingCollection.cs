@@ -16,6 +16,10 @@ namespace ItHappenedDomain.Infrastructure
 
     public List<Tracking> ChangeTrackingCollection(List<Tracking> trackingCollection)
     {
+      if (trackingCollection == null)
+      {
+        return _trackingCollection;
+      }
 
       ChangeTrackings(trackingCollection);
       ChangeEventCollections(trackingCollection);
@@ -45,33 +49,45 @@ namespace ItHappenedDomain.Infrastructure
 
     private void ChangeEventCollections(List<Tracking> trackingCollection)
     {
+      
       foreach (var tracking in trackingCollection)
       {
+        if (tracking.EventCollection == null)
+          continue;
         bool contains = _trackingCollection.Any(item => item.trackingId.Equals(tracking.trackingId));
         if (contains)
         {
           int indexOfTracking = _trackingCollection
             .IndexOf(_trackingCollection.First(item => item.trackingId.Equals(tracking.trackingId)));
+
           List<Event> oldEventCollection = _trackingCollection[indexOfTracking].EventCollection;
 
-          List<Event> eventCollectionToChange = oldEventCollection
-            .Where(_event => tracking.EventCollection.Any(item => _event.EventId.Equals(item.EventId)))
-            .Where(_event => _event.DateOfChange > tracking.EventCollection
-                               .First(item => _event.EventId.Equals(item.EventId)).DateOfChange).ToList();
-
-          List<Event> eventCollectionToAdd = oldEventCollection
-            .Where(_event => !(tracking.EventCollection.Any(item => _event.EventId.Equals(item.EventId)))).ToList();
-
-          foreach (var _event in eventCollectionToChange)
+          if (oldEventCollection != null)
           {
-            int eventIndex = _trackingCollection[indexOfTracking].EventCollection
-              .IndexOf(_trackingCollection[indexOfTracking].EventCollection
-              .First(item => item.Equals(_event.EventId)));
 
-            _trackingCollection[indexOfTracking].EventCollection[eventIndex] = _event;
+            List<Event> eventCollectionToChange = oldEventCollection
+              .Where(_event => tracking.EventCollection.Any(item => _event.eventId.Equals(item.eventId)))
+              .Where(_event => _event.dateOfChange > tracking.EventCollection
+                                 .First(item => _event.eventId.Equals(item.eventId)).dateOfChange).ToList();
+
+            List<Event> eventCollectionToAdd = oldEventCollection
+              .Where(_event => !(tracking.EventCollection.Any(item => _event.eventId.Equals(item.eventId)))).ToList();
+
+            foreach (var _event in eventCollectionToChange)
+            {
+              int eventIndex = _trackingCollection[indexOfTracking].EventCollection
+                .IndexOf(_trackingCollection[indexOfTracking].EventCollection
+                  .First(item => item.eventId.Equals(_event.eventId)));
+
+              _trackingCollection[indexOfTracking].EventCollection[eventIndex] = _event;
+            }
+
+            _trackingCollection[indexOfTracking].EventCollection.AddRange(eventCollectionToAdd);
           }
-
-          _trackingCollection[indexOfTracking].EventCollection.AddRange(eventCollectionToAdd);
+          else
+          {
+            _trackingCollection[indexOfTracking].EventCollection = tracking.EventCollection;
+          }
         }
       }
     }

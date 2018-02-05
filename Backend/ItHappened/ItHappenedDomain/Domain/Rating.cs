@@ -7,7 +7,7 @@ namespace ItHappenedDomain.Domain
   public class Rating
   {
 
-    private int rating;
+    public int rating { set; get; }
 
     public Rating(int rating)
     {

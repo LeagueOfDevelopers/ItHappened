@@ -16,11 +16,11 @@ namespace ItHappenedUnitTests
     public void SendTrackingCollectionToChangeTrackingCollection_CollectionMustSaveAndReturnThisCollection()
     {
       string trackingName = "name";
-      Guid trackingId = new Guid();
-      Guid eventId1 = new Guid();
-      DateTimeOffset event1DateOfChange = new DateTimeOffset();
-      Guid eventId2 = new Guid();
-      DateTimeOffset event2DateOfChange = new DateTimeOffset();
+      var trackingId = new Guid().ToString();
+      var eventId1 = new Guid().ToString();
+      var event1DateOfChange = new DateTimeOffset();
+      var eventId2 = new Guid().ToString();
+      var event2DateOfChange = new DateTimeOffset();
 
       Event event1 = new Event(eventId1, trackingId, event1DateOfChange,
         1, new Rating(1), "", event1DateOfChange, false);
@@ -31,7 +31,7 @@ namespace ItHappenedUnitTests
       eventCollection.Add(event2);
 
       Tracking tracking = new Tracking(trackingName, trackingId, event1DateOfChange,
-        TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Optional,
+        "Optional", "Optional", "Optional",
         event1DateOfChange, false, eventCollection);
 
       TrackingCollection trackingCollection = new TrackingCollection();
@@ -48,11 +48,11 @@ namespace ItHappenedUnitTests
     public void SendChangedTrackingCollectionToChangeTrackingCollection_CollectionMustChangeAndReturnThisCollection()
     {
       string trackingName = "name";
-      Guid trackingId = new Guid();
-      Guid eventId1 = new Guid();
-      DateTimeOffset event1DateOfChange = new DateTimeOffset();
-      Guid eventId2 = new Guid();
-      DateTimeOffset event2DateOfChange = new DateTimeOffset();
+      var trackingId = new Guid().ToString();
+      var eventId1 = new Guid().ToString();
+      var event1DateOfChange = new DateTimeOffset();
+      var eventId2 = new Guid().ToString();
+      var event2DateOfChange = new DateTimeOffset();
 
       Event event1 = new Event(eventId1, trackingId, event1DateOfChange,
         1, new Rating(1), "", event1DateOfChange, false);
@@ -63,7 +63,7 @@ namespace ItHappenedUnitTests
       eventCollection.Add(event2);
 
       Tracking tracking = new Tracking(trackingName, trackingId, event1DateOfChange,
-        TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Optional,
+        "Optional", "Optional", "Optional",
         event1DateOfChange, false, eventCollection);
 
       TrackingCollection trackingCollection = new TrackingCollection();

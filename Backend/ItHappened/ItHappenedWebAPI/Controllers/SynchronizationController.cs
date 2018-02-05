@@ -25,6 +25,14 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(collectionToReturn);
     }
 
+    [HttpPost]
+    [Route("add/{userId}")]
+    public IActionResult AddUser([FromRoute] string userId)
+    {
+      string id = users.Reg(userId);
+      return Ok(id);
+    }
+
     private UserList users;
   }
 
