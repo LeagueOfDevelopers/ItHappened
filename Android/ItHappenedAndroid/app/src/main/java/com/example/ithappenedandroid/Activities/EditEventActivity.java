@@ -322,7 +322,7 @@ public class EditEventActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }catch (Exception e){
-
+                        Toast.makeText(getApplicationContext(),"ex", Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     String toastMessage = "Введите обязательные данные о событии: ";

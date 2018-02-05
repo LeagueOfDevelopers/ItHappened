@@ -70,7 +70,7 @@ public class Tracking extends RealmObject {
         Integer deletionEvent = null;
         Integer i=0;
         for (Event event: eventCollection) {
-            if (event.getEventId().equals(eventID))
+            if (event.GetEventId().equals(eventID))
                 deletionEvent =i;
             i++;
         }
@@ -93,7 +93,7 @@ public class Tracking extends RealmObject {
         boolean contains = false;
         for (Event event: eventCollection)
         {
-            if (event.getEventId().equals(eventId))
+            if (event.GetEventId().equals(eventId))
             {
                 contains = true;
                 editedEvent = event;
@@ -226,7 +226,7 @@ public class Tracking extends RealmObject {
     public Event GetEvent(UUID eventId)
     {
         for (Event item: eventCollection) {
-            if (item.getEventId().equals(eventId))
+            if (item.GetEventId().equals(eventId))
                 return item;
         }
         throw new IllegalArgumentException("Event with such ID doesn't exist");

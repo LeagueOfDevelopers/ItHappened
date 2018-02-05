@@ -76,7 +76,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
         Tracking thisTracking = collection.GetTracking(trackingId);
-        Event thisEvent = trackingSercvice.GetEvent(trackingId, eventId);
+        Event thisEvent = thisTracking.GetEvent(eventId);
 
         TrackingCustomization commentCustomization = thisTracking.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTracking.GetScaleCustomization();
