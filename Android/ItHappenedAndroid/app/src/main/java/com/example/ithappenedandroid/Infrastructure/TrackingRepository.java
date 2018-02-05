@@ -14,6 +14,8 @@ import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
+import io.realm.RealmModel;
 import io.realm.RealmResults;
 
 /**
@@ -26,6 +28,18 @@ public class TrackingRepository implements ITrackingRepository{
     {
         context = cntxt;
         Realm.init(context);
+    }
+
+    public void SaveTrackingCollection(List<Tracking> trackingCollection)
+    {
+        onCreate();
+        realm.beginTransaction();
+        RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
+        results.deleteAllFromRealm();
+        for (Tracking tracking: trackingCollection) {
+            realm.copyToRealm(tracking);
+        }
+        realm.commitTransaction();
     }
 
     public Tracking GetTracking(UUID trackingId)

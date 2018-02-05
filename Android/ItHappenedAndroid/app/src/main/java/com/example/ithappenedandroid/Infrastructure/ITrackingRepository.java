@@ -19,5 +19,6 @@ public interface ITrackingRepository
     List<Event> FilterEvents(UUID trackingId, Date from, Date to,
                                     Comparison scaleComparison, Double scale,
                                     Comparison ratingComparison, Rating rating);
+    void SaveTrackingCollection(List<Tracking> trackingCollection);
 
 }

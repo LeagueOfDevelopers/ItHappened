@@ -21,6 +21,13 @@ public class TrackingService
         trackingCollection = trackingRepository;
     }
 
+
+    public void SaveTrackingCollection(List<Tracking> trackingList)
+    {
+        trackingCollection.SaveTrackingCollection(trackingList);
+    }
+
+
     public void AddTracking(Tracking newTracking)
     {
         trackingCollection.AddNewTracking(newTracking);
