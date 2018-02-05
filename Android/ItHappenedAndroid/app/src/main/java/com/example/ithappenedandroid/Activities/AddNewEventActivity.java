@@ -330,16 +330,16 @@ public class AddNewEventActivity extends AppCompatActivity {
 
                 //обрабатываем состояние кастомизации рейтинга
                 if (stateForRating == 2) {
-                    if((int) ratingControl.getRating()!=0) {
-                        ratingForEvent = (int) ratingControl.getRating()*2;
+                    if(ratingControl.getRating()!=0) {
+                        ratingForEvent = Math.round((ratingControl.getRating())*2);
                         newRating = new Rating(ratingForEvent);
                         flag_for_rating=true;
                     }
                 }
                 if(stateForRating == 1) {
                     flag_for_rating = true;
-                    if ((int) ratingControl.getRating() != 0) {
-                        ratingForEvent = (int) ratingControl.getRating()*2;
+                    if (ratingControl.getRating() != 0) {
+                        ratingForEvent = Math.round((ratingControl.getRating())*2);
                         newRating = new Rating(ratingForEvent);
                     } else {
                         newRating = null;

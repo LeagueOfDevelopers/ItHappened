@@ -199,7 +199,7 @@ public class Tracking extends RealmObject {
         this.comment = comment;
     }
 
-    public RealmList<Event> getEventCollection() {
+    public List<Event> getEventCollection() {
         return eventCollection;
     }
 

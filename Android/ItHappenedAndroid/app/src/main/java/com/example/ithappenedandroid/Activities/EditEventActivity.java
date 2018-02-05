@@ -275,7 +275,7 @@ public class EditEventActivity extends AppCompatActivity {
                 }
 
                 if(ratingState == 1 && ratingControlWidget.getRating()!=0){
-                    rating = new Rating((int)ratingControlWidget.getRating()*2);
+                    rating = new Rating(Math.round((ratingControlWidget.getRating())*2));
                 }
 
                 if(scaleState == 1 && !scaleControlWidget.getText().toString().isEmpty()){
@@ -295,7 +295,7 @@ public class EditEventActivity extends AppCompatActivity {
                 }
 
                 if(ratingState == 2 && ratingControlWidget.getRating() != 0){
-                    rating = new Rating((int)ratingControlWidget.getRating()*2);
+                    rating = new Rating(Math.round((ratingControlWidget.getRating())*2));
                 }
 
                 if(scaleState == 2 && scaleControlWidget.getText().toString().isEmpty()){

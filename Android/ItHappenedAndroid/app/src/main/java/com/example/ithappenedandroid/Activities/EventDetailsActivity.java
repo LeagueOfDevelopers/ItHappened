@@ -107,7 +107,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             yourRating.setRating(0);
         }else {
             if (thisEvent.GetRating() != null) {
-                yourRating.setRating(thisEvent.GetRating().GetRatingValue() / 2);
+                float value = thisEvent.GetRating().GetRatingValue()/2.0f;
+                yourRating.setRating(value);
             }else{
                 yourRating.setRating(0);
             }
