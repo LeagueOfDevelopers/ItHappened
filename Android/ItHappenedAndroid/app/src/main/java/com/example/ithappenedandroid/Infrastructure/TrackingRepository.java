@@ -16,10 +16,6 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
-/**
- * Created by Ded on 25.01.2018.
- */
-
 public class TrackingRepository implements ITrackingRepository{
 
     public TrackingRepository(Context cntxt)
@@ -32,8 +28,6 @@ public class TrackingRepository implements ITrackingRepository{
     {
         onCreate();
         realm.beginTransaction();
-        /*RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
-        results.deleteAllFromRealm();*/
         for (Tracking tracking: trackingCollection) {
             realm.copyToRealmOrUpdate(tracking);
         }

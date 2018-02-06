@@ -2,10 +2,12 @@ package com.example.ithappenedandroid.Retrofit;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ import retrofit2.Response;
  */
 
 public class RetrofitRequests {
+
+    private final String TAG = "Sync";
 
     ITrackingRepository trackingRepository;
     Context context;
@@ -36,11 +40,12 @@ public class RetrofitRequests {
         ItHappenedApplication.getApi().SynchronizeData(userId, trackingCollection).enqueue(new Callback<List<Tracking>>() {
             @Override
             public void onResponse(Call<List<Tracking>> call, Response<List<Tracking>> response) {
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, " "+new Gson().toJson(response.body()));
                     trackingRepository.SaveTrackingCollection(response.body());
                     Toast.makeText(context, "Синхронизация прошла успешно", Toast.LENGTH_SHORT).show();
                 }else{
-
+                    Log.e(TAG, response.errorBody().toString());
                     Toast.makeText(context, "На время теста response.body()==null("+" "+response,Toast.LENGTH_SHORT).show();
 
                 }
@@ -48,6 +53,7 @@ public class RetrofitRequests {
 
             @Override
             public void onFailure(Call<List<Tracking>> call, Throwable throwable) {
+                Log.e(TAG, "sync", throwable);
                 Toast.makeText(context, "Проверьте подключение к интернету!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -59,9 +65,10 @@ public class RetrofitRequests {
         ItHappenedApplication.getApi().SignUp(idToken).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if (response != null) {
+                if (response.isSuccessful()) {
                     final String id = response.body();
                     setUserId(id);
+                    Log.d(TAG, " "+new Gson().toJson(response.body()));
                     Toast.makeText(context, id, Toast.LENGTH_SHORT).show();
                     syncWithReg(id);
                     SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
@@ -75,6 +82,7 @@ public class RetrofitRequests {
 
             @Override
             public void onFailure(Call<String> call, Throwable throwable) {
+                Log.e(TAG, "reg", throwable);
                 Toast.makeText(context, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
             }
         });
@@ -101,16 +109,19 @@ public class RetrofitRequests {
             ItHappenedApplication.getApi().SynchronizeData(userId, trackingCollection).enqueue(new Callback<List<Tracking>>() {
                 @Override
                 public void onResponse(Call<List<Tracking>> call, Response<List<Tracking>> response) {
-                    if (response.body() != null) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, " "+new Gson().toJson(response.body()));
                         trackingRepository.SaveTrackingCollection(response.body());
                         Toast.makeText(context, "Синхронизация прошла успешно", Toast.LENGTH_SHORT).show();
                     } else {
+                        Log.e(TAG, response.toString());
                         Toast.makeText(context, "На время теста response.body()==null(" + " " + response, Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<Tracking>> call, Throwable throwable) {
+                    Log.e(TAG, "syncwithreg", throwable);
                     Toast.makeText(context, "Проверьте подключение к интернету!", Toast.LENGTH_SHORT).show();
                 }
             });
