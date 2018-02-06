@@ -62,6 +62,7 @@ public class RetrofitRequests {
                 if (response != null) {
                     final String id = response.body();
                     setUserId(id);
+                    Toast.makeText(context, id, Toast.LENGTH_SHORT).show();
                     syncWithReg(id);
                     SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -92,26 +93,28 @@ public class RetrofitRequests {
         this.userId = userId;
     }
 
-    private void syncWithReg(String userId){
+   private void syncWithReg(String userId){
 
-        List<Tracking> trackingCollection = trackingRepository.GetTrackingCollection();
+        if(userId!=null) {
+            List<Tracking> trackingCollection = trackingRepository.GetTrackingCollection();
 
-        ItHappenedApplication.getApi().SynchronizeData(userId, trackingCollection).enqueue(new Callback<List<Tracking>>() {
-            @Override
-            public void onResponse(Call<List<Tracking>> call, Response<List<Tracking>> response) {
-                if (response.body() != null) {
-                    trackingRepository.SaveTrackingCollection(response.body());
-                    Toast.makeText(context, "Синхронизация прошла успешно", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(context, "На время теста response.body()==null("+" "+response,Toast.LENGTH_SHORT).show();
+            ItHappenedApplication.getApi().SynchronizeData(userId, trackingCollection).enqueue(new Callback<List<Tracking>>() {
+                @Override
+                public void onResponse(Call<List<Tracking>> call, Response<List<Tracking>> response) {
+                    if (response.body() != null) {
+                        trackingRepository.SaveTrackingCollection(response.body());
+                        Toast.makeText(context, "Синхронизация прошла успешно", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "На время теста response.body()==null(" + " " + response, Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Tracking>> call, Throwable throwable) {
-                Toast.makeText(context, "Проверьте подключение к интернету!", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<List<Tracking>> call, Throwable throwable) {
+                    Toast.makeText(context, "Проверьте подключение к интернету!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
     }
 

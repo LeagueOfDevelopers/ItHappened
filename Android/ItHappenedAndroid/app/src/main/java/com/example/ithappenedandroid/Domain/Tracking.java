@@ -70,7 +70,7 @@ public class Tracking extends RealmObject {
         Integer deletionEvent = null;
         Integer i=0;
         for (Event event: eventCollection) {
-            if (event.getEventId().equals(eventID))
+            if (event.GetEventId().equals(eventID))
                 deletionEvent =i;
             i++;
         }

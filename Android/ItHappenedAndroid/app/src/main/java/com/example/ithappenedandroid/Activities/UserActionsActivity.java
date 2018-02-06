@@ -59,7 +59,7 @@ public class UserActionsActivity extends AppCompatActivity
         setTitle("Мои отслеживания");
             trackFrg = new TrackingsFragment();
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
             fTrans.commit();
         }
 
