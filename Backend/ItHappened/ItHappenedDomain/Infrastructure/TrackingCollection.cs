@@ -21,6 +21,12 @@ namespace ItHappenedDomain.Infrastructure
         return _trackingCollection;
       }
 
+      if (_trackingCollection == null)
+      {
+        _trackingCollection = trackingCollection;
+        return _trackingCollection;
+      }
+
       ChangeTrackings(trackingCollection);
       ChangeEventCollections(trackingCollection);
 

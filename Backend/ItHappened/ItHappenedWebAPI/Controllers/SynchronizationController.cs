@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ItHappenedWebAPI.Controllers
 {
@@ -21,7 +22,8 @@ namespace ItHappenedWebAPI.Controllers
     public IActionResult SynchronizeData([FromRoute] string userId,
       [FromBody] List<Tracking> trackingCollection)
     {
-      List<Tracking> collectionToReturn = users.ChangeTrackingCollection(userId, trackingCollection);
+      List<Tracking> collectionToReturn = null;
+        collectionToReturn = users.ChangeTrackingCollection(userId, trackingCollection);
       return Ok(collectionToReturn);
     }
 
@@ -33,6 +35,7 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(id);
     }
 
+    private string _filepath = "logs.json";
     private UserList users;
   }
 
