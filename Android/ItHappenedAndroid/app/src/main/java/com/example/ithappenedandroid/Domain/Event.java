@@ -147,7 +147,7 @@ public class Event extends RealmObject
     }
 
     @Expose
-    @SerializedName("EventId")
+    @SerializedName("eventId")
     private String eventId;
     @Expose
     @SerializedName("trackingId")
@@ -165,7 +165,7 @@ public class Event extends RealmObject
     @SerializedName("comment")
     private String comment;
     @Expose
-    @SerializedName("DateOfChange")
+    @SerializedName("dateOfChange")
     private Date dateOfChange;
     @Expose
     @SerializedName("isDeleted")

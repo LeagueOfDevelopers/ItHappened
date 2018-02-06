@@ -262,11 +262,9 @@ public class Tracking extends RealmObject {
     public void SetStatus(boolean status) { isDeleted = status; }
 
     @Expose
-    @SerializedName("trackingName")
     private String trackingName;
     @PrimaryKey
     @Expose
-    @SerializedName("trackingId")
     private String trackingId;
     @Expose
     @SerializedName("trackingDate")
@@ -281,12 +279,9 @@ public class Tracking extends RealmObject {
     @SerializedName("comment")
     private String comment;
     @Expose
-    @SerializedName("eventCollection")
     private RealmList<Event> eventCollection;
     @Expose
-    @SerializedName("dateOfChange")
     private Date dateOfChange;
     @Expose
-    @SerializedName("isDeleted")
     private boolean isDeleted = false;
 }
