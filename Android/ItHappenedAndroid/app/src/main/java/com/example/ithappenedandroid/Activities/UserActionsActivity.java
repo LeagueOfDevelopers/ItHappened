@@ -59,7 +59,7 @@ public class UserActionsActivity extends AppCompatActivity
         setTitle("Мои отслеживания");
             trackFrg = new TrackingsFragment();
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
             fTrans.commit();
         }
 
@@ -133,6 +133,8 @@ public class UserActionsActivity extends AppCompatActivity
         if(id == R.id.synchronisation){
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
             RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
+            Intent intent = new Intent(this, SplashScreenActivity.class);
+            startActivity(intent);
             requests.syncData();
         }
 

@@ -76,7 +76,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
         Tracking thisTracking = collection.GetTracking(trackingId);
-        Event thisEvent = trackingSercvice.GetEvent(trackingId, eventId);
+        Event thisEvent = thisTracking.GetEvent(eventId);
 
         TrackingCustomization commentCustomization = thisTracking.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTracking.GetScaleCustomization();
@@ -107,7 +107,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             yourRating.setRating(0);
         }else {
             if (thisEvent.GetRating() != null) {
-                yourRating.setRating(thisEvent.GetRating().GetRatingValue() / 2);
+                float value = thisEvent.GetRating().GetRatingValue()/2.0f;
+                yourRating.setRating(value);
             }else{
                 yourRating.setRating(0);
             }
@@ -141,7 +142,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, UserActionsActivity.class));
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

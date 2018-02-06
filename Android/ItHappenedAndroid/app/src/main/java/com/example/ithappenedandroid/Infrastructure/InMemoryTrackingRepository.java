@@ -1,11 +1,5 @@
 package com.example.ithappenedandroid.Infrastructure;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-
 import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Rating;
@@ -15,10 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmObject;
 
 
 public class InMemoryTrackingRepository implements ITrackingRepository
@@ -134,6 +124,11 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         }
 
         return  filteredEvents;
+    }
+
+    @Override
+    public void SaveTrackingCollection(List<Tracking> trackingCollection) {
+
     }
 
     private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)

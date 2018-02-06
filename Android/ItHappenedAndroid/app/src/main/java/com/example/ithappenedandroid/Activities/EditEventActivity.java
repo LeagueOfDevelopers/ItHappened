@@ -275,7 +275,7 @@ public class EditEventActivity extends AppCompatActivity {
                 }
 
                 if(ratingState == 1 && ratingControlWidget.getRating()!=0){
-                    rating = new Rating((int)ratingControlWidget.getRating()*2);
+                    rating = new Rating(Math.round((ratingControlWidget.getRating())*2));
                 }
 
                 if(scaleState == 1 && !scaleControlWidget.getText().toString().isEmpty()){
@@ -295,7 +295,7 @@ public class EditEventActivity extends AppCompatActivity {
                 }
 
                 if(ratingState == 2 && ratingControlWidget.getRating() != 0){
-                    rating = new Rating((int)ratingControlWidget.getRating()*2);
+                    rating = new Rating(Math.round((ratingControlWidget.getRating())*2));
                 }
 
                 if(scaleState == 2 && scaleControlWidget.getText().toString().isEmpty()){
@@ -322,7 +322,7 @@ public class EditEventActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }catch (Exception e){
-
+                        Toast.makeText(getApplicationContext(),"ex", Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     String toastMessage = "Введите обязательные данные о событии: ";
@@ -356,7 +356,7 @@ public class EditEventActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, UserActionsActivity.class));
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

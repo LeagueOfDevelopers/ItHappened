@@ -1,6 +1,7 @@
 package com.example.ithappenedandroid.Domain;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -57,9 +58,9 @@ public class Tracking extends RealmObject {
 
     public void AddEvent (Event newEvent)
     {
-        CustomizationCheck(newEvent.GetScale(), GetScaleCustomization());
-        CustomizationCheck(newEvent.GetRating(), GetRatingCustomization());
-        CustomizationCheck(newEvent.GetComment(), GetCommentCustomization());
+        CustomizationCheck(newEvent.getScale(), GetScaleCustomization());
+        CustomizationCheck(newEvent.getRating(), GetRatingCustomization());
+        CustomizationCheck(newEvent.getComment(), GetCommentCustomization());
         eventCollection.add(newEvent);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
@@ -150,6 +151,78 @@ public class Tracking extends RealmObject {
         }
     }
 
+    public String getTrackingName() {
+        return trackingName;
+    }
+
+    public void setTrackingName(String trackingName) {
+        this.trackingName = trackingName;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
+    }
+
+    public Date getTrackingDate() {
+        return trackingDate;
+    }
+
+    public void setTrackingDate(Date trackingDate) {
+        this.trackingDate = trackingDate;
+    }
+
+    public String getScale() {
+        return scale;
+    }
+
+    public void setScale(String scale) {
+        this.scale = scale;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public RealmList<Event> getEventCollection() {
+        return eventCollection;
+    }
+
+    public void setEventCollection(RealmList<Event> eventCollection) {
+        this.eventCollection = eventCollection;
+    }
+
+    public Date getDateOfChange() {
+        return dateOfChange;
+    }
+
+    public void setDateOfChange(Date dateOfChange) {
+        this.dateOfChange = dateOfChange;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     public Event GetEvent(UUID eventId)
     {
         for (Event item: eventCollection) {
@@ -194,12 +267,16 @@ public class Tracking extends RealmObject {
     @Expose
     private String trackingId;
     @Expose
+    @SerializedName("trackingDate")
     private Date trackingDate;
     @Expose
+    @SerializedName("scale")
     private String scale;
     @Expose
+    @SerializedName("rating")
     private String rating;
     @Expose
+    @SerializedName("comment")
     private String comment;
     @Expose
     private RealmList<Event> eventCollection;

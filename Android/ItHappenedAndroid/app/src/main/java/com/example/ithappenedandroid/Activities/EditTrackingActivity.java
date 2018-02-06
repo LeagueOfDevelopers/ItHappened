@@ -70,7 +70,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, UserActionsActivity.class));
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

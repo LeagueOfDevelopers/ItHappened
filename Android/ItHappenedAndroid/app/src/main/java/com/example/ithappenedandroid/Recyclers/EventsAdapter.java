@@ -59,6 +59,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             public void onClick(View view) {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra("trackingId", event.GetTrackingId().toString());
+                String eventId = event.GetEventId().toString();
                 intent.putExtra("eventId", event.GetEventId().toString());
                 context.startActivity(intent);
             }
