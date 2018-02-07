@@ -15,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,9 @@ public class UserActionsActivity extends AppCompatActivity
     TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
+    FrameLayout layoutFrg;
+
+    ProgressBar syncPB;
 
     Subscription mainSync;
 
@@ -62,6 +68,9 @@ public class UserActionsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        syncPB = (ProgressBar) findViewById(R.id.syncPB);
+        layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
     }
 
     @Override
@@ -84,7 +93,7 @@ public class UserActionsActivity extends AppCompatActivity
             trackFrg = new TrackingsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
             fTrans.commit();
         }
     }
@@ -141,6 +150,7 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(id == R.id.synchronisation){
+            showLoading();
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
            mainSync = ItHappenedApplication.
                     getApi().
@@ -152,6 +162,8 @@ public class UserActionsActivity extends AppCompatActivity
                 @Override
                 public void call(List<Tracking> trackings) {
                     saveDataToDb(trackings);
+                    finish();
+                    startActivity(getIntent());
                     Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
                 }
             }, new Action1<Throwable>() {
@@ -189,6 +201,11 @@ public class UserActionsActivity extends AppCompatActivity
     private void saveDataToDb(List<Tracking> trackings){
         ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
+    }
+
+    private void showLoading(){
+        layoutFrg.setVisibility(View.INVISIBLE);
+        syncPB.setVisibility(View.VISIBLE);
     }
 
 }
