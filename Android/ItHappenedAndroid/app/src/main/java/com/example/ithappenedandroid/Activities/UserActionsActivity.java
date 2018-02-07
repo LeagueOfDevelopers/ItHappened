@@ -31,6 +31,7 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 import java.util.List;
 import java.util.UUID;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -41,6 +42,8 @@ public class UserActionsActivity extends AppCompatActivity
     TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
+
+    Subscription mainSync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +147,7 @@ public class UserActionsActivity extends AppCompatActivity
             Intent intent = new Intent(this, SplashScreenActivity.class);
             startActivity(intent);
             requests.syncData();*/
-            ItHappenedApplication.
+           mainSync = ItHappenedApplication.
                     getApi().
                     SynchronizeData(sharedPreferences.getString("UserId", ""), new StaticInMemoryRepository(getApplicationContext()).getInstance().
                             GetTrackingCollection())
@@ -181,6 +184,12 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void cancelClicked() {
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mainSync.unsubscribe();
     }
 
     private void saveDataToDb(List<Tracking> trackings){

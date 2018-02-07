@@ -28,6 +28,7 @@ import com.nvanbenschoten.motion.ParallaxImageView;
 import java.io.IOException;
 import java.util.List;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -46,6 +47,9 @@ public class SignInActivity extends Activity {
     ParallaxImageView mainBackground;
     SignInButton signIn;
     TextView mainTitle;
+
+    Subscription regSub;
+    Subscription syncSub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +136,7 @@ public class SignInActivity extends Activity {
 
     private void reg(String idToken){
 
-        ItHappenedApplication.getApi().SignUp(idToken)
+        regSub = ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
@@ -172,6 +176,13 @@ public class SignInActivity extends Activity {
             }
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        regSub.unsubscribe();
+        syncSub.unsubscribe();
     }
 
     private void saveDataToDb(List<Tracking> trackings){
