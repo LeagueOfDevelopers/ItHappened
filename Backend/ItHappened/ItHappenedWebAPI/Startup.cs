@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
+using ItHappenedWebAPI.Extensions;
+using ItHappenedWebAPI.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +28,9 @@ namespace ItHappenedWebAPI
     {
       services.AddMvc();
       var userList = new UserList();
-      services.AddSingleton<UserList>(userList);
+      services
+        .AddSingleton<UserList>(userList)
+        .AddSingleton<ErrorHandlingMiddleware>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +40,8 @@ namespace ItHappenedWebAPI
       {
         app.UseDeveloperExceptionPage();
       }
+
+      app.DomainErrorHandlingMiddleware();
 
       app.UseMvc();
     }
