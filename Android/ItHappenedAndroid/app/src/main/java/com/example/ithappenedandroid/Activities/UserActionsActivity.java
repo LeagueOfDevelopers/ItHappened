@@ -93,7 +93,6 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -143,10 +142,6 @@ public class UserActionsActivity extends AppCompatActivity
 
         if(id == R.id.synchronisation){
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-            /*RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
-            Intent intent = new Intent(this, SplashScreenActivity.class);
-            startActivity(intent);
-            requests.syncData();*/
            mainSync = ItHappenedApplication.
                     getApi().
                     SynchronizeData(sharedPreferences.getString("UserId", ""), new StaticInMemoryRepository(getApplicationContext()).getInstance().
@@ -189,7 +184,6 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        mainSync.unsubscribe();
     }
 
     private void saveDataToDb(List<Tracking> trackings){

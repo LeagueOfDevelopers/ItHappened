@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class SignInActivity extends Activity {
     ParallaxImageView mainBackground;
     SignInButton signIn;
     TextView mainTitle;
+    ProgressBar mainPB;
 
     Subscription regSub;
     Subscription syncSub;
@@ -55,6 +57,7 @@ public class SignInActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        mainPB = (ProgressBar) findViewById(R.id.mainProgressBar);
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         String id = sharedPreferences.getString("UserId", "");
         if(id == "") {
@@ -97,6 +100,7 @@ public class SignInActivity extends Activity {
 
     protected void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data){
+        showLoading();
 
         if (requestCode == 228 && resultCode == RESULT_OK) {
             final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
@@ -140,53 +144,58 @@ public class SignInActivity extends Activity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("UserId", s);
-                editor.commit();
+                    @Override
+                    public void call(String s) {
+                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("UserId", s);
+                        editor.commit();
 
-                ItHappenedApplication.
-                        getApi().SynchronizeData(s, new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<List<Tracking>>() {
-                            @Override
-                            public void call(List<Tracking> trackings) {
-                                saveDataToDb(trackings);
-                                Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                                startActivity(intent);
-                            }
-                        }, new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                Log.e("RxSync", ""+throwable);
-                                Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        ItHappenedApplication.
+                                getApi().SynchronizeData(s, new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<List<Tracking>>() {
+                                    @Override
+                                    public void call(List<Tracking> trackings) {
+                                        saveDataToDb(trackings);
+                                        Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }, new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        Log.e("RxSync", ""+throwable);
+                                        Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                Log.e("Reg", ""+throwable);
-                Toast.makeText(getApplicationContext(), "Рега, траблы", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.e("Reg", ""+throwable);
+                        Toast.makeText(getApplicationContext(), "Рега, траблы", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        regSub.unsubscribe();
-        syncSub.unsubscribe();
     }
 
     private void saveDataToDb(List<Tracking> trackings){
         ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
+    }
+
+    private  void showLoading(){
+        mainBackground.setVisibility(View.INVISIBLE);
+        mainPB.setVisibility(View.VISIBLE);
+        signIn.setVisibility(View.INVISIBLE);
+        mainTitle.setVisibility(View.INVISIBLE);
     }
 }
