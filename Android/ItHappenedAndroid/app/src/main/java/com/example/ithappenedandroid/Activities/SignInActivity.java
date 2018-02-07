@@ -100,9 +100,10 @@ public class SignInActivity extends Activity {
 
     protected void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data){
-        showLoading();
+
 
         if (requestCode == 228 && resultCode == RESULT_OK) {
+            showLoading();
             final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 
             AsyncTask<Void, Void, String> getToken = new AsyncTask<Void, Void, String>() {
@@ -149,6 +150,7 @@ public class SignInActivity extends Activity {
                         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("UserId", s);
+                        editor.putString("Nick", s);
                         editor.commit();
 
                         ItHappenedApplication.

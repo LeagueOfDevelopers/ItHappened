@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
+import com.example.ithappenedandroid.Fragments.ProfileSettingsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -46,6 +47,8 @@ public class UserActionsActivity extends AppCompatActivity
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
+
+    ProfileSettingsFragment profileStgsFrg;
 
     ProgressBar syncPB;
 
@@ -111,7 +114,7 @@ public class UserActionsActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.activity_tracking_drawer, menu);
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userNick = (TextView) findViewById(R.id.userNickname);
-        userNick.setText(sharedPreferences.getString("UserId",""));
+        userNick.setText(sharedPreferences.getString("Nick",""));
         return true;
     }
 
@@ -174,6 +177,13 @@ public class UserActionsActivity extends AppCompatActivity
                 }
             });
         }
+           if(id == R.id.proile_settings){
+               profileStgsFrg = new ProfileSettingsFragment();
+               fTrans = getFragmentManager().beginTransaction();
+               fTrans.replace(R.id.trackingsFrg, profileStgsFrg);
+               fTrans.commit();
+           }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -207,5 +217,16 @@ public class UserActionsActivity extends AppCompatActivity
         layoutFrg.setVisibility(View.INVISIBLE);
         syncPB.setVisibility(View.VISIBLE);
     }
+
+    public void logout(){
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+        Intent intent = new Intent(this, SignInActivity.class);
+        startActivity(intent);
+    }
+
+    public void cancelLogout(){}
 
 }
