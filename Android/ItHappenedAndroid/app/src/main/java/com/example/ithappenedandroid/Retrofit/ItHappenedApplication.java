@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -36,6 +37,7 @@ public class ItHappenedApplication extends Application {
                 .baseUrl("http://85.143.104.47:1080/")
                 .client(client.build())
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
         itHappenedApi = retrofit.create(ItHappenedApi.class);

@@ -12,20 +12,28 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ithappenedandroid.Application.TrackingService;
+import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
+import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
-import com.example.ithappenedandroid.Retrofit.RetrofitRequests;
+import com.example.ithappenedandroid.Retrofit.ItHappenedApplication;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.util.List;
 import java.util.UUID;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -132,10 +140,29 @@ public class UserActionsActivity extends AppCompatActivity
 
         if(id == R.id.synchronisation){
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-            RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
+            /*RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
             Intent intent = new Intent(this, SplashScreenActivity.class);
             startActivity(intent);
-            requests.syncData();
+            requests.syncData();*/
+            ItHappenedApplication.
+                    getApi().
+                    SynchronizeData(sharedPreferences.getString("UserId", ""), new StaticInMemoryRepository(getApplicationContext()).getInstance().
+                            GetTrackingCollection())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<Tracking>>() {
+                @Override
+                public void call(List<Tracking> trackings) {
+                    saveDataToDb(trackings);
+                    Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    Log.e("RxSync", ""+throwable);
+                    Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -154,6 +181,11 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void cancelClicked() {
+    }
+
+    private void saveDataToDb(List<Tracking> trackings){
+        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        trackingRepository.SaveTrackingCollection(trackings);
     }
 
 }

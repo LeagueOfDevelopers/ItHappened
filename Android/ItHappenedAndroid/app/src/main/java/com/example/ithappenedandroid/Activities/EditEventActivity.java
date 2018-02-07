@@ -194,7 +194,7 @@ public class EditEventActivity extends AppCompatActivity {
                 stars.getDrawable(0).setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
             }
 
-            ratingControlWidget.setRating(event.GetRating().GetRatingValue()/2);
+            ratingControlWidget.setRating(event.GetRating().GetRatingValue()/2.0F);
             LinearLayout.LayoutParams ratingControlLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             ratingControlLayoutParams.setMargins(10,10,10,10);

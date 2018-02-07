@@ -62,11 +62,8 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         hintForEvents = (TextView) findViewById(R.id.hintForEventsFragment);
 
-        if(trackingsCollection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
-            hintForEvents.setVisibility(View.INVISIBLE);
-        }
-
             trackingId = UUID.fromString(intent.getStringExtra("id"));
+
 
         trackingService = new TrackingService("testUser", trackingsCollection);
 
@@ -75,12 +72,22 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         events = thisTracking.GetEventCollection();
 
+        for(Event event : events){
+            if(event.GetStatus()){
+                events.remove(event);
+            }
+        }
+
         List<Event> visibleEvents = new ArrayList<>();
 
         for(int i=0;i<events.size();i++){
             if(!events.get(i).GetStatus()){
                 visibleEvents.add(events.get(i));
             }
+        }
+
+        if(events.size()!=0){
+            hintForEvents.setVisibility(View.INVISIBLE);
         }
 
         setTitle(thisTracking.GetTrackingName());

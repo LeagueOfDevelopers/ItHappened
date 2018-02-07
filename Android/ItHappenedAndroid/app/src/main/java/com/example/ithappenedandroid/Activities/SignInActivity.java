@@ -7,13 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ithappenedandroid.Domain.Tracking;
+import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
-import com.example.ithappenedandroid.Retrofit.RetrofitRequests;
+import com.example.ithappenedandroid.Retrofit.ItHappenedApplication;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -23,6 +26,11 @@ import com.google.android.gms.common.SignInButton;
 import com.nvanbenschoten.motion.ParallaxImageView;
 
 import java.io.IOException;
+import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class SignInActivity extends Activity {
 
@@ -123,9 +131,51 @@ public class SignInActivity extends Activity {
     }
 
     private void reg(String idToken){
-        RetrofitRequests retrofitRequests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), null);
-        String userId = retrofitRequests.userRegistration(idToken);
-        Intent intent = new Intent(getApplicationContext(), SplashScreenActivity.class);
-        startActivity(intent);
+
+        ItHappenedApplication.getApi().SignUp(idToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("UserId", s);
+                editor.commit();
+
+                ItHappenedApplication.
+                        getApi().SynchronizeData(s, new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<List<Tracking>>() {
+                            @Override
+                            public void call(List<Tracking> trackings) {
+                                saveDataToDb(trackings);
+                                Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                                startActivity(intent);
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Log.e("RxSync", ""+throwable);
+                                Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.e("Reg", ""+throwable);
+                Toast.makeText(getApplicationContext(), "Рега, траблы", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void saveDataToDb(List<Tracking> trackings){
+        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        trackingRepository.SaveTrackingCollection(trackings);
     }
 }
