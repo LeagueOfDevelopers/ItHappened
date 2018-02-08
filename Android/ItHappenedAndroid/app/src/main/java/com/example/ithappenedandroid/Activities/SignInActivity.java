@@ -113,8 +113,10 @@ public class SignInActivity extends Activity {
                         startActivityForResult(userAuthEx.getIntent(), 228);
                     } catch (IOException ioEx) {
                         //Log.d(TAG, "IOException");
+                        hideLoading();
                         Toast.makeText(getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
                     } catch (GoogleAuthException fatalAuthEx) {
+                        hideLoading();
                         //Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -160,6 +162,7 @@ public class SignInActivity extends Activity {
                                 }, new Action1<Throwable>() {
                                     @Override
                                     public void call(Throwable throwable) {
+                                        hideLoading();
                                         Log.e("RxSync", ""+throwable);
                                         Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
                                     }
@@ -169,6 +172,7 @@ public class SignInActivity extends Activity {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        hideLoading();
                         Log.e("Reg", ""+throwable);
                         Toast.makeText(getApplicationContext(), "Рега, траблы", Toast.LENGTH_SHORT).show();
                     }
@@ -191,5 +195,12 @@ public class SignInActivity extends Activity {
         mainPB.setVisibility(View.VISIBLE);
         signIn.setVisibility(View.INVISIBLE);
         mainTitle.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideLoading(){
+        mainBackground.setVisibility(View.VISIBLE);
+        mainPB.setVisibility(View.INVISIBLE);
+        signIn.setVisibility(View.VISIBLE);
+        mainTitle.setVisibility(View.VISIBLE);
     }
 }

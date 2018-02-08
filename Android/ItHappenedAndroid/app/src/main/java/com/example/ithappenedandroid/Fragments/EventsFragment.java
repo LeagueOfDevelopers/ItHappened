@@ -22,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidbuts.multispinnerfilter.MultiSpinner;
+import com.androidbuts.multispinnerfilter.MultiSpinnerListener;
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
@@ -37,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.UUID;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
@@ -66,7 +69,7 @@ public class EventsFragment extends Fragment  {
 
     RatingBar ratingFilter;
 
-    Spinner trackingsSpinner;
+    MultiSpinner trackingsSpinner;
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     TrackingService trackingService;
@@ -135,10 +138,20 @@ public class EventsFragment extends Fragment  {
             idCollection.add(trackings.get(i).GetTrackingID());
         }
 
-        trackingsSpinner = (Spinner) view.findViewById(R.id.spinnerForTrackings);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, strings);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trackingsSpinner.setAdapter(adapter);
+        trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
+        TreeMap<String, Boolean> items = new TreeMap<>();
+        for(int i = 0;i < strings.size();i++){
+
+            items.put(strings.get(i), false);
+
+        }
+
+        trackingsSpinner.setItems(items, new MultiSpinnerListener(){
+            @Override
+            public void onItemsSelected(boolean[] booleans) {
+
+            }
+        });
 
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);

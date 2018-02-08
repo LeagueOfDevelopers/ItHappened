@@ -173,6 +173,7 @@ public class UserActionsActivity extends AppCompatActivity
                 @Override
                 public void call(Throwable throwable) {
                     Log.e("RxSync", ""+throwable);
+                    hideLoading();
                     Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -216,6 +217,11 @@ public class UserActionsActivity extends AppCompatActivity
     private void showLoading(){
         layoutFrg.setVisibility(View.INVISIBLE);
         syncPB.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading(){
+        layoutFrg.setVisibility(View.VISIBLE);
+        syncPB.setVisibility(View.INVISIBLE);
     }
 
     public void logout(){
