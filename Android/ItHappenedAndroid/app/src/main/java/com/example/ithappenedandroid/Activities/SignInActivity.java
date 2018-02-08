@@ -68,14 +68,6 @@ public class SignInActivity extends Activity {
             animation.setFillAfter(true);
             mainTitle.setAnimation(animation);
 
-            mainBackground.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                    startActivity(intent);
-                }
-            });
-
             signIn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

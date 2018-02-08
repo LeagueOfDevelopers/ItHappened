@@ -168,7 +168,7 @@ public class EventsFragment extends Fragment  {
             }
         });
 
-        String[] hints = new String[]{">","<","="};
+        String[] hints = new String[]{"Больше","Меньше","Равно"};
         final Comparison[] comparisons = new Comparison[] {Comparison.More, Comparison.Less, Comparison.Equal};
 
         hintsForScaleSpinner = (Spinner) view.findViewById(R.id.hintsForScale);

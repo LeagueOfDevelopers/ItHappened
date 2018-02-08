@@ -72,9 +72,9 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         events = thisTracking.GetEventCollection();
 
-        for(Event event : events){
-            if(event.GetStatus()){
-                events.remove(event);
+        for(int i = 0;i<events.size();i++){
+            if(events.get(i).GetStatus()){
+                events.remove(i);
             }
         }
 
