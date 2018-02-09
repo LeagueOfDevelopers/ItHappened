@@ -203,4 +203,5 @@ public class SignInActivity extends Activity {
         signIn.setVisibility(View.VISIBLE);
         mainTitle.setVisibility(View.VISIBLE);
     }
+
 }

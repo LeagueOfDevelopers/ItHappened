@@ -157,7 +157,8 @@ public class UserActionsActivity extends AppCompatActivity
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
            mainSync = ItHappenedApplication.
                     getApi().
-                    SynchronizeData(sharedPreferences.getString("UserId", ""), new StaticInMemoryRepository(getApplicationContext()).getInstance().
+                    SynchronizeData(sharedPreferences.getString("UserId", ""),
+                            new StaticInMemoryRepository(getApplicationContext()).getInstance().
                             GetTrackingCollection())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
