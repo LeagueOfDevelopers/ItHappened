@@ -22,13 +22,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidbuts.multispinnerfilter.MultiSpinner;
-import com.androidbuts.multispinnerfilter.MultiSpinnerListener;
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
+import com.example.ithappenedandroid.Gui.MultiSpinner;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.EventsAdapter;
@@ -39,7 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.UUID;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
@@ -128,7 +126,7 @@ public class EventsFragment extends Fragment  {
         trackingService = new TrackingService("testUser", collection);
 
         final ArrayList<UUID> idCollection = new ArrayList<UUID>();
-        ArrayList<String> strings = new ArrayList<String>();
+        List<String> strings = new ArrayList<String>();
 
         List<Tracking> trackings = new ArrayList<>();
         trackings = trackingService.GetTrackingCollection();
@@ -139,16 +137,11 @@ public class EventsFragment extends Fragment  {
         }
 
         trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
-        TreeMap<String, Boolean> items = new TreeMap<>();
-        for(int i = 0;i < strings.size();i++){
 
-            items.put(strings.get(i), false);
+        trackingsSpinner.setItems(strings,"Выберите отслеживания", new MultiSpinner.MultiSpinnerListener(){
 
-        }
-
-        trackingsSpinner.setItems(items, new MultiSpinnerListener(){
             @Override
-            public void onItemsSelected(boolean[] booleans) {
+            public void onItemsSelected(boolean[] selected) {
 
             }
         });
