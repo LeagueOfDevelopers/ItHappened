@@ -126,15 +126,20 @@ public class EventsFragment extends Fragment  {
         trackingService = new TrackingService("testUser", collection);
 
         final ArrayList<UUID> idCollection = new ArrayList<UUID>();
-        List<String> strings = new ArrayList<String>();
+        final List<String> strings = new ArrayList<String>();
 
         List<Tracking> trackings = new ArrayList<>();
         trackings = trackingService.GetTrackingCollection();
 
         for(int i=0;i<trackings.size();i++){
-            strings.add(trackings.get(i).GetTrackingName());
-            idCollection.add(trackings.get(i).GetTrackingID());
+            if(!trackings.get(i).GetStatus()) {
+                strings.add(trackings.get(i).GetTrackingName());
+                idCollection.add(trackings.get(i).GetTrackingID());
+            }
         }
+
+        final List<String> filteredTrackingsTitles = new ArrayList<>();
+        final List<UUID> filteredTrackingsUuids = new ArrayList<>();
 
         trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
 
@@ -142,6 +147,14 @@ public class EventsFragment extends Fragment  {
 
             @Override
             public void onItemsSelected(boolean[] selected) {
+
+                for(int i = 0; i<selected.length; i++){
+
+                    if(selected[i]){
+                        filteredTrackingsTitles.add(strings.get(i));
+                        filteredTrackingsUuids.add(idCollection.get(i));
+                    }
+                }
 
             }
         });
