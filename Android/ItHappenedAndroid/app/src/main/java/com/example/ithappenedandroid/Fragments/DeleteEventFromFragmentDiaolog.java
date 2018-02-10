@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.ithappenedandroid.Activities.EventDetailsActivity;
 import com.example.ithappenedandroid.Activities.UserActionsActivity;
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -46,7 +45,6 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                 })
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ((EventDetailsActivity) getActivity()).cancelClicked();
                     }
                 });
 
