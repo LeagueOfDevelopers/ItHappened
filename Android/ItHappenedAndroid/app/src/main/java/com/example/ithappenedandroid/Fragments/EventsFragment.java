@@ -144,7 +144,14 @@ public class EventsFragment extends Fragment  {
 
         trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
 
-        trackingsSpinner.setItems(strings,"Выберите отслеживания", new MultiSpinner.MultiSpinnerListener(){
+        String allText = "";
+        for(int i=0;i<strings.size();i++) {
+            if (i != strings.size()) {
+                allText += strings.get(i) + ", ";
+            }
+        }
+
+        trackingsSpinner.setItems(strings,allText.substring(0, allText.length()-2), new MultiSpinner.MultiSpinnerListener(){
 
             @Override
             public void onItemsSelected(boolean[] selected) {
