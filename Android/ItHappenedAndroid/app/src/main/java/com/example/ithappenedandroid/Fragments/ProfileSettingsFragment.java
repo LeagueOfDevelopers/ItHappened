@@ -28,7 +28,7 @@ public class ProfileSettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("НАстройки профиля");
+        getActivity().setTitle("Настройки профиля");
 
         userMail =(TextView) getActivity().findViewById(R.id.mail);
         userNickName = (TextView) getActivity().findViewById(R.id.nickname);

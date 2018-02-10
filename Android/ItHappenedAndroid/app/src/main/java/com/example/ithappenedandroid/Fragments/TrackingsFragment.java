@@ -51,6 +51,7 @@ public class TrackingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle("Мои отслеживания");
         hintForTrackings = (TextView) getActivity().findViewById(R.id.hintForTrackingsFragment);
 
         StaticInMemoryRepository repository = new StaticInMemoryRepository(getActivity().getApplicationContext());

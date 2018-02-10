@@ -74,6 +74,11 @@ public class UserActionsActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        trackFrg = new TrackingsFragment();
+        fTrans = getFragmentManager().beginTransaction();
+        fTrans.replace(R.id.trackingsFrg, trackFrg);
+        fTrans.commit();
+
         syncPB = (ProgressBar) findViewById(R.id.syncPB);
         layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
     }
@@ -81,11 +86,6 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        setTitle("Мои отслеживания");
-            trackFrg = new TrackingsFragment();
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg);
-            fTrans.commit();
         }
 
     @Override
