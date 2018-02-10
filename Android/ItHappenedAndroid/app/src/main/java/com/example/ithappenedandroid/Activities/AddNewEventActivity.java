@@ -421,9 +421,6 @@ public class AddNewEventActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Добавить событие");
-
-
-
     }
 }
 

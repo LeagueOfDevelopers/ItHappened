@@ -13,10 +13,6 @@ import android.widget.TextView;
 
 import com.example.ithappenedandroid.R;
 
-/**
- * Created by Пользователь on 07.02.2018.
- */
-
 public class ProfileSettingsFragment extends Fragment {
 
     TextView userMail;
@@ -32,6 +28,7 @@ public class ProfileSettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle("НАстройки профиля");
 
         userMail =(TextView) getActivity().findViewById(R.id.mail);
         userNickName = (TextView) getActivity().findViewById(R.id.nickname);
