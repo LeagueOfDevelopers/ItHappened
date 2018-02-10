@@ -170,14 +170,14 @@ public class UserActionsActivity extends AppCompatActivity
                     saveDataToDb(trackings);
                     finish();
                     startActivity(getIntent());
-                    Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
                 }
             }, new Action1<Throwable>() {
                 @Override
                 public void call(Throwable throwable) {
                     Log.e("RxSync", ""+throwable);
                     hideLoading();
-                    Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
                 }
             });
         }

@@ -164,7 +164,7 @@ public class SignInActivity extends Activity {
                                     public void call(Throwable throwable) {
                                         hideLoading();
                                         Log.e("RxSync", ""+throwable);
-                                        Toast.makeText(getApplicationContext(), "Траблы", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Синхронизация не прошла!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -174,7 +174,7 @@ public class SignInActivity extends Activity {
                     public void call(Throwable throwable) {
                         hideLoading();
                         Log.e("Reg", ""+throwable);
-                        Toast.makeText(getApplicationContext(), "Рега, траблы", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Разорвано подключение!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
