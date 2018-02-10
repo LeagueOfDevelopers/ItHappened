@@ -130,7 +130,7 @@ public class UserActionsActivity extends AppCompatActivity
             trackFrg = new TrackingsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
             fTrans.commit();
 
             setTitle("Мои отслеживания");
@@ -141,7 +141,7 @@ public class UserActionsActivity extends AppCompatActivity
             EventsFragment eventsFrg = new EventsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, eventsFrg);
+            fTrans.replace(R.id.trackingsFrg, eventsFrg).addToBackStack(null);
             fTrans.commit();
         }
 
@@ -150,7 +150,7 @@ public class UserActionsActivity extends AppCompatActivity
             StatisticsFragment statFrg = new StatisticsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, statFrg);
+            fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
             fTrans.commit();
         }
 
@@ -184,7 +184,7 @@ public class UserActionsActivity extends AppCompatActivity
            if(id == R.id.proile_settings){
                profileStgsFrg = new ProfileSettingsFragment();
                fTrans = getFragmentManager().beginTransaction();
-               fTrans.replace(R.id.trackingsFrg, profileStgsFrg);
+               fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
                fTrans.commit();
            }
 
