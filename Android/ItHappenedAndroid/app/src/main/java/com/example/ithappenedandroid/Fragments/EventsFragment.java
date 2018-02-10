@@ -84,6 +84,7 @@ public class EventsFragment extends Fragment  {
     public void onResume() {
         super.onResume();
         getActivity().setTitle("История событий");
+
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
             hintForEventsHistory.setVisibility(View.INVISIBLE);

@@ -1,16 +1,21 @@
 package com.example.ithappenedandroid.Recyclers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.ithappenedandroid.Activities.EditEventActivity;
 import com.example.ithappenedandroid.Activities.EventDetailsActivity;
 import com.example.ithappenedandroid.Domain.Event;
+import com.example.ithappenedandroid.Fragments.DeleteEventFromFragmentDiaolog;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
@@ -65,6 +70,29 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             }
         });
 
+        holder.editEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, EditEventActivity.class);
+                intent.putExtra("trackingId", event.GetTrackingId().toString());
+                String eventId = event.GetEventId().toString();
+                intent.putExtra("eventId", event.GetEventId().toString());
+                context.startActivity(intent);
+            }
+        });
+
+        holder.deleteEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeleteEventFromFragmentDiaolog delete = new DeleteEventFromFragmentDiaolog();
+                Bundle bundle = new Bundle();
+                bundle.putString("trackingId", event.GetTrackingId().toString());
+                bundle.putString("eventId" , event.GetEventId().toString());
+                delete.setArguments(bundle);
+                delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
+            }
+        });
+
         Date eventDate = event.GetEventDate();
 
         holder.eventDate.setText(eventDate.toLocaleString());
@@ -82,8 +110,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         TextView eventDate;
         RelativeLayout itemLL;
 
+        ImageView deleteEvent;
+        ImageView editEvent;
+
         public ViewHolder(View itemView) {
             super(itemView);
+            deleteEvent = (ImageView) itemView.findViewById(R.id.deleteEventIcn);
+            editEvent = (ImageView) itemView.findViewById(R.id.editEventIcn);
             eventDate = (TextView) itemView.findViewById(R.id.eventDate);
             trackingTitle = (TextView) itemView.findViewById(R.id.TrackingTitle);
             itemLL = (RelativeLayout) itemView.findViewById(R.id.eventRL);
