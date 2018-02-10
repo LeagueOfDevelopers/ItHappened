@@ -35,6 +35,8 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 import java.util.List;
 import java.util.UUID;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -230,6 +232,17 @@ public class UserActionsActivity extends AppCompatActivity
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.commit();
+
+        Realm.init(getApplicationContext());
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("ItHappened.realm")
+                .build();
+
+        Realm realm = Realm.getInstance(config);
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
+
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
