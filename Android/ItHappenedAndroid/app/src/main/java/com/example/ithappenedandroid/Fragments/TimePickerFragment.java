@@ -9,8 +9,10 @@ import android.text.format.DateFormat;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Пользователь on 17.01.2018.
@@ -51,13 +53,16 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         time.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH)-1);
         time.set(Calendar.MONTH, c.get(Calendar.MONTH));
         time.set(Calendar.YEAR, c.get(Calendar.YEAR));
-        time.set(Calendar.HOUR, hour);
+        time.set(Calendar.HOUR, hour+12);
         time.set(Calendar.MINUTE, min);
         time.set(Calendar.MILLISECOND, 0);
 
         if(dateTimeText!=null){
 
-            dateTimeText.setText(time.getTime().toLocaleString());
+            Locale loc = new Locale("ru");
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
+            dateTimeText.setText(format.format(time.getTime()));
 
         }
 

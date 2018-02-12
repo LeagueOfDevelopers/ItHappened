@@ -20,8 +20,10 @@ import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
@@ -95,7 +97,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         Date eventDate = event.GetEventDate();
 
-        holder.eventDate.setText(eventDate.toLocaleString());
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        holder.eventDate.setText(format.format(eventDate));
 
     }
 

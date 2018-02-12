@@ -31,6 +31,7 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class EditEventActivity extends AppCompatActivity {
@@ -113,7 +114,10 @@ public class EditEventActivity extends AppCompatActivity {
         ratingCustm = tracking.GetRatingCustomization();
         scaleCustm = tracking.GetScaleCustomization();
 
-        editedDateText.setText(event.GetEventDate().toLocaleString());
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
+        editedDateText.setText(format.format(event.GetEventDate()));
 
 
         //add control for comment
@@ -307,7 +311,7 @@ public class EditEventActivity extends AppCompatActivity {
                 }
 
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy 'г.' HH:mm:ss a");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
                 try{
                     editedDate = simpleDateFormat.parse(editedDateText.getText().toString());
