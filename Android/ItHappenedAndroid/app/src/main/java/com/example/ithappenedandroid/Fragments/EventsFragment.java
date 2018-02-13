@@ -50,6 +50,7 @@ public class EventsFragment extends Fragment  {
     int myDay;
 
     TextView hintForEventsHistory;
+    TextView hintForSpinner;
 
     RelativeLayout filtersScreen;
     RelativeLayout filtersHint;
@@ -119,6 +120,8 @@ public class EventsFragment extends Fragment  {
             }
         });
 
+        hintForSpinner = (TextView) getActivity().findViewById(R.id.hintsForSpinner);
+
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         eventsAdpt = new EventsAdapter(collection.FilterEvents(null,null,null,null,null,null,null), getActivity(), 0);
@@ -151,21 +154,29 @@ public class EventsFragment extends Fragment  {
             }
         }
 
-        trackingsSpinner.setItems(strings,allText.substring(0, allText.length()-2), new MultiSpinner.MultiSpinnerListener(){
 
-            @Override
-            public void onItemsSelected(boolean[] selected) {
+        if(strings.size()!=0) {
+            trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
 
-                for(int i = 0; i<selected.length; i++){
+                @Override
+                public void onItemsSelected(boolean[] selected) {
 
-                    if(selected[i]){
-                        filteredTrackingsTitles.add(strings.get(i));
-                        filteredTrackingsUuids.add(idCollection.get(i));
+                    for (int i = 0; i < selected.length; i++) {
+
+                        if (selected[i]) {
+                            filteredTrackingsTitles.add(strings.get(i));
+                            filteredTrackingsUuids.add(idCollection.get(i));
+                        }
                     }
-                }
 
-            }
-        });
+                }
+            });
+        }else{
+
+            trackingsSpinner.setVisibility(View.INVISIBLE);
+            hintForSpinner.setVisibility(View.VISIBLE);
+
+        }
 
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
