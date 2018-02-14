@@ -35,7 +35,6 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(id);
     }
 
-    private string _filepath = "logs.json";
     private UserList users;
   }
 

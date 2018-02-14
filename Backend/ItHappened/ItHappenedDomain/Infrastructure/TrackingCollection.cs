@@ -102,15 +102,6 @@ namespace ItHappenedDomain.Infrastructure
       }
     }
 
-    private List<Tracking> ReadAllFromDB()
-    {
-      using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ItHappenedDB"].ConnectionString))
-      {
-        return db.Query<string>
-          ("Select * From ").ToList();
-      }
-    }
-
     private List<Tracking> _trackingCollection;
   }
 }
