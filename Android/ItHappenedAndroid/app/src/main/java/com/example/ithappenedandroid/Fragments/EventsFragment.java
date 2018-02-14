@@ -3,13 +3,13 @@ package com.example.ithappenedandroid.Fragments;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +38,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class EventsFragment extends Fragment  {
 
     RecyclerView eventsRecycler;
@@ -49,11 +49,15 @@ public class EventsFragment extends Fragment  {
     int myMonth;
     int myDay;
 
+    List<Boolean> flags;
+
     TextView hintForEventsHistory;
     TextView hintForSpinner;
 
     RelativeLayout filtersScreen;
     RelativeLayout filtersHint;
+
+    FloatingActionButton filtersCancel;
 
     int stateForHint;
 
@@ -73,7 +77,7 @@ public class EventsFragment extends Fragment  {
     Spinner hintsForRatingSpinner;
     TrackingService trackingService;
 
-    ITrackingRepository collection = new StaticInMemoryRepository(getContext()).getInstance();
+    ITrackingRepository collection;
 
     @Nullable
     @Override
@@ -86,12 +90,19 @@ public class EventsFragment extends Fragment  {
         super.onResume();
         getActivity().setTitle("История событий");
 
+        collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
             hintForEventsHistory.setVisibility(View.INVISIBLE);
         }
 
         View view = getView();
+
+
+        filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
+
+
 
         filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
@@ -131,6 +142,7 @@ public class EventsFragment extends Fragment  {
 
         final ArrayList<UUID> idCollection = new ArrayList<UUID>();
         final List<String> strings = new ArrayList<String>();
+        flags = new ArrayList<>();
 
         List<Tracking> trackings = new ArrayList<>();
         trackings = trackingService.GetTrackingCollection();
@@ -139,11 +151,14 @@ public class EventsFragment extends Fragment  {
             if(!trackings.get(i).GetStatus()) {
                 strings.add(trackings.get(i).GetTrackingName());
                 idCollection.add(trackings.get(i).GetTrackingID());
+                flags.add(false);
             }
         }
 
         final List<String> filteredTrackingsTitles = new ArrayList<>();
         final List<UUID> filteredTrackingsUuids = new ArrayList<>();
+
+        setUuidsCollection(filteredTrackingsUuids);
 
         trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
 
@@ -163,12 +178,19 @@ public class EventsFragment extends Fragment  {
 
                     for (int i = 0; i < selected.length; i++) {
 
+                        Log.e("FILTER", selected[i] + "");
                         if (selected[i]) {
                             filteredTrackingsTitles.add(strings.get(i));
-                            filteredTrackingsUuids.add(idCollection.get(i));
+                            if(flags.get(i)) {
+                                filteredTrackingsUuids.add(idCollection.get(i));
+                            }
                         }
-                    }
+                        if (!selected[i]) {
+                            filteredTrackingsUuids.remove(idCollection.get(i));
+                            flags.set(i, true);
+                        }
 
+                    }
                 }
             });
         }else{
@@ -216,12 +238,67 @@ public class EventsFragment extends Fragment  {
         hintsForScaleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForScaleSpinner.setAdapter(hintsForScaleAdapter);
 
-        ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, hints);
+        final ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, hints);
         hintsForRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
         scaleFilter = (EditText) getActivity().findViewById(R.id.scaleFilter);
         ratingFilter = (RatingBar) getActivity().findViewById(R.id.ratingFilter);
+
+
+        filtersCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eventsAdpt = new EventsAdapter(collection.FilterEvents(null,null,null,null,null,null,null), getActivity(), 0);
+                ratingFilter.setRating(0);
+                scaleFilter.setText("");
+                dateFromText.setText("Начальная дата");
+                dateToText.setText("Конечная дата");
+
+                hintsForRatingSpinner.setSelection(0);
+                hintsForScaleSpinner.setSelection(0);
+
+                String allText = "";
+                for(int i=0;i<strings.size();i++) {
+                    if (i != strings.size()) {
+                        allText += strings.get(i) + ", ";
+                    }
+                }
+
+                if(strings.size()!=0) {
+                    trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
+
+                        @Override
+                        public void onItemsSelected(boolean[] selected) {
+
+                            for (int i = 0; i < selected.length; i++) {
+
+                                Log.e("FILTER", selected[i] + "");
+                                if (selected[i]) {
+                                    filteredTrackingsTitles.add(strings.get(i));
+                                    if(flags.get(i)) {
+                                        filteredTrackingsUuids.add(idCollection.get(i));
+                                    }
+                                }
+                                if (!selected[i]) {
+                                    filteredTrackingsUuids.remove(idCollection.get(i));
+                                    flags.set(i, true);
+                                }
+
+                            }
+                        }
+                    });
+                }else{
+
+                    trackingsSpinner.setVisibility(View.INVISIBLE);
+                    hintForSpinner.setVisibility(View.VISIBLE);
+
+                }
+
+                eventsRecycler.setAdapter(eventsAdpt);
+            }
+        });
+
 
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
@@ -229,7 +306,6 @@ public class EventsFragment extends Fragment  {
             @Override
             public void onClick(View view) {
 
-                UUID tracingId = null;
                 Date dateFrom = null;
                 Date dateTo = null;
                 Comparison scaleComparison = null;
@@ -237,13 +313,9 @@ public class EventsFragment extends Fragment  {
                 Comparison ratingComparison = null;
                 Rating rating = null;
 
-                if(trackingService.GetTrackingCollection().size()!=0) {
-                    int position = trackingsSpinner.getSelectedItemPosition();
-                    tracingId = idCollection.get(position);
-                }
-
                 if(!dateFromText.getText().toString().isEmpty() && !dateToText.getText().toString().isEmpty()){
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy 'г.' HH:mm:ss a");
+                    Locale locale = new Locale("ru");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
                     try {
                         dateFrom = simpleDateFormat.parse(dateFromText.getText().toString());
                     } catch (ParseException e) {
@@ -269,7 +341,7 @@ public class EventsFragment extends Fragment  {
                     rating = new Rating((int)ratingFilter.getRating()*2);
                 }
 
-                List<Event> filteredEvents = trackingService.FilterEventCollection(tracingId,dateFrom, dateTo, scaleComparison, scale, ratingComparison, rating);
+                List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids,dateFrom, dateTo, scaleComparison, scale, ratingComparison, rating);
                 eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 0);
                 eventsRecycler.setAdapter(eventsAdpt);
 
@@ -281,6 +353,14 @@ public class EventsFragment extends Fragment  {
     }
 
 
+
+    private void setUuidsCollection(List<UUID> uuids){
+        for(int i =0; i<trackingService.GetTrackingCollection().size();i++){
+            if(!trackingService.GetTrackingCollection().get(i).GetStatus()){
+                uuids.add(trackingService.GetTrackingCollection().get(i).GetTrackingID());
+            }
+        }
+    }
 
 
     }

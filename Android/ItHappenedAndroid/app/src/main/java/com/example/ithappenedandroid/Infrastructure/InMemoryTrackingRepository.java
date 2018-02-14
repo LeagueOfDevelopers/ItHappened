@@ -70,6 +70,11 @@ public class InMemoryTrackingRepository implements ITrackingRepository
         else throw new IllegalArgumentException("Tracking with such ID already exists");
     }
 
+    @Override
+    public List<Event> FilterEvents(List<UUID> trackingId, Date from, Date to, Comparison scaleComparison, Double scale, Comparison ratingComparison, Rating rating) {
+        return null;
+    }
+
 
     public List<Event> FilterEvents(UUID trackingId, Date dateFrom, Date dateTo,
                                     Comparison scaleComparison, Double scale,

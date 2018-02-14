@@ -117,6 +117,7 @@ public class TrackingRepository implements ITrackingRepository{
             notFilteredEvents.addAll(filteredEvents);
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
+                if(event.GetScale()!=null)
                 if (CompareValues(scaleComparison, event.GetScale(), scale))
                     filteredEvents.add(event);
             }

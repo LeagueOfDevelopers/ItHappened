@@ -1,0 +1,5 @@
+<root>
+    <item name='java.util.List E get(int)'>
+        <annotation name='android.support.annotation.NonNull' />
+    </item>
+</root>
