@@ -78,7 +78,7 @@ public class TrackingRepository implements ITrackingRepository{
         realm.commitTransaction();
     }
 
-    public List<Event> FilterEvents(UUID trackingId, Date dateFrom, Date dateTo,
+    public List<Event> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
                                     Comparison scaleComparison, Double scale,
                                     Comparison ratingComparison, Rating rating) {
 
@@ -97,7 +97,7 @@ public class TrackingRepository implements ITrackingRepository{
         if (trackingId != null) {
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
-                if (event.GetTrackingId().equals(trackingId))
+                if (trackingId.contains(event.GetTrackingId()))
                     filteredEvents.add(event);
             }
         }
@@ -134,7 +134,7 @@ public class TrackingRepository implements ITrackingRepository{
             }
         }
 
-        return filteredEvents;
+        return RemoveDeletedEventsAndTrackingsFromCollection(filteredEvents);
     }
 
     private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)
@@ -181,6 +181,16 @@ public class TrackingRepository implements ITrackingRepository{
         realm = Realm.getInstance(config);
     }
 
+    private List<Event> RemoveDeletedEventsAndTrackingsFromCollection(List<Event> collection)
+    {
+        List<Event> collectionToReturn = new ArrayList<>();
+        for (Event event : collection )
+        {
+            if (!event.isDeleted())
+                collectionToReturn.add(event);
+        }
+        return collectionToReturn;
+    }
 
     Context context;
     Realm realm;

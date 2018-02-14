@@ -16,7 +16,7 @@ public interface ITrackingRepository
     List<Tracking> GetTrackingCollection();
     void ChangeTracking(Tracking tracking);
     void AddNewTracking(Tracking tracking);
-    List<Event> FilterEvents(UUID trackingId, Date from, Date to,
+    List<Event> FilterEvents(List<UUID> trackingId, Date from, Date to,
                                     Comparison scaleComparison, Double scale,
                                     Comparison ratingComparison, Rating rating);
     void SaveTrackingCollection(List<Tracking> trackingCollection);

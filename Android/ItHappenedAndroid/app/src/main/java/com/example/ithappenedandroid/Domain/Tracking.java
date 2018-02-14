@@ -236,6 +236,9 @@ public class Tracking extends RealmObject {
     {
         isDeleted = true;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        for (Event event: eventCollection) {
+            event.RemoveEvent();
+        }
     }
 
     public String GetTrackingName() {return trackingName;}

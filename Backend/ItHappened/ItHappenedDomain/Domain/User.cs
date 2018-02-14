@@ -12,6 +12,7 @@ namespace ItHappenedDomain.Domain
     public User(string userId)
     {
       UserId = userId;
+      UserNickname = userId;
       _trackingCollection = new TrackingCollection();
     }
 
@@ -20,7 +21,8 @@ namespace ItHappenedDomain.Domain
       return _trackingCollection.ChangeTrackingCollection(trackingCollection);
     }
 
-    public string UserId { private set; get; }
+    public string UserId { set; get; }
+    public string UserNickname { set; get; }
     private TrackingCollection _trackingCollection;
   }
 }

@@ -62,7 +62,7 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
-    public List<Event> FilterEventCollection (UUID trackingId, Date from, Date to,
+    public List<Event> FilterEventCollection (List<UUID> trackingId, Date from, Date to,
                                               Comparison scaleComparison, Double scale,
                                               Comparison ratingComparison, Rating rating)
     {

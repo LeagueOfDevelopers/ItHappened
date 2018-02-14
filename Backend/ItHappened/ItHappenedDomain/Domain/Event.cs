@@ -15,7 +15,7 @@ namespace ItHappenedDomain.Domain
     public DateTimeOffset dateOfChange { set; get; }
     public bool isDeleted { set; get; }
 
-    public Event(string eventId, string trackingId, 
+    public Event(string eventId, string trackingId,
       DateTimeOffset eventDate, 
       double scale, Rating rating, string comment, 
       DateTimeOffset dateOfChange, bool isDeleted)

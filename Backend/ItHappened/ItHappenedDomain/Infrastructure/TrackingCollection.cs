@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using ItHappenedDomain.Domain;
 using System.Linq;
+using Dapper;
 
 namespace ItHappenedDomain.Infrastructure
 {
@@ -95,6 +99,15 @@ namespace ItHappenedDomain.Infrastructure
             _trackingCollection[indexOfTracking].EventCollection = tracking.EventCollection;
           }
         }
+      }
+    }
+
+    private List<Tracking> ReadAllFromDB()
+    {
+      using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ItHappenedDB"].ConnectionString))
+      {
+        return db.Query<string>
+          ("Select * From ").ToList();
       }
     }
 
