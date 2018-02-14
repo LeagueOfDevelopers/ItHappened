@@ -80,8 +80,8 @@ namespace ItHappenedDomain.Infrastructure
               .Where(_event => _event.dateOfChange > tracking.EventCollection
                                  .First(item => _event.eventId.Equals(item.eventId)).dateOfChange).ToList();
 
-            List<Event> eventCollectionToAdd = oldEventCollection
-              .Where(_event => !(tracking.EventCollection.Any(item => _event.eventId.Equals(item.eventId)))).ToList();
+            List<Event> eventCollectionToAdd = tracking.EventCollection
+              .Where(_event => !(oldEventCollection.Any(item => _event.eventId.Equals(item.eventId)))).ToList();
 
             foreach (var _event in eventCollectionToChange)
             {
