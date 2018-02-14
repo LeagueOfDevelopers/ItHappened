@@ -325,9 +325,7 @@ public class EditEventActivity extends AppCompatActivity {
                 if(commentFlag && ratingFlag && scaleFlag){
                     try{
                         trackingService.EditEvent(trackingId, eventId, scale, rating, comment, editedDate);
-                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                        Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                        startActivity(intent);
+                        finish();
                     }catch (Exception e){
                         Toast.makeText(getApplicationContext(),"ex", Toast.LENGTH_SHORT).show();
                     }

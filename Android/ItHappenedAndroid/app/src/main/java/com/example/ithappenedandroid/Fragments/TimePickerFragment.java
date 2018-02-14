@@ -14,10 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by Пользователь on 17.01.2018.
- */
-
 @SuppressLint("ValidFragment")
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
@@ -53,7 +49,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         time.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH)-1);
         time.set(Calendar.MONTH, c.get(Calendar.MONTH));
         time.set(Calendar.YEAR, c.get(Calendar.YEAR));
-        time.set(Calendar.HOUR, hour);
+        time.set(Calendar.HOUR_OF_DAY, hour);
         time.set(Calendar.MINUTE, min);
         time.set(Calendar.MILLISECOND, 0);
 

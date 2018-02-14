@@ -235,8 +235,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                 trackingService.EditTracking(trackingId, scaleCustom, ratingCustom, textCustom, trackingTitleControl.getText().toString());
                 Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
 
-                Intent intent1 = new Intent(getApplicationContext(), UserActionsActivity.class);
-                startActivity(intent1);
+              finish();
             }
         });
 
