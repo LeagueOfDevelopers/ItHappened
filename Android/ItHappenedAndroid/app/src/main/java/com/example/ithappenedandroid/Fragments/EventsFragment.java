@@ -9,6 +9,8 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.DigitsKeyListener;
+import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -242,7 +244,10 @@ public class EventsFragment extends Fragment  {
         hintsForRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
+
+        KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.");
         scaleFilter = (EditText) getActivity().findViewById(R.id.scaleFilter);
+        scaleFilter.setKeyListener(keyListener);
         ratingFilter = (RatingBar) getActivity().findViewById(R.id.ratingFilter);
 
 
