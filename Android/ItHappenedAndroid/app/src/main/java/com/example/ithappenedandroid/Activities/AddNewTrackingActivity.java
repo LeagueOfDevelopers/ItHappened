@@ -174,6 +174,10 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
                 trackingTitle = trackingTitleControl.getText().toString();
 
+                if (trackingTitle.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Введите название отслеживания!", Toast.LENGTH_SHORT).show();
+                } else {
+
                     trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
 
 
@@ -220,10 +224,11 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
                     Tracking newTracking = new Tracking(trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
                     trackingRepository.AddNewTracking(newTracking);
-                Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                     startActivity(intent);
+                }
             }
         });
 

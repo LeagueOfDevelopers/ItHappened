@@ -31,6 +31,7 @@ import com.example.ithappenedandroid.StaticInMemoryRepository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class EditEventActivity extends AppCompatActivity {
@@ -113,7 +114,10 @@ public class EditEventActivity extends AppCompatActivity {
         ratingCustm = tracking.GetRatingCustomization();
         scaleCustm = tracking.GetScaleCustomization();
 
-        editedDateText.setText(event.GetEventDate().toLocaleString());
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
+        editedDateText.setText(format.format(event.GetEventDate()));
 
 
         //add control for comment
@@ -193,8 +197,9 @@ public class EditEventActivity extends AppCompatActivity {
                 stars.getDrawable(1).setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
                 stars.getDrawable(0).setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
             }
-
-            ratingControlWidget.setRating(event.GetRating().GetRatingValue()/2);
+            if(event.GetRating()!=null) {
+                ratingControlWidget.setRating(event.GetRating().GetRatingValue() / 2.0F);
+            }
             LinearLayout.LayoutParams ratingControlLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             ratingControlLayoutParams.setMargins(10,10,10,10);
@@ -223,7 +228,9 @@ public class EditEventActivity extends AppCompatActivity {
             scaleControl.addView(scaleHintText);
 
             scaleControlWidget = new EditText(this);
-            scaleControlWidget.setText(event.GetScale().toString());
+            if(event.GetScale()!=null) {
+                scaleControlWidget.setText(event.GetScale().toString());
+            }
             scaleControlWidget.setTextColor(getResources().getColor(R.color.cardview_dark_background));
             KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.");
             scaleControlWidget.setKeyListener(keyListener);
@@ -307,7 +314,7 @@ public class EditEventActivity extends AppCompatActivity {
                 }
 
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy 'г.' HH:mm:ss a");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
                 try{
                     editedDate = simpleDateFormat.parse(editedDateText.getText().toString());

@@ -143,6 +143,8 @@ public class EventDetailsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
+                android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                fm.popBackStack();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -12,20 +12,35 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ithappenedandroid.Application.TrackingService;
+import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Fragments.EventsFragment;
+import com.example.ithappenedandroid.Fragments.ProfileSettingsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
+import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
-import com.example.ithappenedandroid.Retrofit.RetrofitRequests;
+import com.example.ithappenedandroid.Retrofit.ItHappenedApplication;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.util.List;
 import java.util.UUID;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -33,6 +48,13 @@ public class UserActionsActivity extends AppCompatActivity
     TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
+    FrameLayout layoutFrg;
+
+    ProfileSettingsFragment profileStgsFrg;
+
+    ProgressBar syncPB;
+
+    Subscription mainSync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +73,19 @@ public class UserActionsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        trackFrg = new TrackingsFragment();
+        fTrans = getFragmentManager().beginTransaction();
+        fTrans.replace(R.id.trackingsFrg, trackFrg);
+        fTrans.commit();
+
+        syncPB = (ProgressBar) findViewById(R.id.syncPB);
+        layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        setTitle("Мои отслеживания");
-            trackFrg = new TrackingsFragment();
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg);
-            fTrans.commit();
         }
 
     @Override
@@ -73,7 +98,7 @@ public class UserActionsActivity extends AppCompatActivity
             trackFrg = new TrackingsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
+            fTrans.replace(R.id.trackingsFrg, trackFrg);
             fTrans.commit();
         }
     }
@@ -82,7 +107,6 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -92,7 +116,7 @@ public class UserActionsActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.activity_tracking_drawer, menu);
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userNick = (TextView) findViewById(R.id.userNickname);
-        userNick.setText(sharedPreferences.getString("UserId",""));
+        userNick.setText(sharedPreferences.getString("Nick",""));
         return true;
     }
 
@@ -106,7 +130,7 @@ public class UserActionsActivity extends AppCompatActivity
             trackFrg = new TrackingsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg);
+            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
             fTrans.commit();
 
             setTitle("Мои отслеживания");
@@ -117,7 +141,7 @@ public class UserActionsActivity extends AppCompatActivity
             EventsFragment eventsFrg = new EventsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, eventsFrg);
+            fTrans.replace(R.id.trackingsFrg, eventsFrg).addToBackStack(null);
             fTrans.commit();
         }
 
@@ -126,17 +150,44 @@ public class UserActionsActivity extends AppCompatActivity
             StatisticsFragment statFrg = new StatisticsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, statFrg);
+            fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
             fTrans.commit();
         }
 
         if(id == R.id.synchronisation){
+            showLoading();
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-            RetrofitRequests requests = new RetrofitRequests(new StaticInMemoryRepository(getApplicationContext()).getInstance(), getApplicationContext(), sharedPreferences.getString("UserId",""));
-            Intent intent = new Intent(this, SplashScreenActivity.class);
-            startActivity(intent);
-            requests.syncData();
+           mainSync = ItHappenedApplication.
+                    getApi().
+                    SynchronizeData(sharedPreferences.getString("UserId", ""),
+                            new StaticInMemoryRepository(getApplicationContext()).getInstance().
+                            GetTrackingCollection())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<Tracking>>() {
+                @Override
+                public void call(List<Tracking> trackings) {
+                    saveDataToDb(trackings);
+                    finish();
+                    startActivity(getIntent());
+                    Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    Log.e("RxSync", ""+throwable);
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
+           if(id == R.id.proile_settings){
+               profileStgsFrg = new ProfileSettingsFragment();
+               fTrans = getFragmentManager().beginTransaction();
+               fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
+               fTrans.commit();
+           }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -155,5 +206,47 @@ public class UserActionsActivity extends AppCompatActivity
 
     public void cancelClicked() {
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    private void saveDataToDb(List<Tracking> trackings){
+        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        trackingRepository.SaveTrackingCollection(trackings);
+    }
+
+    private void showLoading(){
+        layoutFrg.setVisibility(View.INVISIBLE);
+        syncPB.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading(){
+        layoutFrg.setVisibility(View.VISIBLE);
+        syncPB.setVisibility(View.INVISIBLE);
+    }
+
+    public void logout(){
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+
+        Realm.init(getApplicationContext());
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("ItHappened.realm")
+                .build();
+
+        Realm realm = Realm.getInstance(config);
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
+
+        Intent intent = new Intent(this, SignInActivity.class);
+        startActivity(intent);
+    }
+
+    public void cancelLogout(){}
 
 }

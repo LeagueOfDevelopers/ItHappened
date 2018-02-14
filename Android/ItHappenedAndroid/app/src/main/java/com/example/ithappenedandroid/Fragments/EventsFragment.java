@@ -27,6 +27,7 @@ import com.example.ithappenedandroid.Domain.Comparison;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Rating;
 import com.example.ithappenedandroid.Domain.Tracking;
+import com.example.ithappenedandroid.Gui.MultiSpinner;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Recyclers.EventsAdapter;
@@ -49,6 +50,7 @@ public class EventsFragment extends Fragment  {
     int myDay;
 
     TextView hintForEventsHistory;
+    TextView hintForSpinner;
 
     RelativeLayout filtersScreen;
     RelativeLayout filtersHint;
@@ -66,7 +68,7 @@ public class EventsFragment extends Fragment  {
 
     RatingBar ratingFilter;
 
-    Spinner trackingsSpinner;
+    MultiSpinner trackingsSpinner;
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     TrackingService trackingService;
@@ -83,6 +85,7 @@ public class EventsFragment extends Fragment  {
     public void onResume() {
         super.onResume();
         getActivity().setTitle("История событий");
+
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
             hintForEventsHistory.setVisibility(View.INVISIBLE);
@@ -117,6 +120,8 @@ public class EventsFragment extends Fragment  {
             }
         });
 
+        hintForSpinner = (TextView) getActivity().findViewById(R.id.hintsForSpinner);
+
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         eventsAdpt = new EventsAdapter(collection.FilterEvents(null,null,null,null,null,null,null), getActivity(), 0);
@@ -125,20 +130,53 @@ public class EventsFragment extends Fragment  {
         trackingService = new TrackingService("testUser", collection);
 
         final ArrayList<UUID> idCollection = new ArrayList<UUID>();
-        ArrayList<String> strings = new ArrayList<String>();
+        final List<String> strings = new ArrayList<String>();
 
         List<Tracking> trackings = new ArrayList<>();
         trackings = trackingService.GetTrackingCollection();
 
         for(int i=0;i<trackings.size();i++){
-            strings.add(trackings.get(i).GetTrackingName());
-            idCollection.add(trackings.get(i).GetTrackingID());
+            if(!trackings.get(i).GetStatus()) {
+                strings.add(trackings.get(i).GetTrackingName());
+                idCollection.add(trackings.get(i).GetTrackingID());
+            }
         }
 
-        trackingsSpinner = (Spinner) view.findViewById(R.id.spinnerForTrackings);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, strings);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trackingsSpinner.setAdapter(adapter);
+        final List<String> filteredTrackingsTitles = new ArrayList<>();
+        final List<UUID> filteredTrackingsUuids = new ArrayList<>();
+
+        trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
+
+        String allText = "";
+        for(int i=0;i<strings.size();i++) {
+            if (i != strings.size()) {
+                allText += strings.get(i) + ", ";
+            }
+        }
+
+
+        if(strings.size()!=0) {
+            trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
+
+                @Override
+                public void onItemsSelected(boolean[] selected) {
+
+                    for (int i = 0; i < selected.length; i++) {
+
+                        if (selected[i]) {
+                            filteredTrackingsTitles.add(strings.get(i));
+                            filteredTrackingsUuids.add(idCollection.get(i));
+                        }
+                    }
+
+                }
+            });
+        }else{
+
+            trackingsSpinner.setVisibility(View.INVISIBLE);
+            hintForSpinner.setVisibility(View.VISIBLE);
+
+        }
 
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
@@ -168,7 +206,7 @@ public class EventsFragment extends Fragment  {
             }
         });
 
-        String[] hints = new String[]{">","<","="};
+        String[] hints = new String[]{"Больше","Меньше","Равно"};
         final Comparison[] comparisons = new Comparison[] {Comparison.More, Comparison.Less, Comparison.Equal};
 
         hintsForScaleSpinner = (Spinner) view.findViewById(R.id.hintsForScale);

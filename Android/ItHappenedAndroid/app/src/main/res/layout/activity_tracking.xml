@@ -22,4 +22,6 @@
         app:headerLayout="@layout/nav_header_tracking"
         app:menu="@menu/activity_tracking_drawer" />
 
+
+
 </android.support.v4.widget.DrawerLayout>
