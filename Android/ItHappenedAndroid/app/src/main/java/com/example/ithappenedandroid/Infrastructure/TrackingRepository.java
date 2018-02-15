@@ -28,6 +28,8 @@ public class TrackingRepository implements ITrackingRepository{
     {
         onCreate();
         realm.beginTransaction();
+        RealmResults<Tracking> result = realm.where(Tracking.class).findAll();
+        result.deleteAllFromRealm();
         for (Tracking tracking: trackingCollection) {
             realm.copyToRealmOrUpdate(tracking);
         }

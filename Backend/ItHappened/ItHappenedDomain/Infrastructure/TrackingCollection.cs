@@ -80,8 +80,8 @@ namespace ItHappenedDomain.Infrastructure
               .Where(_event => _event.dateOfChange > tracking.EventCollection
                                  .First(item => _event.eventId.Equals(item.eventId)).dateOfChange).ToList();
 
-            List<Event> eventCollectionToAdd = oldEventCollection
-              .Where(_event => !(tracking.EventCollection.Any(item => _event.eventId.Equals(item.eventId)))).ToList();
+            List<Event> eventCollectionToAdd = tracking.EventCollection
+              .Where(_event => !(oldEventCollection.Any(item => _event.eventId.Equals(item.eventId)))).ToList();
 
             foreach (var _event in eventCollectionToChange)
             {
@@ -99,15 +99,6 @@ namespace ItHappenedDomain.Infrastructure
             _trackingCollection[indexOfTracking].EventCollection = tracking.EventCollection;
           }
         }
-      }
-    }
-
-    private List<Tracking> ReadAllFromDB()
-    {
-      using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ItHappenedDB"].ConnectionString))
-      {
-        return db.Query<string>
-          ("Select * From ").ToList();
       }
     }
 
