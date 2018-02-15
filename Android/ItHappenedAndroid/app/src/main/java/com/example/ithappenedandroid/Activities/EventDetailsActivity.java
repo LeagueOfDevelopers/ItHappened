@@ -121,8 +121,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         trackingSercvice.RemoveEvent(trackingId, eventId);
         Toast.makeText(this, "Событие удалено", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, UserActionsActivity.class);
-        startActivity(intent);
+        this.finish();
 
     }
 
@@ -149,5 +148,11 @@ public class EventDetailsActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        recreate();
     }
 }
