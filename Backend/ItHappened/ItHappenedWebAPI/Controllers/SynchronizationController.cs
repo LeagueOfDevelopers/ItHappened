@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
-using ItHappenedWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
