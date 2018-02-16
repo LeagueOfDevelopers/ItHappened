@@ -1,8 +1,7 @@
 package com.example.ithappenedandroid.Retrofit;
 
-import com.example.ithappenedandroid.Domain.Tracking;
-
-import java.util.List;
+import com.example.ithappenedandroid.Models.RegistrationResponse;
+import com.example.ithappenedandroid.Models.SynchronizationRequest;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -12,9 +11,9 @@ import rx.Observable;
 public interface ItHappenedApi {
 
     @POST("{idToken}")
-    Observable<String> SignUp(@Path("idToken")String idToken);
+    Observable<RegistrationResponse> SignUp(@Path("idToken")String idToken);
 
     @POST("synchronization/{userId}")
-    Observable<List<Tracking>> SynchronizeData(@Path("userId")String userId, @Body List<Tracking> trackingColletion);
+    Observable<SynchronizationRequest> SynchronizeData(@Path("userId")String userId, @Body SynchronizationRequest synchronizationRequest);
 
 }

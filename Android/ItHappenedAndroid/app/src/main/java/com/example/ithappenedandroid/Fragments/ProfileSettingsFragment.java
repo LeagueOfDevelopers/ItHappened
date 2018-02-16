@@ -19,6 +19,8 @@ public class ProfileSettingsFragment extends Fragment {
     TextView userNickName;
     Button logOut;
 
+    TextView editNickName;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class ProfileSettingsFragment extends Fragment {
         userMail =(TextView) getActivity().findViewById(R.id.mail);
         userNickName = (TextView) getActivity().findViewById(R.id.nickname);
         logOut = (Button) getActivity().findViewById(R.id.logout);
+        editNickName = (TextView) getActivity().findViewById(R.id.editNickName);
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,9 +45,25 @@ public class ProfileSettingsFragment extends Fragment {
             }
         });
 
+        editNickName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditNicknameDialogFragment dialogFragment = new EditNicknameDialogFragment();
+                dialogFragment.show(getFragmentManager(), "editNickName");
+            }
+        });
+
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userMail.setText(sharedPreferences.getString("UserId", ""));
         userNickName.setText(sharedPreferences.getString("Nick", ""));
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        userMail.setText(sharedPreferences.getString("UserId", ""));
+        userNickName.setText(sharedPreferences.getString("Nick", ""));
     }
 }

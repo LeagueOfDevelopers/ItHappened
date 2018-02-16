@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
+import com.example.ithappenedandroid.Models.RegistrationResponse;
+import com.example.ithappenedandroid.Models.SynchronizationRequest;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Retrofit.ItHappenedApplication;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
@@ -27,6 +29,7 @@ import com.google.android.gms.common.SignInButton;
 import com.nvanbenschoten.motion.ParallaxImageView;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import rx.Subscription;
@@ -138,23 +141,35 @@ public class SignInActivity extends Activity {
         regSub = ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
+                .subscribe(new Action1<RegistrationResponse>() {
                     @Override
-                    public void call(String s) {
+                    public void call(RegistrationResponse registrationResponse) {
                         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("UserId", s);
-                        editor.putString("Nick", s);
+                        editor.putString("UserId", registrationResponse.getUserId());
+                        editor.putString("Nick", registrationResponse.getUserNickname());
+                        editor.putString("Url", registrationResponse.getPicUrl());
+                        editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
                         editor.commit();
 
+                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
+                                new Date(sharedPreferences.getLong("NickDate", 0)),
+                                new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
+
                         ItHappenedApplication.
-                                getApi().SynchronizeData(s, new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection())
+                                getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<List<Tracking>>() {
+                                .subscribe(new Action1<SynchronizationRequest>() {
                                     @Override
-                                    public void call(List<Tracking> trackings) {
-                                        saveDataToDb(trackings);
+                                    public void call(SynchronizationRequest sync) {
+                                        saveDataToDb(sync.getTrackingCollection());
+
+                                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putLong("NickDate", sync.getNicknameDateOfChange().getTime());
+                                        editor.commit();
+
                                         Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                                         startActivity(intent);

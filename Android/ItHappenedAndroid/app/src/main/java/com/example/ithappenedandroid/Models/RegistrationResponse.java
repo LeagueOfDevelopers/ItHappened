@@ -1,0 +1,60 @@
+package com.example.ithappenedandroid.Models;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
+/**
+ * Created by Пользователь on 16.02.2018.
+ */
+
+public class RegistrationResponse{
+
+
+    @Expose
+    @SerializedName("userNickname")
+    public String UserNickname;
+    @Expose
+    @SerializedName("userId")
+    public String UserId;
+    @Expose
+    @SerializedName("picUrl")
+    public String PicUrl;
+    @Expose
+    @SerializedName("nicknameDateOfChange")
+    public Date NicknameDateOfChange;
+
+    public Date getNicknameDateOfChange() {
+        return NicknameDateOfChange;
+    }
+
+    public void setNicknameDateOfChange(Date nicknameDateOfChange) {
+        NicknameDateOfChange = nicknameDateOfChange;
+    }
+
+    public String getUserNickname() {
+        return UserNickname;
+    }
+
+    public void setUserNickname(String userNickname) {
+        UserNickname = userNickname;
+    }
+
+    public String getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(String userId) {
+        UserId = userId;
+    }
+
+    public String getPicUrl() {
+        return PicUrl;
+    }
+
+    public void setPicUrl(String picUrl) {
+        PicUrl = picUrl;
+    }
+
+}

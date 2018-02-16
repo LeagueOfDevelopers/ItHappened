@@ -4,7 +4,10 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,10 +32,13 @@ import com.example.ithappenedandroid.Fragments.ProfileSettingsFragment;
 import com.example.ithappenedandroid.Fragments.StatisticsFragment;
 import com.example.ithappenedandroid.Fragments.TrackingsFragment;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
+import com.example.ithappenedandroid.Models.SynchronizationRequest;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Retrofit.ItHappenedApplication;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +56,8 @@ public class UserActionsActivity extends AppCompatActivity
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
+
+    ImageView urlUser;
 
     ProfileSettingsFragment profileStgsFrg;
 
@@ -117,6 +126,10 @@ public class UserActionsActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userNick = (TextView) findViewById(R.id.userNickname);
         userNick.setText(sharedPreferences.getString("Nick",""));
+        urlUser = (ImageView) findViewById(R.id.imageView);
+
+        new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
+
         return true;
     }
 
@@ -156,18 +169,27 @@ public class UserActionsActivity extends AppCompatActivity
 
         if(id == R.id.synchronisation){
             showLoading();
-            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+            SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+            final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
+                    new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
+                    new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
+
            mainSync = ItHappenedApplication.
                     getApi().
                     SynchronizeData(sharedPreferences.getString("UserId", ""),
-                            new StaticInMemoryRepository(getApplicationContext()).getInstance().
-                            GetTrackingCollection())
+                            synchronizationRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<List<Tracking>>() {
+                    .subscribe(new Action1<SynchronizationRequest>() {
                 @Override
-                public void call(List<Tracking> trackings) {
-                    saveDataToDb(trackings);
+                public void call(SynchronizationRequest request) {
+                    saveDataToDb(request.getTrackingCollection());
+                    SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("Nick", synchronizationRequest.getUserNickname());
+                    editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
                     finish();
                     startActivity(getIntent());
                     Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
@@ -248,5 +270,37 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void cancelLogout(){}
+
+    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
+        ImageView imageView;
+
+        public DownLoadImageTask(ImageView imageView){
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String...urls){
+            String urlOfImage = urls[0];
+            Bitmap logo = null;
+            try{
+                InputStream is = new URL(urlOfImage).openStream();
+                /*
+                    decodeStream(InputStream is)
+                        Decode an input stream into a bitmap.
+                 */
+                logo = BitmapFactory.decodeStream(is);
+            }catch(Exception e){ // Catch the download exception
+                e.printStackTrace();
+            }
+            return logo;
+        }
+
+        /*
+            onPostExecute(Result result)
+                Runs on the UI thread after doInBackground(Params...).
+         */
+        protected void onPostExecute(Bitmap result){
+            imageView.setImageBitmap(result);
+        }
+    }
 
 }
