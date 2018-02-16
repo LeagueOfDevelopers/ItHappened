@@ -86,7 +86,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
             }
         }
 
-        if(events.size()!=0){
+        if(visibleEvents.size()!=0){
             hintForEvents.setVisibility(View.INVISIBLE);
         }
 
@@ -111,6 +111,12 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        recreate();
     }
 
     @Override

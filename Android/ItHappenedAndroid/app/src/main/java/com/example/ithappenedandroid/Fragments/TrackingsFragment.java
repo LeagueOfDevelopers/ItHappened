@@ -59,9 +59,7 @@ public class TrackingsFragment extends Fragment {
         userName = "testUser";
         trackingService = new TrackingService(userName, trackingCollection);
 
-        if(trackingCollection.GetTrackingCollection().size()!=0){
-            hintForTrackings.setVisibility(View.INVISIBLE);
-        }
+
 
         trackingsRecycler = (RecyclerView)getActivity().findViewById(R.id.tracingsRV);
         trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -73,6 +71,10 @@ public class TrackingsFragment extends Fragment {
             if(!allTrackings.get(i).GetStatus()){
                 visibleTrackings.add(allTrackings.get(i));
             }
+        }
+
+        if(visibleTrackings.size()!=0){
+            hintForTrackings.setVisibility(View.INVISIBLE);
         }
 
         //trackLoad = new TrackingLoader();
