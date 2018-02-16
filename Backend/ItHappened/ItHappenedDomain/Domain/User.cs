@@ -9,8 +9,9 @@ namespace ItHappenedDomain.Domain
 {
   public class User
   {
-    public User(string userId, string pictureUrl)
+    public User(string userId, string pictureUrl, DateTimeOffset nicknameDateOfChange)
     {
+      NicknameDateOfChange = nicknameDateOfChange;
       PictureUrl = pictureUrl;
       UserId = userId;
       UserNickname = userId;

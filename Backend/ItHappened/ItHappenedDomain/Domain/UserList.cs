@@ -20,17 +20,19 @@ namespace ItHappenedDomain.Domain
       response = verifyer.Verify(idToken);
       if (response.IsEmpty)
         return null;
-      User newUser = new User(response.email, response.picture);
       if (_userCollection.ContainsKey(response.email))
       {
         User user = _userCollection[response.email];
         return new RegistrationResponse()
         {
           PicUrl = user.PictureUrl,
+          NicknameDateOfChange = user.NicknameDateOfChange,
           UserId = user.UserId,
           UserNickname = user.UserNickname
         };
       }
+      DateTimeOffset date = DateTimeOffset.Now;
+      User newUser = new User(response.email, response.picture, date);
       _userCollection.Add(response.email, newUser);
       RegistrationResponse toReturn = new RegistrationResponse()
       {
@@ -45,7 +47,7 @@ namespace ItHappenedDomain.Domain
     {
       if (_userCollection.ContainsKey(id))
         return id;
-      User newUser = new User(id, null);
+      User newUser = new User(id, null, DateTimeOffset.Now);
       _userCollection.Add(id, newUser);
       return id;
     }
