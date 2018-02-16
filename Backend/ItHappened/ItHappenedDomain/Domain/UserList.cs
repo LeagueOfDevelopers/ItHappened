@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using ItHappenedDomain.AuthServices;
+using ItHappenedDomain.Models;
 
 namespace ItHappenedDomain.Domain
 {
@@ -12,25 +13,39 @@ namespace ItHappenedDomain.Domain
       this._userCollection = new Dictionary<string, User>();
     }
 
-    public string SignUp(string idToken)
+    public RegistrationResponse SignUp(string idToken)
     {
       GoogleResponseJson response = new GoogleResponseJson();
       GoogleIdTokenVerifyer verifyer = new GoogleIdTokenVerifyer();
       response = verifyer.Verify(idToken);
       if (response.IsEmpty)
         return null;
-      User newUser = new User(response.email);
+      User newUser = new User(response.email, response.picture);
       if (_userCollection.ContainsKey(response.email))
-        return response.email;
+      {
+        User user = _userCollection[response.email];
+        return new RegistrationResponse()
+        {
+          PicUrl = user.PictureUrl,
+          UserId = user.UserId,
+          UserNickname = user.UserNickname
+        };
+      }
       _userCollection.Add(response.email, newUser);
-      return response.email;
+      RegistrationResponse toReturn = new RegistrationResponse()
+      {
+        PicUrl = response.picture,
+        UserId = response.email,
+        UserNickname = response.email
+      };
+      return toReturn;
     }
 
     public string Reg(string id)
     {
       if (_userCollection.ContainsKey(id))
         return id;
-      User newUser = new User(id);
+      User newUser = new User(id, null);
       _userCollection.Add(id, newUser);
       return id;
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
+using ItHappenedDomain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappenedWebAPI.Controllers
@@ -17,9 +18,9 @@ namespace ItHappenedWebAPI.Controllers
     [Route("{idToken}")]
     public IActionResult SignUp([FromRoute] string idToken)
     {
-      string userId = userList.SignUp(idToken);
-      if (userId != null)
-        return Ok(userId);
+      RegistrationResponse userData = userList.SignUp(idToken);
+      if (userData != null)
+        return Ok(userData);
       return BadRequest("Registration failed");
     }
 

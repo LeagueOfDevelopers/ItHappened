@@ -9,8 +9,9 @@ namespace ItHappenedDomain.Domain
 {
   public class User
   {
-    public User(string userId)
+    public User(string userId, string pictureUrl)
     {
+      PictureUrl = pictureUrl;
       UserId = userId;
       UserNickname = userId;
       _trackingCollection = new TrackingCollection();
@@ -23,6 +24,7 @@ namespace ItHappenedDomain.Domain
 
     public string UserId { set; get; }
     public string UserNickname { set; get; }
+    public string PictureUrl { set; get; }
     private TrackingCollection _trackingCollection;
   }
 }
