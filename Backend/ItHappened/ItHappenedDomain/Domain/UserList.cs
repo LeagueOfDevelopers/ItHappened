@@ -50,7 +50,29 @@ namespace ItHappenedDomain.Domain
       return id;
     }
 
-    public List<Tracking> ChangeTrackingCollection(string userId, List<Tracking> trackingCollection)
+    public SynchronisationRequest Synchronisation(string userId, SynchronisationRequest request)
+    {
+      User user = _userCollection[userId];
+      if (user.NicknameDateOfChange < request.NicknameDateOfChange)
+      {
+        user.NicknameDateOfChange = request.NicknameDateOfChange;
+        user.UserNickname = request.UserNickname;
+      }
+
+      _userCollection[userId] = user;
+
+      List<Tracking> collectionToReturn = ChangeTrackingCollection(userId, request.TrackingCollection);
+
+      SynchronisationRequest toReturn = new SynchronisationRequest()
+      {
+        NicknameDateOfChange = user.NicknameDateOfChange,
+        UserNickname = user.UserNickname,
+        TrackingCollection = collectionToReturn
+      };
+      return toReturn;
+    }
+    
+    private List<Tracking> ChangeTrackingCollection(string userId, List<Tracking> trackingCollection)
     {
       return _userCollection[userId].ChangeTrackingCollection(trackingCollection);
     }

@@ -25,6 +25,7 @@ namespace ItHappenedDomain.Domain
     public string UserId { set; get; }
     public string UserNickname { set; get; }
     public string PictureUrl { set; get; }
+    public DateTimeOffset NicknameDateOfChange { get; set; }
     private TrackingCollection _trackingCollection;
   }
 }

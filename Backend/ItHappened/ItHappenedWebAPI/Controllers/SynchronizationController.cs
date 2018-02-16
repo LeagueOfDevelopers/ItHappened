@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
+using ItHappenedDomain.Models;
+using ItHappenedWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -20,11 +22,10 @@ namespace ItHappenedWebAPI.Controllers
     [HttpPost]
     [Route("{userId}")]
     public IActionResult SynchronizeData([FromRoute] string userId,
-      [FromBody] List<Tracking> trackingCollection)
+      [FromBody] SynchronisationRequest request)
     {
-      List<Tracking> collectionToReturn = null;
-        collectionToReturn = users.ChangeTrackingCollection(userId, trackingCollection);
-      return Ok(collectionToReturn);
+      SynchronisationRequest response = users.Synchronisation(userId, request);
+      return Ok(response);
     }
 
     [HttpPost]
