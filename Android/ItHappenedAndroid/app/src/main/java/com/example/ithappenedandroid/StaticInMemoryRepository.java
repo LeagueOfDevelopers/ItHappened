@@ -3,7 +3,6 @@ package com.example.ithappenedandroid;
 import android.content.Context;
 
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
-import com.example.ithappenedandroid.Infrastructure.InMemoryTrackingRepository;
 import com.example.ithappenedandroid.Infrastructure.TrackingRepository;
 
 public class StaticInMemoryRepository {
