@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +41,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import rx.Subscription;
@@ -57,7 +57,7 @@ public class UserActionsActivity extends AppCompatActivity
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
 
-    ImageView urlUser;
+    CircleImageView urlUser;
 
     ProfileSettingsFragment profileStgsFrg;
 
@@ -126,7 +126,7 @@ public class UserActionsActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userNick = (TextView) findViewById(R.id.userNickname);
         userNick.setText(sharedPreferences.getString("Nick",""));
-        urlUser = (ImageView) findViewById(R.id.imageView);
+        urlUser = (CircleImageView) findViewById(R.id.imageView);
 
         new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
 
@@ -272,9 +272,9 @@ public class UserActionsActivity extends AppCompatActivity
     public void cancelLogout(){}
 
     private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
-        ImageView imageView;
+        CircleImageView imageView;
 
-        public DownLoadImageTask(ImageView imageView){
+        public DownLoadImageTask(CircleImageView imageView){
             this.imageView = imageView;
         }
 
