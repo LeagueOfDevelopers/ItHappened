@@ -76,6 +76,17 @@
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
+    <Button
+        android:layout_marginTop="10dp"
+        android:id="@+id/offlineSignIn"
+        android:layout_below="@id/nicknameCard"
+        android:background="@color/colorAccent"
+        android:text="Привязать аккаунт к Google"
+        android:textSize="10dp"
+        android:textColor="#FFFFFF"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:layout_marginTop="10dp"

@@ -50,6 +50,8 @@ import rx.schedulers.Schedulers;
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private DrawerLayout mDrawerLayout;
+
     TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
@@ -68,6 +70,8 @@ public class UserActionsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
         setSupportActionBar(toolbar);
@@ -79,6 +83,10 @@ public class UserActionsActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        if(sharedPreferences.getString("UserId", "").equals("Offline"))
+        navigationView.getMenu().getItem(4).setEnabled(false);
         navigationView.setNavigationItemSelectedListener(this);
 
         trackFrg = new TrackingsFragment();
@@ -124,9 +132,11 @@ public class UserActionsActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userNick = (TextView) findViewById(R.id.userNickname);
         userNick.setText(sharedPreferences.getString("Nick",""));
-        urlUser = (CircleImageView) findViewById(R.id.imageView);
+        if(!sharedPreferences.getString("UserId", "").equals("Offline")) {
+            urlUser = (CircleImageView) findViewById(R.id.imageView);
 
-        new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
+            new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
+        }
 
         return true;
     }
@@ -251,6 +261,9 @@ public class UserActionsActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
+        editor.commit();
+
+        editor.putBoolean("LOGOUT", true);
         editor.commit();
 
         Intent intent = new Intent(this, SignInActivity.class);

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -53,16 +54,20 @@ public class SignInActivity extends Activity {
     TextView mainTitle;
     ProgressBar mainPB;
 
+    CardView offlineWork;
+
     Subscription regSub;
     Subscription syncSub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_registration);
         mainPB = (ProgressBar) findViewById(R.id.mainProgressBar);
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         String id = sharedPreferences.getString("UserId", "");
+        boolean flag = sharedPreferences.getBoolean("LOGOUT", false);
         if(id == "") {
             findControlsById();
             mainBackground.registerSensorManager();
@@ -79,8 +84,23 @@ public class SignInActivity extends Activity {
                     startActivityForResult(intent, 228);
                 }
             });
+
+            offlineWork = (CardView) findViewById(R.id.offline);
+
+            offlineWork.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("UserId", "Offline");
+                    editor.putString("Nick", "Offline");
+                    editor.commit();
+                    Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                    startActivity(intent);
+                }
+            });
         }else{
-            Intent intent = new Intent(this, UserActionsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
             startActivity(intent);
         }
     }
@@ -210,6 +230,7 @@ public class SignInActivity extends Activity {
         mainPB.setVisibility(View.VISIBLE);
         signIn.setVisibility(View.INVISIBLE);
         mainTitle.setVisibility(View.INVISIBLE);
+        offlineWork.setVisibility(View.INVISIBLE);
     }
 
     private void hideLoading(){
@@ -217,6 +238,7 @@ public class SignInActivity extends Activity {
         mainPB.setVisibility(View.INVISIBLE);
         signIn.setVisibility(View.VISIBLE);
         mainTitle.setVisibility(View.VISIBLE);
+        offlineWork.setVisibility(View.VISIBLE);
     }
 
 }

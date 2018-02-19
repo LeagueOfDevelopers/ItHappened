@@ -12,6 +12,7 @@ import org.junit.Test;
 
 public class RatingUnitTest
 {
+
     @Test
     public void CreateScaleWithValueLessThen1__ThrowException ()
     {
