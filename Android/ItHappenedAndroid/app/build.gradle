@@ -58,7 +58,6 @@ dependencies {
     compile 'com.android.support:design:26.+'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.nvanbenschoten.motion:library:1.1.2'
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
     compile files('build/intermediates/rs/debug/lib/lambdaj-2.4-with-dependencies.jar')

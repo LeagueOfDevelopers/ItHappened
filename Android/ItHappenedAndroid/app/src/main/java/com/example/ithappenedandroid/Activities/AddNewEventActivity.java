@@ -240,7 +240,7 @@ public class AddNewEventActivity extends AppCompatActivity {
             scaleControl.setHint("Ваше число");
             scaleControl.setTextColor(getResources().getColor(R.color.cardview_dark_background));
             scaleControl.setInputType(InputType.TYPE_CLASS_NUMBER);
-            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.");
+            KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
             scaleControl.setKeyListener(keyListener);
             scaleControl.setHintTextColor(getResources().getColor(R.color.colorPrimaryDark));
             if(thisTracking.GetScaleCustomization() == TrackingCustomization.Required){
