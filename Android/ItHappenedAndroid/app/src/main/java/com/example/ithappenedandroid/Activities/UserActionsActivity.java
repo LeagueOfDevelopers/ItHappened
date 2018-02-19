@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -143,7 +145,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(final MenuItem item) {
 
         int id = item.getItemId();
 
@@ -155,6 +157,8 @@ public class UserActionsActivity extends AppCompatActivity
             fTrans.commit();
 
             setTitle("Мои отслеживания");
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
         }
 
         if (id == R.id.events_history) {
@@ -164,6 +168,8 @@ public class UserActionsActivity extends AppCompatActivity
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, eventsFrg).addToBackStack(null);
             fTrans.commit();
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
         }
 
         if(id == R.id.statistics){
@@ -173,10 +179,20 @@ public class UserActionsActivity extends AppCompatActivity
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
             fTrans.commit();
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
         }
 
         if(id == R.id.synchronisation){
-            showLoading();
+            final Animation animationRotateCenter = AnimationUtils.loadAnimation(
+                    this, R.anim.rotate);
+            item.setActionView(new ProgressBar(this));
+            item.getActionView().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                }
+            }, 1000);
 
             SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
@@ -199,6 +215,7 @@ public class UserActionsActivity extends AppCompatActivity
                     editor.putString("Nick", synchronizationRequest.getUserNickname());
                     editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
                     finish();
+                    item.setActionView(null);
                     startActivity(getIntent());
                     Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
                 }
@@ -206,23 +223,27 @@ public class UserActionsActivity extends AppCompatActivity
                 @Override
                 public void call(Throwable throwable) {
                     Log.e("RxSync", ""+throwable);
-                    hideLoading();
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
+                    item.setActionView(null);
                     Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
                 }
             });
+            item.getActionView().clearAnimation();
         }
+
            if(id == R.id.proile_settings){
                profileStgsFrg = new ProfileSettingsFragment();
                fTrans = getFragmentManager().beginTransaction();
                fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
                fTrans.commit();
+               DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+               drawer.closeDrawer(GravityCompat.START);
            }
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     public void okClicked(UUID trackingId) {
 
