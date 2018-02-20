@@ -51,6 +51,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyBack"></activity>
 
+        <activity android:name=".Activities.TrackingStatisticsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>
