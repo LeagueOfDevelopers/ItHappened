@@ -293,6 +293,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     public void cancelLogout(){}
 
+
     private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
         CircleImageView imageView;
 

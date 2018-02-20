@@ -105,17 +105,15 @@ public class ProfileSettingsFragment extends Fragment {
                     logout.show(getFragmentManager(), "Logout");
                 }
             });
-
-            editNickName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    EditNicknameDialogFragment dialogFragment = new EditNicknameDialogFragment();
-                    dialogFragment.show(getFragmentManager(), "editNickName");
-                }
-            });
-
-
         }
+        editNickName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditNicknameDialogFragment dialogFragment = new EditNicknameDialogFragment();
+                dialogFragment.show(getFragmentManager(), "editNickName");
+            }
+        });
+
     }
 
     public void onActivityResult(final int requestCode, final int resultCode,
