@@ -24,7 +24,8 @@
         <item
             android:id="@+id/synchronisation"
             android:icon="@android:drawable/ic_popup_sync"
-            android:title="@string/synchronisation" />
+            android:title="@string/synchronisation"
+            android:visible="true" />
     </group>
 
 </menu>

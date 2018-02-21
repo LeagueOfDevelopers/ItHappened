@@ -232,7 +232,7 @@ public class EditEventActivity extends AppCompatActivity {
                 scaleControlWidget.setText(event.GetScale().toString());
             }
             scaleControlWidget.setTextColor(getResources().getColor(R.color.cardview_dark_background));
-            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.");
+            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.-");
             scaleControlWidget.setKeyListener(keyListener);
 
             if(tracking.GetScaleCustomization()==TrackingCustomization.Optional){

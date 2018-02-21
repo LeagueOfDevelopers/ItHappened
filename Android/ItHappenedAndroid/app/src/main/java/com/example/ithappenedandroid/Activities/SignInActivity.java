@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
+import com.example.ithappenedandroid.Models.RegistrationResponse;
+import com.example.ithappenedandroid.Models.SynchronizationRequest;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.Retrofit.ItHappenedApplication;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
@@ -27,6 +30,7 @@ import com.google.android.gms.common.SignInButton;
 import com.nvanbenschoten.motion.ParallaxImageView;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import rx.Subscription;
@@ -50,16 +54,20 @@ public class SignInActivity extends Activity {
     TextView mainTitle;
     ProgressBar mainPB;
 
+    CardView offlineWork;
+
     Subscription regSub;
     Subscription syncSub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_registration);
         mainPB = (ProgressBar) findViewById(R.id.mainProgressBar);
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         String id = sharedPreferences.getString("UserId", "");
+        boolean flag = sharedPreferences.getBoolean("LOGOUT", false);
         if(id == "") {
             findControlsById();
             mainBackground.registerSensorManager();
@@ -76,8 +84,23 @@ public class SignInActivity extends Activity {
                     startActivityForResult(intent, 228);
                 }
             });
+
+            offlineWork = (CardView) findViewById(R.id.offline);
+
+            offlineWork.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("UserId", "Offline");
+                    editor.putString("Nick", "Offline");
+                    editor.commit();
+                    Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                    startActivity(intent);
+                }
+            });
         }else{
-            Intent intent = new Intent(this, UserActionsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
             startActivity(intent);
         }
     }
@@ -138,23 +161,35 @@ public class SignInActivity extends Activity {
         regSub = ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
+                .subscribe(new Action1<RegistrationResponse>() {
                     @Override
-                    public void call(String s) {
+                    public void call(RegistrationResponse registrationResponse) {
                         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("UserId", s);
-                        editor.putString("Nick", s);
+                        editor.putString("UserId", registrationResponse.getUserId());
+                        editor.putString("Nick", registrationResponse.getUserNickname());
+                        editor.putString("Url", registrationResponse.getPicUrl());
+                        editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
                         editor.commit();
 
+                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
+                                new Date(sharedPreferences.getLong("NickDate", 0)),
+                                new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
+
                         ItHappenedApplication.
-                                getApi().SynchronizeData(s, new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection())
+                                getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<List<Tracking>>() {
+                                .subscribe(new Action1<SynchronizationRequest>() {
                                     @Override
-                                    public void call(List<Tracking> trackings) {
-                                        saveDataToDb(trackings);
+                                    public void call(SynchronizationRequest sync) {
+                                        saveDataToDb(sync.getTrackingCollection());
+
+                                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putLong("NickDate", sync.getNicknameDateOfChange().getTime());
+                                        editor.commit();
+
                                         Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                                         startActivity(intent);
@@ -195,6 +230,7 @@ public class SignInActivity extends Activity {
         mainPB.setVisibility(View.VISIBLE);
         signIn.setVisibility(View.INVISIBLE);
         mainTitle.setVisibility(View.INVISIBLE);
+        offlineWork.setVisibility(View.INVISIBLE);
     }
 
     private void hideLoading(){
@@ -202,6 +238,7 @@ public class SignInActivity extends Activity {
         mainPB.setVisibility(View.INVISIBLE);
         signIn.setVisibility(View.VISIBLE);
         mainTitle.setVisibility(View.VISIBLE);
+        offlineWork.setVisibility(View.VISIBLE);
     }
 
 }

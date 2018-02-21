@@ -245,7 +245,7 @@ public class EventsFragment extends Fragment  {
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
 
-        KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.");
+        KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleFilter = (EditText) getActivity().findViewById(R.id.scaleFilter);
         scaleFilter.setKeyListener(keyListener);
         ratingFilter = (RatingBar) getActivity().findViewById(R.id.ratingFilter);
