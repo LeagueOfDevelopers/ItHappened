@@ -69,4 +69,46 @@ public class TextStatisticsHelper {
         }
         return avrgRating/eventsSize;
     }
+
+    public Double getScaleSum(){
+        Double scaleSum = null;
+        if(tracking.GetScaleCustomization() == TrackingCustomization.None){
+            return scaleSum;
+        }else{
+            List<Event> eventsCollection = tracking.GetEventCollection();
+            if(eventsCollection==null){
+                return 0.0;
+            }else{
+                for(Event event : eventsCollection){
+                    if(event.GetScale()==null){
+                        scaleSum+=0;
+                    }else{
+                        scaleSum+=event.GetScale();
+                    }
+                }
+            }
+        }
+        return scaleSum;
+    }
+
+    public Integer getRatingSum(){
+        Integer ratingSum = null;
+        if(tracking.GetRatingCustomization() == TrackingCustomization.None){
+            return ratingSum;
+        }else{
+            List<Event> eventsCollection = tracking.GetEventCollection();
+            if(eventsCollection==null){
+                return 0;
+            }else{
+                for(Event event : eventsCollection){
+                    if(event.GetRating()==null){
+                        ratingSum+=0;
+                    }else{
+                        ratingSum+=event.GetRating().GetRatingValue();
+                    }
+                }
+            }
+        }
+        return ratingSum;
+    }
 }
