@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using ItHappenedDomain.AuthServices;
 using ItHappenedDomain.Models;
+using MongoDB.Driver;
+
 
 namespace ItHappenedDomain.Domain
 {
   public class UserList
   {
-    public UserList()
+    public UserList(IMongoDatabase db)
     {
-      this._userCollection = new Dictionary<string, User>();
+      this.db = db;
     }
 
     public RegistrationResponse SignUp(string idToken)
@@ -20,10 +22,12 @@ namespace ItHappenedDomain.Domain
       response = verifyer.Verify(idToken);
       if (response.IsEmpty)
         return null;
-      if (_userCollection.ContainsKey(response.email))
+      var collection = db.GetCollection<User>("Users");
+      var iUser = collection.FindSync(us => us.UserId == response.email).Current;
+      if (iUser.First() != null)
       {
-        User user = _userCollection[response.email];
-        return new RegistrationResponse()
+        User user = iUser.First();
+        return new RegistrationResponse
         {
           PicUrl = user.PictureUrl,
           NicknameDateOfChange = user.NicknameDateOfChange,
@@ -33,8 +37,8 @@ namespace ItHappenedDomain.Domain
       }
       DateTimeOffset date = DateTimeOffset.Now;
       User newUser = new User(response.email, response.picture, date);
-      _userCollection.Add(response.email, newUser);
-      RegistrationResponse toReturn = new RegistrationResponse()
+      collection.InsertOne(newUser);
+      RegistrationResponse toReturn = new RegistrationResponse
       {
         PicUrl = response.picture,
         UserId = response.email,
@@ -43,27 +47,46 @@ namespace ItHappenedDomain.Domain
       return toReturn;
     }
 
-    public string Reg(string id)
+    public RegistrationResponse Reg(string id)
     {
-      if (_userCollection.ContainsKey(id))
-        return id;
+      var collection = db.GetCollection<User>("Users");
+      var iUser = collection.FindSync(us => us.UserId == id);
+      if (iUser.Current != null)
+      {
+        User user = iUser.FirstAsync().Result;
+        return new RegistrationResponse()
+        {
+          PicUrl = user.PictureUrl,
+          NicknameDateOfChange = user.NicknameDateOfChange,
+          UserId = user.UserId,
+          UserNickname = user.UserNickname
+        };
+      }
       User newUser = new User(id, null, DateTimeOffset.Now);
-      _userCollection.Add(id, newUser);
-      return id;
+      collection.InsertOne(newUser);
+      RegistrationResponse toReturn = new RegistrationResponse()
+      {
+        PicUrl = null,
+        UserId = newUser.UserId,
+        UserNickname = newUser.UserNickname
+      };
+      return toReturn;
     }
 
     public SynchronisationRequest Synchronisation(string userId, SynchronisationRequest request)
     {
-      User user = _userCollection[userId];
+      var collection = db.GetCollection<User>("Users");
+      var user = collection.FindSync(us => us.UserId == userId).FirstAsync().Result;
       if (user.NicknameDateOfChange < request.NicknameDateOfChange)
       {
         user.NicknameDateOfChange = request.NicknameDateOfChange;
         user.UserNickname = request.UserNickname;
       }
 
-      _userCollection[userId] = user;
+      List<Tracking> collectionToReturn = user.ChangeTrackingCollection(request.TrackingCollection);
 
-      List<Tracking> collectionToReturn = ChangeTrackingCollection(userId, request.TrackingCollection);
+      var filter = Builders<User>.Filter.Eq(us => us.UserId, user.UserId);
+      collection.ReplaceOneAsync(filter, user);
 
       SynchronisationRequest toReturn = new SynchronisationRequest()
       {
@@ -73,13 +96,9 @@ namespace ItHappenedDomain.Domain
       };
       return toReturn;
     }
-    
-    private List<Tracking> ChangeTrackingCollection(string userId, List<Tracking> trackingCollection)
-    {
-      return _userCollection[userId].ChangeTrackingCollection(trackingCollection);
-    }
 
-    private readonly Dictionary<string, User> _userCollection;
+
+    private IMongoDatabase db;
 
   }
 }

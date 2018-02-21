@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using ItHappenedDomain.Domain;
 using System.Linq;
-using Dapper;
 
 namespace ItHappenedDomain.Infrastructure
 {
@@ -15,46 +13,46 @@ namespace ItHappenedDomain.Infrastructure
   {
     public TrackingCollection()
     {
-      _trackingCollection = new List<Tracking>();
+      TrackingList = new List<Tracking>();
     }
 
     public List<Tracking> ChangeTrackingCollection(List<Tracking> trackingCollection)
     {
       if (trackingCollection == null)
       {
-        return _trackingCollection;
+        return TrackingList;
       }
 
-      if (_trackingCollection == null)
+      if (TrackingList == null)
       {
-        _trackingCollection = trackingCollection;
-        return _trackingCollection;
+        TrackingList = trackingCollection;
+        return TrackingList;
       }
 
       ChangeTrackings(trackingCollection);
       ChangeEventCollections(trackingCollection);
 
-      return _trackingCollection;
+      return TrackingList;
     }
 
     private void ChangeTrackings(List<Tracking> trackingCollection)
     {
       List<Tracking> trackingsToChange = trackingCollection
-        .Where(tracking => _trackingCollection.Any(item => item.trackingId.Equals(tracking.trackingId)))
+        .Where(tracking => TrackingList.Any(item => item.trackingId.Equals(tracking.trackingId)))
         .Where(item =>
-          item.dateOfChange > _trackingCollection
+          item.dateOfChange > TrackingList
           .First(found => found.trackingId == item.trackingId).dateOfChange).ToList();
       List<Tracking> trackingsToAdd = trackingCollection
-        .Where(item => !(_trackingCollection.Any(tracking => tracking.trackingId.Equals(item.trackingId)))).ToList();
+        .Where(item => !(TrackingList.Any(tracking => tracking.trackingId.Equals(item.trackingId)))).ToList();
 
       foreach (var tracking in trackingsToChange)
       {
-        int trackingInCollectionToChange = _trackingCollection.IndexOf(_trackingCollection
+        int trackingInCollectionToChange = TrackingList.IndexOf(TrackingList
           .First(item => item.trackingId.Equals(tracking.trackingId)));
-        _trackingCollection[trackingInCollectionToChange] = tracking;
+        TrackingList[trackingInCollectionToChange] = tracking;
       }
 
-      _trackingCollection.AddRange(trackingsToAdd);
+      TrackingList.AddRange(trackingsToAdd);
     }
 
     private void ChangeEventCollections(List<Tracking> trackingCollection)
@@ -64,13 +62,13 @@ namespace ItHappenedDomain.Infrastructure
       {
         if (tracking.EventCollection == null)
           continue;
-        bool contains = _trackingCollection.Any(item => item.trackingId.Equals(tracking.trackingId));
+        bool contains = TrackingList.Any(item => item.trackingId.Equals(tracking.trackingId));
         if (contains)
         {
-          int indexOfTracking = _trackingCollection
-            .IndexOf(_trackingCollection.First(item => item.trackingId.Equals(tracking.trackingId)));
+          int indexOfTracking = TrackingList
+            .IndexOf(TrackingList.First(item => item.trackingId.Equals(tracking.trackingId)));
 
-          List<Event> oldEventCollection = _trackingCollection[indexOfTracking].EventCollection;
+          List<Event> oldEventCollection = TrackingList[indexOfTracking].EventCollection;
 
           if (oldEventCollection != null)
           {
@@ -85,23 +83,23 @@ namespace ItHappenedDomain.Infrastructure
 
             foreach (var _event in eventCollectionToChange)
             {
-              int eventIndex = _trackingCollection[indexOfTracking].EventCollection
-                .IndexOf(_trackingCollection[indexOfTracking].EventCollection
+              int eventIndex = TrackingList[indexOfTracking].EventCollection
+                .IndexOf(TrackingList[indexOfTracking].EventCollection
                   .First(item => item.eventId.Equals(_event.eventId)));
 
-              _trackingCollection[indexOfTracking].EventCollection[eventIndex] = _event;
+              TrackingList[indexOfTracking].EventCollection[eventIndex] = _event;
             }
 
-            _trackingCollection[indexOfTracking].EventCollection.AddRange(eventCollectionToAdd);
+            TrackingList[indexOfTracking].EventCollection.AddRange(eventCollectionToAdd);
           }
           else
           {
-            _trackingCollection[indexOfTracking].EventCollection = tracking.EventCollection;
+            TrackingList[indexOfTracking].EventCollection = tracking.EventCollection;
           }
         }
       }
     }
 
-    private List<Tracking> _trackingCollection;
+    public List<Tracking> TrackingList { get; set; }
   }
 }
