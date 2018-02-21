@@ -31,7 +31,7 @@ namespace ItHappenedWebAPI.Controllers
     [Route("add/{userId}")]
     public IActionResult AddUser([FromRoute] string userId)
     {
-      string id = users.Reg(userId);
+      RegistrationResponse id = users.Reg(userId);
       return Ok(id);
     }
 

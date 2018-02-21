@@ -4,6 +4,8 @@ using System.Text;
 using System.Threading;
 using System.Linq;
 using ItHappenedDomain.Infrastructure;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace ItHappenedDomain.Domain
 {
@@ -15,18 +17,20 @@ namespace ItHappenedDomain.Domain
       PictureUrl = pictureUrl;
       UserId = userId;
       UserNickname = userId;
-      _trackingCollection = new TrackingCollection();
+      TrackingCollection = new TrackingCollection();
     }
 
     public List<Tracking> ChangeTrackingCollection(List<Tracking> trackingCollection)
     {
-      return _trackingCollection.ChangeTrackingCollection(trackingCollection);
+      return TrackingCollection.ChangeTrackingCollection(trackingCollection);
     }
 
+    
+    public ObjectId _id { get; set; }
     public string UserId { set; get; }
     public string UserNickname { set; get; }
     public string PictureUrl { set; get; }
     public DateTimeOffset NicknameDateOfChange { get; set; }
-    private TrackingCollection _trackingCollection;
+    public TrackingCollection TrackingCollection { get; set; }
   }
 }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 namespace ItHappenedWebAPI
 {
@@ -27,7 +28,10 @@ namespace ItHappenedWebAPI
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc();
-      var userList = new UserList();
+      var connectionString = "mongodb://localhost";
+      var client = new MongoClient(connectionString);
+      var db = client.GetDatabase("ItHappenedDB");
+      var userList = new UserList(db);
       services
         .AddSingleton<UserList>(userList)
         .AddSingleton<ErrorHandlingMiddleware>();
