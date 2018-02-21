@@ -2,5 +2,116 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/eventsCountHint"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Количество событий:"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark"/>
+    <TextView
+        android:layout_toRightOf="@id/eventsCountHint"
+        android:id="@+id/eventsCount"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="фиксации"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <TextView
+        android:layout_below="@id/eventsCountHint"
+        android:id="@+id/avrgScaleHint"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Средняя шкала:"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:layout_below="@id/eventsCount"
+        android:id="@+id/avrgScale"
+        android:layout_toRightOf="@id/avrgScaleHint"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="средняя шкала"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:id="@+id/avrgRatingHint"
+        android:layout_below="@id/avrgScaleHint"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Средняя оценка:"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:layout_below="@id/avrgScale"
+        android:id="@+id/avrgRating"
+        android:layout_toRightOf="@id/avrgRatingHint"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="средняя оценка"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:id="@+id/sumScaleHint"
+        android:layout_below="@id/avrgRatingHint"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Суммарная шкала:"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:layout_below="@id/avrgRating"
+        android:id="@+id/sumScale"
+        android:layout_toRightOf="@id/sumScaleHint"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="суммарная шкала"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:id="@+id/sumRatingHint"
+        android:layout_below="@id/sumScaleHint"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Суммарная оценка:"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:layout_below="@id/sumScale"
+        android:id="@+id/sumRating"
+        android:layout_toRightOf="@id/sumRatingHint"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="суммарная оценка"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark" />
 
 </RelativeLayout>
