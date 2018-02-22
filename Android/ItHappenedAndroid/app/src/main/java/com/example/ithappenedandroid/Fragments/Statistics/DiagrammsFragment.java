@@ -31,6 +31,7 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
     DiagramsStatisticsHelper helper;
     Button createDiagramm;
     List<Boolean> flags;
+    PieData data;
 
     @Nullable
     @Override
@@ -44,7 +45,7 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
         diagramm = (PieChart) getActivity().findViewById(R.id.diagramm);
         allTrackings = (MultiSpinner) getActivity().findViewById(R.id.diagrammStatisticsTrackings);
         createDiagramm = (Button) getActivity().findViewById(R.id.createDiagramm);
-        UUID trackingId = UUID.fromString(getActivity().getIntent().getStringExtra("id"));
+        final UUID trackingId = UUID.fromString(getActivity().getIntent().getStringExtra("id"));
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
         helper = new DiagramsStatisticsHelper(collection.GetTracking(trackingId));
         if(collection.GetTrackingCollection().size()==0){
@@ -72,10 +73,15 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
                 xEntries.add(xData[0]);
                 xEntries.add(xData[1]);
 
+                List<Integer> colors = new ArrayList<>();
+                colors.add(getResources().getColor(R.color.colorAccent));
+                colors.add(getResources().getColor(R.color.colorPrimaryDark));
+
                 PieDataSet dataSet = new PieDataSet(entries, "Фиксации");
                 dataSet.setSliceSpace(4);
                 dataSet.setValueTextSize(12);
-                PieData data = new PieData(dataSet);
+                dataSet.setColors(colors);
+                data = new PieData(dataSet);
                 diagramm.setData(data);
 
                 diagramm.setCenterText("Фиксации событий");
@@ -83,6 +89,7 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
                 diagramm.setHoleRadius(25f);
                 diagramm.setCenterTextSize(10);
                 diagramm.setTransparentCircleAlpha(0);
+                diagramm.getDescription().setEnabled(false);
 
                 final List<UUID> uuids = new ArrayList<>();
                 final List<String> strings = new ArrayList<>();
@@ -112,25 +119,121 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
                     public void onItemsSelected(boolean[] selected) {
 
                         for (int i = 0; i < selected.length; i++) {
-
                             Log.e("DIAGRAMM", selected[i] + "");
-                            if (selected[i]) {
-                                filteredTrackingsTitles.add(strings.get(i));
-                                if(flags.get(i)) {
-                                    filteredTrackingsUuids.add(uuids.get(i));
-                                }
-                            }
                             if (!selected[i]) {
-                                filteredTrackingsUuids.remove(uuids.get(i));
-                                flags.set(i, true);
+                                uuids.set(i,null);
                             }
                         }
+
+                        for(int i = 0;i<uuids.size();i++){
+                            if(uuids.get(i)!=null){
+                                filteredTrackingsUuids.add(uuids.get(i));
+                            }
+                        }
+
+                            List<Tracking> trackingsForFilter = new ArrayList<>();
+                            for (int i = 0; i < filteredTrackingsUuids.size(); i++) {
+                                trackingsForFilter.add(collection.GetTracking(filteredTrackingsUuids.get(i)));
+                            }
+                        
+                            diagramm.getData().clearValues();
+
+                            int allCount = helper.getAllEventsCount(trackingsForFilter);
+
+                            int thisEventCount = helper.getTrackingEventsCount();
+
+                            int[] yData = {thisEventCount, thisEventCount};
+                            String[] xData = {collection.GetTracking(trackingId).GetTrackingName(), "Выбранные отслеживания"};
+
+                            ArrayList<PieEntry> entries = new ArrayList<>();
+                            ArrayList<String> xEntries = new ArrayList<>();
+                            entries.add(new PieEntry(yData[0], 0));
+                            entries.add(new PieEntry(yData[1], 1));
+
+                            xEntries.add(xData[0]);
+                            xEntries.add(xData[1]);
+
+                            List<Integer> colors = new ArrayList<>();
+                            colors.add(getResources().getColor(R.color.colorAccent));
+                            colors.add(getResources().getColor(R.color.colorPrimaryDark));
+
+                            PieDataSet dataSet = new PieDataSet(entries, "Фиксации");
+                            dataSet.setSliceSpace(4);
+                            dataSet.setValueTextSize(12);
+                            dataSet.setColors(colors);
+                            PieData data = new PieData(dataSet);
+                            diagramm.setData(data);
+
+                            diagramm.setCenterText("Фиксации событий");
+                            diagramm.setCenterTextColor(getActivity().getResources().getColor(R.color.colorPrimaryDark));
+                            diagramm.setHoleRadius(25f);
+                            diagramm.setCenterTextSize(10);
+                            diagramm.setTransparentCircleAlpha(0);
+                            diagramm.getDescription().setEnabled(false);
+
+                            diagramm.invalidate();
+
+
+                            List<Tracking> all = collection.GetTrackingCollection();
+                            all.remove(collection.GetTrackingCollection().remove(
+                                    collection.GetTracking(trackingId)
+                            ));
+
+
+                            for(int i = 0;i<uuids.size();i++){
+                                uuids.remove(i);
+                            }
+
+                            for(int i=0;i<all.size();i++){
+                                if(!all.get(i).GetStatus()) {
+                                    uuids.add(all.get(i).GetTrackingID());
+                                }
+                            }
                     }
                 });
 
                 createDiagramm.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        List<Tracking> trackingsForFilter = new ArrayList<>();
+                        for(int i = 0;i<filteredTrackingsUuids.size();i++){
+                            trackingsForFilter.add(collection.GetTracking(filteredTrackingsUuids.get(i)));
+                        }
+
+                        int allCount = helper.getAllEventsCount(trackingsForFilter);
+
+                        int thisEventCount = helper.getTrackingEventsCount();
+
+                        int[] yData = {thisEventCount, thisEventCount};
+                        String[] xData = {collection.GetTracking(trackingId).GetTrackingName(), "Выбранные отслеживания"};
+
+                        ArrayList<PieEntry> entries = new ArrayList<>();
+                        ArrayList<String> xEntries = new ArrayList<>();
+                        entries.add(new PieEntry(yData[0], 0));
+                        entries.add(new PieEntry(yData[1], 1));
+
+                        xEntries.add(xData[0]);
+                        xEntries.add(xData[1]);
+
+                        List<Integer> colors = new ArrayList<>();
+                        colors.add(getResources().getColor(R.color.colorAccent));
+                        colors.add(getResources().getColor(R.color.colorPrimaryDark));
+
+                        PieDataSet dataSet = new PieDataSet(entries, "Фиксации");
+                        dataSet.setSliceSpace(4);
+                        dataSet.setValueTextSize(12);
+                        dataSet.setColors(colors);
+                        PieData data = new PieData(dataSet);
+                        diagramm.setData(data);
+
+                        diagramm.setCenterText("Фиксации событий");
+                        diagramm.setCenterTextColor(getActivity().getResources().getColor(R.color.colorPrimaryDark));
+                        diagramm.setHoleRadius(25f);
+                        diagramm.setCenterTextSize(10);
+                        diagramm.setTransparentCircleAlpha(0);
+                        diagramm.getDescription().setEnabled(false);
+
 
                     }
                 });

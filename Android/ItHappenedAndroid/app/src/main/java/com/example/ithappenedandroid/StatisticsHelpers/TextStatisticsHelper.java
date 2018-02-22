@@ -9,9 +9,19 @@ import java.util.List;
 public class TextStatisticsHelper {
 
     private Tracking tracking;
+    List<Event> eventsCollection;
 
     public TextStatisticsHelper(Tracking tracking) {
+
         this.tracking = tracking;
+
+        eventsCollection = tracking.GetEventCollection();
+
+        for(int i=0;i<eventsCollection.size();i++){
+            if(eventsCollection.get(i).GetStatus()){
+                eventsCollection.remove(i);
+            }
+        }
     }
 
     public Double getAvrgScale(){
@@ -20,7 +30,6 @@ public class TextStatisticsHelper {
         if(tracking.GetScaleCustomization()== TrackingCustomization.None){
             return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
             if(eventsCollection.size()!=0) {
                 for (Event event : eventsCollection) {
                     if (event.GetScale() == null) {
@@ -48,7 +57,6 @@ public class TextStatisticsHelper {
         if(tracking.GetRatingCustomization() == TrackingCustomization.None){
             return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
             if(eventsCollection.size()!=0) {
                 for (Event event : eventsCollection) {
                     if (event.GetRating() == null) {
@@ -71,7 +79,6 @@ public class TextStatisticsHelper {
         if(tracking.GetScaleCustomization() == TrackingCustomization.None){
             return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
             if(eventsCollection.size()==0){
                 return 0.0;
             }else{
@@ -92,7 +99,6 @@ public class TextStatisticsHelper {
         if(tracking.GetRatingCustomization() == TrackingCustomization.None){
             return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
             if(eventsCollection.size()==0){
                 return 0;
             }else{
