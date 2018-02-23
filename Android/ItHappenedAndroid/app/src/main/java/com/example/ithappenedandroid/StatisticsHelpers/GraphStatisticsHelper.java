@@ -3,6 +3,7 @@ package com.example.ithappenedandroid.StatisticsHelpers;
 import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -12,7 +13,7 @@ import java.util.TimeZone;
 public class GraphStatisticsHelper {
 
     Tracking tracking;
-    List<Event> eventsCollection;
+    List<Event> eventsCollection = new ArrayList<>();
 
     public GraphStatisticsHelper(Tracking tracking) {
         this.tracking = tracking;
@@ -28,6 +29,7 @@ public class GraphStatisticsHelper {
         boolean flag = false;
 
         for (Event event : eventsCollection) {
+            flag = false;
                 if (count.size() == 0) {
                     count.put(getZeroTimeDate(event.GetEventDate()), 1);
                 } else {
@@ -39,7 +41,7 @@ public class GraphStatisticsHelper {
                             break;
                         }
                     }
-                    if (!flag) {
+                    if (flag == false) {
                         count.put(getZeroTimeDate(event.GetEventDate()), 1);
                     }
                 }
@@ -141,6 +143,7 @@ public class GraphStatisticsHelper {
         boolean flag = false;
 
         for (Event event : eventsCollection) {
+            flag = false;
             if (event.GetEventDate().compareTo(start) >= 0 && event.GetEventDate().compareTo(end) <= 0) {
                 if (count.size() == 0) {
                     count.put(getZeroTimeDate(event.GetEventDate()), 1);
