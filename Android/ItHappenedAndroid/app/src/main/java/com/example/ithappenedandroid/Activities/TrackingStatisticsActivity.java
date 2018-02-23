@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.ithappenedandroid.Fragments.Statistics.DiagrammsFragment;
+import com.example.ithappenedandroid.Fragments.Statistics.GraphsFragment;
 import com.example.ithappenedandroid.Fragments.Statistics.TextFragment;
 import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.ViewPagerAdapter;
@@ -49,7 +50,7 @@ public class TrackingStatisticsActivity extends AppCompatActivity {
             ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
             adapter.addFragment(new TextFragment(), "Текст");
             adapter.addFragment(new DiagrammsFragment(), "Диаграммы");
-            adapter.addFragment(new TextFragment(), "Графики");
+            adapter.addFragment(new GraphsFragment(), "Графики");
             viewPager.setAdapter(adapter);
         }
 

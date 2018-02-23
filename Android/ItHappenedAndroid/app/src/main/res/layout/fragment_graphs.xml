@@ -1,6 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+<ScrollView
+    android:layout_marginBottom="64dp"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/graph"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"></com.github.mikephil.charting.charts.LineChart>
+
+    <TextView
+        android:layout_below="@id/graph"
+        android:id="@+id/typeGraphHint"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Выберите период:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:layout_below="@id/typeGraphHint"
+        android:id="@+id/typeSpinner"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></Spinner>
+
+    <TextView
+        android:layout_below="@id/typeSpinner"
+        android:id="@+id/trackingsGraphHint"
+        android:padding="10dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:text="Выберите отслеживания:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.example.ithappenedandroid.Gui.MultiSpinner
+        android:layout_below="@id/trackingsGraphHint"
+        android:id="@+id/trackingsGraphSpinner"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></com.example.ithappenedandroid.Gui.MultiSpinner>
+    </RelativeLayout>
+
+</ScrollView>
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/addParams"
+        android:background="@drawable/button"
+        android:layout_margin="7dp"
+        android:textColor="#FFFFFF"
+        android:text="Добавить параметры"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>
