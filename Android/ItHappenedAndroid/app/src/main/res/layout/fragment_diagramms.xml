@@ -4,9 +4,11 @@
     android:layout_height="match_parent">
 
     <com.github.mikephil.charting.charts.PieChart
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
         android:id="@+id/diagramm"
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="300dp">
     </com.github.mikephil.charting.charts.PieChart>
 
     <TextView
@@ -24,14 +26,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></com.example.ithappenedandroid.Gui.MultiSpinner>
 
-    <Button
-        android:id="@+id/createDiagramm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/button"
-        android:layout_margin="4dp"
-        android:textColor="#FFFFFF"
-        android:text="Построить диаграмму"/>
 
 </RelativeLayout>
