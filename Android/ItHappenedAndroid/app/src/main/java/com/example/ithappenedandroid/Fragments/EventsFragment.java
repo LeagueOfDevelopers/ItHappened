@@ -182,7 +182,6 @@ public class EventsFragment extends Fragment  {
 
                         Log.e("FILTER", selected[i] + "");
                         if (selected[i]) {
-                            filteredTrackingsTitles.add(strings.get(i));
                             if(flags.get(i)) {
                                 filteredTrackingsUuids.add(idCollection.get(i));
                             }

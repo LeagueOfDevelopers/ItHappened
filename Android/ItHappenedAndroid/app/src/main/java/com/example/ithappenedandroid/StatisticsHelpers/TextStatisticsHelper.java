@@ -9,25 +9,34 @@ import java.util.List;
 public class TextStatisticsHelper {
 
     private Tracking tracking;
+    List<Event> eventsCollection;
 
-    public TextStatisticsHelper(Tracking trackings) {
+    public TextStatisticsHelper(Tracking tracking) {
+
         this.tracking = tracking;
+
+        eventsCollection = tracking.GetEventCollection();
+
+        for(int i=0;i<eventsCollection.size();i++){
+            if(eventsCollection.get(i).GetStatus()){
+                eventsCollection.remove(i);
+            }
+        }
     }
 
     public Double getAvrgScale(){
-        Double avrgScale = null;
+        double avrgScale = 0;
         int eventsSize = 0;
         if(tracking.GetScaleCustomization()== TrackingCustomization.None){
-            return avrgScale;
+            return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
-            if(eventsCollection!=null) {
+            if(eventsCollection.size()!=0) {
                 for (Event event : eventsCollection) {
                     if (event.GetScale() == null) {
                         avrgScale += 0;
                         eventsSize++;
                     } else {
-                        avrgScale += event.GetScale();
+                        avrgScale += event.GetScale().doubleValue();
                         eventsSize++;
                     }
                 }
@@ -39,21 +48,16 @@ public class TextStatisticsHelper {
     }
 
     public Integer getEventsCount(){
-        if(tracking.GetEventCollection()!=null)
         return tracking.GetEventCollection().size();
-        else{
-            return 0;
-        }
     }
 
     public Double getAvrgRating(){
-        Double avrgRating = null;
+        double avrgRating = 0;
         int eventsSize = 0;
         if(tracking.GetRatingCustomization() == TrackingCustomization.None){
-            return avrgRating;
+            return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
-            if(eventsCollection!=null) {
+            if(eventsCollection.size()!=0) {
                 for (Event event : eventsCollection) {
                     if (event.GetRating() == null) {
                         avrgRating += 0;
@@ -71,19 +75,18 @@ public class TextStatisticsHelper {
     }
 
     public Double getScaleSum(){
-        Double scaleSum = null;
+        double scaleSum = 0;
         if(tracking.GetScaleCustomization() == TrackingCustomization.None){
-            return scaleSum;
+            return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
-            if(eventsCollection==null){
+            if(eventsCollection.size()==0){
                 return 0.0;
             }else{
                 for(Event event : eventsCollection){
                     if(event.GetScale()==null){
                         scaleSum+=0;
                     }else{
-                        scaleSum+=event.GetScale();
+                        scaleSum+=event.GetScale().doubleValue();
                     }
                 }
             }
@@ -92,12 +95,11 @@ public class TextStatisticsHelper {
     }
 
     public Integer getRatingSum(){
-        Integer ratingSum = null;
+        int ratingSum = 0;
         if(tracking.GetRatingCustomization() == TrackingCustomization.None){
-            return ratingSum;
+            return null;
         }else{
-            List<Event> eventsCollection = tracking.GetEventCollection();
-            if(eventsCollection==null){
+            if(eventsCollection.size()==0){
                 return 0;
             }else{
                 for(Event event : eventsCollection){
