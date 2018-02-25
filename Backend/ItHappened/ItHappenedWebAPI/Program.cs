@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 
 namespace ItHappenedWebAPI
 {
@@ -15,12 +10,26 @@ namespace ItHappenedWebAPI
   {
     public static void Main(string[] args)
     {
-      BuildWebHost(args).Run();
+      Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+        .Enrich.FromLogContext()
+        .WriteTo.RollingFile("ItHappened.log")
+        .CreateLogger();
+      try
+      {
+        Log.Information("Starting....");
+        BuildWebHost(args).Run();
+      }
+      catch (Exception e)
+      {
+        Log.Fatal(e, "Failed to start services");
+      }
     }
 
     public static IWebHost BuildWebHost(string[] args) =>
         WebHost.CreateDefaultBuilder(args)
             .UseStartup<Startup>()
-            .Build();
+      .Build();
   }
 }

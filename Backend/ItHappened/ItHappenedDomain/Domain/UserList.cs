@@ -23,10 +23,10 @@ namespace ItHappenedDomain.Domain
       if (response.IsEmpty)
         return null;
       var collection = db.GetCollection<User>("Users");
-      var iUser = collection.FindSync(us => us.UserId == response.email).Current;
-      if (iUser.First() != null)
+      var iUser = collection.FindSync(us => us.UserId == response.email);
+      if (iUser.Current != null)
       {
-        User user = iUser.First();
+        User user = iUser.FirstAsync().Result;
         return new RegistrationResponse
         {
           PicUrl = user.PictureUrl,
