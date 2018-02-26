@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class GraphsFragment extends Fragment {
+
+    String[] spinnerHints = {"За все время", "За год", "За пол года", "За месяц", "За неделю", "За три месяца", "Ваш период"};
 
     GraphStatisticsHelper helper;
     GraphTimeTypes timeTypes;
@@ -65,6 +68,35 @@ public class GraphsFragment extends Fragment {
         helper = new GraphStatisticsHelper(tracking);
         initLineChart(graph, timeTypes, tracking);
 
+        ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                spinnerHints);
+
+        graphType.setAdapter(adapter);
+
+        List<UUID> trackings  = new ArrayList<>();
+        List<String> trackingNames = new ArrayList<>();
+
+        for(Tracking trackingForHint : collection.GetTrackingCollection()){
+            if(!trackingForHint.GetStatus()){
+                trackings.add(trackingForHint.GetTrackingID());
+                trackingNames.add(trackingForHint.GetTrackingName());
+            }
+        }
+
+        String allText = "";
+        for(int i=0;i<trackingNames.size();i++) {
+            if (i != trackingNames.size()) {
+                allText += trackingNames.get(i) + ", ";
+            }
+        }
+
+        trackingsSpinner.setItems(trackingNames, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
+            @Override
+            public void onItemsSelected(boolean[] selected) {
+                
+            }
+        });
     }
 
     private void initLineChart(LineChart graph, GraphTimeTypes timeTypes, Tracking tracking){
@@ -126,4 +158,5 @@ public class GraphsFragment extends Fragment {
         graph.getDescription().setEnabled(false);
         graph.invalidate();
     }
+
 }
