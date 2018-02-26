@@ -17,11 +17,17 @@ import com.example.ithappenedandroid.R;
 import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.example.ithappenedandroid.StatisticsHelpers.GraphStatisticsHelper;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.utils.EntryXComparator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -68,20 +74,18 @@ public class GraphsFragment extends Fragment {
                 LinkedHashMap<Date, Integer> allTimesGraphData = new GraphStatisticsHelper(tracking).allTimesGraphData();
                 ArrayList<Date> xData = new ArrayList<>(allTimesGraphData.keySet());
                 ArrayList<Integer> yData = new ArrayList<>(allTimesGraphData.values());
-
-                ArrayList<Entry> yEntries = new ArrayList<>();
-                ArrayList<Date> xEntries = new ArrayList<>();
+                ArrayList<Entry> entries = new ArrayList<>();
 
                 for(int i =0;i<xData.size();i++){
-                    yEntries.add(new Entry(i,yData.get(i)));
-                    xEntries.add(xData.get(i));
+                    entries.add(new Entry(new Long(xData.get(i).getTime()).floatValue(), yData.get(i)));
                 }
 
-                createLineChart(graph, yEntries, xEntries);
+                Collections.sort(entries, new EntryXComparator());
+
+                createLineChart(graph, entries);
 
                 break;
-
-        }
+        };
 
     }
 
@@ -89,7 +93,7 @@ public class GraphsFragment extends Fragment {
 
     }
 
-    private void createLineChart(LineChart graph, ArrayList<Entry> yEntries, ArrayList<Date> xEntries){
+    private void createLineChart(LineChart graph, ArrayList<Entry> entries){
         if(graph.getData()!=null) {
             graph.clearValues();
             graph.clear();
@@ -97,13 +101,27 @@ public class GraphsFragment extends Fragment {
 
         List<Integer> colors = new ArrayList<>();
         colors.add(getResources().getColor(R.color.colorAccent));
-        colors.add(getResources().getColor(R.color.colorPrimaryDark));
 
-        LineDataSet dataSet = new LineDataSet(yEntries, "Фиксации за все время");
-        dataSet.setValueTextSize(12);
+        LineDataSet dataSet = new LineDataSet(entries, "Кек");
+        XAxis xAxis = graph.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(5f);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+
+            private SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy");
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+
+                Date s = new Date((long) (value));
+                return mFormat.format(s);
+            }
+        });
+
         dataSet.setColors(colors);
         LineData data = new LineData(dataSet);
         graph.setData(data);
+        graph.fitScreen();
 
         graph.getDescription().setEnabled(false);
         graph.invalidate();
