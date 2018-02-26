@@ -18,6 +18,23 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"></com.github.mikephil.charting.charts.LineChart>
 
+        <TextView
+            android:layout_below="@id/graph"
+            android:id="@+id/trackingsGraphHint"
+            android:padding="10dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp"
+            android:text="Выберите отслеживания:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.example.ithappenedandroid.Gui.MultiSpinner
+            android:layout_below="@id/trackingsGraphHint"
+            android:id="@+id/trackingsGraphSpinner"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></com.example.ithappenedandroid.Gui.MultiSpinner>
+
     <TextView
         android:layout_below="@id/trackingsGraphSpinner"
         android:id="@+id/typeGraphHint"
@@ -34,23 +51,7 @@
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></Spinner>
-
-    <TextView
-        android:layout_below="@id/graph"
-        android:id="@+id/trackingsGraphHint"
-        android:padding="10dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp"
-        android:text="Выберите отслеживания:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.example.ithappenedandroid.Gui.MultiSpinner
-        android:layout_below="@id/trackingsGraphHint"
-        android:id="@+id/trackingsGraphSpinner"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></com.example.ithappenedandroid.Gui.MultiSpinner>
+        
 
         <RelativeLayout
             android:layout_below="@id/typeSpinner"
