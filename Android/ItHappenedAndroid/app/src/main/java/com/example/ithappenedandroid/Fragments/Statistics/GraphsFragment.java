@@ -39,7 +39,7 @@ import java.util.UUID;
 public class GraphsFragment extends Fragment {
 
     String[] spinnerHints = {"За все время", "За год", "За пол года", "За месяц", "За неделю", "За три месяца", "Ваш период"};
-    Enum[] spinnerTypes = {
+    GraphTimeTypes[] spinnerTypes = {
             GraphTimeTypes.ALLTIME,
             GraphTimeTypes.LASTYEAR,
             GraphTimeTypes.HALFYEAR,
@@ -78,7 +78,7 @@ public class GraphsFragment extends Fragment {
 
         timeTypes = GraphTimeTypes.ALLTIME;
 
-        Tracking tracking = collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id")));
+        final Tracking tracking = collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id")));
 
         helper = new GraphStatisticsHelper(tracking);
         initLineChart(graph, timeTypes, tracking);
@@ -124,6 +124,14 @@ public class GraphsFragment extends Fragment {
             @Override
             public void onItemsSelected(boolean[] selected) {
                 
+            }
+        });
+
+        addParams.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final long selectedItemId = graphType.getSelectedItemId();
+                initLineChart(graph, spinnerTypes[(int) graphType.getSelectedItemId()], tracking);
             }
         });
     }
@@ -230,7 +238,7 @@ public class GraphsFragment extends Fragment {
             case USERTYPE:
                 break;
 
-                
+
                 default:
                     break;
         };
