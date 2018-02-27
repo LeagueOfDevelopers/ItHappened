@@ -95,7 +95,7 @@ public class GraphStatisticsHelper {
         Date date = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        c.add(Calendar.YEAR, -1 / 2);
+        c.add(Calendar.MONTH, -6);
         Date start = c.getTime();
         Date end = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
