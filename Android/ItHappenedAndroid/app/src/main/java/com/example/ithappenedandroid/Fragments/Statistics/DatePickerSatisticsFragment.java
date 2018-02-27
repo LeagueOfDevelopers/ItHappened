@@ -1,19 +1,22 @@
-package com.example.ithappenedandroid.Fragments;
+package com.example.ithappenedandroid.Fragments.Statistics;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.Calendar;
+import com.example.ithappenedandroid.Fragments.TimePickerFragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 @SuppressLint("ValidFragment")
-public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerSatisticsFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     String formattedDate;
 
@@ -23,7 +26,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     TimePickerFragment timePickerFragment;
 
-    public DatePickerFragment(TextView datetext){
+    public DatePickerSatisticsFragment(TextView datetext){
         this.datetext = datetext;
     }
 
@@ -42,14 +45,11 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
         if(datetext!=null){
+            Locale loc = new Locale("ru");
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", loc);
 
-            timePickerFragment = new TimePickerFragment(datetext, c);
-            timePickerFragment.show(getFragmentManager(), "TimePicker");
+            datetext.setText(format.format(c.getTime()));
         }
-    }
-
-    public String getFormattedDate(){
-        return formattedDate;
     }
 
 }

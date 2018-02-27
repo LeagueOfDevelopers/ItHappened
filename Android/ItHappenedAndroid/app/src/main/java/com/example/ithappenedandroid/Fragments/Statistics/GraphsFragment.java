@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Gui.MultiSpinner;
@@ -28,12 +30,14 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.EntryXComparator;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class GraphsFragment extends Fragment {
@@ -48,6 +52,11 @@ public class GraphsFragment extends Fragment {
             GraphTimeTypes.THREEMONT,
             GraphTimeTypes.USERTYPE
     };
+
+    Button dateFromStatististics;
+    Button dateToStatistics;
+    TextView dateFromText;
+    TextView dateToText;
 
     GraphStatisticsHelper helper;
     GraphTimeTypes timeTypes;
@@ -72,6 +81,10 @@ public class GraphsFragment extends Fragment {
         graphType = (Spinner) getActivity().findViewById(R.id.typeSpinner);
         trackingsSpinner = (MultiSpinner) getActivity().findViewById(R.id.trackingsGraphSpinner);
         addParams = (Button) getActivity().findViewById(R.id.addParams);
+        dateFromStatististics = (Button) getActivity().findViewById(R.id.dateFromGraphButton) ;
+        dateToStatistics = (Button) getActivity().findViewById(R.id.dateToGraphButton);
+        dateFromText = (TextView) getActivity().findViewById(R.id.dateFromGraph);
+        dateToText = (TextView) getActivity().findViewById(R.id.dateToGraph);
         userPeriodLayout = (RelativeLayout) getActivity().findViewById(R.id.visibilityLayout);
         userPeriodLayout.setVisibility(View.INVISIBLE);
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
@@ -100,6 +113,24 @@ public class GraphsFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        dateFromStatististics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                DatePickerSatisticsFragment picker = new DatePickerSatisticsFragment(dateFromText);
+                picker.show(fragmentManager, "from");
+            }
+        });
+
+        dateToStatistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                DatePickerSatisticsFragment picker = new DatePickerSatisticsFragment(dateToText);
+                picker.show(fragmentManager, "to");
             }
         });
 
@@ -236,6 +267,43 @@ public class GraphsFragment extends Fragment {
                 break;
 
             case USERTYPE:
+
+                if(dateFromText.getText().toString().equals("Начальная дата")||dateToText.getText().toString().equals("Конечная дата")){
+                    Toast.makeText(getActivity().getApplicationContext(), "Задайте период", Toast.LENGTH_SHORT).show();
+                }else{
+
+                    Date dateFrom = new Date();
+                    Date dateTo = new Date();
+
+                    Locale locale = new Locale("ru");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", locale);
+                    try {
+                        dateFrom = simpleDateFormat.parse(dateFromText.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        dateTo = simpleDateFormat.parse(dateToText.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    LinkedHashMap<Date, Integer> userPeriodGraphData = new GraphStatisticsHelper(tracking).userPeriodGraphData(dateFrom, dateTo);
+                    ArrayList<Date> xDataUserPeriod = new ArrayList<>(userPeriodGraphData.keySet());
+                    ArrayList<Integer> yDataUserPeriod = new ArrayList<>(userPeriodGraphData.values());
+                    ArrayList<Entry> entriesUserPeriod = new ArrayList<>();
+
+                    for(int i =0;i<xDataUserPeriod.size();i++){
+                        entriesUserPeriod.add(new Entry(new Long(xDataUserPeriod.get(i).getTime()).floatValue(), yDataUserPeriod.get(i)));
+                    }
+
+                    Collections.sort(entriesUserPeriod, new EntryXComparator());
+
+                    createLineChart(graph, entriesUserPeriod);
+
+                }
+
                 break;
 
 
