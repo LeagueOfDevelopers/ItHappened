@@ -151,6 +151,7 @@ public class UserActionsActivity extends AppCompatActivity
 
         if(id == R.id.my_events){
             trackFrg = new TrackingsFragment();
+            item.setCheckable(false);
 
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
@@ -162,6 +163,7 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if (id == R.id.events_history) {
+            item.setCheckable(false);
             setTitle("История событий");
             EventsFragment eventsFrg = new EventsFragment();
 
@@ -173,8 +175,11 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(id == R.id.statistics){
+            item.setCheckable(false);
             setTitle("Статистика");
             StatisticsFragment statFrg = new StatisticsFragment();
+
+            Toast.makeText(getApplicationContext(), "Выбирите отслеживание для просмотра статистики!", Toast.LENGTH_LONG).show();
 
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
@@ -184,6 +189,7 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(id == R.id.synchronisation){
+            item.setCheckable(false);
             final Animation animationRotateCenter = AnimationUtils.loadAnimation(
                     this, R.anim.rotate);
             item.setActionView(new ProgressBar(this));
@@ -233,6 +239,7 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
            if(id == R.id.proile_settings){
+               item.setCheckable(false);
                profileStgsFrg = new ProfileSettingsFragment();
                fTrans = getFragmentManager().beginTransaction();
                fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);

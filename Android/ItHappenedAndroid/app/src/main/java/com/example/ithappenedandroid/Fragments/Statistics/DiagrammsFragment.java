@@ -6,7 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Gui.MultiSpinner;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -30,6 +33,10 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
     DiagramsStatisticsHelper helper;
     List<Boolean> flags;
     PieData data;
+    TextView spinnerHint;
+
+    TextView hint;
+    RelativeLayout visibility;
 
     @Nullable
     @Override
@@ -45,109 +52,136 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
         final UUID trackingId = UUID.fromString(getActivity().getIntent().getStringExtra("id"));
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
         helper = new DiagramsStatisticsHelper(collection.GetTracking(trackingId));
-        if(collection.GetTrackingCollection().size()==0){
+        visibility = (RelativeLayout) getActivity().findViewById(R.id.visibilityDiagramm);
+        hint = (TextView) getActivity().findViewById(R.id.hintForDiagrammFragment);
+        spinnerHint = (TextView) getActivity().findViewById(R.id.diagrammHintTrackings);
+        spinnerHint.setVisibility(View.VISIBLE);
+        allTrackings.setVisibility(View.INVISIBLE);
 
-        }else{
-            List<Tracking> all = collection.GetTrackingCollection();
-            all.remove(collection.GetTrackingCollection().remove(
-                    collection.GetTracking(trackingId)
-            ));
-            if(all.size()==0){
-
-            }else{
-
-                int allEventsCount = helper.getAllEventsCount(all);
-                int thisEventCount = helper.getTrackingEventsCount();
-
-                int[] yData = {thisEventCount, allEventsCount};
-                String[] xData = {collection.GetTracking(trackingId).GetTrackingName(), "Все отслеживания"};
-
-                ArrayList<PieEntry> entries = new ArrayList<>();
-                ArrayList<String> xEntries = new ArrayList<>();
-                entries.add(new PieEntry(yData[0], 0));
-                entries.add(new PieEntry(yData[1], 1));
-
-                xEntries.add(xData[0]);
-                xEntries.add(xData[1]);
-                createPieChart(diagramm, yData, xData);
-
-                final List<UUID> uuids = new ArrayList<>();
-                final List<String> strings = new ArrayList<>();
-                flags = new ArrayList<>();
-
-                for(int i=0;i<all.size();i++){
-                    if(!all.get(i).GetStatus()) {
-                        strings.add(all.get(i).GetTrackingName());
-                        uuids.add(all.get(i).GetTrackingID());
-                        flags.add(false);
-                    }
-                }
-
-                String allText = "";
-                for(int i=0;i<strings.size();i++) {
-                    if (i != strings.size()) {
-                        allText += strings.get(i) + ", ";
-                    }
-                }
-
-                final List<String> filteredTrackingsTitles = new ArrayList<>();
-                final List<UUID> filteredTrackingsUuids = new ArrayList<>();
-
-                allTrackings.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
-
-                    @Override
-                    public void onItemsSelected(boolean[] selected) {
-
-                        for (int i = 0; i < selected.length; i++) {
-                            Log.e("DIAGRAMM", selected[i] + "");
-                            if (!selected[i]) {
-                                uuids.set(i,null);
-                            }
-                        }
-
-                        for(int i = 0;i<uuids.size();i++){
-                            if(uuids.get(i)!=null){
-                                filteredTrackingsUuids.add(uuids.get(i));
-                            }
-                        }
-
-                            List<Tracking> trackingsForFilter = new ArrayList<>();
-                            for (int i = 0; i < filteredTrackingsUuids.size(); i++) {
-                                trackingsForFilter.add(collection.GetTracking(filteredTrackingsUuids.get(i)));
-                            }
-
-                            diagramm.getData().clearValues();
-
-                            int allCount = helper.getAllEventsCount(trackingsForFilter);
-
-                            int thisEventCount = helper.getTrackingEventsCount();
-
-                            int[] yData = {thisEventCount, allCount};
-                            String[] xData = {collection.GetTracking(trackingId).GetTrackingName(), "Выбранные отслеживания"};
-                            createPieChart(diagramm, yData, xData);
-
-
-                            List<Tracking> all = collection.GetTrackingCollection();
-                            all.remove(collection.GetTrackingCollection().remove(
-                                    collection.GetTracking(trackingId)
-                            ));
-
-
-                           filteredTrackingsUuids.clear();
-
-                            uuids.clear();
-
-                            for(int i=0;i<all.size();i++){
-                                if(!all.get(i).GetStatus()) {
-                                    uuids.add(all.get(i).GetTrackingID());
-                                }
-                            }
-                    }
-                });
+        List<Tracking> all = new ArrayList<>();
+        for (int i = 0; i < collection.GetTrackingCollection().size(); i++) {
+            if (!collection.GetTrackingCollection().get(i).GetStatus()) {
+                all.add(collection.GetTrackingCollection().get(i));
             }
         }
 
+        if(collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id"))).GetEventCollection().size()==0){
+            visibility.setVisibility(View.INVISIBLE);
+            hint.setVisibility(View.VISIBLE);
+        }
+
+        for (Event event : collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id"))).GetEventCollection()) {
+            if (!event.GetStatus()) {
+                hint.setVisibility(View.INVISIBLE);
+                visibility.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).GetTrackingID().equals(trackingId)) {
+                all.remove(i);
+                break;
+            }
+        }
+
+        int allEventsCount = helper.getAllEventsCount(all);
+        int thisEventCount = helper.getTrackingEventsCount();
+
+        int[] yData = {thisEventCount, allEventsCount};
+        String[] xData = {collection.GetTracking(trackingId).GetTrackingName(), "Все отслеживания"};
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        ArrayList<String> xEntries = new ArrayList<>();
+        entries.add(new PieEntry(yData[0], 0));
+        entries.add(new PieEntry(yData[1], 1));
+
+        xEntries.add(xData[0]);
+        xEntries.add(xData[1]);
+        createPieChart(diagramm, yData, xData);
+
+        if (all.size() != 0) {
+
+            allTrackings.setVisibility(View.VISIBLE);
+
+            spinnerHint.setVisibility(View.INVISIBLE);
+
+            final List<UUID> uuids = new ArrayList<>();
+            final List<String> strings = new ArrayList<>();
+            flags = new ArrayList<>();
+
+            for (int i = 0; i < all.size(); i++) {
+                if (!all.get(i).GetStatus()) {
+                    strings.add(all.get(i).GetTrackingName());
+                    uuids.add(all.get(i).GetTrackingID());
+                    flags.add(false);
+                }
+            }
+
+            String allText = "";
+            for (int i = 0; i < strings.size(); i++) {
+                if (i != strings.size()) {
+                    allText += strings.get(i) + ", ";
+                }
+            }
+
+            final List<String> filteredTrackingsTitles = new ArrayList<>();
+            final List<UUID> filteredTrackingsUuids = new ArrayList<>();
+
+            allTrackings.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
+
+                @Override
+                public void onItemsSelected(boolean[] selected) {
+
+                    for (int i = 0; i < selected.length; i++) {
+                        Log.e("DIAGRAMM", selected[i] + "");
+                        if (!selected[i]) {
+                            uuids.set(i, null);
+                        }
+                    }
+
+                    for (int i = 0; i < uuids.size(); i++) {
+                        if (uuids.get(i) != null) {
+                            filteredTrackingsUuids.add(uuids.get(i));
+                        }
+                    }
+
+                    List<Tracking> trackingsForFilter = new ArrayList<>();
+                    for (int i = 0; i < filteredTrackingsUuids.size(); i++) {
+                        trackingsForFilter.add(collection.GetTracking(filteredTrackingsUuids.get(i)));
+                    }
+
+                    diagramm.getData().clearValues();
+
+                    int allCount = helper.getAllEventsCount(trackingsForFilter);
+
+                    int thisEventCount = helper.getTrackingEventsCount();
+
+                    int[] yData = {thisEventCount, allCount};
+                    String[] xData = {collection.GetTracking(trackingId).GetTrackingName(), "Выбранные отслеживания"};
+                    createPieChart(diagramm, yData, xData);
+
+
+                    List<Tracking> all = collection.GetTrackingCollection();
+                    all.remove(collection.GetTrackingCollection().remove(
+                            collection.GetTracking(trackingId)
+                    ));
+
+
+                    filteredTrackingsUuids.clear();
+
+                    uuids.clear();
+
+                    for (int i = 0; i < all.size(); i++) {
+                        if (!all.get(i).GetStatus()) {
+                            uuids.add(all.get(i).GetTrackingID());
+                        }
+                    }
+                }
+            });
+        }
     }
+
 
 
     private void createPieChart(PieChart diagramm, int[] yData, String[] xData){

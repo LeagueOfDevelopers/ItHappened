@@ -270,7 +270,8 @@ public class EventsFragment extends Fragment  {
                 }
 
                 if(strings.size()!=0) {
-                    trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
+                    trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
+                            new MultiSpinner.MultiSpinnerListener() {
 
                         @Override
                         public void onItemsSelected(boolean[] selected) {

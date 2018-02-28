@@ -1,9 +1,11 @@
 package com.example.ithappenedandroid.Fragments.Statistics;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Gui.MultiSpinner;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
@@ -28,6 +32,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.EntryXComparator;
 
 import java.text.ParseException;
@@ -38,6 +43,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.UUID;
 
 public class GraphsFragment extends Fragment {
@@ -53,6 +59,8 @@ public class GraphsFragment extends Fragment {
             GraphTimeTypes.USERTYPE
     };
 
+    List<Tracking> all;
+
     Button dateFromStatististics;
     Button dateToStatistics;
     TextView dateFromText;
@@ -66,7 +74,15 @@ public class GraphsFragment extends Fragment {
     MultiSpinner trackingsSpinner;
     ITrackingRepository collection;
 
+    List<Tracking> trackingsForFilter;
+
     RelativeLayout userPeriodLayout;
+
+    ScrollView visibility;
+    TextView hint;
+    TextView hintForTrackingsSpinner;
+
+    List<Boolean> flags;
 
     @Nullable
     @Override
@@ -77,6 +93,13 @@ public class GraphsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        final UUID trackingId = UUID.fromString(getActivity().getIntent().getStringExtra("id"));
+
+        all = new ArrayList<>();
+        trackingsForFilter = new ArrayList<>();
+        flags = new ArrayList<>();
+
         graph = (LineChart) getActivity().findViewById(R.id.graph);
         graphType = (Spinner) getActivity().findViewById(R.id.typeSpinner);
         trackingsSpinner = (MultiSpinner) getActivity().findViewById(R.id.trackingsGraphSpinner);
@@ -88,86 +111,175 @@ public class GraphsFragment extends Fragment {
         userPeriodLayout = (RelativeLayout) getActivity().findViewById(R.id.visibilityLayout);
         userPeriodLayout.setVisibility(View.INVISIBLE);
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+        hint = (TextView) getActivity().findViewById(R.id.hintForGraphFragment);
+        visibility = (ScrollView) getActivity().findViewById(R.id.visibilityScrollView);
+        hintForTrackingsSpinner = (TextView) getActivity().findViewById(R.id.trackingsGraphSpinnerHint);
+        hintForTrackingsSpinner.setVisibility(View.VISIBLE);
+        trackingsSpinner.setVisibility(View.INVISIBLE);
 
-        timeTypes = GraphTimeTypes.ALLTIME;
+        for(int i = 0;i< collection.GetTrackingCollection().size();i++){
+            if(!collection.GetTrackingCollection().get(i).GetStatus()){
+                all.add(collection.GetTrackingCollection().get(i));
+            }
+        }
 
-        final Tracking tracking = collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id")));
+        if(collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id"))).GetEventCollection().size()==0){
+            visibility.setVisibility(View.INVISIBLE);
+            hint.setVisibility(View.VISIBLE);
+            addParams.setVisibility(View.INVISIBLE);
+        }
 
-        helper = new GraphStatisticsHelper(tracking);
-        initLineChart(graph, timeTypes, tracking);
 
-        ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(),
-                R.layout.support_simple_spinner_dropdown_item,
-                spinnerHints);
+        for(Event event : collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id"))).GetEventCollection()){
+            if(!event.GetStatus()){
+                hint.setVisibility(View.INVISIBLE);
+                visibility.setVisibility(View.VISIBLE);
+            }
+        }
 
-        graphType.setAdapter(adapter);
+        graph.getLegend().setEnabled(false);
+        graph.setNoDataText("Нет данных");
+        graph.setNoDataTextColor(getResources().getColor(R.color.colorPrimaryDark));
 
-        graphType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(spinnerTypes[i].equals(GraphTimeTypes.USERTYPE)){
-                    userPeriodLayout.setVisibility(View.VISIBLE);
+            for (int i = 0;i<all.size();i++){
+                if(all.get(i).GetTrackingID().equals(trackingId)){
+                    all.remove(i);
+                    break;
+                }
+            }
+            timeTypes = GraphTimeTypes.ALLTIME;
+
+            final Tracking tracking = collection.GetTracking(UUID.fromString(getActivity().getIntent().getStringExtra("id")));
+
+            helper = new GraphStatisticsHelper(tracking);
+            initLineChart(graph, timeTypes, tracking, 1);
+
+            ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(),
+                    R.layout.support_simple_spinner_dropdown_item,
+                    spinnerHints);
+
+            final List<UUID> uuids = new ArrayList<>();
+            final List<String> strings = new ArrayList<>();
+
+            for (int i = 0; i < all.size(); i++) {
+                if (!all.get(i).GetStatus()) {
+                    strings.add(all.get(i).GetTrackingName());
+                    uuids.add(all.get(i).GetTrackingID());
+                    flags.add(false);
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            graphType.setAdapter(adapter);
 
+            graphType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (spinnerTypes[i].equals(GraphTimeTypes.USERTYPE)) {
+                        userPeriodLayout.setVisibility(View.VISIBLE);
+                    }else {
+                        userPeriodLayout.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            dateFromStatististics.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                    DatePickerSatisticsFragment picker = new DatePickerSatisticsFragment(dateFromText);
+                    picker.show(fragmentManager, "from");
+                }
+            });
+
+            dateToStatistics.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                    DatePickerSatisticsFragment picker = new DatePickerSatisticsFragment(dateToText);
+                    picker.show(fragmentManager, "to");
+                }
+            });
+
+
+
+                List<UUID> trackings = new ArrayList<>();
+                List<String> trackingNames = new ArrayList<>();
+
+                for (Tracking trackingForHint : all) {
+                    if (!trackingForHint.GetStatus()) {
+                        trackings.add(trackingForHint.GetTrackingID());
+                        trackingNames.add(trackingForHint.GetTrackingName());
+                    }
+                }
+
+                String allText = "";
+                for (int i = 0; i < trackingNames.size(); i++) {
+                    if (i != trackingNames.size()) {
+                        allText += trackingNames.get(i) + ", ";
+                    }
+                }
+
+                final List<String> filteredTrackingsTitles = new ArrayList<>();
+                final List<UUID> filteredTrackingsUuids = new ArrayList<>();
+
+                for (int i = 0; i < all.size(); i++) {
+                    filteredTrackingsUuids.add(uuids.get(i));
+                }
+
+        if(all.size()!=0) {
+                    hintForTrackingsSpinner.setVisibility(View.INVISIBLE);
+                    trackingsSpinner.setVisibility(View.VISIBLE);
+                trackingsSpinner.setItems(trackingNames, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
+                    @Override
+                    public void onItemsSelected(boolean[] selected) {
+
+                        for (int i = 0; i < selected.length; i++) {
+
+                            Log.e("FILTER", selected[i] + "");
+                            if (selected[i]) {
+                                filteredTrackingsTitles.add(strings.get(i));
+                                if (flags.get(i)) {
+                                    filteredTrackingsUuids.add(uuids.get(i));
+                                }
+                            }
+                            if (!selected[i]) {
+                                filteredTrackingsUuids.remove(uuids.get(i));
+                                flags.set(i, true);
+                            }
+                        }
+                    }
+                });
             }
-        });
 
-        dateFromStatististics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-                DatePickerSatisticsFragment picker = new DatePickerSatisticsFragment(dateFromText);
-                picker.show(fragmentManager, "from");
-            }
-        });
+            addParams.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final long selectedItemId = graphType.getSelectedItemId();
 
-        dateToStatistics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-                DatePickerSatisticsFragment picker = new DatePickerSatisticsFragment(dateToText);
-                picker.show(fragmentManager, "to");
-            }
-        });
+                    graph.clear();
+                    initLineChart(graph, spinnerTypes[(int) graphType.getSelectedItemId()], tracking, 1);
 
-        List<UUID> trackings  = new ArrayList<>();
-        List<String> trackingNames = new ArrayList<>();
+                    for(int i = 0;i<filteredTrackingsUuids.size();i++){
+                        trackingsForFilter.add(collection.GetTracking(filteredTrackingsUuids.get(i)));
+                    }
 
-        for(Tracking trackingForHint : collection.GetTrackingCollection()){
-            if(!trackingForHint.GetStatus()){
-                trackings.add(trackingForHint.GetTrackingID());
-                trackingNames.add(trackingForHint.GetTrackingName());
-            }
+                    if(trackingsForFilter.size()!=0) {
+                        for (int i = 0; i < trackingsForFilter.size(); i++) {
+                            initLineChart(graph, spinnerTypes[(int) graphType.getSelectedItemId()], trackingsForFilter.get(i), 2);
+                        }
+                    }
+
+                    trackingsForFilter.clear();
+                }
+            });
         }
 
-        String allText = "";
-        for(int i=0;i<trackingNames.size();i++) {
-            if (i != trackingNames.size()) {
-                allText += trackingNames.get(i) + ", ";
-            }
-        }
-
-        trackingsSpinner.setItems(trackingNames, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
-            @Override
-            public void onItemsSelected(boolean[] selected) {
-                
-            }
-        });
-
-        addParams.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final long selectedItemId = graphType.getSelectedItemId();
-                initLineChart(graph, spinnerTypes[(int) graphType.getSelectedItemId()], tracking);
-            }
-        });
-    }
-
-    private void initLineChart(LineChart graph, GraphTimeTypes timeTypes, Tracking tracking){
+    private void initLineChart(LineChart graph, GraphTimeTypes timeTypes, Tracking tracking , int state){
 
         switch (timeTypes){
             case ALLTIME:
@@ -181,9 +293,11 @@ public class GraphsFragment extends Fragment {
                 }
 
                 Collections.sort(entries, new EntryXComparator());
-
-                createLineChart(graph, entries);
-
+                if(state == 1) {
+                    createLineChart(graph, entries);
+                }else{
+                    createMultiGraph(graph, entries, null);
+                }
                 break;
 
             case HALFYEAR:
@@ -198,23 +312,33 @@ public class GraphsFragment extends Fragment {
 
                 Collections.sort(entriesHalfYear, new EntryXComparator());
 
-                createLineChart(graph, entriesHalfYear);
+                if(state == 1) {
+                    createLineChart(graph, entriesHalfYear);
+                }else{
+                    createMultiGraph(graph, entriesHalfYear, null);
+                }
 
                 break;
 
             case LASTWEEK:
                 LinkedHashMap<Date, Integer> lastWeekGraphData = new GraphStatisticsHelper(tracking).lastWeekGraphData();
-                ArrayList<Date> xDataLastWeek = new ArrayList<>(lastWeekGraphData.keySet());
-                ArrayList<Integer> yDataLastWeek = new ArrayList<>(lastWeekGraphData.values());
-                ArrayList<Entry> entriesLastWeek = new ArrayList<>();
+                if(lastWeekGraphData.size()!=0) {
+                    ArrayList<Date> xDataLastWeek = new ArrayList<>(lastWeekGraphData.keySet());
+                    ArrayList<Integer> yDataLastWeek = new ArrayList<>(lastWeekGraphData.values());
+                    ArrayList<Entry> entriesLastWeek = new ArrayList<>();
 
-                for(int i =0;i<xDataLastWeek.size();i++){
-                    entriesLastWeek.add(new Entry(new Long(xDataLastWeek.get(i).getTime()).floatValue(), yDataLastWeek.get(i)));
+                    for (int i = 0; i < xDataLastWeek.size(); i++) {
+                        entriesLastWeek.add(new Entry(new Long(xDataLastWeek.get(i).getTime()).floatValue(), yDataLastWeek.get(i)));
+                    }
+
+                    Collections.sort(entriesLastWeek, new EntryXComparator());
+
+                    if (state == 1) {
+                        createLineChart(graph, entriesLastWeek);
+                    } else {
+                        createMultiGraph(graph, entriesLastWeek, null);
+                    }
                 }
-
-                Collections.sort(entriesLastWeek, new EntryXComparator());
-
-                createLineChart(graph, entriesLastWeek);
 
                 break;
 
@@ -230,7 +354,11 @@ public class GraphsFragment extends Fragment {
 
                 Collections.sort(entriesLastYear, new EntryXComparator());
 
-                createLineChart(graph, entriesLastYear);
+                if(state == 1) {
+                    createLineChart(graph, entriesLastYear);
+                }else{
+                    createMultiGraph(graph, entriesLastYear, null);
+                }
 
                 break;
 
@@ -246,7 +374,11 @@ public class GraphsFragment extends Fragment {
 
                 Collections.sort(entriesLastMonth, new EntryXComparator());
 
-                createLineChart(graph, entriesLastMonth);
+                if(state == 1) {
+                    createLineChart(graph, entriesLastMonth);
+                }else{
+                    createMultiGraph(graph, entriesLastMonth, null);
+                }
 
                 break;
 
@@ -262,7 +394,11 @@ public class GraphsFragment extends Fragment {
 
                 Collections.sort(entriesThreeMonth, new EntryXComparator());
 
+                if(state == 1) {
                 createLineChart(graph, entriesThreeMonth);
+            }else{
+                createMultiGraph(graph, entriesThreeMonth, null);
+            }
 
                 break;
 
@@ -300,7 +436,11 @@ public class GraphsFragment extends Fragment {
 
                     Collections.sort(entriesUserPeriod, new EntryXComparator());
 
-                    createLineChart(graph, entriesUserPeriod);
+                    if(state == 1) {
+                        createLineChart(graph, entriesUserPeriod);
+                    }else{
+                        createMultiGraph(graph, entriesUserPeriod, null);
+                    }
 
                 }
 
@@ -317,38 +457,84 @@ public class GraphsFragment extends Fragment {
 
     }
 
-    private void createLineChart(LineChart graph, ArrayList<Entry> entries){
-        if(graph.getData()!=null) {
-            graph.clearValues();
-            graph.clear();
-        }
+    private void createLineChart(LineChart graph, ArrayList<Entry> entries) {
+
 
         List<Integer> colors = new ArrayList<>();
         colors.add(getResources().getColor(R.color.colorAccent));
 
-        LineDataSet dataSet = new LineDataSet(entries, "Кек");
-        XAxis xAxis = graph.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextSize(5f);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
+        if (entries.size() == 0) {
+            Toast.makeText(getActivity().getApplicationContext(), "Данных нет", Toast.LENGTH_SHORT).show();
+        } else {
 
-            private SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy");
+            LineDataSet dataSet = new LineDataSet(entries, "Данное отслеживание");
+            XAxis xAxis = graph.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTextSize(5f);
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
 
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
+                private SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-                Date s = new Date((long) (value));
-                return mFormat.format(s);
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+
+                    Date s = new Date((long) (value));
+                    return mFormat.format(s);
+                }
+            });
+
+            dataSet.setColors(colors);
+            LineData data = new LineData(dataSet);
+            graph.setData(data);
+            graph.fitScreen();
+
+            graph.getDescription().setEnabled(false);
+            graph.invalidate();
+        }
+    }
+
+    private void createMultiGraph(LineChart graph, ArrayList<Entry> entries, List<Integer> color) {
+        List<Integer> colors = new ArrayList<>();
+        colors.add(getResources().getColor(R.color.colorAccent));
+
+        if (entries.size() == 0) {
+            Toast.makeText(getActivity().getApplicationContext(), "Данных нет", Toast.LENGTH_SHORT).show();
+        } else {
+
+            List<ILineDataSet> graphData = new ArrayList<>();
+            if (graph.getData() != null) {
+                for (int i = 0; i < graph.getData().getDataSetCount(); i++)
+                    graphData.add(graph.getData().getDataSetByIndex(i));
             }
-        });
+            LineDataSet newSet = new LineDataSet(entries, "Выбранные отслеживания");
 
-        dataSet.setColors(colors);
-        LineData data = new LineData(dataSet);
-        graph.setData(data);
-        graph.fitScreen();
+            Random rnd = new Random();
+            int colorSet = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            newSet.setColor(colorSet);
+            graphData.add(newSet);
 
-        graph.getDescription().setEnabled(false);
-        graph.invalidate();
+            XAxis xAxis = graph.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTextSize(5f);
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+
+                private SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy");
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+
+                    Date s = new Date((long) (value));
+                    return mFormat.format(s);
+                }
+            });
+
+            LineData data = new LineData(graphData);
+            graph.setData(data);
+            graph.fitScreen();
+
+            graph.getDescription().setEnabled(false);
+            graph.invalidate();
+        }
     }
 
 }

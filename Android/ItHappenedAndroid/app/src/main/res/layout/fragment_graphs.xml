@@ -2,7 +2,20 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="События отсутствуют!"
+        android:textSize="20sp"
+        android:id="@+id/hintForGraphFragment"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+
 <ScrollView
+    android:id="@+id/visibilityScrollView"
     android:layout_marginBottom="64dp"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
@@ -18,6 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"></com.github.mikephil.charting.charts.LineChart>
 
+
+
+
         <TextView
             android:layout_below="@id/graph"
             android:id="@+id/trackingsGraphHint"
@@ -32,13 +48,23 @@
             android:layout_below="@id/trackingsGraphHint"
             android:id="@+id/trackingsGraphSpinner"
             android:padding="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"></com.example.ithappenedandroid.Gui.MultiSpinner>
+
+        <TextView
+            android:layout_below="@id/trackingsGraphHint"
+            android:id="@+id/trackingsGraphSpinnerHint"
+            android:padding="10dp"
+            android:textSize="19sp"
+            android:text="У вас одно отслеживание!"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></TextView>
 
     <TextView
         android:layout_below="@id/trackingsGraphSpinner"
         android:id="@+id/typeGraphHint"
         android:padding="10dp"
+        android:layout_marginTop="25dp"
         android:textSize="20sp"
         android:textColor="@color/colorPrimaryDark"
         android:text="Выберите период:"
@@ -47,9 +73,10 @@
 
     <Spinner
         android:layout_below="@id/typeGraphHint"
+        android:textAlignment="center"
         android:id="@+id/typeSpinner"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"></Spinner>
 
 

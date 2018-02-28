@@ -8,6 +8,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.ithappenedandroid.Application.TrackingService;
 import com.example.ithappenedandroid.Domain.Tracking;
@@ -27,6 +28,8 @@ public class StatisticsFragment extends Fragment {
     TrackingService service;
     ITrackingRepository collection;
 
+    TextView hint;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class StatisticsFragment extends Fragment {
         super.onResume();
         getActivity().setTitle("Статистика");
         trackingsRecycler = (RecyclerView) getActivity().findViewById(R.id.statisticsRV);
+
+        hint = (TextView) getActivity().findViewById(R.id.hintForStatisticsFragment);
         trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
@@ -53,9 +58,11 @@ public class StatisticsFragment extends Fragment {
             }
         }
 
-        trackAdpt = new StatisticsAdapter(visibleTrackings,getActivity());
-        trackingsRecycler.setAdapter(trackAdpt);
-
+        if(visibleTrackings.size()!=0) {
+            hint.setVisibility(View.INVISIBLE);
+            trackAdpt = new StatisticsAdapter(visibleTrackings, getActivity());
+            trackingsRecycler.setAdapter(trackAdpt);
+        }
     }
 
 }

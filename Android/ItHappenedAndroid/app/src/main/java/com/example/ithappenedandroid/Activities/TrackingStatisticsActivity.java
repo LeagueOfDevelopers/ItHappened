@@ -8,19 +8,34 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.example.ithappenedandroid.Fragments.Statistics.DiagrammsFragment;
 import com.example.ithappenedandroid.Fragments.Statistics.GraphsFragment;
 import com.example.ithappenedandroid.Fragments.Statistics.TextFragment;
 import com.example.ithappenedandroid.R;
+import com.example.ithappenedandroid.StaticInMemoryRepository;
 import com.example.ithappenedandroid.ViewPagerAdapter;
+
+import java.util.UUID;
 
 public class TrackingStatisticsActivity extends AppCompatActivity {
         private Toolbar toolbar;
         private TabLayout tabLayout;
         private ViewPager viewPager;
 
-        @Override
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_statistics);
@@ -31,7 +46,10 @@ public class TrackingStatisticsActivity extends AppCompatActivity {
             final Drawable upArrow = getResources().getDrawable(R.mipmap.leftt);
             upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
-            getSupportActionBar().setTitle("Статистика");
+            getSupportActionBar().setTitle(new StaticInMemoryRepository(getApplicationContext())
+                    .getInstance()
+                    .GetTracking(UUID.fromString(getIntent()
+                    .getStringExtra("id"))).GetTrackingName());
 
             ActionBar actionBar = getSupportActionBar();
             actionBar.setDisplayHomeAsUpEnabled(true);

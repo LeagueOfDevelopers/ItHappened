@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.ithappenedandroid.Domain.Event;
 import com.example.ithappenedandroid.Domain.Tracking;
 import com.example.ithappenedandroid.Infrastructure.ITrackingRepository;
 import com.example.ithappenedandroid.R;
@@ -32,6 +34,9 @@ public class TextFragment extends Fragment {
     TextView sumScale;
     TextView sumRating;
 
+    TextView hint;
+    RelativeLayout visibility;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +52,23 @@ public class TextFragment extends Fragment {
         avrgRating = (TextView) getActivity().findViewById(R.id.avrgRating);
         sumScale = (TextView) getActivity().findViewById(R.id.sumScale);
         sumRating = (TextView) getActivity().findViewById(R.id.sumRating);
+        hint = (TextView) getActivity().findViewById(R.id.hintForTextFragment);
+        visibility = (RelativeLayout) getActivity().findViewById(R.id.visibilityText);
+
+        visibility.setVisibility(View.INVISIBLE);
+        hint.setVisibility(View.VISIBLE);
 
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
         trackingId = UUID.fromString(getActivity().getIntent().getStringExtra("id"));
         Tracking tracking = collection.GetTracking(trackingId);
+
+        for(Event event : tracking.GetEventCollection()){
+            if(!event.GetStatus()){
+                hint.setVisibility(View.INVISIBLE);
+                visibility.setVisibility(View.VISIBLE);
+            }
+        }
+
         helper = new TextStatisticsHelper(tracking);
         eventsCount.setText(helper.getEventsCount().toString());
 

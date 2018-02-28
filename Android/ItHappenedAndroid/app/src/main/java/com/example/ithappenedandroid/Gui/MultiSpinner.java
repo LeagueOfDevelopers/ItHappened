@@ -1,5 +1,6 @@
 package com.example.ithappenedandroid.Gui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by Пользователь on 09.02.2018.
  */
 
+@SuppressLint("AppCompatCustomView")
 public class MultiSpinner extends Spinner implements
         DialogInterface.OnMultiChoiceClickListener, DialogInterface.OnCancelListener {
 
@@ -92,12 +94,11 @@ public class MultiSpinner extends Spinner implements
         this.items = items;
         this.defaultText = allText;
         this.listener = listener;
-
         // all selected by default
         selected = new boolean[items.size()];
-        for (int i = 0; i < selected.length; i++)
-            selected[i] = true;
-
+        for (int i = 0; i < selected.length; i++){
+                selected[i] = true;
+            }
         // all text on the spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, new String[] { allText });

@@ -57,7 +57,6 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
         Intent intent = getIntent();
 
         hintForEvents = (TextView) findViewById(R.id.hintForEventsFragment);
