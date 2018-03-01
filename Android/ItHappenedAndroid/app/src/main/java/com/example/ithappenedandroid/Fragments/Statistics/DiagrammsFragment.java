@@ -78,12 +78,12 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
             }
         }
 
-        for (int i = 0; i < all.size(); i++) {
+        /*for (int i = 0; i < all.size(); i++) {
             if (all.get(i).GetTrackingID().equals(trackingId)) {
                 all.remove(i);
                 break;
             }
-        }
+        }*/
 
         int allEventsCount = helper.getAllEventsCount(all);
         int thisEventCount = helper.getTrackingEventsCount();
@@ -111,7 +111,8 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
             flags = new ArrayList<>();
 
             for (int i = 0; i < all.size(); i++) {
-                if (!all.get(i).GetStatus()) {
+                if (!all.get(i).GetStatus()&&
+                        !all.get(i).GetTrackingID().equals(UUID.fromString(getActivity().getIntent().getStringExtra("id")))) {
                     strings.add(all.get(i).GetTrackingName());
                     uuids.add(all.get(i).GetTrackingID());
                     flags.add(false);
@@ -181,7 +182,6 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
             });
         }
     }
-
 
 
     private void createPieChart(PieChart diagramm, int[] yData, String[] xData){

@@ -206,7 +206,7 @@ public class UserActionsActivity extends AppCompatActivity
                     new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
                     new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
 
-           mainSync = ItHappenedApplication.
+           ItHappenedApplication.
                     getApi().
                     SynchronizeData(sharedPreferences.getString("UserId", ""),
                             synchronizationRequest)
@@ -287,6 +287,30 @@ public class UserActionsActivity extends AppCompatActivity
 
     public void logout(){
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
+                new java.util.Date(sharedPreferences.getLong("NickDate", 0)),new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
+
+        ItHappenedApplication.getApi().SynchronizeData(sharedPreferences.getString("UserId", ""), synchronizationRequest).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<SynchronizationRequest>() {
+                    @Override
+                    public void call(SynchronizationRequest request) {
+                        saveDataToDb(request.getTrackingCollection());
+                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("Nick", request.getUserNickname());
+                        editor.putLong("NickDate", request.getNicknameDateOfChange().getTime());
+                        Toast.makeText(getApplicationContext(), "До скорой встречи!", Toast.LENGTH_SHORT).show();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.e("RxSync", ""+throwable);
+                        Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.commit();
@@ -313,21 +337,13 @@ public class UserActionsActivity extends AppCompatActivity
             Bitmap logo = null;
             try{
                 InputStream is = new URL(urlOfImage).openStream();
-                /*
-                    decodeStream(InputStream is)
-                        Decode an input stream into a bitmap.
-                 */
                 logo = BitmapFactory.decodeStream(is);
-            }catch(Exception e){ // Catch the download exception
+            }catch(Exception e){
                 e.printStackTrace();
             }
             return logo;
         }
 
-        /*
-            onPostExecute(Result result)
-                Runs on the UI thread after doInBackground(Params...).
-         */
         protected void onPostExecute(Bitmap result){
             imageView.setImageBitmap(result);
         }

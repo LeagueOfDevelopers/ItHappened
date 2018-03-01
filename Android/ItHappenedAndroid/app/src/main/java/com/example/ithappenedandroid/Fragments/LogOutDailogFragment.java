@@ -21,6 +21,7 @@ public class LogOutDailogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder
                 .setTitle("Вы действительно хотите выйти?")
+                .setMessage("Если вы не подключены к интернету, то можете потерять часть данных!")
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ((UserActionsActivity) getActivity()).logout();

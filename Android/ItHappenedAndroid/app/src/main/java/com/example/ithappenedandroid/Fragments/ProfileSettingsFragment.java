@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -82,7 +81,7 @@ public class ProfileSettingsFragment extends Fragment {
         editNickName = (TextView) getActivity().findViewById(R.id.editNickName);
         signIn = (Button) getActivity().findViewById(R.id.offlineSignIn);
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userMail.setText(sharedPreferences.getString("UserId", ""));
         userNickName.setText(sharedPreferences.getString("Nick", ""));
 
@@ -161,7 +160,7 @@ public class ProfileSettingsFragment extends Fragment {
 
     private void reg(String idToken){
 
-        Subscription regSub = ItHappenedApplication.getApi().SignUp(idToken)
+        ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RegistrationResponse>() {

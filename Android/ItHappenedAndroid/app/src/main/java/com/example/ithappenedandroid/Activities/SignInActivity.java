@@ -158,7 +158,7 @@ public class SignInActivity extends Activity {
 
     private void reg(String idToken){
 
-        regSub = ItHappenedApplication.getApi().SignUp(idToken)
+        ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RegistrationResponse>() {
