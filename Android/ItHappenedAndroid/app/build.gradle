@@ -5,7 +5,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "com.example.ithappenedandroid"
+        applicationId "com.lod.ithappened"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1

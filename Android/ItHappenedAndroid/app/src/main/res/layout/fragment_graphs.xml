@@ -44,12 +44,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.example.ithappenedandroid.Gui.MultiSpinner
+        <com.lod.ithappened.Gui.MultiSpinner
             android:layout_below="@id/trackingsGraphHint"
             android:id="@+id/trackingsGraphSpinner"
             android:padding="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></com.example.ithappenedandroid.Gui.MultiSpinner>
+            android:layout_height="wrap_content"></com.lod.ithappened.Gui.MultiSpinner>
 
         <TextView
             android:layout_below="@id/trackingsGraphHint"
