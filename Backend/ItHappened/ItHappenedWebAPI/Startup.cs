@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
 using ItHappenedWebAPI.Extensions;
+using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,6 @@ namespace ItHappenedWebAPI
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddMvc();
       var connectionString = "mongodb://localhost";
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
@@ -35,6 +35,10 @@ namespace ItHappenedWebAPI
       services
         .AddSingleton<UserList>(userList)
         .AddSingleton<ErrorHandlingMiddleware>();
+      services.AddMvc(o =>
+      {
+        o.Filters.Add(new ActionFilter());
+      });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,9 +12,8 @@ namespace ItHappenedWebAPI
     {
       Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Information()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .Enrich.FromLogContext()
-        .WriteTo.RollingFile("ItHappened.log")
+        .WriteTo.RollingFile("log-{Date}.log")
         .CreateLogger();
       try
       {
@@ -30,6 +29,6 @@ namespace ItHappenedWebAPI
     public static IWebHost BuildWebHost(string[] args) =>
         WebHost.CreateDefaultBuilder(args)
             .UseStartup<Startup>()
-      .Build();
+            .Build();
   }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace ItHappenedWebAPI.Controllers
 {
