@@ -64,12 +64,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <com.lod.ithappened.Gui.MultiSpinner
+            <ru.lod_misis.ithappened.Gui.MultiSpinner
                 android:layout_marginLeft="60dp"
                 android:layout_marginTop="17dp"
                 android:id="@+id/spinnerForTrackings"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></com.lod.ithappened.Gui.MultiSpinner>
+                android:layout_height="wrap_content"></ru.lod_misis.ithappened.Gui.MultiSpinner>
 
 
         </LinearLayout>
