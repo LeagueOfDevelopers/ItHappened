@@ -6,6 +6,7 @@ namespace ItHappenedDomain.Domain
 {
   public class Tracking
   {
+    public string userId { set; get; }
     public string trackingName { set; get; }
     public string trackingId { set; get; }
     public DateTimeOffset trackingDate { set; get; }
