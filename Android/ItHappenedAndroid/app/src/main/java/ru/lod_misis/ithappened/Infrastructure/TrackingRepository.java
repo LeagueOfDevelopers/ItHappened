@@ -18,17 +18,18 @@ import io.realm.RealmResults;
 
 public class TrackingRepository implements ITrackingRepository{
 
-    public TrackingRepository(Context cntxt)
+    public TrackingRepository(Context cntxt, String userId)
     {
         context = cntxt;
         Realm.init(context);
+        this.userId = userId;
     }
 
     public void SaveTrackingCollection(List<Tracking> trackingCollection)
     {
         onCreate();
         realm.beginTransaction();
-        RealmResults<Tracking> result = realm.where(Tracking.class).findAll();
+        RealmResults<Tracking> result = realm.where(Tracking.class).equalTo("userId", userId).findAll();
         result.deleteAllFromRealm();
         for (Tracking tracking: trackingCollection) {
             realm.copyToRealmOrUpdate(tracking);
@@ -42,7 +43,7 @@ public class TrackingRepository implements ITrackingRepository{
 
         for (Tracking item: trackingCollection)
         {
-            if (item.GetTrackingID().equals(trackingId))
+            if (item.GetTrackingID().equals(trackingId) && item.getUserId().equals(userId))
             {
                 return item;
             }
@@ -55,7 +56,15 @@ public class TrackingRepository implements ITrackingRepository{
         onCreate();
         RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
         List<Tracking> trackingCollection = realm.copyFromRealm(results);
-        return trackingCollection;
+        List<Tracking> trackingCollectionToReturn = new ArrayList<>();
+        for (Tracking item: trackingCollection)
+        {
+            if (item.getUserId().equals(userId))
+            {
+                trackingCollectionToReturn.add(item);
+            }
+        }
+        return trackingCollectionToReturn;
     }
 
     public void AddNewTracking(Tracking tracking)
@@ -84,9 +93,7 @@ public class TrackingRepository implements ITrackingRepository{
                                     Comparison scaleComparison, Double scale,
                                     Comparison ratingComparison, Rating rating) {
 
-        onCreate();
-        RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
-        List<Tracking> trackingCollection = realm.copyFromRealm(results);
+        List<Tracking> trackingCollection = GetTrackingCollection();
 
         List<Event> notFilteredEvents = new ArrayList<Event>();
         List<Event> filteredEvents = new ArrayList<Event>();
@@ -197,4 +204,5 @@ public class TrackingRepository implements ITrackingRepository{
 
     Context context;
     Realm realm;
+    private String userId;
 }

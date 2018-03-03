@@ -14,9 +14,9 @@ import java.util.UUID;
 
 public class TrackingService
 {
-    public TrackingService(String userNickname, ITrackingRepository trackingRepository)
+    public TrackingService(String userId, ITrackingRepository trackingRepository)
     {
-        this.userNickname = userNickname;
+        this.userId = userId;
         trackingCollection = trackingRepository;
     }
 
@@ -95,5 +95,5 @@ public class TrackingService
     public List<Tracking> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}
 
     private ITrackingRepository trackingCollection;
-    private String userNickname;
+    private String userId;
 }
