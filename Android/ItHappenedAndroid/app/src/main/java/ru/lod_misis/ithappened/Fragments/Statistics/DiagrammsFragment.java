@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Fragments.Statistics;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,13 +10,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Gui.MultiSpinner;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.StatisticsHelpers.DiagramsStatisticsHelper;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -24,6 +18,14 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Gui.MultiSpinner;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.StatisticsHelpers.DiagramsStatisticsHelper;
 
 public class DiagrammsFragment extends android.support.v4.app.Fragment {
 
@@ -50,7 +52,8 @@ public class DiagrammsFragment extends android.support.v4.app.Fragment {
         diagramm = (PieChart) getActivity().findViewById(R.id.diagramm);
         allTrackings = (MultiSpinner) getActivity().findViewById(R.id.diagrammStatisticsTrackings);
         final UUID trackingId = UUID.fromString(getActivity().getIntent().getStringExtra("id"));
-        collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+        collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
         helper = new DiagramsStatisticsHelper(collection.GetTracking(trackingId));
         visibility = (RelativeLayout) getActivity().findViewById(R.id.visibilityDiagramm);
         hint = (TextView) getActivity().findViewById(R.id.hintForDiagrammFragment);

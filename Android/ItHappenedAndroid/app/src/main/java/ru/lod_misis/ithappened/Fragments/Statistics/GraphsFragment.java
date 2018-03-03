@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Fragments.Statistics;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,13 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Gui.MultiSpinner;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.StatisticsHelpers.GraphStatisticsHelper;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -45,6 +39,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+
+import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Gui.MultiSpinner;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.StatisticsHelpers.GraphStatisticsHelper;
 
 public class GraphsFragment extends Fragment {
 
@@ -110,7 +112,8 @@ public class GraphsFragment extends Fragment {
         dateToText = (TextView) getActivity().findViewById(R.id.dateToGraph);
         userPeriodLayout = (RelativeLayout) getActivity().findViewById(R.id.visibilityLayout);
         userPeriodLayout.setVisibility(View.INVISIBLE);
-        collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+        collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
         hint = (TextView) getActivity().findViewById(R.id.hintForGraphFragment);
         visibility = (ScrollView) getActivity().findViewById(R.id.visibilityScrollView);
         hintForTrackingsSpinner = (TextView) getActivity().findViewById(R.id.trackingsGraphSpinnerHint);

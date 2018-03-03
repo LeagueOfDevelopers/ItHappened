@@ -10,14 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Fragments.Statistics.DiagrammsFragment;
 import ru.lod_misis.ithappened.Fragments.Statistics.GraphsFragment;
 import ru.lod_misis.ithappened.Fragments.Statistics.TextFragment;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.ViewPagerAdapter;
-
-import java.util.UUID;
 
 public class TrackingStatisticsActivity extends AppCompatActivity {
         private Toolbar toolbar;
@@ -46,7 +46,9 @@ public class TrackingStatisticsActivity extends AppCompatActivity {
             final Drawable upArrow = getResources().getDrawable(R.mipmap.leftt);
             upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
-            getSupportActionBar().setTitle(new StaticInMemoryRepository(getApplicationContext())
+            getSupportActionBar().setTitle(new StaticInMemoryRepository(getApplicationContext(),
+                    getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", "")
+                    )
                     .getInstance()
                     .GetTracking(UUID.fromString(getIntent()
                     .getStringExtra("id"))).GetTrackingName());

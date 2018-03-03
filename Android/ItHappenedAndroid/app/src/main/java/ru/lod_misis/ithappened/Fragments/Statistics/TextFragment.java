@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Fragments.Statistics;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.StatisticsHelpers.TextStatisticsHelper;
-
-import java.util.UUID;
 
 /**
  * Created by Пользователь on 20.02.2018.
@@ -57,7 +58,8 @@ public class TextFragment extends Fragment {
         visibility.setVisibility(View.INVISIBLE);
         hint.setVisibility(View.VISIBLE);
 
-        collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+        collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
         trackingId = UUID.fromString(getActivity().getIntent().getStringExtra("id"));
         Tracking tracking = collection.GetTracking(trackingId);
 

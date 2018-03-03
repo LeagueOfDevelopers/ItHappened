@@ -9,8 +9,8 @@ public class StaticInMemoryRepository {
 
     private ITrackingRepository instance;
 
-    public StaticInMemoryRepository(Context context){
-        instance = new TrackingRepository(context);
+    public StaticInMemoryRepository(Context context, String userId){
+        instance = new TrackingRepository(context, userId);
     }
 
     public ITrackingRepository getInstance(){

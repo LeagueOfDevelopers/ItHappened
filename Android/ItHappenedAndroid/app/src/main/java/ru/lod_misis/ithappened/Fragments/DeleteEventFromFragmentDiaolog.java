@@ -3,17 +3,18 @@ package ru.lod_misis.ithappened.Fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.util.UUID;
 
 /**
  * Created by Пользователь on 10.02.2018.
@@ -33,7 +34,8 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                         UUID trackingId = UUID.fromString(bundle.getString("trackingId"));
                         UUID eventId = UUID.fromString(bundle.getString("eventId"));
 
-                        ITrackingRepository collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+                        ITrackingRepository collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                                getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId","")).getInstance();
                         TrackingService trackingSercvice = new TrackingService("testUser", collection);
 
                         trackingSercvice.RemoveEvent(trackingId, eventId);

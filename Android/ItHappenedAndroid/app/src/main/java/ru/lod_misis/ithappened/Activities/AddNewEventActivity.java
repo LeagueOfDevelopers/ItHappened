@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
@@ -21,6 +22,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -29,8 +32,6 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.util.UUID;
 
 public class AddNewEventActivity extends AppCompatActivity {
 
@@ -72,9 +73,11 @@ public class AddNewEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
 
-        StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext());
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext(),sharedPreferences.getString("UserId", ""));
         trackingCollection = repository.getInstance();
-        trackingService = new TrackingService("thisUser", trackingCollection);
+        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
         textCustomControl = (LinearLayout) findViewById(R.id.commentControl);
         scaleCustomControl = (LinearLayout) findViewById(R.id.scaleControl);

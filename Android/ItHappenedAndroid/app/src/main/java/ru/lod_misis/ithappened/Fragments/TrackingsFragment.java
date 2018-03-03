@@ -2,7 +2,9 @@ package ru.lod_misis.ithappened.Fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.lod_misis.ithappened.Activities.AddNewTrackingActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -20,9 +25,6 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.TrackingsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TrackingsFragment extends Fragment {
 
@@ -54,10 +56,12 @@ public class TrackingsFragment extends Fragment {
         getActivity().setTitle("Мои отслеживания");
         hintForTrackings = (TextView) getActivity().findViewById(R.id.hintForTrackingsFragment);
 
-        StaticInMemoryRepository repository = new StaticInMemoryRepository(getActivity().getApplicationContext());
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(getActivity().getApplicationContext(),sharedPreferences.getString("UserId", ""));
         trackingCollection = repository.getInstance();
-        userName = "testUser";
-        trackingService = new TrackingService(userName, trackingCollection);
+        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
+
 
 
 

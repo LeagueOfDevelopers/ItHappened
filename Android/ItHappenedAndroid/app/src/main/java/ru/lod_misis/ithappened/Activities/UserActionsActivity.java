@@ -26,6 +26,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.UUID;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
@@ -37,13 +43,6 @@ import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
-import java.util.UUID;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -204,7 +203,7 @@ public class UserActionsActivity extends AppCompatActivity
 
             final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
                     new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
-                    new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
+                    new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
 
            ItHappenedApplication.
                     getApi().
@@ -254,7 +253,10 @@ public class UserActionsActivity extends AppCompatActivity
 
     public void okClicked(UUID trackingId) {
 
-        TrackingService trackingService = new TrackingService("", new StaticInMemoryRepository(getApplicationContext()).getInstance());
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+        TrackingService trackingService = new TrackingService("", new StaticInMemoryRepository(getApplicationContext(),
+                sharedPreferences.getString("UserId", "")).getInstance());
         trackingService.RemoveTracking(trackingId);
         Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, UserActionsActivity.class);
@@ -271,7 +273,8 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     private void saveDataToDb(List<Tracking> trackings){
-        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
     }
 
@@ -289,7 +292,8 @@ public class UserActionsActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
-                new java.util.Date(sharedPreferences.getLong("NickDate", 0)),new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
+                new java.util.Date(sharedPreferences.getLong("NickDate", 0)),new StaticInMemoryRepository(getApplicationContext(),
+                sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
 
         ItHappenedApplication.getApi().SynchronizeData(sharedPreferences.getString("UserId", ""), synchronizationRequest).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

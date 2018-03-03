@@ -1,6 +1,8 @@
 package ru.lod_misis.ithappened.Fragments;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -10,14 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Recyclers.StatisticsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class StatisticsFragment extends Fragment {
@@ -44,7 +46,9 @@ public class StatisticsFragment extends Fragment {
         hint = (TextView) getActivity().findViewById(ru.lod_misis.ithappened.R.id.hintForStatisticsFragment);
         trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+        collection = new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("USerId", "")).getInstance();
         service = new TrackingService("", collection);
 
 

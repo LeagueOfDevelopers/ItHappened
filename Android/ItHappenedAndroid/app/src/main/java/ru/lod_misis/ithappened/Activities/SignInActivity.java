@@ -15,13 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Models.RegistrationResponse;
-import ru.lod_misis.ithappened.Models.SynchronizationRequest;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -33,6 +26,13 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Models.RegistrationResponse;
+import ru.lod_misis.ithappened.Models.SynchronizationRequest;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -174,7 +174,7 @@ public class SignInActivity extends Activity {
 
                         SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
                                 new Date(sharedPreferences.getLong("NickDate", 0)),
-                                new StaticInMemoryRepository(getApplicationContext()).getInstance().GetTrackingCollection());
+                                new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
 
                         ItHappenedApplication.
                                 getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
@@ -221,7 +221,8 @@ public class SignInActivity extends Activity {
     }
 
     private void saveDataToDb(List<Tracking> trackings){
-        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
     }
 
