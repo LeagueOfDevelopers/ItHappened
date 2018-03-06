@@ -3,7 +3,6 @@ package ru.lod_misis.ithappened.Recyclers;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,10 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import ru.lod_misis.ithappened.Activities.TrackingStatisticsActivity;
-import ru.lod_misis.ithappened.Domain.Tracking;
-
 import java.util.List;
+
+import ru.lod_misis.ithappened.Domain.Tracking;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.ViewHolder> {
 
@@ -49,10 +47,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
                 final Tracking tracking = trackings.get(position);
                 String id = tracking.GetTrackingID().toString();
-                Intent intent = new Intent(context, TrackingStatisticsActivity.class);
                 String trackId = tracking.GetTrackingID().toString();
-                intent.putExtra("id", trackId);
-                context.startActivity(intent);
 
             }
         });

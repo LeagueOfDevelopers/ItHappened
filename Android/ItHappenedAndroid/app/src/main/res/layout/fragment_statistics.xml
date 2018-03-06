@@ -6,13 +6,10 @@
     android:layout_height="match_parent">
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/statisticsRV"
+    <com.synnapps.carouselview.CarouselView
+        android:id="@+id/mainCarousel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"></com.synnapps.carouselview.CarouselView>
 
     <TextView
         android:layout_width="wrap_content"

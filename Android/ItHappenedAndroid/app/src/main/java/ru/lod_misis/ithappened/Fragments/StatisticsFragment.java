@@ -1,25 +1,22 @@
 package ru.lod_misis.ithappened.Fragments;
 
 import android.app.Fragment;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ViewListener;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.StatisticsAdapter;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 
 public class StatisticsFragment extends Fragment {
@@ -31,6 +28,10 @@ public class StatisticsFragment extends Fragment {
 
     TextView hint;
 
+    CarouselView carousel;
+
+    String[] testStrings = {"Общие данные","1","2","3","4"};
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -41,31 +42,37 @@ public class StatisticsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle("Статистика");
-        trackingsRecycler = (RecyclerView) getActivity().findViewById(ru.lod_misis.ithappened.R.id.statisticsRV);
+        carousel = (CarouselView) getActivity().findViewById(R.id.mainCarousel);
+        carousel.setViewListener(viewListener);
+        carousel.setPageCount(5);
+        getActivity().setTitle(testStrings[carousel.getCurrentItem()]);
+        carousel.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
 
-        hint = (TextView) getActivity().findViewById(ru.lod_misis.ithappened.R.id.hintForStatisticsFragment);
-        trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-
-        collection = new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("USerId", "")).getInstance();
-        service = new TrackingService("", collection);
-
-
-        List<Tracking> allTrackings = service.GetTrackingCollection();
-        List<Tracking> visibleTrackings = new ArrayList<>();
-
-        for(int i =0;i<allTrackings.size();i++){
-            if(!allTrackings.get(i).GetStatus()){
-                visibleTrackings.add(allTrackings.get(i));
             }
-        }
 
-        if(visibleTrackings.size()!=0) {
-            hint.setVisibility(View.INVISIBLE);
-            trackAdpt = new StatisticsAdapter(visibleTrackings, getActivity());
-            trackingsRecycler.setAdapter(trackAdpt);
-        }
+            @Override
+            public void onPageSelected(int i) {
+                getActivity().setTitle(testStrings[i]);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
     }
+
+    ViewListener viewListener = new ViewListener() {
+        @Override
+        public View setViewForPosition(int position) {
+
+            View customView = getActivity().getLayoutInflater().inflate(R.layout.view_statistics, null);
+            getActivity().setTitle(testStrings[position]);
+            return customView;
+        }
+    };
 
 }
