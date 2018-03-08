@@ -5,10 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.synnapps.carouselview.CarouselView;
@@ -17,6 +20,7 @@ import com.synnapps.carouselview.ViewListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -33,12 +37,15 @@ public class StatisticsFragment extends Fragment {
     TextView hint;
 
     CarouselView carousel;
+    AppCompatSpinner s;
 
     List<String> titles = new ArrayList<>();
 
     ITrackingRepository trackingCollection;
     TrackingService service;
     List<Tracking> allTrackings = new ArrayList<>();
+
+    ArrayAdapter<String> spinneradapter;
 
     @Nullable
     @Override
@@ -66,6 +73,38 @@ public class StatisticsFragment extends Fragment {
         carousel.setViewListener(viewListener);
         carousel.setPageCount(titles.size());
         getActivity().setTitle(titles.get(0));
+        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(true);
+        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View vi = inflator.inflate(R.layout.statistics_action_bar_spinner, null);
+
+        s = (AppCompatSpinner) vi.findViewById(R.id.statisticsSpinner);
+
+        spinneradapter = new ArrayAdapter<String>(getActivity(),R.layout.statistics_spinner_item, titles);
+
+        s.setAdapter(spinneradapter);
+
+        ((UserActionsActivity)getActivity()).getSupportActionBar().setCustomView(vi);
+
+        spinneradapter.notifyDataSetChanged();
+
+
+
+        s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                carousel.setCurrentItem(i);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         carousel.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -74,7 +113,7 @@ public class StatisticsFragment extends Fragment {
 
             @Override
             public void onPageSelected(int i) {
-                getActivity().setTitle(titles.get(i));
+                s.setSelection(i);
             }
 
             @Override
@@ -83,6 +122,13 @@ public class StatisticsFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(false);
+        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 
     ViewListener viewListener = new ViewListener() {

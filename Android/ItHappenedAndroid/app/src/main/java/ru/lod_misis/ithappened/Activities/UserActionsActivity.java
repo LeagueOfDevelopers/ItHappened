@@ -178,8 +178,6 @@ public class UserActionsActivity extends AppCompatActivity
             setTitle("Статистика");
             StatisticsFragment statFrg = new StatisticsFragment();
 
-            Toast.makeText(getApplicationContext(), "Выбирите отслеживание для просмотра статистики!", Toast.LENGTH_LONG).show();
-
             fTrans = getFragmentManager().beginTransaction();
             fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
             fTrans.commit();
