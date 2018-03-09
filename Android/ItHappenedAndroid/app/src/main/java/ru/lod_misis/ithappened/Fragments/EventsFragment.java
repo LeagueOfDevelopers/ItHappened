@@ -3,6 +3,8 @@ package ru.lod_misis.ithappened.Fragments;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -24,6 +26,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
@@ -34,14 +44,6 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 public class EventsFragment extends Fragment  {
 
@@ -92,7 +94,9 @@ public class EventsFragment extends Fragment  {
         super.onResume();
         getActivity().setTitle("История событий");
 
-        collection = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+        collection = new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
 
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
@@ -139,8 +143,8 @@ public class EventsFragment extends Fragment  {
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         eventsAdpt = new EventsAdapter(collection.FilterEvents(null,null,null,null,null,null,null), getActivity(), 0);
         eventsRecycler.setAdapter(eventsAdpt);
+        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
 
-        trackingService = new TrackingService("testUser", collection);
 
         final ArrayList<UUID> idCollection = new ArrayList<UUID>();
         final List<String> strings = new ArrayList<String>();

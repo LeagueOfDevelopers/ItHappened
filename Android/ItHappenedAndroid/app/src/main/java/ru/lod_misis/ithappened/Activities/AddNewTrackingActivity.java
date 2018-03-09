@@ -14,12 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.util.UUID;
 
 public class AddNewTrackingActivity extends AppCompatActivity {
 
@@ -177,7 +177,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Введите название отслеживания!", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    trackingRepository = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+                    trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                            getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", "")
+                            ).getInstance();
 
 
                     //set properties of scale
@@ -221,7 +223,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
                     UUID trackingId = UUID.randomUUID();
 
-                    Tracking newTracking = new Tracking(trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
+                    Tracking newTracking = new Tracking(
+                            trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom,
+                            getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", ""));
                     trackingRepository.AddNewTracking(newTracking);
                     Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
 

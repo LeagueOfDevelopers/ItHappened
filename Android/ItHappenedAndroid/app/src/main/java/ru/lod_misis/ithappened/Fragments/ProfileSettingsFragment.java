@@ -18,14 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ru.lod_misis.ithappened.Activities.UserActionsActivity;
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Models.RegistrationResponse;
-import ru.lod_misis.ithappened.Models.SynchronizationRequest;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -35,6 +27,14 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import ru.lod_misis.ithappened.Activities.UserActionsActivity;
+import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Models.RegistrationResponse;
+import ru.lod_misis.ithappened.Models.SynchronizationRequest;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -176,7 +176,7 @@ public class ProfileSettingsFragment extends Fragment {
 
                         SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
                                 new Date(sharedPreferences.getLong("NickDate", 0)),
-                                new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance().GetTrackingCollection());
+                                new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
 
                         ItHappenedApplication.
                                 getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
@@ -218,7 +218,8 @@ public class ProfileSettingsFragment extends Fragment {
     }
 
     private void saveDataToDb(List<Tracking> trackings){
-        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getActivity().getApplicationContext()).getInstance();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
     }
 

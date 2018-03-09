@@ -12,18 +12,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Activities.EditEventActivity;
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Fragments.DeleteEventFromFragmentDiaolog;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
@@ -51,7 +51,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         final Event event = events.get(position);
 
-        StaticInMemoryRepository repository = new StaticInMemoryRepository(context);
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(context, context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
 
         ITrackingRepository trackingRepository = repository.getInstance();
 

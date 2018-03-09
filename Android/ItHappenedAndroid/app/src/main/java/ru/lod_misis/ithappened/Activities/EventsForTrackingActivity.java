@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -19,10 +24,6 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class EventsForTrackingActivity extends AppCompatActivity {
 
@@ -51,7 +52,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        trackingsCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
+
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -64,7 +65,10 @@ public class EventsForTrackingActivity extends AppCompatActivity {
             trackingId = UUID.fromString(intent.getStringExtra("id"));
 
 
-        trackingService = new TrackingService("testUser", trackingsCollection);
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        trackingsCollection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
+        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingsCollection);
+
 
         thisTracking = trackingsCollection.GetTracking(trackingId);
         actionBar.setTitle(thisTracking.GetTrackingName());

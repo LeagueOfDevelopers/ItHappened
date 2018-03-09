@@ -15,13 +15,13 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import java.util.List;
+
 import ru.lod_misis.ithappened.Activities.EditTrackingActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Fragments.DeleteTrackingFragment;
 import ru.lod_misis.ithappened.R;
-
-import java.util.List;
 
 public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.ViewHolder> implements View.OnCreateContextMenuListener{
 
@@ -124,7 +124,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo contextMenuInfo) {
 
         menu.setHeaderTitle("Select The Action");
-        menu.add(0, v.getId(), 0, "Call");//groupId, itemId, order, title
+        menu.add(0, v.getId(), 0, "Call");
         menu.add(0, v.getId(), 0, "SMS");
 
     }

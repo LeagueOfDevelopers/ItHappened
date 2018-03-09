@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -18,6 +19,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -27,12 +34,6 @@ import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
 
 public class EditEventActivity extends AppCompatActivity {
 
@@ -83,8 +84,10 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
 
 
-        trackingCollection = new StaticInMemoryRepository(getApplicationContext()).getInstance();
-        trackingService = new TrackingService("testUser", trackingCollection);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        trackingCollection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("USerId", "")).getInstance();
+        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
 
         editDate = (Button) findViewById(R.id.editDateButton);
