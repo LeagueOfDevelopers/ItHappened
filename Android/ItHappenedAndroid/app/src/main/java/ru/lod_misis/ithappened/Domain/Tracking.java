@@ -19,10 +19,8 @@ public class Tracking extends RealmObject {
                     UUID trackingId,
                     TrackingCustomization scale,
                     TrackingCustomization rating,
-                    TrackingCustomization comment,
-                    String userId)
+                    TrackingCustomization comment)
     {
-        this.userId = userId;
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
@@ -32,8 +30,7 @@ public class Tracking extends RealmObject {
         eventCollection = new RealmList<>();
     }
 
-    public Tracking(String userId,
-                    String trackingName,
+    public Tracking(String trackingName,
                     UUID trackingId,
                     TrackingCustomization scale,
                     TrackingCustomization rating,
@@ -42,7 +39,6 @@ public class Tracking extends RealmObject {
                     List<Event> eventCollection,
                     boolean status, Date changeDate)
     {
-        this.userId = userId;
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
@@ -254,7 +250,6 @@ public class Tracking extends RealmObject {
     public TrackingCustomization GetRatingCustomization(){ return TrackingCustomization.valueOf(rating);}
     public Date GetDateOfChange() {return dateOfChange; }
     public boolean GetStatus() { return isDeleted; }
-    public String getUserId() { return userId; }
 
     public void SetTrackingName(String name) { trackingName = name;}
     public void SetTrackingID(UUID id) { trackingId = id.toString();}
@@ -268,13 +263,10 @@ public class Tracking extends RealmObject {
     public void SetRatingCustomization(TrackingCustomization rat){ rating = rat.toString();}
     public void SetDateOfChange(Date date) { dateOfChange = date; }
     public void SetStatus(boolean status) { isDeleted = status; }
-    public void setUserId(String userId) { this.userId = userId; }
 
 
     @Expose
     private String trackingName;
-    @Expose
-    private String userId;
     @PrimaryKey
     @Expose
     private String trackingId;

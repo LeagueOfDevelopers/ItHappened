@@ -15,6 +15,7 @@ import java.util.UUID;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import ru.lod_misis.ithappened.Models.DbModel;
 
 public class TrackingRepository implements ITrackingRepository{
 
@@ -29,11 +30,10 @@ public class TrackingRepository implements ITrackingRepository{
     {
         onCreate();
         realm.beginTransaction();
-        RealmResults<Tracking> result = realm.where(Tracking.class).equalTo("userId", userId).findAll();
+        DbModel model = new DbModel(trackingCollection, userId);
+        RealmResults<DbModel> result = realm.where(DbModel.class).equalTo("userId", userId).findAll();
         result.deleteAllFromRealm();
-        for (Tracking tracking: trackingCollection) {
-            realm.copyToRealmOrUpdate(tracking);
-        }
+        realm.copyToRealm(model);
         realm.commitTransaction();
     }
 
@@ -43,7 +43,7 @@ public class TrackingRepository implements ITrackingRepository{
 
         for (Tracking item: trackingCollection)
         {
-            if (item.GetTrackingID().equals(trackingId) && item.getUserId().equals(userId))
+            if (item.GetTrackingID().equals(trackingId))
             {
                 return item;
             }
@@ -54,16 +54,13 @@ public class TrackingRepository implements ITrackingRepository{
     public List<Tracking> GetTrackingCollection()
     {
         onCreate();
-        RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
-        List<Tracking> trackingCollection = realm.copyFromRealm(results);
+        RealmResults<DbModel> results = realm.where(DbModel.class)
+                .equalTo("userId", userId).findAll();
+        List<DbModel> modelCollection = realm.copyFromRealm(results);
         List<Tracking> trackingCollectionToReturn = new ArrayList<>();
-        for (Tracking item: trackingCollection)
-        {
-            if (item.getUserId().equals(userId))
-            {
-                trackingCollectionToReturn.add(item);
-            }
-        }
+        if (modelCollection.size() == 0)
+            return new ArrayList<Tracking>();
+        trackingCollectionToReturn.addAll(modelCollection.get(0).getTrackingCollection());
         return trackingCollectionToReturn;
     }
 
@@ -71,22 +68,32 @@ public class TrackingRepository implements ITrackingRepository{
     {
         onCreate();
         realm.beginTransaction();
-        RealmResults<Tracking> results = realm.where(Tracking.class).findAll();
-        List<Tracking> trackingCollection = realm.copyFromRealm(results);
-        boolean contains = false;
-        for (Tracking item: trackingCollection)
-        {
-            if (item.GetTrackingID().equals(tracking.GetTrackingID()))
-            {
-                contains = true;
-                break;
-            }
-        }
-        if (!contains)
-            realm.copyToRealm(tracking);
+        RealmResults<DbModel> results = realm.where(DbModel.class)
+                .equalTo("userId", userId).findAll();
+        List<DbModel> model = realm.copyFromRealm(results);
 
-        else throw new IllegalArgumentException("Tracking with such ID already exists");
-        realm.commitTransaction();
+        if (model.size() == 0) {
+            List<Tracking> trackingList = new ArrayList<>();
+            trackingList.add(tracking);
+            DbModel newModel = new DbModel(trackingList, userId);
+            realm.copyToRealm(newModel);
+        }
+        else {
+            List<Tracking> trackingCollection = model.get(0).getTrackingCollection();
+            boolean contains = false;
+
+            for (Tracking item : trackingCollection) {
+                if (item.GetTrackingID().equals(tracking.GetTrackingID())) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains)
+                realm.copyToRealmOrUpdate(tracking);
+
+            else throw new IllegalArgumentException("Tracking with such ID already exists");
+            realm.commitTransaction();
+        }
     }
 
     public List<Event> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
@@ -172,13 +179,22 @@ public class TrackingRepository implements ITrackingRepository{
     public void ChangeTracking(final Tracking tracking) {
         onCreate();
         realm.beginTransaction();
-        RealmResults<Tracking> result = realm.where(Tracking.class)
-                .equalTo("trackingId", tracking.GetTrackingID().toString())
-                .findAll();
+        RealmResults<DbModel> result = realm.where(DbModel.class)
+                .equalTo("userId", userId).findAll();
         if (result.isEmpty())
-            throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+            throw new IllegalArgumentException("User with such ID doesn't exists");
+        DbModel model = result.first();
+        List<Tracking> trackingCollection = model.getTrackingCollection();
+        int index=0;
+        for (Tracking trc: trackingCollection) {
+            if (trc.GetTrackingID() == tracking.GetTrackingID())
+                break;
+            index++;
+        }
+        trackingCollection.set(index, tracking);
+        model.setTrackingCollection(trackingCollection);
         result.deleteFromRealm(0);
-        realm.copyToRealm(tracking);
+        realm.copyToRealm(model);
         realm.commitTransaction();
     }
 

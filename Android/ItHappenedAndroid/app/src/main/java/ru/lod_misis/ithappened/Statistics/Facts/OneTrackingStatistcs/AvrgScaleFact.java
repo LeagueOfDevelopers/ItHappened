@@ -11,7 +11,7 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
  * Created by Пользователь on 09.03.2018.
  */
 
-public class AvrgScaleFact {
+public class AvrgScaleFact implements Fact{
 
     Tracking tracking;
     List<Event> eventCollection = new ArrayList<>();
@@ -42,6 +42,7 @@ public class AvrgScaleFact {
         }
     }
 
+    @Override
     public Boolean applicabilityFunction(){
         if(tracking.GetScaleCustomization()== TrackingCustomization.None){
             return false;
@@ -65,6 +66,7 @@ public class AvrgScaleFact {
         return false;
     }
 
+    @Override
     public Double getPriority(){
         return priority;
     }

@@ -8,7 +8,7 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 
 
-public class AvrgRatingFact {
+public class AvrgRatingFact implements Fact {
 
 
     Tracking tracking;
@@ -40,6 +40,7 @@ public class AvrgRatingFact {
         }
     }
 
+    @Override
     public Boolean applicabilityFunction(){
         if(tracking.GetRatingCustomization()== TrackingCustomization.None){
             return false;
@@ -63,6 +64,7 @@ public class AvrgRatingFact {
         return false;
     }
 
+    @Override
     public Double getPriority(){
         return Math.sqrt(getAvrgValue());
     }
