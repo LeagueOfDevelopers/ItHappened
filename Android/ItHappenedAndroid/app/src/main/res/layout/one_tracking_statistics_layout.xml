@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+
+    <RelativeLayout
+        android:id="@+id/firstFactForTrakingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hintForTrackingFirstFact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Событие 'TrackingName' произошло {EventsCount} раз"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/firstFactForTrakingLayout"
+        android:id="@+id/secondFactForTrakingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hintForTrackingSecondFact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Средний рейтинг для события {TrackingName} равен {AverageRating}"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/secondFactForTrakingLayout"
+        android:id="@+id/thirdFactForTrakingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hintForTrackingThirdFact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Средний значение шкалы для события {TrackingName} равно {AverageValue}"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/thirdFactForTrakingLayout"
+        android:id="@+id/fourthFactForTrakingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hintForTrackingFourthFact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сумма значений шкалы для события {TrackingName} равна {SumValue}"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/fourthFactForTrakingLayout"
+        android:id="@+id/fifthFactForTrakingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hintForTrackingFifthFact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Событие {TrackingName} не происходило уже {DaysSinceLastEvent} дней"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/fifthFactForTrakingLayout"
+        android:id="@+id/sixthFactForTrakingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hintForTrackingSixthFact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Событие {TrackingName} происходит чаще за последний(ие) {IncreasePeriod} - {Times} раз"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"/>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_margin="10dp"
+            android:layout_below="@id/hintForTrackingSixthFact"
+            android:id="@+id/sixthFactGaph"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"></com.github.mikephil.charting.charts.LineChart>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/sixthFactForTrakingLayout"
+        android:id="@+id/seventhFactForTrakingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hintForTrackingSeventhFact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Событие {TrackingName} происходит чаще за последний(ие) {IncreasePeriod} - {Times} раз"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"/>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_margin="10dp"
+            android:layout_below="@id/hintForTrackingSeventhFact"
+            android:id="@+id/seventhFactGaph"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"></com.github.mikephil.charting.charts.LineChart>
+
+    </RelativeLayout>
+
+</RelativeLayout>
