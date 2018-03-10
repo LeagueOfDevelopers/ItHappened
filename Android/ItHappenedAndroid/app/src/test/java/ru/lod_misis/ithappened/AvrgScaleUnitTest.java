@@ -19,8 +19,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
         for(int i=0;i<5;i++){
             Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), null, new Rating(2), null);
@@ -36,8 +35,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
         for(int i=0;i<5;i++){
             Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), null, new Rating(2), null);
@@ -53,8 +51,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
 
         Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), 11.0, new Rating(2), null);
@@ -70,8 +67,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
         for(int i=0;i<5;i++){
             Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), 11.0, new Rating(2), null);
@@ -87,8 +83,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
         Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), null, new Rating(2), null);
         testTracking.AddEvent(newEvent);
@@ -108,8 +103,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
         Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), null, new Rating(2), null);
         testTracking.AddEvent(newEvent);
@@ -126,8 +120,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
         Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), null, new Rating(2), null);
         testTracking.AddEvent(newEvent);
@@ -149,8 +142,7 @@ public class AvrgScaleUnitTest {
         Tracking testTracking = new Tracking("Тест", UUID.randomUUID(),
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
-                TrackingCustomization.None,
-                "");
+                TrackingCustomization.None);
 
         Event newEvent = new Event(UUID.randomUUID(), testTracking.GetTrackingID(), null, new Rating(2), null);
         testTracking.AddEvent(newEvent);

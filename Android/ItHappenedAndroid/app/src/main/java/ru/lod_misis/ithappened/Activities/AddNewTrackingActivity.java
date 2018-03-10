@@ -224,8 +224,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     UUID trackingId = UUID.randomUUID();
 
                     Tracking newTracking = new Tracking(
-                            trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom,
-                            getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", ""));
+                            trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
                     trackingRepository.AddNewTracking(newTracking);
                     Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
 

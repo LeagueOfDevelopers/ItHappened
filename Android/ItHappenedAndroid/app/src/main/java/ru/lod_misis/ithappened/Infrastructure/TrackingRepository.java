@@ -2,11 +2,6 @@ package ru.lod_misis.ithappened.Infrastructure;
 
 import android.content.Context;
 
-import ru.lod_misis.ithappened.Domain.Comparison;
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.Tracking;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +10,10 @@ import java.util.UUID;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import ru.lod_misis.ithappened.Domain.Comparison;
+import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Models.DbModel;
 
 public class TrackingRepository implements ITrackingRepository{
@@ -67,7 +66,7 @@ public class TrackingRepository implements ITrackingRepository{
     public void AddNewTracking(Tracking tracking)
     {
         onCreate();
-        realm.beginTransaction();
+       realm.beginTransaction();
         RealmResults<DbModel> results = realm.where(DbModel.class)
                 .equalTo("userId", userId).findAll();
         List<DbModel> model = realm.copyFromRealm(results);
@@ -88,12 +87,20 @@ public class TrackingRepository implements ITrackingRepository{
                     break;
                 }
             }
-            if (!contains)
-                realm.copyToRealmOrUpdate(tracking);
-
+            if (!contains) {
+                List<Tracking> newList = new ArrayList<>();
+                RealmResults<DbModel> resultsWithSize = realm.where(DbModel.class)
+                        .equalTo("userId", userId).findAll();
+                List<DbModel> modelWithSize = realm.copyFromRealm(results);
+                for (Tracking item : modelWithSize.get(0).getTrackingCollection()) {
+                    newList.add(item);
+                    }
+                    newList.add(tracking);
+                realm.copyToRealmOrUpdate(new DbModel(newList, userId));
+            }
             else throw new IllegalArgumentException("Tracking with such ID already exists");
-            realm.commitTransaction();
         }
+        realm.commitTransaction();
     }
 
     public List<Event> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
@@ -187,14 +194,14 @@ public class TrackingRepository implements ITrackingRepository{
         List<Tracking> trackingCollection = model.getTrackingCollection();
         int index=0;
         for (Tracking trc: trackingCollection) {
-            if (trc.GetTrackingID() == tracking.GetTrackingID())
+            if (trc.GetTrackingID().equals(tracking.GetTrackingID()))
                 break;
             index++;
         }
         trackingCollection.set(index, tracking);
         model.setTrackingCollection(trackingCollection);
-        result.deleteFromRealm(0);
-        realm.copyToRealm(model);
+        //result.deleteAllFromRealm();
+        realm.copyToRealmOrUpdate(model);
         realm.commitTransaction();
     }
 

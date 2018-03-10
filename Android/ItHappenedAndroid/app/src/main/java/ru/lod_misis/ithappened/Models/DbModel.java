@@ -22,12 +22,16 @@ public class DbModel extends RealmObject {
         this.userId = userId;
     }
 
+    public DbModel(){
+
+    }
+
     public List<Tracking> getTrackingCollection() {
         return trackingCollection;
     }
 
     public void setTrackingCollection(List<Tracking> trackingCollection) {
-        this.trackingCollection =  new RealmList<>();
+        this.trackingCollection.clear();
         this.trackingCollection.addAll(trackingCollection);
     }
 
