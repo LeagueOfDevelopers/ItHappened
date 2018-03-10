@@ -22,6 +22,8 @@ public class DbModel extends RealmObject {
         this.userId = userId;
     }
 
+    public DbModel(){}
+
     public List<Tracking> getTrackingCollection() {
         return trackingCollection;
     }

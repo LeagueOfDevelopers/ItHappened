@@ -267,7 +267,6 @@ public class Tracking extends RealmObject {
 
     @Expose
     private String trackingName;
-    @PrimaryKey
     @Expose
     private String trackingId;
     @Expose
