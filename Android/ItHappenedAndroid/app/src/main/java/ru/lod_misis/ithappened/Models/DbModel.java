@@ -13,7 +13,6 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 
 public class DbModel extends RealmObject {
     RealmList<Tracking> trackingCollection;
-    @PrimaryKey
     String userId;
 
     public DbModel(List<Tracking> trackingCollection, String userId) {
