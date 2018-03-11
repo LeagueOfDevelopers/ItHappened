@@ -24,10 +24,6 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
-/**
- * Created by Пользователь on 18.01.2018.
- */
-
 public class EditTrackingActivity extends AppCompatActivity {
 
     ITrackingRepository trackingRepository;
@@ -83,7 +79,7 @@ public class EditTrackingActivity extends AppCompatActivity {
         super.onPostResume();
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("USerId", "")).getInstance();
+        trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
 
         ActionBar actionBar = getSupportActionBar();

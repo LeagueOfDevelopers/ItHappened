@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Infrastructure;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
@@ -190,8 +192,9 @@ public class TrackingRepository implements ITrackingRepository{
                 .equalTo("userId", userId).findAll();
         if (result.isEmpty())
             throw new IllegalArgumentException("User with such ID doesn't exists");
-        DbModel model = result.first();
-        List<Tracking> trackingCollection = model.getTrackingCollection();
+        List<DbModel> modelCollection = realm.copyFromRealm(result);
+        DbModel model = modelCollection.get(0);
+        RealmList<Tracking> trackingCollection = model.getTrackingCollection();
         int index=0;
         for (Tracking trc: trackingCollection) {
             if (trc.GetTrackingID().equals(tracking.GetTrackingID()))
@@ -199,8 +202,9 @@ public class TrackingRepository implements ITrackingRepository{
             index++;
         }
         trackingCollection.set(index, tracking);
+        Log.e("DB", index+" "+tracking.GetTrackingName());
         model.setTrackingCollection(trackingCollection);
-        //result.deleteAllFromRealm();
+        DbModel newModel = new DbModel(model.getTrackingCollection(), userId);
         realm.copyToRealmOrUpdate(model);
         realm.commitTransaction();
     }

@@ -7,12 +7,9 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import ru.lod_misis.ithappened.Domain.Tracking;
 
-/**
- * Created by Ded on 10.03.2018.
- */
-
 public class DbModel extends RealmObject {
     RealmList<Tracking> trackingCollection;
+    @PrimaryKey
     String userId;
 
     public DbModel(List<Tracking> trackingCollection, String userId) {
@@ -25,13 +22,12 @@ public class DbModel extends RealmObject {
 
     }
 
-    public List<Tracking> getTrackingCollection() {
+    public RealmList<Tracking> getTrackingCollection() {
         return trackingCollection;
     }
 
-    public void setTrackingCollection(List<Tracking> trackingCollection) {
-        this.trackingCollection.clear();
-        this.trackingCollection.addAll(trackingCollection);
+    public void setTrackingCollection(RealmList<Tracking> trackingCollection) {
+        this.trackingCollection = trackingCollection;
     }
 
     public String getUserId() {

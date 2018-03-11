@@ -86,7 +86,7 @@ public class EditEventActivity extends AppCompatActivity {
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingCollection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("USerId", "")).getInstance();
+        trackingCollection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
 
