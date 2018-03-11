@@ -33,7 +33,8 @@ public class TrackingRepository implements ITrackingRepository{
         realm.beginTransaction();
         DbModel model = new DbModel(trackingCollection, userId);
         RealmResults<DbModel> result = realm.where(DbModel.class).equalTo("userId", userId).findAll();
-        result.deleteAllFromRealm();
+        if (result.size() != 0)
+            result.deleteFromRealm(0);
         realm.copyToRealm(model);
         realm.commitTransaction();
     }
