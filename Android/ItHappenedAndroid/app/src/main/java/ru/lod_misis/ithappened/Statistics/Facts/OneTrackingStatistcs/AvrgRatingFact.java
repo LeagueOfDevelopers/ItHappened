@@ -6,67 +6,56 @@ import java.util.List;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
 
-public class AvrgRatingFact implements Fact {
+public class AvrgRatingFact extends Fact {
 
 
     Tracking tracking;
     List<Event> eventCollection = new ArrayList<>();
-    Double priority = 3.0;
+    Double averageValue;
+    Double priority;
 
     public AvrgRatingFact(Tracking tracking){
         this.tracking = tracking;
+    }
+
+    public Double getAvrgValue(){
+
         for(Event event : tracking.GetEventCollection()){
             if(!event.GetStatus()){
                 eventCollection.add(event);
             }
         }
+
+        Double sumValue = 0.0;
+        int count = 0;
+
+        for(Event event : eventCollection){
+            if(event.GetRating() != null){
+                sumValue+=event.GetRating().GetRatingValue();
+                count++;
+            }
+        }
+
+        averageValue = sumValue/count;
+        calculatePriority();
+
+        return averageValue;
     }
 
-    public Double getAvrgValue(){
-        if(applicabilityFunction()){
-            Double sumValue = 0.0;
-            int count = 0;
-            for(Event event : eventCollection){
-                if(event.GetScale()!=null){
-                    sumValue+=event.GetRating().GetRatingValue();
-                    count++;
-                }
-            }
-            return sumValue/count;
-        }else{
-            return null;
-        }
+    public Double getPriority(){ return priority; }
+
+    @Override
+    protected void calculatePriority() {
+        Math.sqrt(averageValue);
     }
 
     @Override
-    public Boolean applicabilityFunction(){
-        if(tracking.GetRatingCustomization()== TrackingCustomization.None){
-            return false;
-        }
-        if(tracking.GetRatingCustomization()==TrackingCustomization.Required && eventCollection.size()>1){
-            return true;
-        }
-        if(tracking.GetRatingCustomization()==TrackingCustomization.Optional){
-            int count = 0;
-            for(Event event:eventCollection){
-                if(event.GetRating()!=null){
-                    count++;
-                }
-            }
-            if(count>1){
-                return true;
-            }else{
-                return false;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Double getPriority(){
-        return Math.sqrt(getAvrgValue());
+    public String TextDescription() {
+        return null;
     }
 
 }
