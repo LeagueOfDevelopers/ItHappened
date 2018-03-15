@@ -280,71 +280,76 @@ public class EditEventActivity extends AppCompatActivity {
                 Double scale = null;
                 Rating rating = null;
 
-                if(commentState == 1&&!commentControlWidget.getText().toString().isEmpty()){
-                    comment = commentControlWidget.getText().toString();
-                }
 
-                if(ratingState == 1 && ratingControlWidget.getRating()!=0){
-                    rating = new Rating(Math.round((ratingControlWidget.getRating())*2));
-                }
-
-                if(scaleState == 1 && !scaleControlWidget.getText().toString().isEmpty()){
-                    scale = Double.parseDouble(scaleControlWidget.getText().toString());
-                }
-
-                if(commentState == 2 && commentControlWidget.getText().toString().isEmpty()){
-                    commentFlag = false;
-                }
-
-                if(commentState == 2 && !commentControlWidget.getText().toString().isEmpty()){
-                    comment = commentControlWidget.getText().toString();
-                }
-
-                if(ratingState == 2 && ratingControlWidget.getRating() == 0){
-                    ratingFlag = false;
-                }
-
-                if(ratingState == 2 && ratingControlWidget.getRating() != 0){
-                    rating = new Rating(Math.round((ratingControlWidget.getRating())*2));
-                }
-
-                if(scaleState == 2 && scaleControlWidget.getText().toString().isEmpty()){
-                    scaleFlag = false;
-                }
-
-                if(scaleState == 2 && !scaleControlWidget.getText().toString().isEmpty()){
-                    scale = Double.parseDouble(scaleControlWidget.getText().toString());
-                }
-
-
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-
-                try{
-                    editedDate = simpleDateFormat.parse(editedDateText.getText().toString());
-                }catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                if(commentFlag && ratingFlag && scaleFlag){
-                    try{
-                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, editedDate);
-                        finish();
-                    }catch (Exception e){
-                        Toast.makeText(getApplicationContext(),"ex", Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    String toastMessage = "Введите обязательные данные о событии: ";
-                    if(commentFlag == false){
-                        toastMessage+="комментарий, ";
-                    }
-                    if(ratingFlag==false){
-                        toastMessage+="оценку, ";
-                    }
-                    if(scaleFlag == false){
-                        toastMessage+="шкалу, ";
+                try {
+                    if (commentState == 1 && !commentControlWidget.getText().toString().isEmpty()) {
+                        comment = commentControlWidget.getText().toString();
                     }
 
-                    Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2)+"!", Toast.LENGTH_SHORT).show();
+                    if (ratingState == 1 && ratingControlWidget.getRating() != 0) {
+                        rating = new Rating(Math.round((ratingControlWidget.getRating()) * 2));
+                    }
+
+                    if (scaleState == 1 && !scaleControlWidget.getText().toString().isEmpty()) {
+                        scale = Double.parseDouble(scaleControlWidget.getText().toString());
+                    }
+
+                    if (commentState == 2 && commentControlWidget.getText().toString().isEmpty()) {
+                        commentFlag = false;
+                    }
+
+                    if (commentState == 2 && !commentControlWidget.getText().toString().isEmpty()) {
+                        comment = commentControlWidget.getText().toString();
+                    }
+
+                    if (ratingState == 2 && ratingControlWidget.getRating() == 0) {
+                        ratingFlag = false;
+                    }
+
+                    if (ratingState == 2 && ratingControlWidget.getRating() != 0) {
+                        rating = new Rating(Math.round((ratingControlWidget.getRating()) * 2));
+                    }
+
+                    if (scaleState == 2 && scaleControlWidget.getText().toString().isEmpty()) {
+                        scaleFlag = false;
+                    }
+
+                    if (scaleState == 2 && !scaleControlWidget.getText().toString().isEmpty()) {
+                        scale = Double.parseDouble(scaleControlWidget.getText().toString());
+                    }
+
+
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+
+                    try {
+                        editedDate = simpleDateFormat.parse(editedDateText.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (commentFlag && ratingFlag && scaleFlag) {
+                        try {
+                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, editedDate);
+                            finish();
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "ex", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        String toastMessage = "Введите обязательные данные о событии: ";
+                        if (commentFlag == false) {
+                            toastMessage += "комментарий, ";
+                        }
+                        if (ratingFlag == false) {
+                            toastMessage += "оценку, ";
+                        }
+                        if (scaleFlag == false) {
+                            toastMessage += "шкалу, ";
+                        }
+
+                        Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length() - 2) + "!", Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

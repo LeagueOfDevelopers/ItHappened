@@ -13,10 +13,6 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
-/**
- * Created by Пользователь on 15.03.2018.
- */
-
 public class FunctionApplicabilityUnitTests {
 
     @Test
