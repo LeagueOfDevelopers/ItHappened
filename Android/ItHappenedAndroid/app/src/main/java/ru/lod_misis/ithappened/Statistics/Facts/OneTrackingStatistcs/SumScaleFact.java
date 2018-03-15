@@ -6,12 +6,13 @@ import java.util.List;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
-public class SumScaleFact {
+public class SumScaleFact extends Fact{
 
     Tracking tracking;
+    Double scaleSum;
     List<Event> eventCollection = new ArrayList<>();
-    Double priority = 2.0;
 
     public SumScaleFact(Tracking tracking){
         this.tracking = tracking;
@@ -23,46 +24,40 @@ public class SumScaleFact {
     }
 
     public Double getSumValue(){
-        if(applicabilityFunction()){
-            Double sumValue = 0.0;
-            for(Event event : eventCollection){
-                if(event.GetScale()!=null){
-                    sumValue+=event.GetScale();
-                }
+        for(Event event : tracking.GetEventCollection()){
+            if(!event.GetStatus()){
+                eventCollection.add(event);
             }
-            return sumValue;
-        }else{
-            return null;
         }
-    }
 
-    public Boolean applicabilityFunction(){
-        if(tracking.GetScaleCustomization()== TrackingCustomization.None){
-            return false;
-        }
-        if(tracking.GetScaleCustomization()==TrackingCustomization.Required && eventCollection.size()>1){
-            return true;
-        }
-        if(tracking.GetScaleCustomization()==TrackingCustomization.Optional){
-            int count = 0;
-            for(Event event:eventCollection){
-                if(event.GetScale()!=null){
-                    count++;
-                }
-            }
-            if(count>1){
-                return true;
-            }else{
-                return false;
+        scaleSum = 0.0;
+
+        for(Event event : eventCollection){
+            if(event.GetScale() != null){
+                scaleSum+=event.GetScale();
             }
         }
-        return false;
+
+        calculatePriority();
+
+        return scaleSum;
+
     }
 
     public Double getPriority(){
         return priority;
     }
 
+    @Override
+    protected void calculatePriority() {
+        priority = 2.0;
+    }
+
+    @Override
+    public String TextDescription() {
+        return String.format("Сумма значений шкалы для события %s равна %s",
+                tracking.getTrackingName(), scaleSum);
+    }
 
 
 }

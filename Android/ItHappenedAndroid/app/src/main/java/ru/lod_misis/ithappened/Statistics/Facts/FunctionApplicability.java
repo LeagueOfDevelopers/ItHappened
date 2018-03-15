@@ -9,6 +9,7 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequentEventFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgRatingFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
 
 /**
@@ -66,5 +67,31 @@ public final class FunctionApplicability  {
         if (eventsWithRating <= 1) return null;
 
         return new AvrgRatingFact(tracking);
+    }
+
+    public Fact avrgScaleApplicability(Tracking tracking)
+    {
+        if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
+
+        int eventsWithScale = 0;
+        for (Event event: tracking.getEventCollection()) {
+            if (event.getScale() != null) eventsWithScale++;
+        }
+        if (eventsWithScale <= 1) return null;
+
+        return new AvrgScaleFact(tracking);
+    }
+
+    public Fact sumScaleApplicability(Tracking tracking)
+    {
+        if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
+
+        int eventsWithScale = 0;
+        for (Event event: tracking.getEventCollection()) {
+            if (event.getScale() != null) eventsWithScale++;
+        }
+        if (eventsWithScale <= 1) return null;
+
+        return new AvrgScaleFact(tracking);
     }
 }
