@@ -6,12 +6,13 @@ import java.util.List;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 /**
  * Created by Пользователь on 09.03.2018.
  */
 
-public class AvrgScaleFact implements Fact{
+public class AvrgScaleFact extends Fact {
 
     Tracking tracking;
     List<Event> eventCollection = new ArrayList<>();
@@ -42,7 +43,7 @@ public class AvrgScaleFact implements Fact{
         }
     }
 
-    @Override
+    //@Override
     public Boolean applicabilityFunction(){
         if(tracking.GetScaleCustomization()== TrackingCustomization.None){
             return false;
@@ -69,6 +70,16 @@ public class AvrgScaleFact implements Fact{
     @Override
     public Double getPriority(){
         return priority;
+    }
+
+    @Override
+    protected void calculatePriority() {
+
+    }
+
+    @Override
+    public String TextDescription() {
+        return null;
     }
 
 }
