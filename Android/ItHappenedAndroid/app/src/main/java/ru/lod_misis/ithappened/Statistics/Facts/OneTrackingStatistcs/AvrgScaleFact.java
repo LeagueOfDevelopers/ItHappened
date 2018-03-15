@@ -53,15 +53,4 @@ public class AvrgScaleFact extends Fact {
         return priority;
     }
 
-    @Override
-    protected void calculatePriority() {
-        priority = 3.0;
-    }
-
-    @Override
-    public String TextDescription() {
-        return String.format("Среднее значение шкалы для события %s равно %s",
-                tracking.getTrackingName(), averageValue);
-    }
-
 }
