@@ -32,7 +32,8 @@ public class MostFrequentEventFact extends Fact{
                     dateOfFirstEvent = event.GetEventDate();
                 }
             }
-            period = ((double)(Calendar.getInstance(TimeZone.getDefault()).getTime().getTime() - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24);
+            period = ((double)(Calendar.getInstance(TimeZone.getDefault()).getTime().getTime()
+                    - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24);
             FrequentEventsFactModel model = new FrequentEventsFactModel
                     (period, tracking.GetTrackingName(), tracking.getTrackingId());
             periodList.add(model);

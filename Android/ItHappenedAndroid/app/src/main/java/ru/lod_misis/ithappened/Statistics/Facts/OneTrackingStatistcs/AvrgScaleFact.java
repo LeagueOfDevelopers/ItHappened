@@ -16,55 +16,36 @@ public class AvrgScaleFact extends Fact {
 
     Tracking tracking;
     List<Event> eventCollection = new ArrayList<>();
-    Double priority = 3.0;
+    Double priority;
+    Double averageValue;
 
     public AvrgScaleFact(Tracking tracking){
         this.tracking = tracking;
+    }
+
+    public Double getAvrgValue(){
+
         for(Event event : tracking.GetEventCollection()){
             if(!event.GetStatus()){
                 eventCollection.add(event);
             }
         }
-    }
 
-    public Double getAvrgValue(){
-        if(applicabilityFunction()){
-            Double sumValue = 0.0;
-            int count = 0;
-            for(Event event : eventCollection){
-                if(event.GetScale()!=null){
-                    sumValue+=event.GetScale();
-                    count++;
-                }
-            }
-            return sumValue/count;
-        }else{
-            return null;
-        }
-    }
+        Double sumValue = 0.0;
+        int count = 0;
 
-    //@Override
-    public Boolean applicabilityFunction(){
-        if(tracking.GetScaleCustomization()== TrackingCustomization.None){
-            return false;
-        }
-        if(tracking.GetScaleCustomization()==TrackingCustomization.Required && eventCollection.size()>1){
-            return true;
-        }
-        if(tracking.GetScaleCustomization()==TrackingCustomization.Optional){
-            int count = 0;
-            for(Event event:eventCollection){
-                if(event.GetScale()!=null){
-                    count++;
-                }
-            }
-            if(count>1){
-                return true;
-            }else{
-                return false;
+        for(Event event : eventCollection){
+            if(event.GetScale() != null){
+                sumValue+=event.GetScale();
+                count++;
             }
         }
-        return false;
+
+        averageValue = sumValue/count;
+        calculatePriority();
+
+        return averageValue;
+
     }
 
     @Override
@@ -74,12 +55,13 @@ public class AvrgScaleFact extends Fact {
 
     @Override
     protected void calculatePriority() {
-
+        priority = 3.0;
     }
 
     @Override
     public String TextDescription() {
-        return null;
+        return String.format("Среднее значение шкалы для события %s равно %s",
+                tracking.getTrackingName(), averageValue);
     }
 
 }
