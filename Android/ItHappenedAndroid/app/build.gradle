@@ -24,9 +24,9 @@ android {
 
         release {
             storeFile file("ithappenedkey.jks")
-            storePassword "notasecret"
+            storePassword "notasecred"
             keyAlias "Alias"
-            keyPassword "notasecret"
+            keyPassword "notasecred"
         }
 
         myConfig {
