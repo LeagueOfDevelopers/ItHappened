@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -16,9 +17,16 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
  */
 
 public class MostFrequentEventFact extends Fact{
+
+    List<Tracking> trackingCollection;
+    FrequentEventsFactModel minModel;
+    List<FrequentEventsFactModel> periodList= new ArrayList<>();
+    Double priority = 10.0;
+
     public MostFrequentEventFact(List<Tracking> trackingCollection)
     {
         this.trackingCollection = trackingCollection;
+        trackingId = null;
     }
 
     public List<FrequentEventsFactModel> getFrequency()
@@ -43,6 +51,10 @@ public class MostFrequentEventFact extends Fact{
     }
 
 
+    @Override
+    public void calculateData() {
+        getFrequency();
+    }
 
     @Override
     public Double getPriority() {
@@ -62,13 +74,8 @@ public class MostFrequentEventFact extends Fact{
     }
 
     @Override
-    public String TextDescription() {
+    public String textDescription() {
         return String.format("Чаще всего у вас происходит событие %s - раз в %s дней",
                 minModel.getTrackingName(), minModel.getPeriod());
     }
-
-    List<Tracking> trackingCollection;
-    FrequentEventsFactModel minModel;
-    List<FrequentEventsFactModel> periodList= new ArrayList<>();
-    Double priority = 10.0;
 }

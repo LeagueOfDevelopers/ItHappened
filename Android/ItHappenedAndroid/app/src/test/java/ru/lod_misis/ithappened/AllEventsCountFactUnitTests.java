@@ -50,7 +50,7 @@ public class AllEventsCountFactUnitTests {
 
         AllEventsCountFact fact = new AllEventsCountFact(trackingCollection);
         fact.getEventCount();
-        Assert.assertEquals(fact.TextDescription(), "У вас произошло уже 2 событий!");
+        Assert.assertEquals(fact.textDescription(), "У вас произошло уже 2 событий!");
     }
 
 

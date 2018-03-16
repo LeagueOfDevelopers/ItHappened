@@ -20,6 +20,7 @@ public class AvrgScaleFact extends Fact {
     Double averageValue;
 
     public AvrgScaleFact(Tracking tracking){
+        trackingId = tracking.GetTrackingID();
         this.tracking = tracking;
     }
 
@@ -49,6 +50,11 @@ public class AvrgScaleFact extends Fact {
     }
 
     @Override
+    public void calculateData() {
+        getAvrgValue();
+    }
+
+    @Override
     public Double getPriority(){
         return priority;
     }
@@ -59,9 +65,8 @@ public class AvrgScaleFact extends Fact {
     }
 
     @Override
-    public String TextDescription() {
+    public String textDescription() {
         return String.format("Среднее значение шкалы для события %s равно %s",
                 tracking.getTrackingName(), averageValue);
     }
-
 }

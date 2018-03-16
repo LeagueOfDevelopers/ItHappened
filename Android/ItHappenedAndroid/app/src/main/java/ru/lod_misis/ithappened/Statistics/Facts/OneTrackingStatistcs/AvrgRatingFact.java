@@ -19,6 +19,7 @@ public class AvrgRatingFact extends Fact {
     Double priority;
 
     public AvrgRatingFact(Tracking tracking){
+        trackingId = tracking.GetTrackingID();
         this.tracking = tracking;
     }
 
@@ -46,6 +47,11 @@ public class AvrgRatingFact extends Fact {
         return averageValue;
     }
 
+    @Override
+    public void calculateData() {
+        getAvrgValue();
+    }
+
     public Double getPriority(){ return priority; }
 
     @Override
@@ -54,7 +60,7 @@ public class AvrgRatingFact extends Fact {
     }
 
     @Override
-    public String TextDescription() {
+    public String textDescription() {
         return null;
     }
 

@@ -16,11 +16,7 @@ public class SumScaleFact extends Fact{
 
     public SumScaleFact(Tracking tracking){
         this.tracking = tracking;
-        for(Event event : tracking.GetEventCollection()){
-            if(!event.GetStatus()){
-                eventCollection.add(event);
-            }
-        }
+        trackingId = tracking.GetTrackingID();
     }
 
     public Double getSumValue(){
@@ -39,9 +35,12 @@ public class SumScaleFact extends Fact{
         }
 
         calculatePriority();
-
         return scaleSum;
+    }
 
+    @Override
+    public void calculateData() {
+        getSumValue();
     }
 
     public Double getPriority(){
@@ -54,7 +53,7 @@ public class SumScaleFact extends Fact{
     }
 
     @Override
-    public String TextDescription() {
+    public String textDescription() {
         return String.format("Сумма значений шкалы для события %s равна %s",
                 tracking.getTrackingName(), scaleSum);
     }

@@ -17,7 +17,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEve
  */
 
 public final class FunctionApplicability  {
-    private FunctionApplicability(){}
+    public FunctionApplicability(){}
 
     public Fact mostFrequentEventApplicability(List<Tracking> trackingCollection)
     {

@@ -19,6 +19,7 @@ public class AllEventsCountFact extends Fact {
     {
         this.trackingCollection = trackingCollection;
         eventCount = 0;
+        trackingId = null;
     }
 
     public int getEventCount()
@@ -33,6 +34,11 @@ public class AllEventsCountFact extends Fact {
     }
 
     @Override
+    public void calculateData() {
+        getEventCount();
+    }
+
+    @Override
     public Double getPriority() {
         return priority;
     }
@@ -43,7 +49,7 @@ public class AllEventsCountFact extends Fact {
     }
 
     @Override
-    public String TextDescription() {
+    public String textDescription() {
         return String.format("У вас произошло уже %s событий!", eventCount);
     }
 }
