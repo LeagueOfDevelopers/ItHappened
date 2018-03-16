@@ -136,9 +136,11 @@ public class SignInActivity extends Activity {
                         startActivityForResult(userAuthEx.getIntent(), 228);
                     } catch (IOException ioEx) {
                         //Log.d(TAG, "IOException");
+                        this.cancel(true);
                         hideLoading();
                         Toast.makeText(getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
                     } catch (GoogleAuthException fatalAuthEx) {
+                        this.cancel(true);
                         hideLoading();
                         //Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();

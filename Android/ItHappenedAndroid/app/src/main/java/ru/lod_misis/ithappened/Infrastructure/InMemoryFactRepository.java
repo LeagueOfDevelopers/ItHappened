@@ -50,16 +50,18 @@ public class InMemoryFactRepository {
         Fact factToAdd;
 
         factToAdd = FunctionApplicability.allEventsCountFactApplicability(trackingCollection);
-        if (factToAdd != null)
+        if (factToAdd != null) {
             factToAdd.calculateData();
             factToAdd.calculatePriority();
             allTrackingsFactCollection.add(factToAdd);
+        }
 
         factToAdd = FunctionApplicability.mostFrequentEventApplicability(trackingCollection);
-        if (factToAdd != null)
+        if (factToAdd != null) {
             factToAdd.calculateData();
             factToAdd.calculatePriority();
             allTrackingsFactCollection.add(factToAdd);
+        }
 
         return rx.Observable.from(allTrackingsFactCollection);
     }
