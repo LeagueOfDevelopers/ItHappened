@@ -338,24 +338,29 @@ public class EventsFragment extends Fragment  {
                     }
                 }
 
-                if(!scaleFilter.getText().toString().isEmpty()){
-                    int positionForScale = hintsForScaleSpinner.getSelectedItemPosition();
-                    scaleComparison = comparisons[positionForScale];
-                    scale = Double.parseDouble(scaleFilter.getText().toString());
+                try {
+
+                    if (!scaleFilter.getText().toString().isEmpty()) {
+                        int positionForScale = hintsForScaleSpinner.getSelectedItemPosition();
+                        scaleComparison = comparisons[positionForScale];
+                        scale = Double.parseDouble(scaleFilter.getText().toString());
+                    }
+
+                    if (ratingFilter.getRating() != 0) {
+                        int positionForRating = hintsForRatingSpinner.getSelectedItemPosition();
+                        ratingComparison = comparisons[positionForRating];
+                        rating = new Rating((int) ratingFilter.getRating() * 2);
+                    }
+
+                    List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateFrom, dateTo, scaleComparison, scale, ratingComparison, rating);
+                    eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 0);
+                    eventsRecycler.setAdapter(eventsAdpt);
+
+                    BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }catch (Exception e){
+                    Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
-
-                if(ratingFilter.getRating()!=0){
-                    int positionForRating = hintsForRatingSpinner.getSelectedItemPosition();
-                    ratingComparison = comparisons[positionForRating];
-                    rating = new Rating((int)ratingFilter.getRating()*2);
-                }
-
-                List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids,dateFrom, dateTo, scaleComparison, scale, ratingComparison, rating);
-                eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 0);
-                eventsRecycler.setAdapter(eventsAdpt);
-
-                BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
             }
         });

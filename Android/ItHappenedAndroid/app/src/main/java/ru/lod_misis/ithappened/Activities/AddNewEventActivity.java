@@ -288,6 +288,7 @@ public class AddNewEventActivity extends AppCompatActivity {
 
                 UUID trackingId = UUID.fromString(id);
 
+                try {
                 //Обрабатываем состояние кастомизации комментария
                 if (stateForComment == 2) {
                     if(!commentControl.getText().toString().isEmpty()) {
@@ -358,45 +359,48 @@ public class AddNewEventActivity extends AppCompatActivity {
                 String comment = commentForEvent;
                 Double scale = scaleForEvent;
 
-                Event newEvent = new Event(UUID.randomUUID(), trackingId, scale, newRating, comment);
-                trackingId = UUID.fromString(id);
-                trackingService = new
 
-                        TrackingService("someName", trackingCollection);
+                    Event newEvent = new Event(UUID.randomUUID(), trackingId, scale, newRating, comment);
+                    trackingId = UUID.fromString(id);
+                    trackingService = new
+                            TrackingService("someName", trackingCollection);
 
-                if(flag_for_comment&&flag_for_rating&&flag_for_scale) {
-                    try {
-                        trackingService.AddEvent(trackingId, newEvent);
-                        Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } catch (Exception e) {
+                    if (flag_for_comment && flag_for_rating && flag_for_scale) {
+                        try {
+                            trackingService.AddEvent(trackingId, newEvent);
+                            Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } catch (Exception e) {
 
+                            String toastMessage = "Введите обязательные данные о событии: ";
+                            if (flag_for_comment == false) {
+                                toastMessage += "комментарий, ";
+                            }
+                            if (flag_for_rating == false) {
+                                toastMessage += "оценку, ";
+                            }
+                            if (flag_for_scale == false) {
+                                toastMessage += "шкалу, ";
+                            }
+
+                            Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length() - 2) + "!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
                         String toastMessage = "Введите обязательные данные о событии: ";
-                        if(flag_for_comment == false){
-                            toastMessage+="комментарий, ";
+                        if (flag_for_comment == false) {
+                            toastMessage += "комментарий, ";
                         }
-                        if(flag_for_rating==false){
-                            toastMessage+="оценку, ";
+                        if (flag_for_rating == false) {
+                            toastMessage += "оценку, ";
                         }
-                        if(flag_for_scale == false){
-                            toastMessage+="шкалу, ";
+                        if (flag_for_scale == false) {
+                            toastMessage += "шкалу, ";
                         }
 
-                        Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2)+"!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length() - 2) + "!", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    String toastMessage = "Введите обязательные данные о событии: ";
-                    if(flag_for_comment == false){
-                        toastMessage+="комментарий, ";
-                    }
-                    if(flag_for_rating==false){
-                        toastMessage+="оценку, ";
-                    }
-                    if(flag_for_scale == false){
-                        toastMessage+="шкалу, ";
-                    }
-
-                    Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length()-2)+"!", Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Введите численное значение шкалы!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

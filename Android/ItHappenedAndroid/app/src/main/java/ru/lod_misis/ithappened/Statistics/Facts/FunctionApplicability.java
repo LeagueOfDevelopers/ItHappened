@@ -19,7 +19,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEve
 public final class FunctionApplicability  {
     public FunctionApplicability(){}
 
-    public Fact mostFrequentEventApplicability(List<Tracking> trackingCollection)
+    public static Fact mostFrequentEventApplicability(List<Tracking> trackingCollection)
     {
         if (trackingCollection.size() < 2) return null;
         List<Tracking> processingTracking = new ArrayList<>();
@@ -34,7 +34,7 @@ public final class FunctionApplicability  {
         return new MostFrequentEventFact(processingTracking);
     }
 
-    public Fact allEventsCountFactApplicability(List<Tracking> trackingCollection)
+    public static Fact allEventsCountFactApplicability(List<Tracking> trackingCollection)
     {
         int count=0;
         for (Tracking tracking: trackingCollection) {
@@ -46,7 +46,7 @@ public final class FunctionApplicability  {
         return new AllEventsCountFact(trackingCollection);
     }
 
-    public Fact trackingEventsCountApplicability(Tracking tracking)
+    public static Fact trackingEventsCountApplicability(Tracking tracking)
     {
         int eventCount = 0;
         for (Event event: tracking.getEventCollection()) {
@@ -56,7 +56,7 @@ public final class FunctionApplicability  {
         return new TrackingEventsCountFact(tracking);
     }
 
-    public Fact avrgRatingApplicability(Tracking tracking)
+    public static Fact avrgRatingApplicability(Tracking tracking)
     {
         if (tracking.GetRatingCustomization() == TrackingCustomization.None) return null;
 
@@ -69,7 +69,7 @@ public final class FunctionApplicability  {
         return new AvrgRatingFact(tracking);
     }
 
-    public Fact avrgScaleApplicability(Tracking tracking)
+    public static Fact avrgScaleApplicability(Tracking tracking)
     {
         if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
 
@@ -82,7 +82,7 @@ public final class FunctionApplicability  {
         return new AvrgScaleFact(tracking);
     }
 
-    public Fact sumScaleApplicability(Tracking tracking)
+    public static Fact sumScaleApplicability(Tracking tracking)
     {
         if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
 
