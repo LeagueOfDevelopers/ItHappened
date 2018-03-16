@@ -5,7 +5,6 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 public class SumScaleFact extends Fact{
@@ -48,7 +47,7 @@ public class SumScaleFact extends Fact{
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         priority = 2.0;
     }
 
@@ -56,6 +55,11 @@ public class SumScaleFact extends Fact{
     public String textDescription() {
         return String.format("Сумма значений шкалы для события %s равна %s",
                 tracking.getTrackingName(), scaleSum);
+    }
+
+    @Override
+    public String getFactName() {
+        return "Суммарное значение шкалы";
     }
 
 

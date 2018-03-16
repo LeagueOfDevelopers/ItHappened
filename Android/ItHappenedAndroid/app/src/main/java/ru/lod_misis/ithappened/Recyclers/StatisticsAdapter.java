@@ -1,73 +1,69 @@
 package ru.lod_misis.ithappened.Recyclers;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.ViewHolder> {
 
-    private List<Tracking> trackings;
+    private List<Fact> factCollection;
     private Context context;
-    FragmentManager fManage;
-    FragmentTransaction fTrans;
 
 
-    public StatisticsAdapter(List<Tracking> trackings, Context context) {
-        this.trackings = trackings;
+    public StatisticsAdapter(List<Fact> factCollection, Context context) {
+        this.factCollection = factCollection;
         this.context = context;
     }
 
     @Override
     public StatisticsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(ru.lod_misis.ithappened.R.layout.recycler_item, parent, false);
+                .inflate(R.layout.statistics_item, parent, false);
         return new StatisticsAdapter.ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final StatisticsAdapter.ViewHolder holder, final int position) {
 
-        final Tracking tracking = trackings.get(position);
-        holder.trackingTitle.setText(tracking.GetTrackingName());
+        final Fact fact = factCollection.get(position);
 
-        holder.itemLL.setOnClickListener(new View.OnClickListener(){
+        holder.factTitle.setText(fact.getFactName());
+        holder.factDescription.setText(fact.textDescription());
 
-            @Override
-            public void onClick(View view) {
-
-                final Tracking tracking = trackings.get(position);
-                String id = tracking.GetTrackingID().toString();
-                String trackId = tracking.GetTrackingID().toString();
-
-            }
-        });
+        holder.pieChart.setVisibility(View.GONE);
+        holder.lineChart.setVisibility(View.GONE);
 
     }
 
     @Override
     public int getItemCount() {
-        return trackings.size();
+        return factCollection.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView trackingTitle;
-        CardView itemLL;
+        TextView factTitle;
+        TextView factDescription;
+        PieChart pieChart;
+        LineChart lineChart;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            trackingTitle = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.TracingTitle);
-            itemLL = (CardView) itemView.findViewById(ru.lod_misis.ithappened.R.id.itemLL);
+            factTitle = (TextView) itemView.findViewById(R.id.hintForFactForTracking);
+            factDescription = (TextView) itemView.findViewById(R.id.textFactForTracking);
+            lineChart = (LineChart) itemView.findViewById(R.id.graphFact);
+            pieChart = (PieChart) itemView.findViewById(R.id.pieFact);
         }
     }
 

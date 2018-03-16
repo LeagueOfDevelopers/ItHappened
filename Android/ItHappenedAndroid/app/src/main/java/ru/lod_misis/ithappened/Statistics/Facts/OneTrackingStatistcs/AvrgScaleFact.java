@@ -5,7 +5,6 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 /**
@@ -60,7 +59,7 @@ public class AvrgScaleFact extends Fact {
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         priority = 3.0;
     }
 
@@ -68,5 +67,10 @@ public class AvrgScaleFact extends Fact {
     public String textDescription() {
         return String.format("Среднее значение шкалы для события %s равно %s",
                 tracking.getTrackingName(), averageValue);
+    }
+
+    @Override
+    public String getFactName() {
+        return "Среднее значение шкалы";
     }
 }

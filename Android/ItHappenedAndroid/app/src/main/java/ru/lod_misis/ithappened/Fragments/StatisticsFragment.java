@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,15 +25,20 @@ import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.StatisticsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.functions.Action1;
 
 
 public class StatisticsFragment extends Fragment {
 
     RecyclerView trackingsRecycler;
     StatisticsAdapter trackAdpt;
+
+    RecyclerView allTrackingsRecycler;
 
     TextView hint;
 
@@ -67,6 +73,8 @@ public class StatisticsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle("Статистика");
+
+        hint = (TextView) getActivity().findViewById(R.id.hintForStatisticsFragment);
 
 
         carousel = (CarouselView) getActivity().findViewById(R.id.mainCarousel);
@@ -134,8 +142,30 @@ public class StatisticsFragment extends Fragment {
     ViewListener viewListener = new ViewListener() {
         @Override
         public View setViewForPosition(int position) {
-
             View customView = getActivity().getLayoutInflater().inflate(R.layout.view_statistics, null);
+            if(position==0) {
+                customView = getActivity().getLayoutInflater().inflate(R.layout.all_statistics_layout, null);
+                InMemoryFactRepository factRepository = new InMemoryFactRepository();
+                final List<Fact> facts = new ArrayList<>();
+                ITrackingRepository trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                        getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+                factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                        .doOnNext(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                fact.calculatePriority();
+                                facts.add(fact);
+                            }
+                        });
+
+                if(facts.size()!=0) {
+                    hint.setVisibility(View.INVISIBLE);
+                    allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.allStatisticsRecycler);
+                    StatisticsAdapter adapter = new StatisticsAdapter(facts, getActivity().getApplicationContext());
+                    allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+                    allTrackingsRecycler.setAdapter(adapter);
+                }
+            }
             getActivity().setTitle(titles.get(position));
             return customView;
         }

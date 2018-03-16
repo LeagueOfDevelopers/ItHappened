@@ -1,7 +1,7 @@
 package ru.lod_misis.ithappened.Infrastructure;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -29,7 +29,7 @@ public class InMemoryFactRepository {
         return rx.Observable.from(oneTrackingFactCollection);
     }
 
-    public rx.Observable onChangeCalculateOneTrackingFacts(List<Tracking> trackingCollection, UUID trackingId)
+    public rx.Observable<Fact> onChangeCalculateOneTrackingFacts(List<Tracking> trackingCollection, UUID trackingId)
     {
         Tracking changedTracking = null;
 
@@ -46,15 +46,19 @@ public class InMemoryFactRepository {
         return rx.Observable.from(oneTrackingFactCollection);
     }
 
-    public rx.Observable calculateAllTrackingsFacts(List<Tracking> trackingCollection) {
+    public rx.Observable<Fact> calculateAllTrackingsFacts(List<Tracking> trackingCollection) {
         Fact factToAdd;
 
-        factToAdd = functionApplicability.allEventsCountFactApplicability(trackingCollection);
+        factToAdd = FunctionApplicability.allEventsCountFactApplicability(trackingCollection);
         if (factToAdd != null)
+            factToAdd.calculateData();
+            factToAdd.calculatePriority();
             allTrackingsFactCollection.add(factToAdd);
 
-        factToAdd = functionApplicability.mostFrequentEventApplicability(trackingCollection);
+        factToAdd = FunctionApplicability.mostFrequentEventApplicability(trackingCollection);
         if (factToAdd != null)
+            factToAdd.calculateData();
+            factToAdd.calculatePriority();
             allTrackingsFactCollection.add(factToAdd);
 
         return rx.Observable.from(allTrackingsFactCollection);
@@ -82,8 +86,8 @@ public class InMemoryFactRepository {
     }
 
 
-    List<Fact> oneTrackingFactCollection;
-    List<Fact> allTrackingsFactCollection;
+    List<Fact> oneTrackingFactCollection = new ArrayList<>();
+    List<Fact> allTrackingsFactCollection = new ArrayList<>();
     FunctionApplicability functionApplicability;
 
 }

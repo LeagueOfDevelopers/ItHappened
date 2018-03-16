@@ -5,9 +5,7 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
 
 public class AvrgRatingFact extends Fact {
@@ -55,13 +53,18 @@ public class AvrgRatingFact extends Fact {
     public Double getPriority(){ return priority; }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         Math.sqrt(averageValue);
     }
 
     @Override
     public String textDescription() {
         return null;
+    }
+
+    @Override
+    public String getFactName() {
+        return "Среднее значение оценки";
     }
 
 }

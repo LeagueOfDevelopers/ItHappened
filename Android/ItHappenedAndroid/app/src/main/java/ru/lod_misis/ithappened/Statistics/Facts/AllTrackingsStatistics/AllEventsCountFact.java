@@ -44,12 +44,17 @@ public class AllEventsCountFact extends Fact {
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         priority = Math.log(eventCount);
     }
 
     @Override
     public String textDescription() {
         return String.format("У вас произошло уже %s событий!", eventCount);
+    }
+
+    @Override
+    public String getFactName() {
+        return "Зафиксировано уже N событий";
     }
 }

@@ -7,6 +7,7 @@
     <com.synnapps.carouselview.CarouselView
         android:id="@+id/mainCarousel"
         android:layout_width="match_parent"
+        android:scrollbars="vertical"
         app:autoPlay="false"
         app:fillColor="@color/colorAccent"
         app:pageColor="@color/colorPrimaryDark"

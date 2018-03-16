@@ -40,13 +40,18 @@ public class TrackingEventsCountFact extends Fact {
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         priority = Math.log(eventCount);
     }
 
     @Override
     public String textDescription() {
         return String.format("Событие %s произошло %s раз", tracking.getTrackingName(), eventCount);
+    }
+
+    @Override
+    public String getFactName() {
+        return "Количество событий";
     }
 
 

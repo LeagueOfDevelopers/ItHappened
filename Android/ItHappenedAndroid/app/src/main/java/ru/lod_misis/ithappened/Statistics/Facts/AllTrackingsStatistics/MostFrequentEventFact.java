@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -46,7 +45,6 @@ public class MostFrequentEventFact extends Fact{
                     (period, tracking.GetTrackingName(), tracking.getTrackingId());
             periodList.add(model);
         }
-        calculatePriority();
         return periodList;
     }
 
@@ -62,10 +60,10 @@ public class MostFrequentEventFact extends Fact{
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         Double min = Double.MAX_VALUE;
         for (FrequentEventsFactModel model : periodList) {
-            if (min < model.getPeriod()) {
+            if (min > model.getPeriod()) {
                 min = model.getPeriod();
                 minModel = model;
             }
@@ -77,5 +75,10 @@ public class MostFrequentEventFact extends Fact{
     public String textDescription() {
         return String.format("Чаще всего у вас происходит событие %s - раз в %s дней",
                 minModel.getTrackingName(), minModel.getPeriod());
+    }
+
+    @Override
+    public String getFactName() {
+        return "Самое частое событие";
     }
 }

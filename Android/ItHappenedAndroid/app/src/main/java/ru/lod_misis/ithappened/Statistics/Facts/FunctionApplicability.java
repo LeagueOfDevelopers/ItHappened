@@ -12,10 +12,6 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgRatingF
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
 
-/**
- * Created by Ded on 14.03.2018.
- */
-
 public final class FunctionApplicability  {
     public FunctionApplicability(){}
 
