@@ -40,6 +40,7 @@ namespace ItHappenedDomain.Domain
       collection.InsertOne(newUser);
       RegistrationResponse toReturn = new RegistrationResponse
       {
+        NicknameDateOfChange = DateTimeOffset.Now,
         PicUrl = response.picture,
         UserId = response.email,
         UserNickname = response.email
@@ -66,6 +67,7 @@ namespace ItHappenedDomain.Domain
       collection.InsertOne(newUser);
       RegistrationResponse toReturn = new RegistrationResponse()
       {
+        NicknameDateOfChange = DateTimeOffset.Now,
         PicUrl = null,
         UserId = newUser.UserId,
         UserNickname = newUser.UserNickname

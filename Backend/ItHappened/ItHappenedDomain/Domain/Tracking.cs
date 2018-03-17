@@ -19,7 +19,7 @@ namespace ItHappenedDomain.Domain
       DateTimeOffset trackingDate, 
       string scale, 
       string rating, 
-      string comment, 
+      string comment,
       DateTimeOffset dateOfChange, bool isDeleted, 
       List<Event> eventCollection)
     {
