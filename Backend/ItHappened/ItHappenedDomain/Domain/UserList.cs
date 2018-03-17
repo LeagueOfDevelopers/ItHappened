@@ -22,11 +22,15 @@ namespace ItHappenedDomain.Domain
       response = verifyer.Verify(idToken);
       if (response.IsEmpty)
         return null;
+
       var collection = db.GetCollection<User>("Users");
+
       var iUser = collection.FindSync(us => us.UserId == response.email);
-      if (iUser.Current != null)
+
+      var result = iUser.FirstAsync();
+      if (!result.IsFaulted)
       {
-        User user = iUser.FirstAsync().Result;
+        User user = result.Result;
         return new RegistrationResponse
         {
           PicUrl = user.PictureUrl,
@@ -40,7 +44,7 @@ namespace ItHappenedDomain.Domain
       collection.InsertOne(newUser);
       RegistrationResponse toReturn = new RegistrationResponse
       {
-        NicknameDateOfChange = DateTimeOffset.Now,
+        NicknameDateOfChange = date,
         PicUrl = response.picture,
         UserId = response.email,
         UserNickname = response.email
@@ -52,9 +56,11 @@ namespace ItHappenedDomain.Domain
     {
       var collection = db.GetCollection<User>("Users");
       var iUser = collection.FindSync(us => us.UserId == id);
-      if (iUser.Current != null)
+
+      var result = iUser.FirstAsync();
+      if (!result.IsFaulted)
       {
-        User user = iUser.FirstAsync().Result;
+        User user = result.Result;
         return new RegistrationResponse()
         {
           PicUrl = user.PictureUrl,
