@@ -149,8 +149,9 @@ public class StatisticsFragment extends Fragment {
                 final List<Fact> facts = new ArrayList<>();
                 ITrackingRepository trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
                         getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+
                 factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                        .doOnNext(new Action1<Fact>() {
+                        .subscribe(new Action1<Fact>() {
                             @Override
                             public void call(Fact fact) {
                                 fact.calculatePriority();
