@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -63,6 +65,13 @@ public class TrackingRepository implements ITrackingRepository{
         if (modelCollection.size() == 0)
             return new ArrayList<Tracking>();
         trackingCollectionToReturn.addAll(modelCollection.get(0).getTrackingCollection());
+        //return trackingCollectionToReturn;
+        Collections.sort(trackingCollectionToReturn, new Comparator<Tracking>() {
+            @Override
+            public int compare(Tracking tracking, Tracking t1) {
+                return t1.GetTrackingDate().compareTo(tracking.GetTrackingDate());
+            }
+        });
         return trackingCollectionToReturn;
     }
 

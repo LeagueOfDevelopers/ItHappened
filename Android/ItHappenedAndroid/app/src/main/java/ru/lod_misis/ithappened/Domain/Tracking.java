@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -11,7 +13,6 @@ import java.util.UUID;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class Tracking extends RealmObject {
 
@@ -244,7 +245,15 @@ public class Tracking extends RealmObject {
     public String GetTrackingName() {return trackingName;}
     public UUID GetTrackingID() {return UUID.fromString(trackingId);}
     public Date GetTrackingDate () {return trackingDate;}
-    public List<Event> GetEventCollection() { return eventCollection;}
+    public List<Event> GetEventCollection() {
+        Collections.sort(eventCollection, new Comparator<Event>() {
+            @Override
+            public int compare(Event event, Event t1) {
+               return t1.GetEventDate().compareTo(event.GetEventDate());
+            }
+        });
+        return eventCollection;
+    }
     public TrackingCustomization GetScaleCustomization(){ return TrackingCustomization.valueOf(scale);}
     public TrackingCustomization GetCommentCustomization(){ return TrackingCustomization.valueOf(comment);}
     public TrackingCustomization GetRatingCustomization(){ return TrackingCustomization.valueOf(rating);}
