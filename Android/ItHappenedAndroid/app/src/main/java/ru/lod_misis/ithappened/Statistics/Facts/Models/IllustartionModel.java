@@ -4,10 +4,6 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
 
-/**
- * Created by Пользователь on 20.03.2018.
- */
-
 public class IllustartionModel {
 
     private List<IllustrationType> types;

@@ -47,7 +47,7 @@ public class SignInActivity extends Activity {
     private final static String EMAIL_SCOPE =
             "https://www.googleapis.com/auth/userinfo.email";
     private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE + " " + EMAIL_SCOPE;
-    private static final String TAG = "EXC";
+    private static final String TAG = "ASYNCREG";
 
     ParallaxImageView mainBackground;
     SignInButton signIn;
@@ -135,14 +135,12 @@ public class SignInActivity extends Activity {
                     } catch (UserRecoverableAuthException userAuthEx) {
                         startActivityForResult(userAuthEx.getIntent(), 228);
                     } catch (IOException ioEx) {
-                        //Log.d(TAG, "IOException");
-                        this.cancel(true);
+                        Log.d(TAG, "IOException");
                         hideLoading();
                         Toast.makeText(getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
                     } catch (GoogleAuthException fatalAuthEx) {
-                        this.cancel(true);
                         hideLoading();
-                        //Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
+                        Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                     return idToken;
@@ -193,6 +191,7 @@ public class SignInActivity extends Activity {
                                         editor.commit();
 
                                         Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
+                                        hideLoading();
                                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                                         startActivity(intent);
                                     }
