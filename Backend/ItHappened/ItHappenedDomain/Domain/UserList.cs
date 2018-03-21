@@ -23,6 +23,9 @@ namespace ItHappenedDomain.Domain
       if (response.IsEmpty)
         return null;
 
+      if (response.email == null)
+        return null;
+
       var collection = db.GetCollection<User>("Users");
 
       var iUser = collection.FindSync(us => us.UserId == response.email);

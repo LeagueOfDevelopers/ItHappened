@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace ItHappenedDomain.Domain
 {
+  [BsonIgnoreExtraElements]
   public class Tracking
   {
     public string trackingName { set; get; }
