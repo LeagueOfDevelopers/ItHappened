@@ -63,6 +63,8 @@ public class SignInActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.e(TAG, "Запущено!");
+
         setContentView(R.layout.activity_registration);
         mainPB = (ProgressBar) findViewById(R.id.mainProgressBar);
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
@@ -135,15 +137,20 @@ public class SignInActivity extends Activity {
                     } catch (UserRecoverableAuthException userAuthEx) {
                         startActivityForResult(userAuthEx.getIntent(), 228);
                     } catch (IOException ioEx) {
-                        Log.d(TAG, "IOException");
-                        hideLoading();
-                        Toast.makeText(getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "IOException"+ioEx);
+                        this.cancel(true);
                     } catch (GoogleAuthException fatalAuthEx) {
-                        hideLoading();
-                        Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
-                        Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        this.cancel(true);
+                        //hideLoading();
+                        Log.e(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
                     }
                     return idToken;
+                }
+
+                @Override
+                protected void onCancelled() {
+                    Toast.makeText(getApplicationContext(), "Разорвано подключение!", Toast.LENGTH_SHORT).show();
+                    hideLoading();
                 }
 
                 @Override
@@ -158,7 +165,9 @@ public class SignInActivity extends Activity {
 
     private void reg(String idToken){
 
-        ItHappenedApplication.getApi().SignUp(idToken)
+        Log.e(TAG, "Токен получен");
+
+       regSub = ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RegistrationResponse>() {
@@ -176,7 +185,7 @@ public class SignInActivity extends Activity {
                                 new Date(sharedPreferences.getLong("NickDate", 0)),
                                 new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
 
-                        ItHappenedApplication.
+                       syncSub = ItHappenedApplication.
                                 getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -225,6 +234,15 @@ public class SignInActivity extends Activity {
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(regSub!=null)
+            regSub.unsubscribe();
+        if(syncSub!=null)
+            syncSub.unsubscribe();
     }
 
     private  void showLoading(){

@@ -35,6 +35,7 @@ import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -44,6 +45,8 @@ public class ProfileSettingsFragment extends Fragment {
     TextView userMail;
     TextView userNickName;
     Button logOut;
+
+    Subscription accountGoogleRx;
 
     ProgressBar syncPB;
     FrameLayout layoutFrg;
@@ -55,7 +58,7 @@ public class ProfileSettingsFragment extends Fragment {
     private final static String EMAIL_SCOPE =
             "https://www.googleapis.com/auth/userinfo.email";
     private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE + " " + EMAIL_SCOPE;
-    private static final String TAG = "EXC";
+    private static final String TAG = "SignIn";
 
     Button signIn;
 
@@ -137,14 +140,14 @@ public class ProfileSettingsFragment extends Fragment {
                     } catch (UserRecoverableAuthException userAuthEx) {
                         startActivityForResult(userAuthEx.getIntent(), 228);
                     } catch (IOException ioEx) {
-                        //Log.d(TAG, "IOException");
+                        Log.e(TAG, "IOException");
                         this.cancel(true);
                         hideLoading();
                         Toast.makeText(getActivity().getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
                     } catch (GoogleAuthException fatalAuthEx) {
                         this.cancel(true);
                         hideLoading();
-                        //Log.d(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
+                        Log.e(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
                         Toast.makeText(getActivity().getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                     return idToken;
@@ -162,7 +165,9 @@ public class ProfileSettingsFragment extends Fragment {
 
     private void reg(String idToken){
 
-        ItHappenedApplication.getApi().SignUp(idToken)
+        Log.e(TAG, "Токен получен");
+
+        accountGoogleRx = ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RegistrationResponse>() {
@@ -235,7 +240,12 @@ public class ProfileSettingsFragment extends Fragment {
         syncPB.setVisibility(View.INVISIBLE);
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(accountGoogleRx!=null)
+            accountGoogleRx.unsubscribe();
+    }
 
     @Override
     public void onPause() {

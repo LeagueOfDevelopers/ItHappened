@@ -203,7 +203,7 @@ public class UserActionsActivity extends AppCompatActivity
                     new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
                     new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
 
-           ItHappenedApplication.
+           mainSync = ItHappenedApplication.
                     getApi().
                     SynchronizeData(sharedPreferences.getString("UserId", ""),
                             synchronizationRequest)
@@ -324,6 +324,13 @@ public class UserActionsActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mainSync!=null)
+            mainSync.unsubscribe();
+    }
+
     public void cancelLogout(){}
 
 
@@ -345,6 +352,8 @@ public class UserActionsActivity extends AppCompatActivity
             }
             return logo;
         }
+
+
 
         protected void onPostExecute(Bitmap result){
             imageView.setImageBitmap(result);
