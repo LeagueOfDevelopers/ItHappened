@@ -6,31 +6,29 @@ import ru.lod_misis.ithappened.Domain.Event;
 
 public class IllustartionModel {
 
-    private List<IllustrationType> types;
+    private IllustrationType type;
     private List<Double> pieData;
     private Event eventRef;
     private List<Double> graphData;
     private List<Double> barData;
 
-    public IllustartionModel(List<IllustrationType> types,
+    public IllustartionModel(IllustrationType type,
                              List<Double> pieData,
                              Event eventRef,
                              List<Double> graphData,
                              List<Double> barData){
-        this.types = types;
+        this.type = type;
         this.pieData = pieData;
         this.eventRef = eventRef;
         this.graphData = graphData;
         this.barData = barData;
     }
 
-    public List<IllustrationType> getTypes() {
-        return types;
+    public IllustrationType getTypes() {
+        return type;
     }
 
-    public void setTypes(List<IllustrationType> types) {
-        this.types = types;
-    }
+    public void setTypes(IllustrationType type) { this.type = type; }
 
     public List<Double> getPieData() {
         return pieData;
