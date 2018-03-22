@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 
@@ -38,11 +39,11 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
         final Fact fact = factCollection.get(position);
 
-        holder.factTitle.setText(fact.getFactName());
         holder.factDescription.setText(fact.textDescription());
 
         holder.pieChart.setVisibility(View.GONE);
         holder.lineChart.setVisibility(View.GONE);
+        holder.barChart.setVisibility(View.GONE);
 
     }
 
@@ -53,17 +54,17 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView factTitle;
         TextView factDescription;
         PieChart pieChart;
         LineChart lineChart;
+        BarChart barChart;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            factTitle = (TextView) itemView.findViewById(R.id.hintForFactForTracking);
             factDescription = (TextView) itemView.findViewById(R.id.textFactForTracking);
             lineChart = (LineChart) itemView.findViewById(R.id.graphFact);
             pieChart = (PieChart) itemView.findViewById(R.id.pieFact);
+            barChart = (BarChart) itemView.findViewById(R.id.barFact);
         }
     }
 
