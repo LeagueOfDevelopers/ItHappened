@@ -47,7 +47,7 @@ public class SumScaleFact extends Fact{
     }
 
     @Override
-    public void calculatePriority() {
+    protected void calculatePriority() {
         priority = 2.0;
     }
 
@@ -56,11 +56,4 @@ public class SumScaleFact extends Fact{
         return String.format("Сумма значений шкалы для события %s равна %s",
                 tracking.getTrackingName(), scaleSum);
     }
-
-    @Override
-    public String getFactName() {
-        return "Суммарное значение шкалы";
-    }
-
-
 }

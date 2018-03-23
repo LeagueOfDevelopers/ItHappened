@@ -59,7 +59,7 @@ public class AvrgScaleFact extends Fact {
     }
 
     @Override
-    public void calculatePriority() {
+    protected void calculatePriority() {
         priority = 3.0;
     }
 
@@ -69,8 +69,4 @@ public class AvrgScaleFact extends Fact {
                 tracking.getTrackingName(), averageValue);
     }
 
-    @Override
-    public String getFactName() {
-        return "Среднее значение шкалы";
-    }
 }

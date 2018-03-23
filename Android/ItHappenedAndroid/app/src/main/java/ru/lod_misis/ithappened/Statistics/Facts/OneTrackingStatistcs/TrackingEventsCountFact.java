@@ -48,11 +48,4 @@ public class TrackingEventsCountFact extends Fact {
     public String textDescription() {
         return String.format("Событие %s произошло %s раз", tracking.getTrackingName(), eventCount);
     }
-
-    @Override
-    public String getFactName() {
-        return "Количество событий";
-    }
-
-
 }

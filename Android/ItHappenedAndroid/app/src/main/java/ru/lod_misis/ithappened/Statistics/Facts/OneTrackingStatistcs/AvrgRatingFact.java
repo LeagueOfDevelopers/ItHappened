@@ -53,18 +53,13 @@ public class AvrgRatingFact extends Fact {
     public Double getPriority(){ return priority; }
 
     @Override
-    public void calculatePriority() {
+    protected void calculatePriority() {
         Math.sqrt(averageValue);
     }
 
     @Override
     public String textDescription() {
         return null;
-    }
-
-    @Override
-    public String getFactName() {
-        return "Среднее значение оценки";
     }
 
 }

@@ -13,10 +13,10 @@ public abstract class Fact {
     protected Double priority;
     protected IllustartionModel illustartion = null;
     public abstract void calculateData();
-    public abstract Double getPriority();
-    public abstract void calculatePriority();
+    public Double getPriority() { return priority; }
+
+    protected abstract void calculatePriority();
     public abstract String textDescription();
     public UUID getTrackingId() {return trackingId;}
-    public abstract String getFactName();
     public IllustartionModel getIllustration(){ return illustartion; }
 }

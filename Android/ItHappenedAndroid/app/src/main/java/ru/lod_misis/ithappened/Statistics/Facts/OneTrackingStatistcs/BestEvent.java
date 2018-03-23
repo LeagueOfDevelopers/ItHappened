@@ -13,13 +13,13 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
  * Created by Ded on 23.03.2018.
  */
 
-public class WorstEvent extends Fact {
+public class BestEvent extends Fact {
 
     Tracking tracking;
     List<Event> eventCollection;
-    Event worstEvent;
+    Event bestEvent;
 
-    public WorstEvent(Tracking tracking)
+    public BestEvent(Tracking tracking)
     {
         this.tracking = tracking;
         eventCollection = new ArrayList<>();
@@ -34,36 +34,35 @@ public class WorstEvent extends Fact {
             }
         }
 
-        worstEvent = eventCollection.get(0);
+        bestEvent = eventCollection.get(0);
 
         for(Event event : eventCollection)
         {
-            if (worstEvent.GetRating().getRating() > event.GetRating().getRating())
-                worstEvent = event;
+            if (bestEvent.GetRating().getRating() >= event.GetRating().getRating())
+                bestEvent = event;
         }
 
         illustartion = new IllustartionModel(IllustrationType.EVENTREF);
-        illustartion.setEventRef(worstEvent);
+        illustartion.setEventRef(bestEvent);
 
         calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
-        priority = 10.0 -worstEvent.GetRating().getRating();
+        priority = (double)bestEvent.GetRating().getRating();
     }
 
     @Override
     public String textDescription() {
-        String toReturn = String.format("Худшее событие %s произошло %s, " +
-                "вы поставили ему %s", tracking.getTrackingName(),
-                worstEvent.GetEventDate(), worstEvent.GetRating().getRating());
+        String toReturn = String.format("Лучшее событие %s произошло %s, " +
+                        "вы поставили ему %s", tracking.getTrackingName(),
+                bestEvent.GetEventDate(), bestEvent.GetRating().getRating());
 
-        if (worstEvent.GetComment() == null) return toReturn;
+        if (bestEvent.GetComment() == null) return toReturn;
 
-        return String.format(toReturn, " с комментарием %s", worstEvent.GetComment());
+        return String.format(toReturn, " с комментарием %s", bestEvent.GetComment());
     }
 
-    public Event getWorstEvent() { return worstEvent; }
-
+    public Event getBestEvent() { return bestEvent; }
 }

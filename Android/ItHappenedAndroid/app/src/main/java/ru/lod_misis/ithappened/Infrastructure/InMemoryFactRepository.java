@@ -52,14 +52,12 @@ public class InMemoryFactRepository {
         factToAdd = FunctionApplicability.allEventsCountFactApplicability(trackingCollection);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
             allTrackingsFactCollection.add(factToAdd);
         }
 
         factToAdd = FunctionApplicability.mostFrequentEventApplicability(trackingCollection);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
             allTrackingsFactCollection.add(factToAdd);
         }
 
@@ -70,21 +68,31 @@ public class InMemoryFactRepository {
     {
         Fact factToAdd;
 
-        factToAdd = functionApplicability.avrgRatingApplicability(tracking);
+        factToAdd = FunctionApplicability.avrgRatingApplicability(tracking);
         if (factToAdd != null)
             oneTrackingFactCollection.add(factToAdd);
 
-        factToAdd = functionApplicability.avrgScaleApplicability(tracking);
+
+        factToAdd = FunctionApplicability.avrgScaleApplicability(tracking);
         if (factToAdd != null)
             oneTrackingFactCollection.add(factToAdd);
 
-        factToAdd = functionApplicability.sumScaleApplicability(tracking);
+        factToAdd = FunctionApplicability.sumScaleApplicability(tracking);
         if (factToAdd != null)
             oneTrackingFactCollection.add(factToAdd);
 
-        factToAdd = functionApplicability.trackingEventsCountApplicability(tracking);
+        factToAdd = FunctionApplicability.trackingEventsCountApplicability(tracking);
         if (factToAdd != null)
             oneTrackingFactCollection.add(factToAdd);
+
+        factToAdd = FunctionApplicability.worstEventApplicability(tracking);
+        if (factToAdd != null)
+            oneTrackingFactCollection.add(factToAdd);
+
+        factToAdd = FunctionApplicability.bestEventApplicability(tracking);
+        if (factToAdd != null)
+            oneTrackingFactCollection.add(factToAdd);
+
     }
 
 

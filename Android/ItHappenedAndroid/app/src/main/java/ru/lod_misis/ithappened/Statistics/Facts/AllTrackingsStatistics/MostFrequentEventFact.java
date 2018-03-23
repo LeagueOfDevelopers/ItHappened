@@ -82,8 +82,4 @@ public class MostFrequentEventFact extends Fact{
                 minModel.getTrackingName(), minModel.getPeriod());
     }
 
-    @Override
-    public String getFactName() {
-        return "Самое частое событие";
-    }
 }
