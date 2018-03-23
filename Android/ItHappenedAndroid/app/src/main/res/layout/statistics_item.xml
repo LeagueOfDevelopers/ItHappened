@@ -13,16 +13,6 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/hintForFactForTracking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Название факта"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimaryDark"
-                android:padding="10dp"/>
-
-            <TextView
-                android:layout_below="@id/hintForFactForTracking"
                 android:id="@+id/textFactForTracking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,6 +34,13 @@
                 android:layout_width="match_parent"
                 android:layout_margin="10dp"
                 android:layout_height="100dp"></com.github.mikephil.charting.charts.PieChart>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:layout_below="@id/pieFact"
+                android:id="@+id/barFact"
+                android:layout_width="match_parent"
+                android:layout_margin="10dp"
+                android:layout_height="100dp"></com.github.mikephil.charting.charts.BarChart>
 
         </RelativeLayout>
 
