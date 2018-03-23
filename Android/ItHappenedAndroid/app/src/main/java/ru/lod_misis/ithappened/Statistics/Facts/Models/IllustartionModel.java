@@ -11,24 +11,21 @@ public class IllustartionModel {
     private Event eventRef;
     private List<Double> graphData;
     private List<Double> barData;
+    private List<FrequentEventsFactModel> frequentEventsList;
 
-    public IllustartionModel(IllustrationType type,
-                             List<Double> pieData,
-                             Event eventRef,
-                             List<Double> graphData,
-                             List<Double> barData){
+    public IllustartionModel(IllustrationType type){
         this.type = type;
-        this.pieData = pieData;
-        this.eventRef = eventRef;
-        this.graphData = graphData;
-        this.barData = barData;
+        this.pieData = null;
+        this.eventRef = null;
+        this.graphData = null;
+        this.barData = null;
     }
 
-    public IllustrationType getTypes() {
+    public IllustrationType getType() {
         return type;
     }
 
-    public void setTypes(IllustrationType type) { this.type = type; }
+    public void setType(IllustrationType type) { this.type = type; }
 
     public List<Double> getPieData() {
         return pieData;
@@ -60,5 +57,13 @@ public class IllustartionModel {
 
     public void setBarData(List<Double> barData) {
         this.barData = barData;
+    }
+
+    public List<FrequentEventsFactModel> getFrequentEventsList() {
+        return frequentEventsList;
+    }
+
+    public void setFrequentEventsModelList(List<FrequentEventsFactModel> frequentEventsModelList) {
+        this.frequentEventsList = frequentEventsModelList;
     }
 }

@@ -10,6 +10,8 @@ import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 
 /**
  * Created by Ded on 09.03.2018.
@@ -45,6 +47,9 @@ public class MostFrequentEventFact extends Fact{
                     (period, tracking.GetTrackingName(), tracking.getTrackingId());
             periodList.add(model);
         }
+        illustartion = new IllustartionModel(IllustrationType.BAR);
+        illustartion.setFrequentEventsModelList(periodList);
+
         return periodList;
     }
 
@@ -73,7 +78,7 @@ public class MostFrequentEventFact extends Fact{
 
     @Override
     public String textDescription() {
-        return String.format("Чаще всего у вас происходит событие %s - раз в %s дней",
+        return String.format("Чаще всего у вас происходит событие %s - раз в %s.2f дней",
                 minModel.getTrackingName(), minModel.getPeriod());
     }
 

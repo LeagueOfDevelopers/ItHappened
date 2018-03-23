@@ -11,7 +11,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 public abstract class Fact {
     protected UUID trackingId;
     protected Double priority;
-    protected IllustartionModel illustartion;
+    protected IllustartionModel illustartion = null;
     public abstract void calculateData();
     public abstract Double getPriority();
     public abstract void calculatePriority();

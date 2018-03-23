@@ -5,6 +5,8 @@ import java.util.List;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 
 /**
  * Created by Ded on 09.03.2018.
