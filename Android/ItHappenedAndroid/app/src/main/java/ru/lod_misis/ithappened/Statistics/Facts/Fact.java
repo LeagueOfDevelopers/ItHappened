@@ -15,7 +15,7 @@ public abstract class Fact {
     public abstract void calculateData();
     public Double getPriority() { return priority; }
 
-    protected abstract void calculatePriority();
+    public abstract void calculatePriority();
     public abstract String textDescription();
     public UUID getTrackingId() {return trackingId;}
     public IllustartionModel getIllustration(){ return illustartion; }

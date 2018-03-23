@@ -49,7 +49,7 @@ public class BestEvent extends Fact {
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         priority = (double)bestEvent.GetRating().getRating();
     }
 

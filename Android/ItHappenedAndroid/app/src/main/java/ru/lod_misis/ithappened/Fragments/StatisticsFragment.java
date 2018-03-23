@@ -166,6 +166,29 @@ public class StatisticsFragment extends Fragment {
                     allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
                     allTrackingsRecycler.setAdapter(adapter);
                 }
+            }else{
+                customView = getActivity().getLayoutInflater().inflate(R.layout.one_tracking_statistics_layout, null);
+                InMemoryFactRepository factRepository = new InMemoryFactRepository();
+                final List<Fact> facts = new ArrayList<>();
+                ITrackingRepository trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                        getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+
+                factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), allTrackings.get(position-1).GetTrackingID())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                fact.calculatePriority();
+                                facts.add(fact);
+                            }
+                        });
+
+                if(facts.size()!=0) {
+                    hint.setVisibility(View.INVISIBLE);
+                    allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.oneTrackingStatisticsRecycler);
+                    StatisticsAdapter adapter = new StatisticsAdapter(facts, getActivity().getApplicationContext());
+                    allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+                    allTrackingsRecycler.setAdapter(adapter);
+                }
             }
             getActivity().setTitle(titles.get(position));
             return customView;

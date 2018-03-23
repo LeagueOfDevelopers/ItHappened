@@ -59,7 +59,7 @@ public class AvrgScaleFact extends Fact {
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         priority = 3.0;
     }
 

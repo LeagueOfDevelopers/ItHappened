@@ -47,7 +47,7 @@ public class SumScaleFact extends Fact{
     }
 
     @Override
-    protected void calculatePriority() {
+    public void calculatePriority() {
         priority = 2.0;
     }
 

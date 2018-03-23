@@ -10,11 +10,18 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.ViewHolder> {
 
@@ -44,6 +51,57 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
         holder.pieChart.setVisibility(View.GONE);
         holder.lineChart.setVisibility(View.GONE);
         holder.barChart.setVisibility(View.GONE);
+
+        createIllustration(fact, holder.pieChart, holder.barChart,holder.lineChart);
+
+
+
+    }
+
+    public void createIllustration(Fact fact,PieChart pieChart, BarChart barChart, LineChart lineChart){
+
+
+        if(fact.getIllustration()!=null) {
+            IllustrationType type = fact.getIllustration().getType();
+            switch (type) {
+                case BAR:
+                    List<Double> barData = fact.getIllustration().getBarData();
+                    if (barData != null) {
+                        barChart.setVisibility(View.VISIBLE);
+                        ArrayList<BarEntry> entires = new ArrayList<>();
+                        for (int i = 0; i < barData.size(); i++) {
+                            entires.add(new BarEntry(barData.get(i).floatValue(), i));
+                        }
+
+                        BarDataSet dataSet = new BarDataSet(entires, "Факт");
+                        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                        BarData data = new BarData(dataSet);
+                        barChart.setData(data);
+
+                    }
+                    List<FrequentEventsFactModel> dataList = fact.getIllustration().getFrequentEventsList();
+                    if(dataList!=null){
+                        List<Double> frequentData = new ArrayList<>();
+                        List<String> frequentTrackings = new ArrayList<>();
+                        for(int i=0;i<dataList.size();i++){
+                            frequentData.add(dataList.get(i).getPeriod());
+                            frequentTrackings.add(dataList.get(i).getTrackingName());
+                        }
+                        barChart.setVisibility(View.VISIBLE);
+                        ArrayList<BarEntry> entires = new ArrayList<>();
+                        for (int i = 0; i < frequentData.size(); i++) {
+                            entires.add(new BarEntry(frequentData.get(i).floatValue(), i));
+                        }
+
+                        BarDataSet dataSet = new BarDataSet(entires, "Факт");
+                        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                        BarData data = new BarData(dataSet);
+                        barChart.setData(data);
+
+                    }
+                    break;
+            }
+        }
 
     }
 
