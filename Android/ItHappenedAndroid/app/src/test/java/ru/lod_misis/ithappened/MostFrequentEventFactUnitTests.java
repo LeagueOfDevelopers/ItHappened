@@ -5,7 +5,7 @@ package ru.lod_misis.ithappened;
  */
 
 public class MostFrequentEventFactUnitTests {
-
+/*
    /* @Test
     public void allTrackingsHaveTheSamePeriod_PeriodsShouldBeEquals(){
         Tracking tracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
