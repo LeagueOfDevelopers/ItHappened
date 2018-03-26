@@ -178,6 +178,7 @@ public class StatisticsFragment extends Fragment {
                             @Override
                             public void call(Fact fact) {
                                 fact.calculateData();
+                                fact.calculatePriority();
                                 facts.add(fact);
                             }
                         });
