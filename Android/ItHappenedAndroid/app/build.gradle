@@ -4,17 +4,17 @@ apply plugin: 'realm-android'
 
 android {
 
-    def getMyVersionCode = { ->
-        print"test2345678"
-        return project.hasProperty('myVersionCode') ?
-                myVersionCode.toInteger() : -1
-    }
-
-    def getMyVersionName = { ->
-        print"test2345678"
-        return project.hasProperty('myVersionName') ?
-                myVersionName : "-1"
-    }
+//    def getMyVersionCode = { ->
+//        print"test2345678"
+//        return project.hasProperty('myVersionCode') ?
+//                myVersionCode.toInteger() : -1
+//    }
+//
+//    def getMyVersionName = { ->
+//        print"test2345678"
+//        return project.hasProperty('myVersionName') ?
+//                myVersionName : "-1"
+//    }
 
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
