@@ -54,7 +54,7 @@ android {
 
     buildTypes {
         debug{
-            debuggeble false
+            debuggable false
         }
     }
 }
