@@ -5,15 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:debuggable="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:name="ru.lod_misis.ithappened.Retrofit.ItHappenedApplication"
-        android:theme="@style/AppTheme"
-        tools:ignore="HardcodedDebugMode">
+        android:theme="@style/AppTheme">
         <activity android:name="ru.lod_misis.ithappened.Activities.SignInActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
