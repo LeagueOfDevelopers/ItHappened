@@ -6,8 +6,14 @@ android {
 
     def getMyVersionCode = { ->
         print"test2345678"
-        return project.hasProperty('versionCode') ?
+        return project.hasProperty('myVersionCode') ?
                 versionCode.toInteger() : -1
+    }
+
+    def getMyVersionName = { ->
+        print"test2345678"
+        return project.hasProperty('myVersionName') ?
+                versionCode : "-1"
     }
 
     compileSdkVersion 26
@@ -18,7 +24,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode getMyVersionCode()
-        versionName "1.0"
+        versionName getMyVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         lintOptions {
