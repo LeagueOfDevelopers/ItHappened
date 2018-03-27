@@ -1,11 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
+
 android {
 
     def getMyVersionCode = { ->
-        def code = project.hasProperty('versionCode') ? versionCode.toInteger() : 1
-        return code
+        print"test2345678"
+        return project.hasProperty('versionCode') ?
+                versionCode.toInteger() : -1
     }
 
     compileSdkVersion 26
@@ -50,7 +52,6 @@ android {
         }
     }
 }
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:cardview-v7:21.0.+'
