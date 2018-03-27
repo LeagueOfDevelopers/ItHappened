@@ -75,8 +75,8 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
                         BarDataSet dataSet = new BarDataSet(entires, "Факт");
                         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                        BarData data = new BarData(dataSet);
-                        barChart.setData(data);
+                       BarData data = new BarData(new ArrayList<String>(),dataSet);
+                       barChart.setData(data);
 
                     }
                     List<FrequentEventsFactModel> dataList = fact.getIllustration().getFrequentEventsList();
@@ -88,15 +88,16 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             frequentTrackings.add(dataList.get(i).getTrackingName());
                         }
                         barChart.setVisibility(View.VISIBLE);
-                        ArrayList<BarEntry> entires = new ArrayList<>();
+                        ArrayList<BarEntry> entries = new ArrayList<>();
                         for (int i = 0; i < frequentData.size(); i++) {
-                            entires.add(new BarEntry(frequentData.get(i).floatValue(), i));
+                            entries.add(new BarEntry(frequentData.get(i).floatValue(), i));
                         }
 
-                        BarDataSet dataSet = new BarDataSet(entires, "Факт");
+                        BarDataSet dataSet = new BarDataSet(entries, "Отслеживания");
                         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                        BarData data = new BarData(dataSet);
+                        BarData data = new BarData(frequentTrackings, dataSet);
                         barChart.setData(data);
+                        barChart.setDescription("");
 
                     }
                     break;
