@@ -154,7 +154,6 @@ public class StatisticsFragment extends Fragment {
                         .subscribe(new Action1<Fact>() {
                             @Override
                             public void call(Fact fact) {
-                                fact.calculateData();
                                 facts.add(fact);
                             }
                         });
@@ -177,8 +176,6 @@ public class StatisticsFragment extends Fragment {
                         .subscribe(new Action1<Fact>() {
                             @Override
                             public void call(Fact fact) {
-                                fact.calculateData();
-                                fact.calculatePriority();
                                 facts.add(fact);
                             }
                         });

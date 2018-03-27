@@ -34,19 +34,24 @@ public class MostFrequentEventFact extends Fact{
     {
         for(Tracking tracking: trackingCollection) {
             double period;
+            int eventCount = 0;
             List<Event> eventCollection = tracking.GetEventCollection();
             Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
             for (Event event : eventCollection) {
-                if (!event.isDeleted() && event.GetEventDate().before(dateOfFirstEvent)) {
-                    dateOfFirstEvent = event.GetEventDate();
+                if (!event.isDeleted()) {
+                    eventCount++;
+                    if(event.GetEventDate().before(dateOfFirstEvent))
+                        dateOfFirstEvent = event.GetEventDate();
                 }
             }
             period = ((double)(Calendar.getInstance(TimeZone.getDefault()).getTime().getTime()
-                    - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24);
+                    - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24 / eventCount);
             FrequentEventsFactModel model = new FrequentEventsFactModel
                     (period, tracking.GetTrackingName(), tracking.getTrackingId());
             periodList.add(model);
         }
+
+        calculatePriority();
         illustartion = new IllustartionModel(IllustrationType.BAR);
         illustartion.setFrequentEventsModelList(periodList);
 
@@ -78,7 +83,7 @@ public class MostFrequentEventFact extends Fact{
 
     @Override
     public String textDescription() {
-        return String.format("Чаще всего у вас происходит событие %s - раз в %s.2f дней",
+        return String.format("Чаще всего у вас происходит событие %s - раз в %.2f дней",
                 minModel.getTrackingName(), minModel.getPeriod());
     }
 

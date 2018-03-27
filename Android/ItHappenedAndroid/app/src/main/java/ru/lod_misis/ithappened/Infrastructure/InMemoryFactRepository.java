@@ -22,6 +22,7 @@ public class InMemoryFactRepository {
 
     public rx.Observable calculateOneTrackingFacts(List<Tracking> trackingCollection)
     {
+        oneTrackingFactCollection = new ArrayList<>();
         for (Tracking tracking : trackingCollection) {
             functionApplicabilityCheck(tracking);
         }
@@ -32,6 +33,12 @@ public class InMemoryFactRepository {
     public rx.Observable<Fact> onChangeCalculateOneTrackingFacts(List<Tracking> trackingCollection, UUID trackingId)
     {
         Tracking changedTracking = null;
+        List<Fact> factCollectionCheck = oneTrackingFactCollection;
+
+        for (Fact fact: factCollectionCheck) {
+            if (fact.getTrackingId() == trackingId)
+                oneTrackingFactCollection.remove(fact);
+        }
 
         for (Tracking tracking : trackingCollection) {
             if (tracking.GetTrackingID().equals(trackingId))
@@ -48,6 +55,7 @@ public class InMemoryFactRepository {
 
     public rx.Observable<Fact> calculateAllTrackingsFacts(List<Tracking> trackingCollection) {
         Fact factToAdd;
+        allTrackingsFactCollection = new ArrayList<>();
 
         factToAdd = FunctionApplicability.allEventsCountFactApplicability(trackingCollection);
         if (factToAdd != null) {
@@ -69,30 +77,39 @@ public class InMemoryFactRepository {
         Fact factToAdd;
 
         factToAdd = FunctionApplicability.avrgRatingApplicability(tracking);
-        if (factToAdd != null)
+        if (factToAdd != null) {
+            factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
-
+        }
 
         factToAdd = FunctionApplicability.avrgScaleApplicability(tracking);
-        if (factToAdd != null)
+        if (factToAdd != null) {
+            factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
+        }
 
         factToAdd = FunctionApplicability.sumScaleApplicability(tracking);
-        if (factToAdd != null)
+        if (factToAdd != null) {
+            factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
+        }
 
         factToAdd = FunctionApplicability.trackingEventsCountApplicability(tracking);
-        if (factToAdd != null)
+        if (factToAdd != null) {
             oneTrackingFactCollection.add(factToAdd);
+        }
 
         factToAdd = FunctionApplicability.worstEventApplicability(tracking);
-        if (factToAdd != null)
-            oneTrackingFactCollection.add(factToAdd);
+        if (factToAdd != null) {
+            factToAdd.calculateData();
+
+        }
 
         factToAdd = FunctionApplicability.bestEventApplicability(tracking);
-        if (factToAdd != null)
+        if (factToAdd != null) {
+            factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
-
+        }
     }
 
 

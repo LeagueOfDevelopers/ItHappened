@@ -17,6 +17,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequ
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgRatingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.BestEvent;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WorstEvent;
 
@@ -102,7 +103,7 @@ public final class FunctionApplicability  {
         }
         if (eventsWithScale <= 1) return null;
 
-        return new AvrgScaleFact(tracking);
+        return new SumScaleFact(tracking);
     }
 
     public static Fact worstEventApplicability(Tracking tracking)
