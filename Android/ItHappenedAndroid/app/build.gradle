@@ -7,13 +7,13 @@ android {
     def getMyVersionCode = { ->
         print"test2345678"
         return project.hasProperty('myVersionCode') ?
-                versionCode.toInteger() : -1
+                myVersionCode.toInteger() : -1
     }
 
     def getMyVersionName = { ->
         print"test2345678"
         return project.hasProperty('myVersionName') ?
-                versionCode : "-1"
+                myVersionName : "-1"
     }
 
     compileSdkVersion 26
