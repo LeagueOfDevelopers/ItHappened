@@ -95,6 +95,9 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         barChart.setVisibility(View.VISIBLE);
                         ArrayList<BarEntry> entries = new ArrayList<>();
                         for (int i = 0; i < frequentData.size(); i++) {
+                            if(frequentData.get(i)==0.0){
+                                frequentTrackings.set(i,frequentData.get(i)+" (слишком мало событий)");
+                            }
                             entries.add(new BarEntry(frequentData.get(i).floatValue(), i));
                         }
 
