@@ -41,7 +41,8 @@ public class WorstEvent extends Fact {
 
         for(Event event : eventCollection)
         {
-            if (worstEvent.GetRating().getRating() > event.GetRating().getRating())
+            if (worstEvent.GetRating().getRating() > event.GetRating().getRating()
+                    && worstEvent.GetEventDate().after(event.GetEventDate()))
                 worstEvent = event;
         }
 
