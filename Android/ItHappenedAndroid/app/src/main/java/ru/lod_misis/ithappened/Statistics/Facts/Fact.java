@@ -10,6 +10,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 
 public abstract class Fact {
     protected UUID trackingId;
+    protected UUID eventId;
     protected Double priority;
     protected IllustartionModel illustartion = null;
     public abstract void calculateData();
@@ -18,5 +19,6 @@ public abstract class Fact {
     public abstract void calculatePriority();
     public abstract String textDescription();
     public UUID getTrackingId() {return trackingId;}
+    public UUID getEventId() {return eventId;}
     public IllustartionModel getIllustration(){ return illustartion; }
 }

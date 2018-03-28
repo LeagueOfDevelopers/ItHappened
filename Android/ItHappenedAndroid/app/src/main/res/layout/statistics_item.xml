@@ -40,7 +40,17 @@
                 android:id="@+id/barFact"
                 android:layout_width="match_parent"
                 android:layout_margin="10dp"
-                android:layout_height="500dp"></com.github.mikephil.charting.charts.BarChart>
+                android:layout_height="1dp"></com.github.mikephil.charting.charts.BarChart>
+
+            <TextView
+                android:id="@+id/eventRefBtn"
+                android:layout_below="@id/barFact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="24sp"
+                android:text="Посмотреть событие"/>
 
         </RelativeLayout>
 

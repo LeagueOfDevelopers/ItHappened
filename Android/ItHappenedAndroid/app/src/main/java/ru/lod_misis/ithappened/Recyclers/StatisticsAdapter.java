@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Recyclers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,12 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
+import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.ViewHolder> {
@@ -51,14 +55,15 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
         holder.pieChart.setVisibility(View.GONE);
         holder.lineChart.setVisibility(View.GONE);
         holder.barChart.setVisibility(View.GONE);
+        holder.eventRef.setVisibility(View.GONE);
 
-        createIllustration(fact, holder.pieChart, holder.barChart,holder.lineChart);
+        createIllustration(fact, holder.pieChart, holder.barChart,holder.lineChart, holder.eventRef);
 
 
 
     }
 
-    public void createIllustration(Fact fact,PieChart pieChart, BarChart barChart, LineChart lineChart){
+    public void createIllustration(final Fact fact, PieChart pieChart, BarChart barChart, LineChart lineChart, TextView eventRef){
 
 
         if(fact.getIllustration()!=null) {
@@ -101,6 +106,27 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
                     }
                     break;
+
+                case EVENTREF:
+                    eventRef.setVisibility(View.VISIBLE);
+                    eventRef.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            IllustartionModel illustration = fact.getIllustration();
+                            Event event = illustration.getEventRef();
+                            Intent intent = new Intent(context, EventDetailsActivity.class);
+                            intent.putExtra("trackingId", event.GetTrackingId());
+                            intent.putExtra("eventId", event.GetEventId());
+                            context.startActivity(intent);
+                        }
+                    });
+                    break;
+                case PIE:
+                    break;
+                case GRAPH:
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -117,6 +143,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
         PieChart pieChart;
         LineChart lineChart;
         BarChart barChart;
+        TextView eventRef;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -124,6 +151,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             lineChart = (LineChart) itemView.findViewById(R.id.graphFact);
             pieChart = (PieChart) itemView.findViewById(R.id.pieFact);
             barChart = (BarChart) itemView.findViewById(R.id.barFact);
+            eventRef = (TextView) itemView.findViewById(R.id.eventRefBtn);
         }
     }
 
