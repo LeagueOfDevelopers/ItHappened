@@ -79,41 +79,36 @@ public class InMemoryFactRepository {
         factToAdd = FunctionApplicability.avrgRatingApplicability(tracking);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
             oneTrackingFactCollection.add(factToAdd);
         }
 
         factToAdd = FunctionApplicability.avrgScaleApplicability(tracking);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
             oneTrackingFactCollection.add(factToAdd);
         }
 
         factToAdd = FunctionApplicability.sumScaleApplicability(tracking);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
             oneTrackingFactCollection.add(factToAdd);
         }
 
         factToAdd = FunctionApplicability.trackingEventsCountApplicability(tracking);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
             oneTrackingFactCollection.add(factToAdd);
         }
 
         factToAdd = FunctionApplicability.worstEventApplicability(tracking);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
+            oneTrackingFactCollection.add(factToAdd);
         }
 
         factToAdd = FunctionApplicability.bestEventApplicability(tracking);
         if (factToAdd != null) {
             factToAdd.calculateData();
-            factToAdd.calculatePriority();
             oneTrackingFactCollection.add(factToAdd);
         }
     }

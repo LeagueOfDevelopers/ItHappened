@@ -1,7 +1,9 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -22,6 +24,7 @@ public class BestEvent extends Fact {
     public BestEvent(Tracking tracking)
     {
         this.tracking = tracking;
+        this.trackingId = tracking.GetTrackingID();
         eventCollection = new ArrayList<>();
     }
 
@@ -29,7 +32,7 @@ public class BestEvent extends Fact {
     public void calculateData() {
 
         for(Event event : tracking.GetEventCollection()){
-            if(!event.GetStatus()){
+            if(!event.GetStatus() && event.GetRating()!=null){
                 eventCollection.add(event);
             }
         }
@@ -38,7 +41,7 @@ public class BestEvent extends Fact {
 
         for(Event event : eventCollection)
         {
-            if (bestEvent.GetRating().getRating() >= event.GetRating().getRating())
+            if (bestEvent.GetRating().getRating() <= event.GetRating().getRating())
                 bestEvent = event;
         }
 
@@ -55,9 +58,12 @@ public class BestEvent extends Fact {
 
     @Override
     public String textDescription() {
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
         String toReturn = String.format("Лучшее событие %s произошло %s, " +
                         "вы поставили ему %s", tracking.getTrackingName(),
-                bestEvent.GetEventDate(), bestEvent.GetRating().getRating());
+                format.format(bestEvent.GetEventDate()), bestEvent.GetRating().getRating());
 
         if (bestEvent.GetComment() == null) return toReturn;
 

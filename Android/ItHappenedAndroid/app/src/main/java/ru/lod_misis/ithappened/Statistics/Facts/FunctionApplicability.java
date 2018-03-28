@@ -120,7 +120,7 @@ public final class FunctionApplicability  {
         if(ratingCount <= 10 ) return null;
 
         int monthDifferece = diffMonth(firstEventDate(eventCollection));
-        if(monthDifferece <= 3) return null;
+        if(monthDifferece < 3) return null;
 
         WorstEvent worstEventFact = new WorstEvent(tracking);
         worstEventFact.calculateData();
@@ -129,7 +129,10 @@ public final class FunctionApplicability  {
         Date worstEventDate = worstEvent.GetEventDate();
         Date currentDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
-        int daysDiff = (int)(currentDate.getTime() - worstEventDate.getTime())/1000/60/60/24;
+        long curDateTime = currentDate.getTime();
+        long worstDateTime = worstEventDate.getTime();
+//        int daysDiff = (int)(currentDate.getTime() - worstEventDate.getTime())/1000/60/60/24;
+        double daysDiff = (curDateTime - worstDateTime)/1000/60/60/24;
         if(daysDiff <= 7) return null;
 
         return worstEventFact;
@@ -149,7 +152,7 @@ public final class FunctionApplicability  {
         if(ratingCount <= 10 ) return null;
 
         int monthDifferece = diffMonth(firstEventDate(eventCollection));
-        if(monthDifferece <= 3) return null;
+        if(monthDifferece < 3) return null;
 
         BestEvent bestEventFact = new BestEvent(tracking);
         bestEventFact.calculateData();
@@ -158,7 +161,11 @@ public final class FunctionApplicability  {
         Date bestEventDate = bestEvent.GetEventDate();
         Date currentDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
-        int daysDiff = (int)(currentDate.getTime() - bestEventDate.getTime())/1000/60/60/24;
+        long curDateTime = currentDate.getTime();
+        long bestDateTime = bestEventDate.getTime();
+
+//        int daysDiff = (int)(currentDate.getTime() - bestEventDate.getTime())/1000/60/60/24;
+        double daysDiff = (double)(curDateTime - bestDateTime)/1000/60/60/24;
         if(daysDiff <= 7) return null;
 
         return bestEventFact;
@@ -199,7 +206,8 @@ public final class FunctionApplicability  {
         currentDate.setTime(Calendar.getInstance(TimeZone.getDefault()).getTime());
 
         int diffYear = currentDate.get(Calendar.YEAR) - eventDate.get(Calendar.YEAR);
-        int diffMonth = diffYear * 12 + currentDate.get(Calendar.MONTH) - eventDate.get(Calendar.MONTH);
+        int diffMonth = diffYear * 12 + currentDate.get(Calendar.MONTH)
+                - eventDate.get(Calendar.MONTH);
 
         return diffMonth;
     }
