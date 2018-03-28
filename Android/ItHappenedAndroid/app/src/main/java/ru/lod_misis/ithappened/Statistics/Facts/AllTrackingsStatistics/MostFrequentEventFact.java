@@ -44,8 +44,11 @@ public class MostFrequentEventFact extends Fact{
                         dateOfFirstEvent = event.GetEventDate();
                 }
             }
-            period = ((double)(Calendar.getInstance(TimeZone.getDefault()).getTime().getTime()
-                    - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24 / eventCount);
+            if (eventCount < 3) period = 0;
+            else {
+                period = ((double) (Calendar.getInstance(TimeZone.getDefault()).getTime().getTime()
+                        - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24 / eventCount);
+            }
             FrequentEventsFactModel model = new FrequentEventsFactModel
                     (period, tracking.GetTrackingName(), tracking.getTrackingId());
             periodList.add(model);
@@ -73,7 +76,7 @@ public class MostFrequentEventFact extends Fact{
     public void calculatePriority() {
         Double min = Double.MAX_VALUE;
         for (FrequentEventsFactModel model : periodList) {
-            if (min > model.getPeriod()) {
+            if (min > model.getPeriod() && model.getPeriod()!= 0) {
                 min = model.getPeriod();
                 minModel = model;
             }

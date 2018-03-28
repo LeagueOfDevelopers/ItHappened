@@ -31,18 +31,17 @@ public final class FunctionApplicability  {
             if (!tracking.isDeleted()) trckngs.add(tracking);
         }
         trackingCollection = trckngs;
-
+        int trackingCount = 0;
         if (trackingCollection.size() < 2) return null;
-        List<Tracking> processingTracking = new ArrayList<>();
         for (Tracking tracking: trackingCollection) {
             int eventCount = 0;
             for (Event event: tracking.getEventCollection()) {
                 if (!event.isDeleted()) eventCount++;
             }
-            if (eventCount > 2) processingTracking.add(tracking);
+            if (eventCount > 2) trackingCount++;
         }
-        if (processingTracking.size() < 2) return null;
-        return new MostFrequentEventFact(processingTracking);
+        if (trackingCount < 2) return null;
+        return new MostFrequentEventFact(trackingCollection);
     }
 
     public static Fact allEventsCountFactApplicability(List<Tracking> trackingCollection)
