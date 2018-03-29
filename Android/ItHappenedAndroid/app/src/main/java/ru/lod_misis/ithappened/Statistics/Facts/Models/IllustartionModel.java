@@ -12,6 +12,7 @@ public class IllustartionModel {
     private List<Double> graphData;
     private List<Double> barData;
     private List<FrequentEventsFactModel> frequentEventsList;
+    private List<WeekDaysFactModel> weekDaysFactList;
 
     public IllustartionModel(IllustrationType type){
         this.type = type;
@@ -19,6 +20,14 @@ public class IllustartionModel {
         this.eventRef = null;
         this.graphData = null;
         this.barData = null;
+    }
+
+    public List<WeekDaysFactModel> getWeekDaysFactList() {
+        return weekDaysFactList;
+    }
+
+    public void setWeekDaysFactList(List<WeekDaysFactModel> weekDaysFactList) {
+        this.weekDaysFactList = weekDaysFactList;
     }
 
     public IllustrationType getType() {

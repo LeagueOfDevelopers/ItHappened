@@ -111,6 +111,11 @@ public class InMemoryFactRepository {
             factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
+
+        factToAdd = FunctionApplicability.certainWeekDaysApplicability(tracking);
+        if (factToAdd != null){
+            oneTrackingFactCollection.add(factToAdd);
+        }
     }
 
 

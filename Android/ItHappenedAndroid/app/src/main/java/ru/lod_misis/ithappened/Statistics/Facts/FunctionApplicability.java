@@ -17,6 +17,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequ
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgRatingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.BestEvent;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainWeekDaysFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WorstEvent;
@@ -168,6 +169,19 @@ public final class FunctionApplicability  {
         if(daysDiff <= 7) return null;
 
         return bestEventFact;
+    }
+
+    public static Fact certainWeekDaysApplicability(Tracking tracking)
+    {
+        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+        if(eventCollection.size() <= 7) return null;
+
+        CertainWeekDaysFact fact = new CertainWeekDaysFact(tracking);
+        fact.calculateData();
+
+        if(fact.getHighestPercentage().getPercetage() < 25.0) return null;
+
+        return fact;
     }
 
     private static List<Event> removeDeletedEvents(List<Event> eventCollection)

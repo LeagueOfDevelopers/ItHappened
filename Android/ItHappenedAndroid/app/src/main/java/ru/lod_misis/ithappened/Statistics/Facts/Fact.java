@@ -16,7 +16,7 @@ public abstract class Fact {
     public abstract void calculateData();
     public Double getPriority() { return priority; }
 
-    public abstract void calculatePriority();
+    protected abstract void calculatePriority();
     public abstract String textDescription();
     public UUID getTrackingId() {return trackingId;}
     public UUID getEventId() {return eventId;}
