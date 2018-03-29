@@ -14,6 +14,9 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.WeekDaysFactModel;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.ViewHolder> {
 
@@ -125,6 +129,54 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                     });
                     break;
                 case PIE:
+                    IllustartionModel illustartionModel = fact.getIllustration();
+                    if(illustartionModel!=null) {
+                        pieChart.setVisibility(View.VISIBLE);
+                        List<WeekDaysFactModel> data = illustartionModel.getWeekDaysFactList();
+
+                        List<String> weeksTitles = new ArrayList<>();
+                        List<Double> percentage = new ArrayList<>();
+
+                        for (WeekDaysFactModel model : data) {
+                            switch (model.getWeekDay()) {
+                                case MONDAY:
+                                    weeksTitles.add("Понедельник");
+                                    break;
+                                case TUESDAY:
+                                    weeksTitles.add("Вторник");
+                                    break;
+                                case WEDNESDAY:
+                                    weeksTitles.add("Среда");
+                                    break;
+                                case THURSDAY:
+                                    weeksTitles.add("Четверг");
+                                    break;
+                                case FRIDAY:
+                                    weeksTitles.add("Пятница");
+                                    break;
+                                case SATURDAY:
+                                    weeksTitles.add("Суббота");
+                                    break;
+                                case SUNDAY:
+                                    weeksTitles.add("Воскресенье");
+                                    break;
+                                default:
+                                    break;
+                            }
+
+
+                            percentage.add(model.getPercetage());
+                        }
+                        List<Entry> entries = new ArrayList<>();
+                        for (int i = 0; i < percentage.size(); i++) {
+                            entries.add(new Entry(percentage.get(i).floatValue(), i));
+                        }
+                        PieDataSet pieDataSet = new PieDataSet(entries, "Дни недели");
+                        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                        PieData pieData = new PieData(weeksTitles, pieDataSet);
+                        pieChart.setData(pieData);
+                        pieChart.setDescription("Дни недели");
+                    }
                     break;
                 case GRAPH:
                     break;
