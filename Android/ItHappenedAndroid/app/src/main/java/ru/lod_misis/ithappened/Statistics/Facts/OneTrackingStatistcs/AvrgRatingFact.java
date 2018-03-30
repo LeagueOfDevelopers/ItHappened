@@ -59,7 +59,7 @@ public class AvrgRatingFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("Среднее значение оценки для события %s равно %.2f",
+        return String.format("Среднее значение оценки для события <b>%s</b> равно </b>%.2f</b>",
                 tracking.getTrackingName(), averageValue);
     }
 

@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Recyclers;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
         final Fact fact = factCollection.get(position);
 
-        holder.factDescription.setText(fact.textDescription());
+        holder.factDescription.setText(Html.fromHtml(fact.textDescription()), TextView.BufferType.SPANNABLE);
 
         holder.pieChart.setVisibility(View.GONE);
         holder.lineChart.setVisibility(View.GONE);

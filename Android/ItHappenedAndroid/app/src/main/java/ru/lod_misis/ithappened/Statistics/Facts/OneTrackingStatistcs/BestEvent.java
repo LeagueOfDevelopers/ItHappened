@@ -62,13 +62,13 @@ public class BestEvent extends Fact {
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
 
-        String toReturn = String.format("Лучшее событие %s произошло %s, " +
-                        "вы поставили ему %s", tracking.getTrackingName(),
+        String toReturn = String.format("Лучшее событие <b>%s</b> произошло <b>%s</b>, " +
+                        "вы поставили ему <b>%s</b>", tracking.getTrackingName(),
                 format.format(bestEvent.GetEventDate()), bestEvent.GetRating().getRating());
 
         if (bestEvent.GetComment() == null) return toReturn;
 
-        return String.format(toReturn, " с комментарием %s", bestEvent.GetComment());
+        return String.format(toReturn, " с комментарием <b>%s</b>", bestEvent.GetComment());
     }
 
     public Event getBestEvent() { return bestEvent; }

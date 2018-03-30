@@ -50,6 +50,6 @@ public class AllEventsCountFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("У вас произошло уже %s событий!", eventCount);
+        return String.format("У вас произошло уже <b>%s</b> событий!", eventCount);
     }
 }

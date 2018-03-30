@@ -65,7 +65,7 @@ public class AvrgScaleFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("Среднее значение шкалы для события %s равно %.2f",
+        return String.format("Среднее значение шкалы для события <b>%s</b> равно <b>%.2f</b>",
                 tracking.getTrackingName(), averageValue);
     }
 

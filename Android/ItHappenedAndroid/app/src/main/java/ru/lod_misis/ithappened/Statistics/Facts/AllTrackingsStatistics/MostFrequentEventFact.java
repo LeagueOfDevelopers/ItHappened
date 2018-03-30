@@ -86,7 +86,7 @@ public class MostFrequentEventFact extends Fact{
 
     @Override
     public String textDescription() {
-        return String.format("Чаще всего у вас происходит событие %s - раз в %.2f дней",
+        return String.format("Чаще всего у вас происходит событие <b>%s</b> - раз в <b>%.2f</b> дней",
                 minModel.getTrackingName(), minModel.getPeriod());
     }
 

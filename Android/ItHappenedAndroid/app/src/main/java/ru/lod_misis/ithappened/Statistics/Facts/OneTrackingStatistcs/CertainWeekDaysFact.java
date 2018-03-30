@@ -78,7 +78,7 @@ public class CertainWeekDaysFact extends Fact {
         String weekDay = model.getWeekDayAsString();
         NumberFormat format = new DecimalFormat("#.##");
 
-        return String.format("В %s%s случаев событие %s происходит %s",
+        return String.format("В <b>%s%s</b> случаев событие <b>%s</b> происходит <b>%s</b>",
                 format.format(model.getPercetage()), "%", tracking.getTrackingName(), weekDay);
     }
 }

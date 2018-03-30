@@ -5,16 +5,13 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Handler;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.DayTime;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.DayTimeFactModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.WeekDaysFactModel;
 
 /**
  * Created by Ded on 29.03.2018.
@@ -92,7 +89,7 @@ public class CertainDayTimeFact extends Fact{
         String dayTime = model.getDayTimeAsString();
         NumberFormat format = new DecimalFormat("#.##");
 
-        return String.format("В %s%s случаев событие %s происходит %s",
+        return String.format("В <b>%s%s</b> случаев событие <b>%s</b> происходит <b>%s</b>",
                 format.format(model.getPercetage()), "%", tracking.getTrackingName(), dayTime);
     }
 }
