@@ -90,8 +90,13 @@ public class EventsFragment extends Fragment  {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
@@ -99,13 +104,9 @@ public class EventsFragment extends Fragment  {
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
 
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
-        if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0){
+        if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0) {
             hintForEventsHistory.setVisibility(View.INVISIBLE);
         }
-
-        View view = getView();
-
-
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
 
 
@@ -130,9 +131,9 @@ public class EventsFragment extends Fragment  {
                         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                         stateForHint = 0;
                         break;
-                        default:
-                            Toast.makeText(getActivity(), "Потяните вверх!",Toast.LENGTH_SHORT).show();
-                            break;
+                    default:
+                        Toast.makeText(getActivity(), "Потяните вверх!",Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
@@ -277,26 +278,26 @@ public class EventsFragment extends Fragment  {
                     trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
                             new MultiSpinner.MultiSpinnerListener() {
 
-                        @Override
-                        public void onItemsSelected(boolean[] selected) {
+                                @Override
+                                public void onItemsSelected(boolean[] selected) {
 
-                            for (int i = 0; i < selected.length; i++) {
+                                    for (int i = 0; i < selected.length; i++) {
 
-                                Log.e("FILTER", selected[i] + "");
-                                if (selected[i]) {
-                                    filteredTrackingsTitles.add(strings.get(i));
-                                    if(flags.get(i)) {
-                                        filteredTrackingsUuids.add(idCollection.get(i));
+                                        Log.e("FILTER", selected[i] + "");
+                                        if (selected[i]) {
+                                            filteredTrackingsTitles.add(strings.get(i));
+                                            if(flags.get(i)) {
+                                                filteredTrackingsUuids.add(idCollection.get(i));
+                                            }
+                                        }
+                                        if (!selected[i]) {
+                                            filteredTrackingsUuids.remove(idCollection.get(i));
+                                            flags.set(i, true);
+                                        }
+
                                     }
                                 }
-                                if (!selected[i]) {
-                                    filteredTrackingsUuids.remove(idCollection.get(i));
-                                    flags.set(i, true);
-                                }
-
-                            }
-                        }
-                    });
+                            });
                 }else{
 
                     trackingsSpinner.setVisibility(View.INVISIBLE);
@@ -364,6 +365,11 @@ public class EventsFragment extends Fragment  {
 
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
 
