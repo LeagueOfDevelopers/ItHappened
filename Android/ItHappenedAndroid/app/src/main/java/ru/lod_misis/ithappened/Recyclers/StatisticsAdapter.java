@@ -175,9 +175,11 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
                             pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                            pieDataSet.setValueTextSize(10);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);
-                            pieChart.setDescription("Дни недели");
+                            pieChart.setDescription("");
+                            pieChart.setCenterText("Дни недели");
                         }
 
 
@@ -212,9 +214,11 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
                             pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                            pieDataSet.setValueTextSize(15);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);
-                            pieChart.setDescription("Время суток");
+                            pieChart.setCenterText("Время суток");
+                            pieChart.setDescription("");
                         }
 
                     }
