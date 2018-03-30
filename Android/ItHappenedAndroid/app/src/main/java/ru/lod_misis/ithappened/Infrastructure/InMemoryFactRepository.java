@@ -33,12 +33,14 @@ public class InMemoryFactRepository {
     public rx.Observable<Fact> onChangeCalculateOneTrackingFacts(List<Tracking> trackingCollection, UUID trackingId)
     {
         Tracking changedTracking = null;
-        List<Fact> factCollectionCheck = oneTrackingFactCollection;
+        List<Fact> factCollectionCheck = new ArrayList<>();
 
-        for (Fact fact: factCollectionCheck) {
-            if (fact.getTrackingId() == trackingId)
-                oneTrackingFactCollection.remove(fact);
+        for (Fact fact: oneTrackingFactCollection) {
+            if (fact.getTrackingId().equals(trackingId))
+                factCollectionCheck.add(fact);
         }
+
+        oneTrackingFactCollection.removeAll(factCollectionCheck);
 
         for (Tracking tracking : trackingCollection) {
             if (tracking.GetTrackingID().equals(trackingId))
