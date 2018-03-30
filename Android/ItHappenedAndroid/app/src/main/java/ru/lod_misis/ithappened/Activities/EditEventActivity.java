@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -32,14 +33,22 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class EditEventActivity extends AppCompatActivity {
 
     Button editEvent;
     Button editDate;
     TextView editedDateText;
+
+    InMemoryFactRepository factRepository;
 
     //states
     int commentState = 0;
@@ -85,6 +94,7 @@ public class EditEventActivity extends AppCompatActivity {
 
 
 
+        factRepository = StaticFactRepository.getInstance();
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         trackingCollection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
@@ -330,6 +340,24 @@ public class EditEventActivity extends AppCompatActivity {
                     if (commentFlag && ratingFlag && scaleFlag) {
                         try {
                             trackingService.EditEvent(trackingId, eventId, scale, rating, comment, editedDate);
+                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculateOneTrackingFact");
+                                        }
+                                    });
+                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculateOneTrackingFact");
+                                        }
+                                    });
                             finish();
                         } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "ex", Toast.LENGTH_SHORT).show();

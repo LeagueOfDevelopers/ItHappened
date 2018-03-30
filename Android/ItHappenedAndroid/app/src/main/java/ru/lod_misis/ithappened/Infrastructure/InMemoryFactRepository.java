@@ -123,6 +123,23 @@ public class InMemoryFactRepository {
         }
     }
 
+    public List<Fact> getAllTrackingsFactCollection() {
+        return allTrackingsFactCollection;
+    }
+
+    public List<Fact> getOneTrackingFactCollection(UUID trackingId) {
+        List<Fact> collectionToReturn = new ArrayList<>();
+        for (Fact fact : oneTrackingFactCollection) {
+            if(fact.getTrackingId()!=null && fact.getTrackingId().equals(trackingId)){
+                collectionToReturn.add(fact);
+            }
+        }
+        return collectionToReturn;
+    }
+
+    public void setOneTrackingFactCollection(List<Fact> oneTrackingFactCollection) {
+        this.oneTrackingFactCollection = oneTrackingFactCollection;
+    }
 
     List<Fact> oneTrackingFactCollection = new ArrayList<>();
     List<Fact> allTrackingsFactCollection = new ArrayList<>();

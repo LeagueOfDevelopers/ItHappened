@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,8 +22,14 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Fragments.DeleteEventDialog;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -30,6 +37,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     TextView yourComment;
     TextView yourScale;
     RatingBar yourRating;
+    InMemoryFactRepository factRepository;
 
     Button editEvent;
     Button deleteEvent;
@@ -44,6 +52,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
+        factRepository = StaticFactRepository.getInstance();
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         collection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId" , "")).getInstance();
@@ -123,6 +132,24 @@ public class EventDetailsActivity extends AppCompatActivity {
     public void okClicked() {
 
         trackingSercvice.RemoveEvent(trackingId, eventId);
+        factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculateOneTrackingFact");
+                    }
+                });
+        factRepository.calculateAllTrackingsFacts(collection.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculateOneTrackingFact");
+                    }
+                });
         Toast.makeText(this, "Событие удалено", Toast.LENGTH_SHORT).show();
         this.finish();
 

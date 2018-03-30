@@ -13,14 +13,4 @@
         app:pageColor="@color/colorPrimaryDark"
         android:layout_height="match_parent"></com.synnapps.carouselview.CarouselView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="События отсутствуют!"
-        android:textSize="20sp"
-        android:id="@+id/hintForStatisticsFragment"
-        android:layout_gravity="center"/>
-
 </android.support.design.widget.CoordinatorLayout>
