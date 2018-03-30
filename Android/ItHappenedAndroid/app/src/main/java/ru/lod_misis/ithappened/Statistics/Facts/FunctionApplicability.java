@@ -4,6 +4,9 @@ import java.lang.annotation.Target;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -19,6 +22,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFa
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.BestEvent;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainDayTimeFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainWeekDaysFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongTimeAgoFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WorstEvent;
@@ -198,6 +202,32 @@ public final class FunctionApplicability  {
         return fact;
     }
 
+    public static Fact longTimeAgoApplicability(Tracking tracking){
+
+        LongTimeAgoFact fact = new LongTimeAgoFact(tracking);
+        fact.calculateData();
+
+        Double daysSinceLastEvent = fact.getDaysSinceLastEvent();
+        if(daysSinceLastEvent <= 7) return null;
+
+        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+        if(eventCollection.size() <= 2) return null;
+
+        eventCollection = sortEventCollectionByDate(eventCollection);
+
+        for(int i = 0; i < eventCollection.size() - 1; i++){
+            Date firstEventDate = eventCollection.get(i).GetEventDate();
+            Date secondEventDate = eventCollection.get(i+1).GetEventDate();
+
+            double interval = (double)(secondEventDate.getTime() - firstEventDate.getTime())/
+                    1000/60/60/24;
+
+            if(daysSinceLastEvent <= interval) return null;
+        }
+
+        return fact;
+    }
+
     private static List<Event> removeDeletedEvents(List<Event> eventCollection)
     {
         List<Event> eventCollectionToReturn = new ArrayList<>();
@@ -239,4 +269,15 @@ public final class FunctionApplicability  {
         return diffMonth;
     }
 
+    public static List<Event> sortEventCollectionByDate(List<Event> eventCollection) {
+
+        Collections.sort(eventCollection, new Comparator<Event>() {
+            @Override
+            public int compare(Event event, Event t1) {
+                return event.GetEventDate().compareTo(t1.GetEventDate());
+            }
+        });
+
+        return  eventCollection;
+    }
 }

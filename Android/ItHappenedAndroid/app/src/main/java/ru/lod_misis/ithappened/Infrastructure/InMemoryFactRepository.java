@@ -121,6 +121,11 @@ public class InMemoryFactRepository {
         if (factToAdd != null) {
             oneTrackingFactCollection.add(factToAdd);
         }
+
+        factToAdd = FunctionApplicability.longTimeAgoApplicability(tracking);
+        if (factToAdd != null) {
+            oneTrackingFactCollection.add(factToAdd);
+        }
     }
 
 
