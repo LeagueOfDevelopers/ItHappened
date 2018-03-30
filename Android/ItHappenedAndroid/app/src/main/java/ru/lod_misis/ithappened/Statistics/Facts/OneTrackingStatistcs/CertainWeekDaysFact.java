@@ -11,10 +11,6 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.WeekDaysFactModel;
 
-/**
- * Created by Ded on 29.03.2018.
- */
-
 public class CertainWeekDaysFact extends Fact {
 
     private Tracking tracking;
@@ -45,7 +41,9 @@ public class CertainWeekDaysFact extends Fact {
                     eventCount++;
             }
             if (eventCount != 0) {
-                model.calculateData(eventCount / eventCollection.size() * 100, i);
+                Double percentage = (double)eventCount / eventCollection.size();
+                percentage *= 100;
+                model.calculateData(percentage, i);
                 modelList.add(model);
             }
         }
