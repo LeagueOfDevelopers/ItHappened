@@ -22,16 +22,16 @@ public class DayTimeFactModel {
     public void calculateDate(int time, Double percetage){
         this.percetage = percetage;
         switch (time) {
-            case 1:
+            case 0:
                 dayTime = DayTime.NIGHT;
                 break;
-            case 2:
-                dayTime = DayTime.EVENING;
+            case 1:
+                dayTime = DayTime.MORNING;
                 break;
-            case 3:
+            case 2:
                 dayTime = DayTime.AFTERNOON;
                 break;
-            case 4:
+            case 3:
                 dayTime = DayTime.EVENING;
                 break;
         }

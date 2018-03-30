@@ -1,5 +1,7 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -88,8 +90,9 @@ public class CertainDayTimeFact extends Fact{
     public String textDescription() {
         DayTimeFactModel model = getHighestPercentage();
         String dayTime = model.getDayTimeAsString();
+        NumberFormat format = new DecimalFormat("#.##");
 
-        return String.format("В %.2f%s случаев событие %s происходит %s",
-                model.getPercetage(), "%", tracking.getTrackingName(), dayTime);
+        return String.format("В %s%s случаев событие %s происходит %s",
+                format.format(model.getPercetage()), "%", tracking.getTrackingName(), dayTime);
     }
 }

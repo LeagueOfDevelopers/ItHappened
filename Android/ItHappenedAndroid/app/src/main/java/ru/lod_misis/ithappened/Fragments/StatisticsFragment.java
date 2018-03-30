@@ -161,7 +161,7 @@ public class StatisticsFragment extends Fragment {
                 if(facts.size()!=0) {
                     hint.setVisibility(View.INVISIBLE);
                     allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.allStatisticsRecycler);
-                    StatisticsAdapter adapter = new StatisticsAdapter(facts, getActivity().getApplicationContext());
+                    StatisticsAdapter adapter = new StatisticsAdapter(sortFacts(facts), getActivity().getApplicationContext());
                     allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
                     allTrackingsRecycler.setAdapter(adapter);
                 }
@@ -183,7 +183,7 @@ public class StatisticsFragment extends Fragment {
                 if(facts.size()!=0) {
                     hint.setVisibility(View.INVISIBLE);
                     allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.oneTrackingStatisticsRecycler);
-                    StatisticsAdapter adapter = new StatisticsAdapter(facts, getActivity().getApplicationContext());
+                    StatisticsAdapter adapter = new StatisticsAdapter(sortFacts(facts), getActivity().getApplicationContext());
                     allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
                     allTrackingsRecycler.setAdapter(adapter);
                 }
@@ -192,5 +192,22 @@ public class StatisticsFragment extends Fragment {
             return customView;
         }
     };
+
+    private List<Fact> sortFacts(List<Fact> factCollection){
+        int size = factCollection.size();
+        for (int i = 0; i < size; i++){
+            for(int j = i; j < size; j++){
+                Fact firstFact = factCollection.get(i);
+                Fact secondFact = factCollection.get(j);
+                if(firstFact.getPriority() < secondFact.getPriority())
+                {
+                    factCollection.set(i, secondFact);
+                    factCollection.set(j, firstFact);
+                }
+            }
+        }
+
+        return factCollection;
+    }
 
 }
