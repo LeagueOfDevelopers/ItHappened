@@ -45,7 +45,9 @@ public class CertainWeekDaysFact extends Fact {
                     eventCount++;
             }
             if (eventCount != 0) {
-                model.calculateData(eventCount / eventCollection.size() * 100, i);
+                Double percentage = (double)eventCount / eventCollection.size();
+                percentage *= 100;
+                model.calculateData(percentage, i);
                 modelList.add(model);
             }
         }
