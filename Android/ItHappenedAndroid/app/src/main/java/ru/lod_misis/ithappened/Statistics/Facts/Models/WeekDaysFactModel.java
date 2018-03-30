@@ -1,7 +1,5 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models;
 
-import java.util.Calendar;
-
 /**
  * Created by Ded on 29.03.2018.
  */
@@ -77,8 +75,8 @@ public class WeekDaysFactModel {
         return null;
     }
 
-    public Double getPercetage() {
-        return percetage;
+    public double getPercetage() {
+        return percetage.doubleValue();
     }
 
     public WeekDay getWeekDay() {
