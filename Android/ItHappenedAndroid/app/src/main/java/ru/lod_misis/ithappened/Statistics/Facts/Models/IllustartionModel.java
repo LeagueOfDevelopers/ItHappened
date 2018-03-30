@@ -13,6 +13,7 @@ public class IllustartionModel {
     private List<Double> barData;
     private List<FrequentEventsFactModel> frequentEventsList;
     private List<WeekDaysFactModel> weekDaysFactList;
+    private List<DayTimeFactModel> dayTimeFactList;
 
     public IllustartionModel(IllustrationType type){
         this.type = type;
@@ -20,6 +21,14 @@ public class IllustartionModel {
         this.eventRef = null;
         this.graphData = null;
         this.barData = null;
+    }
+
+    public List<DayTimeFactModel> getDayTimeFactList() {
+        return dayTimeFactList;
+    }
+
+    public void setDayTimeFactList(List<DayTimeFactModel> dayTimeFactList) {
+        this.dayTimeFactList = dayTimeFactList;
     }
 
     public List<WeekDaysFactModel> getWeekDaysFactList() {

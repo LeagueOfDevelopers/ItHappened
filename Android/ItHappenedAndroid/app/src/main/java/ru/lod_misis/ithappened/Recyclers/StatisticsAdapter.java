@@ -26,6 +26,7 @@ import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.DayTimeFactModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
@@ -131,51 +132,91 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                 case PIE:
                     IllustartionModel illustartionModel = fact.getIllustration();
                     if(illustartionModel!=null) {
-                        pieChart.setVisibility(View.VISIBLE);
-                        List<WeekDaysFactModel> data = illustartionModel.getWeekDaysFactList();
+                        if (illustartionModel.getWeekDaysFactList() != null) {
+                            pieChart.setVisibility(View.VISIBLE);
+                            List<WeekDaysFactModel> data = illustartionModel.getWeekDaysFactList();
 
-                        List<String> weeksTitles = new ArrayList<>();
-                        List<Double> percentage = new ArrayList<>();
+                            List<String> weeksTitles = new ArrayList<>();
+                            List<Double> percentage = new ArrayList<>();
 
-                        for (WeekDaysFactModel model : data) {
-                            switch (model.getWeekDay()) {
-                                case MONDAY:
-                                    weeksTitles.add("Понедельник");
-                                    break;
-                                case TUESDAY:
-                                    weeksTitles.add("Вторник");
-                                    break;
-                                case WEDNESDAY:
-                                    weeksTitles.add("Среда");
-                                    break;
-                                case THURSDAY:
-                                    weeksTitles.add("Четверг");
-                                    break;
-                                case FRIDAY:
-                                    weeksTitles.add("Пятница");
-                                    break;
-                                case SATURDAY:
-                                    weeksTitles.add("Суббота");
-                                    break;
-                                case SUNDAY:
-                                    weeksTitles.add("Воскресенье");
-                                    break;
-                                default:
-                                    break;
+                            for (WeekDaysFactModel model : data) {
+                                switch (model.getWeekDay()) {
+                                    case MONDAY:
+                                        weeksTitles.add("Понедельник");
+                                        break;
+                                    case TUESDAY:
+                                        weeksTitles.add("Вторник");
+                                        break;
+                                    case WEDNESDAY:
+                                        weeksTitles.add("Среда");
+                                        break;
+                                    case THURSDAY:
+                                        weeksTitles.add("Четверг");
+                                        break;
+                                    case FRIDAY:
+                                        weeksTitles.add("Пятница");
+                                        break;
+                                    case SATURDAY:
+                                        weeksTitles.add("Суббота");
+                                        break;
+                                    case SUNDAY:
+                                        weeksTitles.add("Воскресенье");
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+
+                                percentage.add(model.getPercetage());
                             }
+                            List<Entry> entries = new ArrayList<>();
+                            for (int i = 0; i < percentage.size(); i++) {
+                                entries.add(new Entry(percentage.get(i).floatValue(), i));
+                            }
+                            PieDataSet pieDataSet = new PieDataSet(entries, null);
+                            pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                            PieData pieData = new PieData(weeksTitles, pieDataSet);
+                            pieChart.setData(pieData);
+                            pieChart.setDescription("Дни недели");
+                        }
 
 
-                            percentage.add(model.getPercetage());
+                        if (illustartionModel.getDayTimeFactList() != null) {
+                            pieChart.setVisibility(View.VISIBLE);
+                            List<DayTimeFactModel> data = illustartionModel.getDayTimeFactList();
+
+                            List<String> weeksTitles = new ArrayList<>();
+                            List<Double> percentage = new ArrayList<>();
+
+                            for (DayTimeFactModel model : data) {
+                                switch (model.getDayTime()) {
+                                    case NIGHT:
+                                        weeksTitles.add("Ночь");
+                                        break;
+                                    case MORNING:
+                                        weeksTitles.add("Утро");
+                                        break;
+                                    case AFTERNOON:
+                                        weeksTitles.add("День");
+                                        break;
+                                    case EVENING:
+                                        weeksTitles.add("Вечер");
+                                        break;
+                                }
+
+                                percentage.add(model.getPercetage());
+                            }
+                            List<Entry> entries = new ArrayList<>();
+                            for (int i = 0; i < percentage.size(); i++) {
+                                entries.add(new Entry(percentage.get(i).floatValue(), i));
+                            }
+                            PieDataSet pieDataSet = new PieDataSet(entries, null);
+                            pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                            PieData pieData = new PieData(weeksTitles, pieDataSet);
+                            pieChart.setData(pieData);
+                            pieChart.setDescription("Время суток");
                         }
-                        List<Entry> entries = new ArrayList<>();
-                        for (int i = 0; i < percentage.size(); i++) {
-                            entries.add(new Entry(percentage.get(i).floatValue(), i));
-                        }
-                        PieDataSet pieDataSet = new PieDataSet(entries, "Дни недели");
-                        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                        PieData pieData = new PieData(weeksTitles, pieDataSet);
-                        pieChart.setData(pieData);
-                        pieChart.setDescription("Дни недели");
+
                     }
                     break;
                 case GRAPH:

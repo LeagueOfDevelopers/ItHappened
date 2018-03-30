@@ -116,6 +116,11 @@ public class InMemoryFactRepository {
         if (factToAdd != null){
             oneTrackingFactCollection.add(factToAdd);
         }
+
+        factToAdd = FunctionApplicability.certainDayTimeApplicability(tracking);
+        if (factToAdd != null) {
+            oneTrackingFactCollection.add(factToAdd);
+        }
     }
 
 
