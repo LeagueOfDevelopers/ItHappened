@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,12 +31,19 @@ import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class AddNewEventActivity extends AppCompatActivity {
 
     TrackingService trackingService;
+    InMemoryFactRepository factRepository;
 
     LinearLayout textCustomControl;
     LinearLayout scaleCustomControl;
@@ -78,6 +86,8 @@ public class AddNewEventActivity extends AppCompatActivity {
         StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext(),sharedPreferences.getString("UserId", ""));
         trackingCollection = repository.getInstance();
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
+
+        factRepository = StaticFactRepository.getInstance();
 
         textCustomControl = (LinearLayout) findViewById(R.id.commentControl);
         scaleCustomControl = (LinearLayout) findViewById(R.id.scaleControl);
@@ -368,6 +378,24 @@ public class AddNewEventActivity extends AppCompatActivity {
                     if (flag_for_comment && flag_for_rating && flag_for_scale) {
                         try {
                             trackingService.AddEvent(trackingId, newEvent);
+                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculateOneTrackingFact");
+                                        }
+                                    });
+                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculateOneTrackingFact");
+                                        }
+                                    });
                             Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                             finish();
                         } catch (Exception e) {

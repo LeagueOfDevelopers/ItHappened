@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,11 +20,18 @@ import java.util.UUID;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class AddNewTrackingActivity extends AppCompatActivity {
 
     ITrackingRepository trackingRepository;
+    InMemoryFactRepository factRepository;
 
     LinearLayout scaleCstm;
     LinearLayout textCstm;
@@ -76,6 +84,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Отслеживать");
+        factRepository = StaticFactRepository.getInstance();
 
         addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
 
@@ -226,6 +235,24 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     Tracking newTracking = new Tracking(
                             trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
                     trackingRepository.AddNewTracking(newTracking);
+                    factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
+                    .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action1<Fact>() {
+                                @Override
+                                public void call(Fact fact) {
+                                    Log.d("Statistics", "calculateOneTrackingFact");
+                                }
+                            });
+                    factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
+                            .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action1<Fact>() {
+                                @Override
+                                public void call(Fact fact) {
+                                    Log.d("Statistics", "calculateOneTrackingFact");
+                                }
+                            });
                     Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);

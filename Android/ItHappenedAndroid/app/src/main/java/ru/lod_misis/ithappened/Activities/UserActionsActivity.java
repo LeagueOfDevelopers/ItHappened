@@ -39,10 +39,13 @@ import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -52,6 +55,9 @@ public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout;
+
+    InMemoryFactRepository factRepository;
+    ITrackingRepository trackingRepository;
 
     TextView userNick;
     TrackingsFragment trackFrg;
@@ -98,6 +104,31 @@ public class UserActionsActivity extends AppCompatActivity
 
         syncPB = (ProgressBar) findViewById(R.id.syncPB);
         layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
+
+        factRepository = StaticFactRepository.getInstance();
+        trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                sharedPreferences.getString("UserId", "")).getInstance();
+
+        factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculate");
+                    }
+                });
+
+        factRepository.calculateOneTrackingFacts(trackingRepository.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculateOneTrackingFact");
+                    }
+                });
+
     }
 
     @Override
@@ -256,6 +287,24 @@ public class UserActionsActivity extends AppCompatActivity
         TrackingService trackingService = new TrackingService("", new StaticInMemoryRepository(getApplicationContext(),
                 sharedPreferences.getString("UserId", "")).getInstance());
         trackingService.RemoveTracking(trackingId);
+        factRepository.onChangeCalculateOneTrackingFacts(trackingService.GetTrackingCollection(), trackingId)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculateOneTrackingFact");
+                    }
+                });
+        factRepository.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculateOneTrackingFact");
+                    }
+                });
         Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, UserActionsActivity.class);
         startActivity(intent);

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,13 +22,20 @@ import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class EditTrackingActivity extends AppCompatActivity {
 
     ITrackingRepository trackingRepository;
     TrackingService trackingService;
+    InMemoryFactRepository factRepository;
 
     UUID trackingId;
 
@@ -78,6 +86,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
 
+        factRepository = StaticFactRepository.getInstance();
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
@@ -231,6 +240,24 @@ public class EditTrackingActivity extends AppCompatActivity {
                 Intent intent = getIntent();
 
                 trackingService.EditTracking(trackingId, scaleCustom, ratingCustom, textCustom, trackingTitleControl.getText().toString());
+                factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                Log.d("Statistics", "calculateOneTrackingFact");
+                            }
+                        });
+                factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                Log.d("Statistics", "calculateOneTrackingFact");
+                            }
+                        });
                 Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
 
               finish();
