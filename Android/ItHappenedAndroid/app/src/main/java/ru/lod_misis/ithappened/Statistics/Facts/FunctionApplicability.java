@@ -76,8 +76,10 @@ public final class FunctionApplicability  {
     {
         if (tracking.GetRatingCustomization() == TrackingCustomization.None) return null;
 
+        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+
         int eventsWithRating = 0;
-        for (Event event: tracking.getEventCollection()) {
+        for (Event event: eventCollection) {
             if (event.getRating() != null) eventsWithRating++;
         }
         if (eventsWithRating <= 1) return null;
@@ -89,8 +91,10 @@ public final class FunctionApplicability  {
     {
         if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
 
+        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+
         int eventsWithScale = 0;
-        for (Event event: tracking.getEventCollection()) {
+        for (Event event: eventCollection) {
             if (event.getScale() != null) eventsWithScale++;
         }
         if (eventsWithScale <= 1) return null;
@@ -102,8 +106,10 @@ public final class FunctionApplicability  {
     {
         if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
 
+        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+
         int eventsWithScale = 0;
-        for (Event event: tracking.getEventCollection()) {
+        for (Event event: eventCollection) {
             if (event.getScale() != null) eventsWithScale++;
         }
         if (eventsWithScale <= 1) return null;
