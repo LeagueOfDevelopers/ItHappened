@@ -8,10 +8,6 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
-/**
- * Created by Ded on 15.03.2018.
- */
-
 public class InMemoryFactRepository {
 
     List<Tracking> trackingCollection;
@@ -52,6 +48,8 @@ public class InMemoryFactRepository {
 
         functionApplicabilityCheck(changedTracking);
 
+
+
         return rx.Observable.from(oneTrackingFactCollection);
     }
 
@@ -70,6 +68,7 @@ public class InMemoryFactRepository {
             factToAdd.calculateData();
             allTrackingsFactCollection.add(factToAdd);
         }
+
 
         return rx.Observable.from(allTrackingsFactCollection);
     }
@@ -130,7 +129,8 @@ public class InMemoryFactRepository {
         }
     }
 
-    public List<Fact> getAllTrackingsFactCollection() {
+    public List<Fact> getAllTrackingsFactCollection()
+    {
         return allTrackingsFactCollection;
     }
 

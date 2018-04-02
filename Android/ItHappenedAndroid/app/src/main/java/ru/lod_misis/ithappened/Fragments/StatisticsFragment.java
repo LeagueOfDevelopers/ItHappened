@@ -154,11 +154,18 @@ public class StatisticsFragment extends Fragment {
                         getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
                 facts = factRepository.getAllTrackingsFactCollection();
 
+               /* Collections.sort(facts, new Comparator<Fact>() {
+                    @Override
+                    public int compare(Fact fact, Fact t1) {
+                        return fact.getPriority().compareTo(t1.getPriority());
+                    }
+                });*/
+
                 if(facts.size()!=0) {
                     hint = (TextView) customView.findViewById(R.id.hintAllTrackingsFacts);
                     hint.setVisibility(View.INVISIBLE);
                     allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.allStatisticsRecycler);
-                    StatisticsAdapter adapter = new StatisticsAdapter(sortFacts(facts), getActivity().getApplicationContext());
+                    StatisticsAdapter adapter = new StatisticsAdapter(facts, getActivity().getApplicationContext());
                     allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
                     allTrackingsRecycler.setAdapter(adapter);
                 }
@@ -170,6 +177,12 @@ public class StatisticsFragment extends Fragment {
                         getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
 
                 facts = factRepository.getOneTrackingFactCollection(allTrackings.get(position-1).GetTrackingID());
+                /*Collections.sort(facts, new Comparator<Fact>() {
+                    @Override
+                    public int compare(Fact fact, Fact t1) {
+                        return fact.getPriority().compareTo(t1.getPriority());
+                    }
+                });*/
 
 
                 Log.e("Size", facts.size()+"");
@@ -177,7 +190,7 @@ public class StatisticsFragment extends Fragment {
                     hint = (TextView) customView.findViewById(R.id.hintOneTrackingFacts);
                     hint.setVisibility(View.INVISIBLE);
                     allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.oneTrackingStatisticsRecycler);
-                    StatisticsAdapter adapter = new StatisticsAdapter(sortFacts(facts), getActivity().getApplicationContext());
+                    StatisticsAdapter adapter = new StatisticsAdapter(facts, getActivity().getApplicationContext());
                     allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
                     allTrackingsRecycler.setAdapter(adapter);
                 }
@@ -187,7 +200,7 @@ public class StatisticsFragment extends Fragment {
         }
     };
 
-    private List<Fact> sortFacts(List<Fact> factCollection){
+    /*private List<Fact> sortFacts(List<Fact> factCollection){
         int size = factCollection.size();
         for (int i = 0; i < size; i++){
             for(int j = i; j < size; j++){
@@ -202,6 +215,6 @@ public class StatisticsFragment extends Fragment {
         }
 
         return factCollection;
-    }
+    }*/
 
 }
