@@ -1,6 +1,8 @@
 package ru.lod_misis.ithappened.Infrastructure;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +24,8 @@ public class InMemoryFactRepository {
         for (Tracking tracking : trackingCollection) {
             functionApplicabilityCheck(tracking);
         }
+
+        sortOneTrackingFacts();
 
         return rx.Observable.from(oneTrackingFactCollection);
     }
@@ -49,6 +53,7 @@ public class InMemoryFactRepository {
         functionApplicabilityCheck(changedTracking);
 
 
+        sortOneTrackingFacts();
 
         return rx.Observable.from(oneTrackingFactCollection);
     }
@@ -69,6 +74,7 @@ public class InMemoryFactRepository {
             allTrackingsFactCollection.add(factToAdd);
         }
 
+        sortAllTrackingsFacts();
 
         return rx.Observable.from(allTrackingsFactCollection);
     }
@@ -146,6 +152,24 @@ public class InMemoryFactRepository {
 
     public void setOneTrackingFactCollection(List<Fact> oneTrackingFactCollection) {
         this.oneTrackingFactCollection = oneTrackingFactCollection;
+    }
+
+    private void sortOneTrackingFacts(){
+        Collections.sort(oneTrackingFactCollection, new Comparator<Fact>() {
+            @Override
+            public int compare(Fact fact, Fact t1) {
+                return fact.getPriority().compareTo(t1.getPriority());
+            }
+        });
+    }
+
+    private void sortAllTrackingsFacts(){
+        Collections.sort(allTrackingsFactCollection, new Comparator<Fact>() {
+            @Override
+            public int compare(Fact fact, Fact t1) {
+                return fact.getPriority().compareTo(t1.getPriority());
+            }
+        });
     }
 
     List<Fact> oneTrackingFactCollection = new ArrayList<>();
