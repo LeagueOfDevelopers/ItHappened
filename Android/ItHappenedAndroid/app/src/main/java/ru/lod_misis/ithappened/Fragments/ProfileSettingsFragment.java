@@ -183,7 +183,7 @@ public class ProfileSettingsFragment extends Fragment {
 
                         SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
                                 new Date(sharedPreferences.getLong("NickDate", 0)),
-                                new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
+                                new StaticInMemoryRepository(getActivity().getApplicationContext(), "Offline").getInstance().GetTrackingCollection());
 
                         ItHappenedApplication.
                                 getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
