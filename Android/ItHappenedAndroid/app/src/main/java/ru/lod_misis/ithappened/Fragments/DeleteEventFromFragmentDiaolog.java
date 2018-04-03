@@ -5,18 +5,20 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
+import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import rx.android.schedulers.AndroidSchedulers;
@@ -66,10 +68,19 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                                         Log.d("Statistics", "calculateOneTrackingFact");
                                     }
                                 });
+                        EventsFragment eventsFragment = (EventsFragment) getActivity().getFragmentManager().findFragmentByTag("EVENTS_HISTORY");
+                        List<Event> events = eventsFragment.eventsAdpt.getEvents();
+                        for(int i=0;i<events.size();i++){
+                            if(events.get(i).GetEventId().equals(eventId)){
+                                events.remove(i);
+                                break;
+                            }
+                        }
+                        if(events.size()==0){
+                            eventsFragment.hintForEventsHistory.setVisibility(View.VISIBLE);
+                        }
+                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(events, getActivity(), 1));
                         Toast.makeText(getActivity().getApplicationContext(), "Событие удалено", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity().getApplicationContext(), UserActionsActivity.class);
-                        startActivity(intent);
-
                     }
                 })
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {

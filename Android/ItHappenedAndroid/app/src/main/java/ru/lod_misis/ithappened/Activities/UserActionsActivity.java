@@ -205,9 +205,8 @@ public class UserActionsActivity extends AppCompatActivity
             item.setCheckable(false);
             setTitle("История событий");
             EventsFragment eventsFrg = new EventsFragment();
-
             fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, eventsFrg).addToBackStack(null);
+            fTrans.replace(R.id.trackingsFrg, eventsFrg,"EVENTS_HISTORY");
             fTrans.commit();
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
