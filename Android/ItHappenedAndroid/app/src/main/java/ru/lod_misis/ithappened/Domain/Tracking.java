@@ -20,7 +20,8 @@ public class Tracking extends RealmObject {
                     UUID trackingId,
                     TrackingCustomization scale,
                     TrackingCustomization rating,
-                    TrackingCustomization comment)
+                    TrackingCustomization comment,
+                    String scaleName)
     {
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
@@ -29,6 +30,7 @@ public class Tracking extends RealmObject {
         this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         eventCollection = new RealmList<>();
+        this.scaleName = scaleName;
     }
 
     public Tracking(String trackingName,
@@ -38,7 +40,8 @@ public class Tracking extends RealmObject {
                     TrackingCustomization comment,
                     Date trackingDate,
                     List<Event> eventCollection,
-                    boolean status, Date changeDate)
+                    boolean status, Date changeDate,
+                    String scaleName)
     {
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
@@ -50,6 +53,7 @@ public class Tracking extends RealmObject {
         this.eventCollection.addAll(eventCollection);
         dateOfChange = changeDate;
         isDeleted = status;
+        this.scaleName = scaleName;
     }
 
     public Tracking(){
@@ -119,8 +123,11 @@ public class Tracking extends RealmObject {
     public void EditTracking(TrackingCustomization editedScale,
                              TrackingCustomization editedRating,
                              TrackingCustomization editedComment,
-                             String editedTrackingName)
+                             String editedTrackingName,
+                             String scaleName)
     {
+        if(scaleName != null)
+            setScaleName(scaleName);
         if (editedScale != null)
             SetScaleCustomization(editedScale);
         if (editedRating != null)
@@ -259,6 +266,7 @@ public class Tracking extends RealmObject {
     public TrackingCustomization GetRatingCustomization(){ return TrackingCustomization.valueOf(rating);}
     public Date GetDateOfChange() {return dateOfChange; }
     public boolean GetStatus() { return isDeleted; }
+    public String getScaleName() { return scaleName; }
 
     public void SetTrackingName(String name) { trackingName = name;}
     public void SetTrackingID(UUID id) { trackingId = id.toString();}
@@ -272,8 +280,10 @@ public class Tracking extends RealmObject {
     public void SetRatingCustomization(TrackingCustomization rat){ rating = rat.toString();}
     public void SetDateOfChange(Date date) { dateOfChange = date; }
     public void SetStatus(boolean status) { isDeleted = status; }
+    public void setScaleName(String name) {scaleName = name;}
 
-
+    @Expose
+    private String scaleName = "Шкала";
     @Expose
     private String trackingName;
     @Expose
