@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ru.lod_misis.ithappened.Activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.Activities.EditTrackingActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -56,9 +57,9 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
                 final Tracking tracking = trackings.get(position);
                 String id = tracking.GetTrackingID().toString();
-                Intent intent = new Intent(context, EventsForTrackingActivity.class);
+                Intent intent = new Intent(context, AddNewEventActivity.class);
                 String trackId = tracking.GetTrackingID().toString();
-                intent.putExtra("id", trackId);
+                intent.putExtra("trackingId", trackId);
                 context.startActivity(intent);
 
             }

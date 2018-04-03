@@ -92,7 +92,16 @@ public class UserActionsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
+
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+        if(sharedPreferences.getString("UserId", "").isEmpty()){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("UserId", "Offline");
+            editor.putString("Nick", "Offline");
+            editor.commit();
+        }
+
         if(sharedPreferences.getString("UserId", "").equals("Offline"))
         navigationView.getMenu().getItem(4).setEnabled(false);
         navigationView.setNavigationItemSelectedListener(this);
@@ -369,8 +378,7 @@ public class UserActionsActivity extends AppCompatActivity
         editor.putBoolean("LOGOUT", true);
         editor.commit();
 
-        Intent intent = new Intent(this, SignInActivity.class);
-        startActivity(intent);
+        this.recreate();
     }
 
     @Override
