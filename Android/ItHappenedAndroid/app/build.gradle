@@ -6,7 +6,7 @@ android {
 
     def getMyVersionCode = { ->
         return project.hasProperty('myVersionCode') ?
-                myVersionCode.toInteger() : 4
+                myVersionCode.toInteger() : 7
     }
 //
 //    def getMyVersionName = { ->
