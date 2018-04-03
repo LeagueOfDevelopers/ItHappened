@@ -1,9 +1,7 @@
 package ru.lod_misis.ithappened.Recyclers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +16,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Activities.EditEventActivity;
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Fragments.DeleteEventFromFragmentDiaolog;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
@@ -58,7 +55,25 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         UUID trackingId = event.GetTrackingId();
 
-        holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
+        if(event.GetComment()!=null){
+            holder.trackingTitle.setText(event.GetComment());
+        }else {
+            holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
+        }
+
+        if(event.GetScale()!=null){
+            holder.scaleValue.setText(event.GetScale().toString());
+        }else{
+            holder.scaleValue.setVisibility(View.GONE);
+        }
+
+        if(event.GetRating()!=null){
+            holder.ratingValue.setText(event.GetRating().GetRatingValue().toString());
+        }else{
+            holder.starIcon.setVisibility(View.GONE);
+            holder.ratingValue.setVisibility(View.GONE);
+            holder.scaleValue.setPadding(holder.trackingTitle.getPaddingLeft(),holder.eventDate.getTotalPaddingTop(),7,7);
+        }
 
         holder.itemLL.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +86,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             }
         });
 
-        holder.editEvent.setOnClickListener(new View.OnClickListener() {
+        /*holder.editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditEventActivity.class);
@@ -80,9 +95,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 intent.putExtra("eventId", event.GetEventId().toString());
                 context.startActivity(intent);
             }
-        });
+        });*/
 
-        holder.deleteEvent.setOnClickListener(new View.OnClickListener() {
+        /*holder.deleteEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DeleteEventFromFragmentDiaolog delete = new DeleteEventFromFragmentDiaolog();
@@ -92,7 +107,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 delete.setArguments(bundle);
                 delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
             }
-        });
+        });*/
 
         Date eventDate = event.GetEventDate();
 
@@ -117,13 +132,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         TextView eventDate;
         RelativeLayout itemLL;
 
-        ImageView deleteEvent;
-        ImageView editEvent;
+        TextView scaleValue;
+        TextView ratingValue;
+        ImageView starIcon;
+
+        /*ImageView deleteEvent;
+        ImageView editEvent;*/
 
         public ViewHolder(View itemView) {
             super(itemView);
-            deleteEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.deleteEventIcn);
-            editEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.editEventIcn);
+            /*deleteEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.deleteEventIcn);
+            editEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.editEventIcn);*/
+            scaleValue = (TextView) itemView.findViewById(R.id.scaleValue);
+            ratingValue = (TextView) itemView.findViewById(R.id.ratingValue);
+            starIcon = (ImageView) itemView.findViewById(R.id.starIcon);
             eventDate = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventDate);
             trackingTitle = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.TrackingTitle);
             itemLL = (RelativeLayout) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventRL);

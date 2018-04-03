@@ -80,7 +80,7 @@ public class UserActionsActivity extends AppCompatActivity
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(Color.parseColor("#a9a9a9"));
+        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
 
