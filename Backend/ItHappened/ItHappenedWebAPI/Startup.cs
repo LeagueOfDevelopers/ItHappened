@@ -6,6 +6,7 @@ using ItHappenedDomain.Domain;
 using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Middlewares;
+using ItHappenedWebAPI.Migrations;
 using Loggly;
 using Loggly.Config;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,10 @@ namespace ItHappenedWebAPI
       var connectionString = "mongodb://localhost";
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
+
+      MigrateDB migrate = new MigrateDB(db);
+      migrate.Migrate();
+
       var userList = new UserList(db);
       services
         .AddSingleton<UserList>(userList)

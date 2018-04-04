@@ -32,7 +32,7 @@ namespace ItHappenedUnitTests
 
       Tracking tracking = new Tracking(trackingName, trackingId, event1DateOfChange,
         "Optional", "Optional", "Optional",
-        event1DateOfChange, false, eventCollection);
+        event1DateOfChange, false, eventCollection, "");
 
       TrackingCollection trackingCollection = new TrackingCollection();
 
@@ -64,7 +64,7 @@ namespace ItHappenedUnitTests
 
       Tracking tracking = new Tracking(trackingName, trackingId, event1DateOfChange,
         "Optional", "Optional", "Optional",
-        event1DateOfChange, false, eventCollection);
+        event1DateOfChange, false, eventCollection, "");
 
       TrackingCollection trackingCollection = new TrackingCollection();
 
