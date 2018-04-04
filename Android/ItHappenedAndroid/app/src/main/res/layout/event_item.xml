@@ -14,8 +14,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="4dp"
-        card_view:cardElevation="2dp">
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="20dp"
+        card_view:cardElevation="10dp">
 
 
             <RelativeLayout
@@ -37,42 +40,92 @@
                     android:layout_gravity="left"
                     android:layout_marginEnd="13dp"
                     android:layout_marginRight="13dp"
-                    android:layout_toLeftOf="@+id/deleteEventIcn"
-                    android:layout_toStartOf="@+id/deleteEventIcn"
                     android:paddingBottom="7dp"
-                    android:paddingLeft="7dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:lines="1"
                     android:paddingTop="7dp"
                     android:text="Сахар в крови"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="18sp"></TextView>
+                    android:textSize="20sp"></TextView>
 
                 <TextView
                     android:id="@+id/eventDate"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@+id/TrackingTitle"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/TrackingTitle"
+                    android:paddingBottom="7dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="7dp"
+                    android:text="14.12.2017 22:54"
+                    android:layout_margin="2dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/ratingValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_alignRight="@+id/TrackingTitle"
                     android:layout_below="@+id/TrackingTitle"
-                    android:layout_marginLeft="7dp"
-                    android:layout_marginStart="7dp"
+                    android:layout_margin="2dp"
                     android:paddingBottom="7dp"
                     android:paddingRight="7dp"
                     android:paddingTop="7dp"
-                    android:text="14.12.2017 22:54"
+                    android:paddingLeft="15dp"
+                    android:textSize="15sp"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="18sp" />
+                    android:text="2" />
 
                 <ImageView
+                    android:id="@+id/starIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/ratingValue"
+                    android:layout_toEndOf="@+id/ratingValue"
+                    android:layout_toRightOf="@+id/ratingValue"
+                    android:paddingTop="10dp"
+                    android:src="@mipmap/star" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/scaleValue"
+                    android:layout_below="@id/TrackingTitle"
+                    android:layout_toRightOf="@id/starIcon"
+                    android:text="10000"
+                    android:layout_margin="2dp"
+                    android:paddingBottom="7dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:paddingTop="7dp"
+                    android:paddingLeft="20dp"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/scaleType"
+                    android:layout_below="@id/TrackingTitle"
+                    android:layout_toRightOf="@id/scaleValue"
+                    android:text="ккал"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_margin="2dp"
+                    android:paddingBottom="7dp"
+                    android:paddingTop="7dp"
+                    android:paddingLeft="3dp"
+                    android:textSize="15sp"/>
+
+              <!--  <ImageView
                     android:id="@+id/deleteEventIcn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:src="@mipmap/cross"
-                    android:padding="7dp"/>
+                    android:padding="7dp"/>-->
 
-                <ImageView
+               <!-- <ImageView
                     android:id="@+id/editEventIcn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,7 +136,7 @@
                     android:paddingRight="7dp"
                     android:paddingTop="7dp"
                     android:paddingBottom="7dp"
-                    android:src="@mipmap/edit" />
+                    android:src="@mipmap/edit" />-->
 
             </RelativeLayout>
 
