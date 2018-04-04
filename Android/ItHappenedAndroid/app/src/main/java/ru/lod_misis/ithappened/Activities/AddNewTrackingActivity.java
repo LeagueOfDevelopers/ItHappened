@@ -1,56 +1,61 @@
 package ru.lod_misis.ithappened.Activities;
 
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.UUID;
-
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import ru.lod_misis.ithappened.R;
 
 public class AddNewTrackingActivity extends AppCompatActivity {
 
     ITrackingRepository trackingRepository;
     InMemoryFactRepository factRepository;
 
-    LinearLayout scaleCstm;
-    LinearLayout textCstm;
-    LinearLayout ratingCstm;
+    TextView ratingEnabled;
+    TextView commentEnabled;
+    TextView scaleEnabled;
 
-    EditText trackingTitleControl;
+    LinearLayout ratingDont;
+    LinearLayout ratingOptional;
+    LinearLayout ratingRequired;
 
-    CardView scaleCard;
-    CardView textCard;
-    CardView ratingCard;
+    LinearLayout commentDont;
+    LinearLayout commentOptional;
+    LinearLayout commentRequired;
 
-    TextView scaleText;
-    TextView textText;
-    TextView ratingText;
+    LinearLayout scaleDont;
+    LinearLayout scaleOptional;
+    LinearLayout scaleRequired;
 
-    TrackingCustomization textCustom;
-    TrackingCustomization scaleCustom;
-    TrackingCustomization ratingCustom;
-    String trackingTitle;
+    ImageView ratingDontImage;
+    ImageView ratingOptionalImage;
+    ImageView ratingRequiredImage;
+
+    ImageView commentDontImage;
+    ImageView commentOptionalImage;
+    ImageView commentRequiredImage;
+
+    ImageView scaleDontImage;
+    ImageView scaleOptionalImage;
+    ImageView scaleRequiredImage;
+
+
+    CardView visibilityScaleType;
+    TextView visbilityScaleTypeHint;
+    EditText scaleType;
 
     Button addTrackingBtn;
 
@@ -88,178 +93,197 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
         addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
 
-        trackingTitleControl = (EditText) findViewById(ru.lod_misis.ithappened.R.id.editTitleOfTracking);
-
-        scaleCstm = (LinearLayout) findViewById(ru.lod_misis.ithappened.R.id.scale);
-        textCstm = (LinearLayout) findViewById(ru.lod_misis.ithappened.R.id.text);
-        ratingCstm = (LinearLayout) findViewById(ru.lod_misis.ithappened.R.id.rating);
-
-        scaleCard = (CardView) findViewById(ru.lod_misis.ithappened.R.id.scaleCard);
-        textCard = (CardView) findViewById(ru.lod_misis.ithappened.R.id.textCard);
-        ratingCard = (CardView) findViewById(ru.lod_misis.ithappened.R.id.ratingCard);
-
-        scaleText = (TextView) findViewById(ru.lod_misis.ithappened.R.id.scaleEn);
-        textText = (TextView) findViewById(ru.lod_misis.ithappened.R.id.textEn);
-        ratingText = (TextView) findViewById(ru.lod_misis.ithappened.R.id.rtEn);
-
         stateForScale = 0;
         stateForText = 0;
         stateForRating = 0;
 
-        scaleCstm.setOnClickListener(new View.OnClickListener() {
+        ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabled);
+        commentEnabled = (TextView) findViewById(R.id.commentTextEnabled);
+        scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabled);
+
+
+        ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDont);
+        ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
+        ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheck);
+
+        commentDont = (LinearLayout) findViewById(R.id.commentBackColorDont);
+        commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheck);
+        commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheck);
+
+        scaleDont = (LinearLayout) findViewById(R.id.scaleBackColorDont);
+        scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheck);
+        scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheck);
+
+        ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDont);
+        ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheck);
+        ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheck);
+
+        commentDontImage = (ImageView) findViewById(R.id.commentBackImageDont);
+        commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheck);
+        commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheck);
+
+        scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
+        scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
+        scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
+
+        visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
+        visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
+        scaleType = (EditText) findViewById(R.id.editTypeOfScale);
+
+        visbilityScaleTypeHint.setVisibility(View.GONE);
+        visibilityScaleType.setVisibility(View.GONE);
+        scaleType.setVisibility(View.GONE);
+
+
+        ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (stateForScale){
-                    case 0:
-                        stateForScale = 1;
-                        scaleCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.color_for_not_definetly));
-                        scaleText.setText("Опционально");
-                        break;
-                    case 1:
-                        stateForScale = 2;
-                        scaleText.setText("Обязательно");
-                        scaleCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.colorAccent));
-                        break;
-                    case 2:
-                        stateForScale = 0;
-                        scaleText.setText("Не выбрано");
-                        scaleCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.light_gray));
-                        break;
-                }
+                ratingDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                ratingEnabled.setText("не надо");
+                ratingDontImage.setImageResource(R.mipmap.active_dont);
+                ratingOptionalImage.setImageResource(R.mipmap.not_active_check);
+                ratingRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                ratingOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                ratingRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForRating = 0;
+            }
+        });
+
+        ratingOptional.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                ratingEnabled.setText("не обязательно");
+                ratingDontImage.setImageResource(R.mipmap.not_active_dont);
+                ratingOptionalImage.setImageResource(R.mipmap.active_check);
+                ratingRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                ratingOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                ratingRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForRating = 1;
             }
         });
 
 
-        textCstm.setOnClickListener(new View.OnClickListener() {
+        ratingRequired.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (stateForText){
-                    case 0:
-                        stateForText = 1;
-                        textCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.color_for_not_definetly));
-                        textText.setText("Опционально");
-                        break;
-                    case 1:
-                        stateForText = 2;
-                        textCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.colorAccent));
-                        textText.setText("Обязательно");
-                        break;
-                    case 2:
-                        stateForText = 0;
-                        textCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.light_gray));
-                        textText.setText("Не выбрано");
-                        break;
-                }
+                ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                ratingEnabled.setText("обязательно");
+                ratingDontImage.setImageResource(R.mipmap.not_active_dont);
+                ratingOptionalImage.setImageResource(R.mipmap.not_active_check);
+                ratingRequiredImage.setImageResource(R.mipmap.active_double_check);
+                ratingOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                ratingRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                stateForRating = 2;
             }
         });
 
-        ratingCstm.setOnClickListener(new View.OnClickListener() {
+
+
+        commentDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (stateForRating){
-                    case 0:
-                        stateForRating = 1;
-                        ratingCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.color_for_not_definetly));
-                        ratingText.setText("Опционально");
-                        break;
-                    case 1:
-                        stateForRating = 2;
-                        ratingCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.colorAccent));
-                        ratingText.setText("Обязательно");
-                        break;
-                    case 2:
-                        stateForRating = 0;
-                        ratingCard.setCardBackgroundColor(getResources().getColor(ru.lod_misis.ithappened.R.color.light_gray));
-                        ratingText.setText("Не выбрано");
-                        break;
-                }
+                commentEnabled.setText("не надо");
+                commentDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                commentDontImage.setImageResource(R.mipmap.active_dont);
+                commentOptionalImage.setImageResource(R.mipmap.not_active_check);
+                commentRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                commentOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                commentRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForText = 0;
             }
         });
 
-        addTrackingBtn.setOnClickListener(new View.OnClickListener() {
+        commentOptional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                trackingTitle = trackingTitleControl.getText().toString();
-
-                if (trackingTitle.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Введите название отслеживания!", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                            getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", "")
-                            ).getInstance();
-
-
-                    //set properties of scale
-                    switch (stateForScale) {
-                        case 0:
-                            scaleCustom = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            scaleCustom = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            scaleCustom = TrackingCustomization.Required;
-                            break;
-                    }
-
-                    //set properties of text
-                    switch (stateForText) {
-                        case 0:
-                            textCustom = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            textCustom = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            textCustom = TrackingCustomization.Required;
-                            break;
-                    }
-
-                    //set properties of rating
-                    switch (stateForRating) {
-                        case 0:
-                            ratingCustom = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            ratingCustom = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            ratingCustom = TrackingCustomization.Required;
-                            break;
-                    }
-
-                    UUID trackingId = UUID.randomUUID();
-
-                    Tracking newTracking = new Tracking(
-                            trackingTitle, trackingId, scaleCustom, ratingCustom, textCustom);
-                    trackingRepository.AddNewTracking(newTracking);
-                    factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
-                    .subscribeOn(Schedulers.computation())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Action1<Fact>() {
-                                @Override
-                                public void call(Fact fact) {
-                                    Log.d("Statistics", "calculateOneTrackingFact");
-                                }
-                            });
-                    factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
-                            .subscribeOn(Schedulers.computation())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Action1<Fact>() {
-                                @Override
-                                public void call(Fact fact) {
-                                    Log.d("Statistics", "calculateOneTrackingFact");
-                                }
-                            });
-                    Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                    startActivity(intent);
-                }
+                commentEnabled.setText("не обязательно");
+                commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                commentDontImage.setImageResource(R.mipmap.not_active_dont);
+                commentOptionalImage.setImageResource(R.mipmap.active_check);
+                commentRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                commentOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                commentRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForText = 1;
             }
         });
+
+
+        commentRequired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentEnabled.setText("обязательно");
+                commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                commentDontImage.setImageResource(R.mipmap.not_active_dont);
+                commentOptionalImage.setImageResource(R.mipmap.not_active_check);
+                commentRequiredImage.setImageResource(R.mipmap.active_double_check);
+                commentOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                commentRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                stateForText = 2;
+            }
+        });
+
+
+
+
+
+        scaleDont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scaleEnabled.setText("не надо");
+                scaleDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                scaleDontImage.setImageResource(R.mipmap.active_dont);
+                scaleOptionalImage.setImageResource(R.mipmap.not_active_check);
+                scaleRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                scaleRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForScale = 0;
+
+                visbilityScaleTypeHint.setVisibility(View.GONE);
+                visibilityScaleType.setVisibility(View.GONE);
+                scaleType.setVisibility(View.GONE);
+            }
+        });
+
+        scaleOptional.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scaleEnabled.setText("не обязательно");
+                scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                scaleDontImage.setImageResource(R.mipmap.not_active_dont);
+                scaleOptionalImage.setImageResource(R.mipmap.active_check);
+                scaleRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                scaleOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                scaleRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForScale = 1;
+
+                visbilityScaleTypeHint.setVisibility(View.VISIBLE);
+                visibilityScaleType.setVisibility(View.VISIBLE);
+                scaleType.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        scaleRequired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scaleEnabled.setText("обязательно");
+                scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                scaleDontImage.setImageResource(R.mipmap.not_active_dont);
+                scaleOptionalImage.setImageResource(R.mipmap.not_active_check);
+                scaleRequiredImage.setImageResource(R.mipmap.active_double_check);
+                scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                scaleRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                stateForScale = 2;
+
+                visbilityScaleTypeHint.setVisibility(View.VISIBLE);
+                visibilityScaleType.setVisibility(View.VISIBLE);
+                scaleType.setVisibility(View.VISIBLE);
+            }
+        });
+
 
     }
+
+
 }

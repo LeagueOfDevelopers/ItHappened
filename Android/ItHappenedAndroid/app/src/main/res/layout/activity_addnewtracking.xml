@@ -4,205 +4,350 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_alignParentBottom="true"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="64dp">
+        android:layout_marginBottom="50dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-    <EditText
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
-        android:id="@+id/editTitleOfTracking"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:hint="Название"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editTitleOfTracking"
-        android:id="@+id/textForCustomisation">
-        <RelativeLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp">
-        <TextView
-            android:layout_marginLeft="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Отслеживание по:"
-            android:textSize="20sp"
-            />
-        </RelativeLayout>
-    </LinearLayout>
+            android:paddingBottom="10dp">
 
-
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textForCustomisation"
-        android:id="@+id/scale">
-
-        <RelativeLayout
-
-            android:id="@+id/sclCust"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp">
             <TextView
+                android:id="@+id/titleHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Шкале"
-                android:paddingLeft="10dp"
-                android:textColor="#FFFFFF"
-                android:textAllCaps="true"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="17sp"/>
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:text="Название:"
+                android:textSize="18sp" />
 
             <android.support.v7.widget.CardView
-                android:id="@+id/scaleCard"
-                android:layout_marginRight="10dp"
-                app:cardBackgroundColor="#DCDCDC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                app:cardCornerRadius="10dp"
-                android:layout_centerVertical="true">
-                <TextView
-                    android:id="@+id/scaleEn"
-                    android:layout_width="150dp"
-                    android:text="Не выбрано"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textColor="#FFFFFF"
-                    android:padding="4dp"
-                    android:paddingLeft="100dp"
-                    android:paddingRight="20dp"
-                    android:textSize="15sp"
-                    android:layout_height="wrap_content" />
+                android:id="@+id/trackingNameContainer"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/titleHint"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_edit_text"
+                android:elevation="40dp">
+
+                <EditText
+                    android:id="@+id/editTitleOfTracking"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:hint="Введите название"
+                    android:paddingLeft="15dp" />
             </android.support.v7.widget.CardView>
-        </RelativeLayout>
-    </LinearLayout>
 
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/scale"
-        android:id="@+id/text">
-
-        <RelativeLayout
-
-            android:id="@+id/textCstm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp">
             <TextView
+                android:id="@+id/addNewRatingHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Комментарию"
-                android:paddingLeft="10dp"
-                android:textColor="#FFFFFF"
-                android:textAllCaps="true"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="17sp"/>
+                android:layout_below="@id/trackingNameContainer"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:text="Рейтинг:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/ratingTextEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/trackingNameContainer"
+                android:layout_toRightOf="@id/addNewRatingHint"
+                android:paddingLeft="7dp"
+                android:paddingTop="16dp"
+                android:text="не надо"
+                android:textSize="17sp" />
+
 
             <android.support.v7.widget.CardView
-                android:id="@+id/textCard"
-                android:layout_marginRight="10dp"
-                app:cardBackgroundColor="#DCDCDC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                app:cardCornerRadius="10dp"
-                android:layout_centerVertical="true">
-                <TextView
-                    android:id="@+id/textEn"
-                    android:layout_width="150dp"
-                    android:text="Не выбрано"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textColor="#FFFFFF"
-                    android:padding="4dp"
-                    android:paddingLeft="100dp"
-                    android:paddingRight="20dp"
-                    android:textSize="15sp"
-                    android:layout_height="wrap_content" />
+                android:id="@+id/addNewRating"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/addNewRatingHint"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_edit_text"
+                android:elevation="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+
+                    <LinearLayout
+                        android:id="@+id/ratingBackColorDont"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="#A93226">
+
+                        <ImageView
+                            android:id="@+id/ratingBackImageDont"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/active_dont" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ratingBackColorCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/ratingBackImageCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/not_active_check" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ratingBackColorDoubleCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/ratingBackImageDoubleCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/not_active_double_chek" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
             </android.support.v7.widget.CardView>
-        </RelativeLayout>
-    </LinearLayout>
 
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text"
-        android:id="@+id/rating">
-
-        <RelativeLayout
-
-            android:id="@+id/rtCust"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp">
             <TextView
+                android:id="@+id/addNewCommentHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Оценке"
-                android:paddingLeft="10dp"
-                android:textColor="#FFFFFF"
-                android:textAllCaps="true"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="17sp"/>
+                android:layout_below="@id/addNewRating"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="20dp"
+                android:text="Комментарий:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/commentTextEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/addNewRating"
+                android:layout_marginTop="16dp"
+                android:layout_toRightOf="@id/addNewCommentHint"
+                android:paddingLeft="7dp"
+                android:text="не надо"
+                android:textSize="17sp" />
 
             <android.support.v7.widget.CardView
-                android:id="@+id/ratingCard"
-                android:layout_marginRight="10dp"
-                app:cardBackgroundColor="#DCDCDC"
+                android:id="@+id/addNewComment"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/addNewCommentHint"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_edit_text"
+                android:elevation="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+
+                    <LinearLayout
+                        android:id="@+id/commentBackColorDont"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="#A93226">
+
+                        <ImageView
+                            android:id="@+id/commentBackImageDont"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/active_dont" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/commentBackColorCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/commentBackImageCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/not_active_check" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/commentBackColorDoubleCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/commentBackImageDoubleCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/not_active_double_chek" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/addNewScaleHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                app:cardCornerRadius="10dp"
-                android:layout_centerVertical="true">
-                <TextView
-                    android:id="@+id/rtEn"
-                    android:layout_width="150dp"
-                    android:text="Не выбрано"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textColor="#FFFFFF"
-                    android:padding="4dp"
-                    android:paddingLeft="100dp"
-                    android:paddingRight="20dp"
-                    android:textSize="15sp"
-                    android:layout_height="wrap_content" />
+                android:layout_below="@id/addNewComment"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="20dp"
+                android:text="Шкала:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/scaleTextEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/addNewComment"
+                android:layout_marginTop="16dp"
+                android:layout_toRightOf="@id/addNewScaleHint"
+                android:paddingLeft="7dp"
+                android:text="не надо"
+                android:textSize="17sp" />
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/addNewScale"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/addNewScaleHint"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_edit_text"
+                android:elevation="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+
+                    <LinearLayout
+                        android:id="@+id/scaleBackColorDont"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="#A93226">
+
+                        <ImageView
+                            android:id="@+id/scaleBackImageDont"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/active_dont" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/scaleBackColorCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/scaleBackImageCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/not_active_check" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/scaleBackColorDoubleCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/scaleBackImageDoubleCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@mipmap/not_active_double_chek" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
             </android.support.v7.widget.CardView>
-        </RelativeLayout>
-    </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/scaleTypeHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/addNewScale"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:text="Измерять в:"
+                android:textSize="18sp" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/scaleTypeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/scaleTypeHint"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_edit_text"
+                android:elevation="20dp">
+
+                <EditText
+                    android:id="@+id/editTypeOfScale"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:hint="Киллограмм, штук"
+                    android:paddingLeft="15dp" />
+            </android.support.v7.widget.CardView>
+
         </RelativeLayout>
     </ScrollView>
 
@@ -217,12 +362,9 @@
             android:id="@+id/addTrack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button"
+            android:background="@color/colorPrimary"
             android:text="Добавить"
-            android:textColor="#FFFFFF"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 

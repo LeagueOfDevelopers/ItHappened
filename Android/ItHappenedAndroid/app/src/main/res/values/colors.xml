@@ -7,4 +7,7 @@
     <color name="actionbar_text_color">#a9a9a9</color>
     <color name="color_for_not_definetly">#BDB76B</color>
     <color name="light_gray">#DCDCDC</color>
+
+    <color name="dont">#A93226</color>
+    <color name="required">#145A32</color>
 </resources>
