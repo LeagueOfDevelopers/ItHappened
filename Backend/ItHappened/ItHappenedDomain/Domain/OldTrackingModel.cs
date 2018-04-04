@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ItHappenedDomain.Domain
 {
+  [BsonIgnoreExtraElements]
   public class OldTrackingModel
   {
     public string trackingName { set; get; }
@@ -15,7 +16,6 @@ namespace ItHappenedDomain.Domain
     public string comment { set; get; }
     public DateTimeOffset dateOfChange { set; get; }
     public bool isDeleted { set; get; }
-    public string userId { set; get; }
 
     public OldTrackingModel(string trackingName, string trackingId,
       DateTimeOffset trackingDate,
@@ -23,9 +23,8 @@ namespace ItHappenedDomain.Domain
       string rating,
       string comment,
       DateTimeOffset dateOfChange, bool isDeleted,
-      List<Event> eventCollection, string userId)
+      List<Event> eventCollection)
     {
-      this.userId = userId;
       this.trackingName = trackingName;
       this.trackingId = trackingId;
       this.trackingDate = trackingDate;
