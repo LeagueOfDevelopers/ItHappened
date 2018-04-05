@@ -1,5 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,16 +15,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.UUID;
+
+import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class AddNewTrackingActivity extends AppCompatActivity {
 
     ITrackingRepository trackingRepository;
     InMemoryFactRepository factRepository;
+
+    EditText trackingName;
 
     TextView ratingEnabled;
     TextView commentEnabled;
@@ -91,7 +101,13 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         actionBar.setTitle("Отслеживать");
         factRepository = StaticFactRepository.getInstance();
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                sharedPreferences.getString("UserId", "")).getInstance();
+
         addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
+
+        trackingName = (EditText) findViewById(R.id.editTitleOfTracking);
 
         stateForScale = 0;
         stateForText = 0;
@@ -279,6 +295,80 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
+            }
+        });
+
+        addTrackingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(trackingName.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
+                }else{
+
+                    String trackingTitle = trackingName.getText().toString();
+
+                    TrackingCustomization rating = TrackingCustomization.None;
+                    TrackingCustomization comment = TrackingCustomization.None;
+                    TrackingCustomization scale = TrackingCustomization.None;
+
+                    String scaleNumb = null;
+
+                    switch (stateForRating){
+                        case 0:
+                            rating = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            rating = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            rating = TrackingCustomization.Required;
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                    switch (stateForText){
+                        case 0:
+                            comment = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            comment = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            comment = TrackingCustomization.Required;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    switch (stateForScale){
+                        case 0:
+                            scale = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            scale = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            scale = TrackingCustomization.Required;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&scaleType.getText().toString().isEmpty()){
+                        Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
+                    }else{
+                        if(scale != TrackingCustomization.None){
+                            scaleNumb = scaleType.getText().toString();
+                        }
+                        Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb);
+                        trackingRepository.AddNewTracking(newTracking);
+                        Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                        startActivity(intent);
+                    }
+                }
             }
         });
 
