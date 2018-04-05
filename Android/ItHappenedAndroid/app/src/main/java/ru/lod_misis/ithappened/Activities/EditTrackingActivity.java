@@ -82,7 +82,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
+        setContentView(R.layout.activity_edit_tracking);
 
     }
 
@@ -156,7 +156,7 @@ public class EditTrackingActivity extends AppCompatActivity {
 
         editableTracking = trackingRepository.GetTracking(trackingId);
 
-        //trackingName.setText(editableTracking.GetTrackingName());
+        trackingName.setText(editableTracking.GetTrackingName());
 
         if(editableTracking.GetScaleCustomization() == TrackingCustomization.None) {
             visbilityScaleTypeHint.setVisibility(View.GONE);
@@ -185,7 +185,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                 commentOptional,
                 commentRequired,
                 commentEnabled);
-        stateForScale = calculateState(editableTracking.GetRatingCustomization(),
+        stateForScale = calculateState(editableTracking.GetScaleCustomization(),
                 scaleDontImage,
                 scaleOptionalImage,
                 scaleRequiredImage,
