@@ -16,18 +16,18 @@ namespace ItHappenedDomain.Infrastructure
       TrackingList = new List<Tracking>();
     }
 
-    public TrackingCollection(OldTrackingCollection collection)
-    {
-      var trackingCollection = collection.TrackingList;
-      List<Tracking> newTrackingCollection = new List<Tracking>();
-      foreach (var tracking in trackingCollection)
-      {
-        var newTracking = new Tracking(tracking);
-        newTrackingCollection.Add(newTracking);
-      }
+    //public TrackingCollection(OldTrackingCollection collection)
+    //{
+    //  var trackingCollection = collection.TrackingList;
+    //  List<Tracking> newTrackingCollection = new List<Tracking>();
+    //  foreach (var tracking in trackingCollection)
+    //  {
+    //    var newTracking = new Tracking(tracking);
+    //    newTrackingCollection.Add(newTracking);
+    //  }
 
-      TrackingList = newTrackingCollection;
-    }
+    //  TrackingList = newTrackingCollection;
+    //}
 
     public List<Tracking> ChangeTrackingCollection(List<Tracking> trackingCollection)
     {

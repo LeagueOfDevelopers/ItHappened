@@ -22,7 +22,8 @@ namespace ItHappenedWebAPI.Controllers
     public IActionResult SynchronizeData([FromRoute] string userId,
       [FromBody] SynchronisationRequest request)
     {
-      SynchronisationRequest response = users.Synchronisation(userId, request);
+      SynchronisationRequest response = users.Synchronisation(userId, request.NicknameDateOfChange, 
+        request.UserNickname, request.trackingCollection);
       return Ok(response);
     }
 

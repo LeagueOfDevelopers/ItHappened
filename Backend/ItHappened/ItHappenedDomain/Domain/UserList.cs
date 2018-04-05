@@ -84,17 +84,18 @@ namespace ItHappenedDomain.Domain
       return toReturn;
     }
 
-    public SynchronisationRequest Synchronisation(string userId, SynchronisationRequest request)
+    public SynchronisationRequest Synchronisation(string userId, DateTimeOffset NicknameDateOfChange, string UserNickname,
+      List<Tracking> trackingCollection)
     {
       var collection = db.GetCollection<User>("Users");
       var user = collection.FindSync(us => us.UserId == userId).FirstAsync().Result;
-      if (user.NicknameDateOfChange < request.NicknameDateOfChange)
+      if (user.NicknameDateOfChange < NicknameDateOfChange)
       {
-        user.NicknameDateOfChange = request.NicknameDateOfChange;
-        user.UserNickname = request.UserNickname;
+        user.NicknameDateOfChange = NicknameDateOfChange;
+        user.UserNickname = UserNickname;
       }
 
-      List<Tracking> collectionToReturn = user.ChangeTrackingCollection(request.TrackingCollection);
+      List<Tracking> collectionToReturn = user.ChangeTrackingCollection(trackingCollection);
 
       var filter = Builders<User>.Filter.Eq(us => us.UserId, user.UserId);
       collection.ReplaceOneAsync(filter, user);
@@ -103,7 +104,7 @@ namespace ItHappenedDomain.Domain
       {
         NicknameDateOfChange = user.NicknameDateOfChange,
         UserNickname = user.UserNickname,
-        TrackingCollection = collectionToReturn
+        trackingCollection = collectionToReturn
       };
       return toReturn;
     }

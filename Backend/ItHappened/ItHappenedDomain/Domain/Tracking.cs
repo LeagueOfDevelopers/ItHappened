@@ -26,22 +26,22 @@ namespace ItHappenedDomain.Domain
       this.comment = comment;
       this.dateOfChange = dateOfChange;
       this.isDeleted = isDeleted;
-      EventCollection = eventCollection;
+      this.EventCollection = eventCollection;
     }
 
-    public Tracking(OldTrackingModel tracking)
-    {
-      this.scaleName = "Шкала";
-      this.trackingName = tracking.trackingName;
-      this.trackingId = tracking.trackingId;
-      this.trackingDate = tracking.trackingDate;
-      this.scale = tracking.scale;
-      this.rating = tracking.rating;
-      this.comment = tracking.comment;
-      this.dateOfChange = tracking.dateOfChange;
-      this.isDeleted = tracking.isDeleted;
-      EventCollection = tracking.EventCollection;
-    }
+    //public Tracking(OldTrackingModel tracking)
+    //{
+    //  this.scaleName = "Шкала";
+    //  this.trackingName = tracking.trackingName;
+    //  this.trackingId = tracking.trackingId;
+    //  this.trackingDate = tracking.trackingDate;
+    //  this.scale = tracking.scale;
+    //  this.rating = tracking.rating;
+    //  this.comment = tracking.comment;
+    //  this.dateOfChange = tracking.dateOfChange;
+    //  this.isDeleted = tracking.isDeleted;
+    //  EventCollection = tracking.EventCollection;
+    //}
 
     public string trackingName { set; get; }
     public string trackingId { set; get; }
