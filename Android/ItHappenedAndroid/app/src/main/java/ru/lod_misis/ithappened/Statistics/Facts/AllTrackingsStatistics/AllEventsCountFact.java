@@ -22,20 +22,14 @@ public class AllEventsCountFact extends Fact {
         trackingId = null;
     }
 
-    public int getEventCount()
-    {
+    @Override
+    public void calculateData() {
         for (Tracking tracking: trackingCollection) {
             for (Event event: tracking.getEventCollection()) {
                 if (!event.isDeleted()) eventCount++;
             }
         }
         calculatePriority();
-        return eventCount;
-    }
-
-    @Override
-    public void calculateData() {
-        getEventCount();
     }
 
     @Override
