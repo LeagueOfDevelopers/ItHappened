@@ -1,15 +1,15 @@
 package ru.lod_misis.ithappened.Application;
 
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 
 public class TrackingService
@@ -36,10 +36,11 @@ public class TrackingService
                              TrackingCustomization editedCounter,
                              TrackingCustomization editedScale,
                              TrackingCustomization editedComment,
-                             String editedTrackingName)
+                             String editedTrackingName,
+                             String scaleName)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName);
+        tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName, scaleName);
         trackingCollection.ChangeTracking(tracking);
     }
 

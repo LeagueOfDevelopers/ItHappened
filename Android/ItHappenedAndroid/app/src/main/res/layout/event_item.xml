@@ -104,18 +104,17 @@
                     android:textSize="15sp"/>
 
                 <TextView
+                    android:id="@+id/scaleTypeAdapt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/scaleType"
                     android:layout_below="@id/TrackingTitle"
-                    android:layout_toRightOf="@id/scaleValue"
-                    android:text="ккал"
-                    android:textColor="@color/colorPrimaryDark"
                     android:layout_margin="2dp"
+                    android:layout_toRightOf="@id/scaleValue"
                     android:paddingBottom="7dp"
-                    android:paddingTop="7dp"
                     android:paddingLeft="3dp"
-                    android:textSize="15sp"/>
+                    android:paddingTop="7dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="15sp" />
 
               <!--  <ImageView
                     android:id="@+id/deleteEventIcn"

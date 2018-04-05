@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ItHappenedDomain.Domain;
+﻿using ItHappenedDomain.Domain;
 using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Middlewares;
@@ -12,8 +8,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
@@ -37,6 +31,9 @@ namespace ItHappenedWebAPI
       var connectionString = "mongodb://localhost";
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
+
+      Program.Main(new string[0]);
+
       var userList = new UserList(db);
       services
         .AddSingleton<UserList>(userList)

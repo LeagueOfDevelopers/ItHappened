@@ -63,8 +63,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         if(event.GetScale()!=null){
             holder.scaleValue.setText(event.GetScale().toString());
+            String type = trackingRepository.GetTracking(trackingId).getScaleName();
+            if(type.length()>=3) {
+                holder.scaleType.setText(type.substring(0, 2) + ".");
+            }else{
+                holder.scaleType.setText(type);
+            }
         }else{
             holder.scaleValue.setVisibility(View.GONE);
+            holder.scaleType.setVisibility(View.GONE);
         }
 
         if(event.GetRating()!=null){
@@ -134,6 +141,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         TextView scaleValue;
         TextView ratingValue;
+        TextView scaleType;
         ImageView starIcon;
 
         /*ImageView deleteEvent;
@@ -145,6 +153,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             editEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.editEventIcn);*/
             scaleValue = (TextView) itemView.findViewById(R.id.scaleValue);
             ratingValue = (TextView) itemView.findViewById(R.id.ratingValue);
+            scaleType = (TextView) itemView.findViewById(R.id.scaleTypeAdapt);
             starIcon = (ImageView) itemView.findViewById(R.id.starIcon);
             eventDate = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventDate);
             trackingTitle = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.TrackingTitle);

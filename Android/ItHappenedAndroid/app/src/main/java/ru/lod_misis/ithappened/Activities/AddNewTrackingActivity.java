@@ -1,5 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,16 +15,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.UUID;
+
+import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class AddNewTrackingActivity extends AppCompatActivity {
 
     ITrackingRepository trackingRepository;
     InMemoryFactRepository factRepository;
+
+    EditText trackingName;
 
     TextView ratingEnabled;
     TextView commentEnabled;
@@ -91,7 +101,13 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         actionBar.setTitle("Отслеживать");
         factRepository = StaticFactRepository.getInstance();
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                sharedPreferences.getString("UserId", "")).getInstance();
+
         addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
+
+        trackingName = (EditText) findViewById(R.id.editTitleOfTracking);
 
         stateForScale = 0;
         stateForText = 0;
@@ -140,9 +156,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ratingDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 ratingEnabled.setText("не надо");
-                ratingDontImage.setImageResource(R.mipmap.active_dont);
-                ratingOptionalImage.setImageResource(R.mipmap.not_active_check);
-                ratingRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                ratingDontImage.setImageResource(R.drawable.active_dont);
+                ratingOptionalImage.setImageResource(R.drawable.not_active_check);
+                ratingRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 ratingOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForRating = 0;
@@ -154,9 +170,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("не обязательно");
-                ratingDontImage.setImageResource(R.mipmap.not_active_dont);
-                ratingOptionalImage.setImageResource(R.mipmap.active_check);
-                ratingRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                ratingDontImage.setImageResource(R.drawable.not_active_dont);
+                ratingOptionalImage.setImageResource(R.drawable.active_check);
+                ratingRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 ratingOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 ratingRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForRating = 1;
@@ -169,9 +185,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("обязательно");
-                ratingDontImage.setImageResource(R.mipmap.not_active_dont);
-                ratingOptionalImage.setImageResource(R.mipmap.not_active_check);
-                ratingRequiredImage.setImageResource(R.mipmap.active_double_check);
+                ratingDontImage.setImageResource(R.drawable.not_active_dont);
+                ratingOptionalImage.setImageResource(R.drawable.not_active_check);
+                ratingRequiredImage.setImageResource(R.drawable.active_double_check);
                 ratingOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 stateForRating = 2;
@@ -199,9 +215,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 commentEnabled.setText("не обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                commentDontImage.setImageResource(R.mipmap.not_active_dont);
-                commentOptionalImage.setImageResource(R.mipmap.active_check);
-                commentRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                commentDontImage.setImageResource(R.drawable.not_active_dont);
+                commentOptionalImage.setImageResource(R.drawable.active_check);
+                commentRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 commentOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 commentRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForText = 1;
@@ -214,9 +230,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 commentEnabled.setText("обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                commentDontImage.setImageResource(R.mipmap.not_active_dont);
-                commentOptionalImage.setImageResource(R.mipmap.not_active_check);
-                commentRequiredImage.setImageResource(R.mipmap.active_double_check);
+                commentDontImage.setImageResource(R.drawable.not_active_dont);
+                commentOptionalImage.setImageResource(R.drawable.not_active_check);
+                commentRequiredImage.setImageResource(R.drawable.active_double_check);
                 commentOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 commentRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 stateForText = 2;
@@ -232,9 +248,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 scaleEnabled.setText("не надо");
                 scaleDont.setBackgroundColor(getResources().getColor(R.color.dont));
-                scaleDontImage.setImageResource(R.mipmap.active_dont);
-                scaleOptionalImage.setImageResource(R.mipmap.not_active_check);
-                scaleRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                scaleDontImage.setImageResource(R.drawable.active_dont);
+                scaleOptionalImage.setImageResource(R.drawable.not_active_check);
+                scaleRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForScale = 0;
@@ -250,9 +266,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 scaleEnabled.setText("не обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                scaleDontImage.setImageResource(R.mipmap.not_active_dont);
-                scaleOptionalImage.setImageResource(R.mipmap.active_check);
-                scaleRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                scaleDontImage.setImageResource(R.drawable.not_active_dont);
+                scaleOptionalImage.setImageResource(R.drawable.active_check);
+                scaleRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 scaleOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 scaleRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForScale = 1;
@@ -269,9 +285,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 scaleEnabled.setText("обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                scaleDontImage.setImageResource(R.mipmap.not_active_dont);
-                scaleOptionalImage.setImageResource(R.mipmap.not_active_check);
-                scaleRequiredImage.setImageResource(R.mipmap.active_double_check);
+                scaleDontImage.setImageResource(R.drawable.not_active_dont);
+                scaleOptionalImage.setImageResource(R.drawable.not_active_check);
+                scaleRequiredImage.setImageResource(R.drawable.active_double_check);
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 stateForScale = 2;
@@ -279,6 +295,80 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
+            }
+        });
+
+        addTrackingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(trackingName.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
+                }else{
+
+                    String trackingTitle = trackingName.getText().toString();
+
+                    TrackingCustomization rating = TrackingCustomization.None;
+                    TrackingCustomization comment = TrackingCustomization.None;
+                    TrackingCustomization scale = TrackingCustomization.None;
+
+                    String scaleNumb = null;
+
+                    switch (stateForRating){
+                        case 0:
+                            rating = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            rating = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            rating = TrackingCustomization.Required;
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                    switch (stateForText){
+                        case 0:
+                            comment = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            comment = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            comment = TrackingCustomization.Required;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    switch (stateForScale){
+                        case 0:
+                            scale = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            scale = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            scale = TrackingCustomization.Required;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&scaleType.getText().toString().isEmpty()){
+                        Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
+                    }else{
+                        if(scale != TrackingCustomization.None){
+                            scaleNumb = scaleType.getText().toString();
+                        }
+                        Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb);
+                        trackingRepository.AddNewTracking(newTracking);
+                        Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                        startActivity(intent);
+                    }
+                }
             }
         });
 
