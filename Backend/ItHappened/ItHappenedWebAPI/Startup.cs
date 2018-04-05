@@ -33,7 +33,7 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
-      Migrator.Program.Main(new string[0]);
+      //Migrator.Program.Main(new string[0]);
 
       var userList = new UserList(db);
       services
