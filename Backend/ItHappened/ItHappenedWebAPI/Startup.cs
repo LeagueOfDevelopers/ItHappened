@@ -32,6 +32,8 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
+      Program.Main(new string[0]);
+
       var userList = new UserList(db);
       services
         .AddSingleton<UserList>(userList)
