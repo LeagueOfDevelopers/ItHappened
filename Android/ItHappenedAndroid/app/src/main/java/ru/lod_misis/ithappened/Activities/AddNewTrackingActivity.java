@@ -156,9 +156,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ratingDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 ratingEnabled.setText("не надо");
-                ratingDontImage.setImageResource(R.mipmap.active_dont);
-                ratingOptionalImage.setImageResource(R.mipmap.not_active_check);
-                ratingRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                ratingDontImage.setImageResource(R.drawable.active_dont);
+                ratingOptionalImage.setImageResource(R.drawable.not_active_check);
+                ratingRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 ratingOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForRating = 0;
@@ -170,9 +170,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("не обязательно");
-                ratingDontImage.setImageResource(R.mipmap.not_active_dont);
-                ratingOptionalImage.setImageResource(R.mipmap.active_check);
-                ratingRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                ratingDontImage.setImageResource(R.drawable.not_active_dont);
+                ratingOptionalImage.setImageResource(R.drawable.active_check);
+                ratingRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 ratingOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 ratingRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForRating = 1;
@@ -185,9 +185,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("обязательно");
-                ratingDontImage.setImageResource(R.mipmap.not_active_dont);
-                ratingOptionalImage.setImageResource(R.mipmap.not_active_check);
-                ratingRequiredImage.setImageResource(R.mipmap.active_double_check);
+                ratingDontImage.setImageResource(R.drawable.not_active_dont);
+                ratingOptionalImage.setImageResource(R.drawable.not_active_check);
+                ratingRequiredImage.setImageResource(R.drawable.active_double_check);
                 ratingOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 stateForRating = 2;
@@ -215,9 +215,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 commentEnabled.setText("не обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                commentDontImage.setImageResource(R.mipmap.not_active_dont);
-                commentOptionalImage.setImageResource(R.mipmap.active_check);
-                commentRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                commentDontImage.setImageResource(R.drawable.not_active_dont);
+                commentOptionalImage.setImageResource(R.drawable.active_check);
+                commentRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 commentOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 commentRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForText = 1;
@@ -230,9 +230,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 commentEnabled.setText("обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                commentDontImage.setImageResource(R.mipmap.not_active_dont);
-                commentOptionalImage.setImageResource(R.mipmap.not_active_check);
-                commentRequiredImage.setImageResource(R.mipmap.active_double_check);
+                commentDontImage.setImageResource(R.drawable.not_active_dont);
+                commentOptionalImage.setImageResource(R.drawable.not_active_check);
+                commentRequiredImage.setImageResource(R.drawable.active_double_check);
                 commentOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 commentRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 stateForText = 2;
@@ -248,9 +248,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 scaleEnabled.setText("не надо");
                 scaleDont.setBackgroundColor(getResources().getColor(R.color.dont));
-                scaleDontImage.setImageResource(R.mipmap.active_dont);
-                scaleOptionalImage.setImageResource(R.mipmap.not_active_check);
-                scaleRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                scaleDontImage.setImageResource(R.drawable.active_dont);
+                scaleOptionalImage.setImageResource(R.drawable.not_active_check);
+                scaleRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForScale = 0;
@@ -266,9 +266,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 scaleEnabled.setText("не обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                scaleDontImage.setImageResource(R.mipmap.not_active_dont);
-                scaleOptionalImage.setImageResource(R.mipmap.active_check);
-                scaleRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
+                scaleDontImage.setImageResource(R.drawable.not_active_dont);
+                scaleOptionalImage.setImageResource(R.drawable.active_check);
+                scaleRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 scaleOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 scaleRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 stateForScale = 1;
@@ -285,9 +285,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 scaleEnabled.setText("обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
-                scaleDontImage.setImageResource(R.mipmap.not_active_dont);
-                scaleOptionalImage.setImageResource(R.mipmap.not_active_check);
-                scaleRequiredImage.setImageResource(R.mipmap.active_double_check);
+                scaleDontImage.setImageResource(R.drawable.not_active_dont);
+                scaleOptionalImage.setImageResource(R.drawable.not_active_check);
+                scaleRequiredImage.setImageResource(R.drawable.active_double_check);
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 stateForScale = 2;
