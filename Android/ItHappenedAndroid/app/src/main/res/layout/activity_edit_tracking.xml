@@ -99,7 +99,7 @@
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/active_dont" />
+                            android:src="@drawable/active_dont" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -114,7 +114,7 @@
                             android:layout_height="40dp"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/not_active_check" />
+                            android:src="@drawable/not_active_check" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -129,7 +129,7 @@
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/not_active_double_chek" />
+                            android:src="@drawable/not_active_double_chek" />
                     </LinearLayout>
 
 
@@ -189,7 +189,7 @@
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/active_dont" />
+                            android:src="@drawable/active_dont" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -204,7 +204,7 @@
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/not_active_check" />
+                            android:src="@drawable/not_active_check" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -219,7 +219,7 @@
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/not_active_double_chek" />
+                            android:src="@drawable/not_active_double_chek" />
                     </LinearLayout>
 
 
@@ -280,7 +280,7 @@
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/active_dont" />
+                            android:src="@drawable/active_dont" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -295,7 +295,7 @@
                             android:layout_height="40dp"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/not_active_check" />
+                            android:src="@drawable/not_active_check" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -310,7 +310,7 @@
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:src="@mipmap/not_active_double_chek" />
+                            android:src="@drawable/not_active_double_chek" />
                     </LinearLayout>
 
 
