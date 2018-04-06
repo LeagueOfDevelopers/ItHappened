@@ -1,16 +1,14 @@
 package ru.lod_misis.ithappened.Activities;
 
-import android.content.Intent;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -37,55 +35,39 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class EditEventActivity extends AppCompatActivity {
 
-    Button editEvent;
-    Button editDate;
-    TextView editedDateText;
-
-    InMemoryFactRepository factRepository;
-
-    //states
-    int commentState = 0;
-    int ratingState = 0;
-    int scaleState = 0;
-
-    //hints views
-    TextView commentHintText;
-    TextView ratingHintText;
-    TextView scaleHintText;
-
-    //controls views
-    EditText commentControlWidget;
-    RatingBar ratingControlWidget;
-    EditText scaleControlWidget;
-
-    //hints
-    LinearLayout commentHint;
-    LinearLayout ratingHint;
-    LinearLayout scaleHint;
-
-    //controls
-    LinearLayout commentControl;
-    LinearLayout ratingControl;
-    LinearLayout scaleControl;
-
-    ITrackingRepository trackingCollection;
     TrackingService trackingService;
+    InMemoryFactRepository factRepository;
+    ITrackingRepository trackingCollection;
 
+    int commentState;
+    int scaleState;
+    int ratingState;
     UUID trackingId;
     UUID eventId;
 
-    TrackingCustomization commentCustm;
-    TrackingCustomization ratingCustm;
-    TrackingCustomization scaleCustm;
 
-    Date editedDate;
+    LinearLayout commentContainer;
+    LinearLayout scaleContainer;
+    LinearLayout ratingContainer;
+
+    TextView commentAccess;
+    TextView scaleAccess;
+    TextView ratingAccess;
+
+    EditText commentControl;
+    EditText scaleControl;
+    RatingBar ratingControl;
+    Button dateControl;
+
+    TextView scaleType;
+
+    Button addEvent;
+
+    Tracking tracking;
+    Event event;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,305 +75,166 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
 
 
-
-        factRepository = StaticFactRepository.getInstance();
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingCollection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
+        StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext(),sharedPreferences.getString("UserId", ""));
+        trackingCollection = repository.getInstance();
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
+        factRepository = StaticFactRepository.getInstance();
 
-        editDate = (Button) findViewById(R.id.editDateButton);
-        editedDateText = (TextView) findViewById(R.id.editedDate);
-        editEvent = (Button) findViewById(R.id.editEventBtn);
+        trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
+        eventId = UUID.fromString(getIntent().getStringExtra("eventId"));
 
-        //find comment
-        commentHint = (LinearLayout) findViewById(R.id.editCommentHint);
-        commentControl = (LinearLayout) findViewById(R.id.editCommentLayout);
 
-        //find rating
-        ratingHint = (LinearLayout) findViewById(R.id.editScaleHint);
-        ratingControl = (LinearLayout) findViewById(R.id.editScaleLayout);
+        commentContainer = (LinearLayout) findViewById(R.id.commentEventContainerEdit);
+        ratingContainer = (LinearLayout) findViewById(R.id.ratingEventContainerEdit);
+        scaleContainer = (LinearLayout) findViewById(R.id.scaleEventContainerEdit);
 
-        //find scale
-        scaleHint = (LinearLayout) findViewById(R.id.editScaleHint);
-        scaleControl = (LinearLayout) findViewById(R.id.editScaleLayout);
+        commentAccess = (TextView) findViewById(R.id.commentAccessEdit);
+        scaleAccess = (TextView) findViewById(R.id.scaleAccessEdit);
+        ratingAccess = (TextView) findViewById(R.id.ratingAccessEdit);
 
-        Intent intent = getIntent();
-        trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
-        eventId = UUID.fromString(intent.getStringExtra("eventId"));
+        commentControl = (EditText) findViewById(R.id.eventCommentControlEdit);
+        scaleControl = (EditText) findViewById(R.id.eventScaleControlEdit);
+        ratingControl = (RatingBar) findViewById(R.id.ratingEventControlEdit);
+        dateControl = (Button) findViewById(R.id.eventDateControlEdit);
 
-        Tracking tracking = trackingCollection.GetTracking(trackingId);
-        Event event = tracking.GetEvent(eventId);
+        KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
+        scaleControl.setKeyListener(keyListener);
 
-        commentCustm = tracking.GetCommentCustomization();
-        ratingCustm = tracking.GetRatingCustomization();
-        scaleCustm = tracking.GetScaleCustomization();
+        scaleType = (TextView) findViewById(R.id.scaleTypeAccessEdit);
+
+        addEvent = (Button) findViewById(R.id.editEvent);
+
+        tracking = trackingCollection.GetTracking(trackingId);
+        event = tracking.GetEvent(eventId);
+
+        commentState = calculateState(tracking.GetCommentCustomization());
+        ratingState = calculateState(tracking.GetRatingCustomization());
+        scaleState = calculateState(tracking.GetScaleCustomization());
+
+        calculateUX(commentContainer, commentAccess, commentState);
+        calculateUX(ratingContainer, ratingAccess, ratingState);
+        calculateUX(scaleContainer, scaleAccess, scaleState);
+
+        if(tracking.GetScaleCustomization()!=TrackingCustomization.None && tracking.getScaleName()!=null){
+            if(tracking.getScaleName().length()>=3){
+                scaleType.setText(tracking.getScaleName().substring(0,2)+".");
+            }else{
+                scaleType.setText(tracking.getScaleName());
+            }
+        }
+
+        Date thisDate = event.GetEventDate();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
 
-        editedDateText.setText(format.format(event.GetEventDate()));
-
-
-        //add control for comment
-        if(commentCustm!=TrackingCustomization.None) {
-            commentHintText = new TextView(this);
-            commentHintText.setText("Измените комментарий:");
-            commentHintText.setTextSize(20);
-            commentHintText.setPadding(10, 10, 10, 10);
-            commentHintText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-
-            LinearLayout.LayoutParams commentHint = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            commentHint.setMargins(10, 10, 10, 10);
-
-            commentHintText.setLayoutParams(commentHint);
-            commentControl.addView(commentHintText);
-
-            commentControlWidget = new EditText(this);
-            commentControlWidget.setText(event.GetComment());
-            commentControlWidget.setTextColor(getResources().getColor(R.color.cardview_dark_background));
-
-            if (commentCustm == TrackingCustomization.Required) {
-                commentState = 2;
-                commentControlWidget.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+        if((tracking.GetScaleCustomization()==TrackingCustomization.Optional
+                || tracking.GetScaleCustomization()==TrackingCustomization.Required) && event.GetScale()!=null){
+            scaleControl.setText(event.GetScale().toString());
+            if(tracking.getScaleName()!=null){
+                if(tracking.getScaleName().length()>=3){
+                    scaleType.setText(tracking.getScaleName().substring(0,2));
+                }else{
+                    scaleType.setText(tracking.getScaleName());
+                }
             }
-            if (commentCustm == TrackingCustomization.Optional){
-                commentState = 1;
-            commentControlWidget.getBackground().mutate().setColorFilter(getResources().getColor(R.color.color_for_not_definetly), PorterDuff.Mode.SRC_ATOP);
         }
 
-            LinearLayout.LayoutParams commentControlLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            commentControlLayoutParams.setMargins(10,10,10,10);
+        if((tracking.GetRatingCustomization()==TrackingCustomization.Optional
+                || tracking.GetRatingCustomization()==TrackingCustomization.Required) && event.GetRating()!=null){
+             ratingControl.setRating(event.GetRating().GetRatingValue());
+        }
 
-            commentControlWidget.setLayoutParams(commentControlLayoutParams);
-            commentControl.addView(commentControlWidget);
+        if((tracking.GetCommentCustomization()==TrackingCustomization.Optional
+                || tracking.GetCommentCustomization()==TrackingCustomization.Required) && event.GetComment()!=null){
+            commentControl.setText(event.GetComment());
         }
 
 
-        //add control for rating
-        if(tracking.GetRatingCustomization()!=TrackingCustomization.None){
 
-            ratingHintText = new TextView(this);
-            ratingHintText.setText("Измените оценку:");
-            ratingHintText.setTextSize(20);
-            ratingHintText.setPadding(10, 10, 10, 10);
-            ratingHintText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-
-            LinearLayout.LayoutParams ratingHint = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            ratingHint.setMargins(10, 10, 10, 10);
-
-            ratingHintText.setLayoutParams(ratingHint);
-            ratingControl.addView(ratingHintText);
-
-            ratingControlWidget = new RatingBar(getApplication());
-            ratingControlWidget.setNumStars(5);
-            ratingControlWidget.setStepSize(1/2);
-
-            if(tracking.GetRatingCustomization()==TrackingCustomization.Optional){
-
-                ratingState = 1;
-
-                LayerDrawable stars = (LayerDrawable) ratingControlWidget.getProgressDrawable();
-                stars.getDrawable(2).setColorFilter(getResources().getColor(R.color.color_for_not_definetly), PorterDuff.Mode.SRC_ATOP);
-                stars.getDrawable(1).setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-                stars.getDrawable(0).setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
-            }
-            if(tracking.GetRatingCustomization()==TrackingCustomization.Required){
-
-                ratingState = 2;
-
-                LayerDrawable stars = (LayerDrawable) ratingControlWidget.getProgressDrawable();
-                stars.getDrawable(2).setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
-                stars.getDrawable(1).setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-                stars.getDrawable(0).setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
-            }
-            if(event.GetRating()!=null) {
-                ratingControlWidget.setRating(event.GetRating().GetRatingValue() / 2.0F);
-            }
-            LinearLayout.LayoutParams ratingControlLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            ratingControlLayoutParams.setMargins(10,10,10,10);
-
-            ratingControlWidget.setLayoutParams(ratingControlLayoutParams);
-            ratingControl.addView(ratingControlWidget);
-        }
+        dateControl.setText(format.format(thisDate).toString());
 
 
-        //add control for scale
-
-        if(tracking.GetScaleCustomization()!=TrackingCustomization.None){
-
-            scaleHintText = new TextView(this);
-            scaleHintText.setText("Измените шкалу:");
-            scaleHintText.setTextSize(20);
-            scaleHintText.setPadding(10, 10, 10, 10);
-            scaleHintText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-
-            LinearLayout.LayoutParams scaleHint = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            scaleHint.setMargins(10, 10, 10, 10);
-
-            scaleHintText.setLayoutParams(scaleHint);
-            scaleControl.addView(scaleHintText);
-
-            scaleControlWidget = new EditText(this);
-            if(event.GetScale()!=null) {
-                scaleControlWidget.setText(event.GetScale().toString());
-            }
-            scaleControlWidget.setTextColor(getResources().getColor(R.color.cardview_dark_background));
-            KeyListener keyListener = DigitsKeyListener.getInstance("1234567890.-");
-            scaleControlWidget.setKeyListener(keyListener);
-
-            if(tracking.GetScaleCustomization()==TrackingCustomization.Optional){
-                scaleState = 1;
-
-                scaleControlWidget.getBackground().mutate().setColorFilter(getResources().getColor(R.color.color_for_not_definetly), PorterDuff.Mode.SRC_ATOP);
-
-            }
-            if(tracking.GetScaleCustomization()==TrackingCustomization.Required){
-                scaleState = 2;
-
-                scaleControlWidget.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
-
-            }
-
-            LinearLayout.LayoutParams scaleControlLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            scaleControlLayoutParams.setMargins(10,10,10,10);
-
-            scaleControlWidget.setLayoutParams(scaleControlLayoutParams);
-            scaleControl.addView(scaleControlWidget);
-
-        }
-
-        editDate.setOnClickListener(new View.OnClickListener() {
+        dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerFragment picker = new DatePickerFragment(editedDateText);
-                picker.show(getFragmentManager(), "EditedDate");
+                FragmentManager fragmentManager = getFragmentManager();
+                DialogFragment picker = new DatePickerFragment(dateControl);
+                picker.show(fragmentManager, "from");
             }
         });
 
-        editEvent.setOnClickListener(new View.OnClickListener() {
+        addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean commentFlag = true;
+                boolean scaleFlag = true;
+                boolean ratingFlag = true;
 
-                Boolean commentFlag = true;
-                Boolean ratingFlag = true;
-                Boolean scaleFlag = true;
+                if(commentState == 2 && commentControl.getText().toString().isEmpty()){
+                    commentFlag=false;
+                }
+
+                if(ratingState == 2 && ratingControl.getRating() == 0){
+                    ratingFlag = false;
+                }
+
+                if(scaleState == 2 && scaleControl.getText().toString().isEmpty()){
+                    scaleFlag = false;
+                }
 
                 String comment = null;
                 Double scale = null;
                 Rating rating = null;
 
-
-                try {
-                    if (commentState == 1 && !commentControlWidget.getText().toString().isEmpty()) {
-                        comment = commentControlWidget.getText().toString();
+                if(commentFlag&&ratingFlag&&scaleFlag){
+                    if(!commentControl.getText().toString().isEmpty()){
+                        comment = commentControl.getText().toString();
                     }
-
-                    if (ratingState == 1 && ratingControlWidget.getRating() != 0) {
-                        rating = new Rating(Math.round((ratingControlWidget.getRating()) * 2));
+                    if(!(ratingControl.getRating()==0)){
+                        rating = new Rating((int) ratingControl.getRating());
                     }
-
-                    if (scaleState == 1 && !scaleControlWidget.getText().toString().isEmpty()) {
-                        scale = Double.parseDouble(scaleControlWidget.getText().toString());
-                    }
-
-                    if (commentState == 2 && commentControlWidget.getText().toString().isEmpty()) {
-                        commentFlag = false;
-                    }
-
-                    if (commentState == 2 && !commentControlWidget.getText().toString().isEmpty()) {
-                        comment = commentControlWidget.getText().toString();
-                    }
-
-                    if (ratingState == 2 && ratingControlWidget.getRating() == 0) {
-                        ratingFlag = false;
-                    }
-
-                    if (ratingState == 2 && ratingControlWidget.getRating() != 0) {
-                        rating = new Rating(Math.round((ratingControlWidget.getRating()) * 2));
-                    }
-
-                    if (scaleState == 2 && scaleControlWidget.getText().toString().isEmpty()) {
-                        scaleFlag = false;
-                    }
-
-                    if (scaleState == 2 && !scaleControlWidget.getText().toString().isEmpty()) {
-                        scale = Double.parseDouble(scaleControlWidget.getText().toString());
-                    }
-
-
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-
-                    try {
-                        editedDate = simpleDateFormat.parse(editedDateText.getText().toString());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (commentFlag && ratingFlag && scaleFlag) {
+                    if(!scaleControl.getText().toString().isEmpty()){
                         try {
-                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, editedDate);
-                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculateOneTrackingFact");
-                                        }
-                                    });
-                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculateOneTrackingFact");
-                                        }
-                                    });
+                            scale = Double.parseDouble(scaleControl.getText().toString());
+                            Date eventDate = null;
+                            Locale locale = new Locale("ru");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                            try {
+                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            trackingService.AddEvent(trackingId,new Event(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
+                            Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                             finish();
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "ex", Toast.LENGTH_SHORT).show();
+                        }catch (Exception e){
+                            Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        String toastMessage = "Введите обязательные данные о событии: ";
-                        if (commentFlag == false) {
-                            toastMessage += "комментарий, ";
+                    }else {
+                        Date eventDate = null;
+                        Locale locale = new Locale("ru");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                        try {
+                            eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
-                        if (ratingFlag == false) {
-                            toastMessage += "оценку, ";
-                        }
-                        if (scaleFlag == false) {
-                            toastMessage += "шкалу, ";
-                        }
-
-                        Toast.makeText(getApplicationContext(), toastMessage.substring(0, toastMessage.length() - 2) + "!", Toast.LENGTH_SHORT).show();
+                        trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                        Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
-                }catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Изменить событие");
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -401,6 +244,44 @@ public class EditEventActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Добавить событие");
+    }
+
+    private int calculateState(TrackingCustomization customization){
+        switch (customization){
+            case None:
+                return 0;
+            case Optional:
+                return 1;
+            case Required:
+                return 2;
+            default:
+                break;
+        }
+        return 0;
+    }
+
+    private void calculateUX(LinearLayout container, TextView access, int state){
+        switch (state){
+            case 0:
+                container.setVisibility(View.GONE);
+                break;
+            case 1:
+                break;
+            case 2:
+                access.setText(access.getText().toString()+"*");
+                break;
+            default:
+                break;
         }
     }
 }
