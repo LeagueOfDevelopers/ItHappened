@@ -1,102 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:layout_marginBottom="64dp">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="49dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/hintForDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Дата:"
-        android:textSize="20sp"
-        android:layout_margin="7dp"
-        android:textColor="@color/colorPrimaryDark"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/commentEventContainerEdit"
+                android:paddingBottom="10dp">
 
-    <Button
-        android:id="@+id/editDateButton"
-        android:layout_margin="7dp"
-        android:layout_below="@+id/hintForDate"
-        android:background="@drawable/button"
-        android:textColor="#FFFFFF"
-        android:text="Изменить"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/commentAccessEdit"
+                    android:text = "Комментарий"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
 
-    <TextView
-        android:id="@+id/editedDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/editDateButton"
-        android:layout_alignBottom="@+id/editDateButton"
-        android:layout_toEndOf="@+id/editDateButton"
-        android:layout_toRightOf="@+id/editDateButton"
-        android:text="Ваша изменная дата"
-        android:layout_marginLeft="15dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp" />
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:elevation="40dp"
+                    android:paddingBottom="10dp">
 
-    <LinearLayout
-        android:layout_below="@id/editDateButton"
-        android:id="@+id/editCommentHint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+                    <EditText
+                        android:id="@+id/eventCommentControlEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/custom_edit_text"
+                        android:hint="Ваш комментарий"
+                        android:paddingLeft="15dp" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_below="@id/editCommentHint"
-        android:id="@+id/editCommentLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
 
-    <LinearLayout
-        android:layout_below="@id/editCommentLayout"
-        android:id="@+id/editRatingHint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+            <LinearLayout
+                android:layout_below="@id/commentEventContainerEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/scaleEventContainerEdit"
+                android:paddingBottom="10dp">
 
-    <LinearLayout
-        android:layout_below="@id/editRatingHint"
-        android:id="@+id/editRatingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text = "Количество"
+                    android:id="@+id/scaleAccessEdit"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
 
-    <LinearLayout
-        android:layout_below="@id/editRatingLayout"
-        android:id="@+id/editScaleHint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:elevation="40dp"
+                    android:paddingBottom="10dp">
 
-    <LinearLayout
-        android:layout_below="@id/editScaleHint"
-        android:id="@+id/editScaleLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <EditText
+                            android:id="@+id/eventScaleControlEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:paddingRight="15dp"
+                            android:background="@drawable/custom_edit_text"
+                            android:hint="1000"
+                            android:paddingLeft="15dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:paddingTop="10dp"
+                            android:id="@+id/scaleTypeAccessEdit"
+                            android:layout_toRightOf="@id/eventScaleControlEdit"
+                            android:background="@drawable/custom_edit_text"
+                            android:text="Шкала"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/scaleEventContainerEdit"
+                android:id="@+id/ratingEventContainerEdit"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text = "Рейтинг"
+                    android:id="@+id/ratingAccessEdit"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#FFFFFF"
+                    android:elevation="40dp"
+                    app:cardBackgroundColor="#ffffff">
+
+
+                    <RatingBar
+                        android:id="@+id/ratingEventControlEdit"
+                        style="@style/Widget.AppCompat.RatingBar.Indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:background="@drawable/custom_edit_text"
+                        android:isIndicator="false"
+                        android:numStars="5"
+                        android:stepSize="0.5" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/ratingEventContainerEdit"
+                android:id="@+id/dateEventContainerEdit"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text = "Дата"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:elevation="40dp"
+                    android:paddingBottom="10dp">
+
+                    <Button
+                        android:id="@+id/eventDateControlEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="Дата"
+                        android:textColor="#a9a9a9"
+                        android:background="@drawable/custom_edit_text"
+                        android:paddingLeft="15dp" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+
 
         </RelativeLayout>
-
     </ScrollView>
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/button"
-        android:layout_margin="7dp"
-        android:id="@+id/editEventBtn"
-        android:text="Изменить"
-        android:textColor="#FFFFFF"/>
+        android:layout_alignParentBottom="true">
 
+        <Button
+            android:id="@+id/editEvent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="Сохранить"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
 </RelativeLayout>

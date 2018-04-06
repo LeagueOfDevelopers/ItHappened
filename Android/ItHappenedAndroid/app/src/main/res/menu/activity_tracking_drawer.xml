@@ -7,23 +7,23 @@
 
         <item
             android:id="@+id/my_events"
-            android:icon="@mipmap/events"
+            android:icon="@drawable/trackings"
             android:title="@string/my_events" />
         <item
             android:id="@+id/statistics"
-            android:icon="@mipmap/statistics"
+            android:icon="@drawable/statistics"
             android:title="@string/statistics" />
         <item
             android:id="@+id/events_history"
-            android:icon="@mipmap/history"
+            android:icon="@drawable/history"
             android:title="@string/events_history" />
         <item
             android:id="@+id/proile_settings"
-            android:icon="@mipmap/prf_settings"
+            android:icon="@drawable/profile"
             android:title="@string/profile_settings" />
         <item
             android:id="@+id/synchronisation"
-            android:icon="@android:drawable/ic_popup_sync"
+            android:icon="@drawable/sync"
             android:title="@string/synchronisation"
             android:visible="true" />
     </group>

@@ -53,7 +53,7 @@ public class TrackingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("Мои отслеживания");
+        getActivity().setTitle("Что произошло?");
         hintForTrackings = (TextView) getActivity().findViewById(R.id.hintForTrackingsFragment);
 
 
