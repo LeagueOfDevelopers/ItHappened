@@ -48,7 +48,7 @@ public class SumScaleFact extends Fact{
 
     @Override
     public String textDescription() {
-        return String.format("Сумма значений шкалы для события <b>%s</b> равна <b>%s</b>",
-                tracking.getTrackingName(), scaleSum);
+        return String.format("Сумма значений <b>%s</b> для события <b>%s</b> равна <b>%s</b>",
+                tracking.getScale(), tracking.getTrackingName(), scaleSum);
     }
 }
