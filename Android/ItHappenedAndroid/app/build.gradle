@@ -22,9 +22,8 @@ android {
         applicationId "ru.lod_misis.ithappened"
         minSdkVersion 15
         targetSdkVersion 26
-        //versionCode getMyVersionCode()
-        versionCode 6
-        versionName "1.4"
+        versionCode getMyVersionCode()
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         lintOptions {

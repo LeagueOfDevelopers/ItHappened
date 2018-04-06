@@ -11,7 +11,6 @@ import java.util.TimeZone;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 /**
  * Created by Ded on 30.03.2018.
@@ -62,8 +61,8 @@ public class LongTimeAgoFact extends Fact{
     public String textDescription() {
         NumberFormat format = new DecimalFormat("#.#");
 
-        return String.format("Событие <b>%s</b> не происходило уже %s %s",
-                tracking.getTrackingName(), format.format(daysSinceLastEvent), StringParse.days(daysSinceLastEvent.intValue()));
+        return String.format("Событие <b>%s</b> не происходило уже %s дней",
+                tracking.getTrackingName(), format.format(daysSinceLastEvent));
     }
 
     public Double getDaysSinceLastEvent() {
