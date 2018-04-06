@@ -21,5 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ItHappenedDomain\ItHappenedDomain.csproj" />
+    <ProjectReference Include="..\Migrator\Migrator.csproj" />
   </ItemGroup>
 </Project>

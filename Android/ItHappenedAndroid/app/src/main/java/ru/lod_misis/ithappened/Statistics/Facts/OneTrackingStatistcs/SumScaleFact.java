@@ -18,7 +18,8 @@ public class SumScaleFact extends Fact{
         trackingId = tracking.GetTrackingID();
     }
 
-    public Double getSumValue(){
+    @Override
+    public void calculateData() {
         for(Event event : tracking.GetEventCollection()){
             if(!event.GetStatus()){
                 eventCollection.add(event);
@@ -34,12 +35,6 @@ public class SumScaleFact extends Fact{
         }
 
         calculatePriority();
-        return scaleSum;
-    }
-
-    @Override
-    public void calculateData() {
-        getSumValue();
     }
 
     public Double getPriority(){
