@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 /**
  * Created by Ded on 14.03.2018.
@@ -42,6 +43,7 @@ public class TrackingEventsCountFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("Событие <b>%s</b> произошло <b>%s</b> раз", tracking.getTrackingName(), eventCount);
+        return String.format("Событие <b>%s</b> произошло <b>%s</b> %s", tracking.getTrackingName(),
+                eventCount, StringParse.time(eventCount));
     }
 }
