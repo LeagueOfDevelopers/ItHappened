@@ -61,15 +61,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
         }
 
-        if(event.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null){
+        if(event.GetScale()!=null){
             holder.scaleValue.setText(event.GetScale().toString());
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
-            if(type!=null) {
-                if (type.length() >= 3) {
-                    holder.scaleType.setText(type.substring(0, 2) + ".");
-                } else {
-                    holder.scaleType.setText(type);
-                }
+            if(type.length()>=3) {
+                holder.scaleType.setText(type.substring(0, 2) + ".");
+            }else{
+                holder.scaleType.setText(type);
             }
         }else{
             holder.scaleValue.setVisibility(View.GONE);

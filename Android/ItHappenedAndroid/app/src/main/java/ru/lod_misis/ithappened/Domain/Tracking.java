@@ -283,7 +283,6 @@ public class Tracking extends RealmObject {
     public void setScaleName(String name) {scaleName = name;}
 
     @Expose
-    @SerializedName("scaleName")
     private String scaleName = "Шкала";
     @Expose
     private String trackingName;
