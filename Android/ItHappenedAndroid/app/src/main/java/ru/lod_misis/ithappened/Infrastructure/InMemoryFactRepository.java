@@ -25,8 +25,6 @@ public class InMemoryFactRepository {
             functionApplicabilityCheck(tracking);
         }
 
-       // sortOneTrackingFacts();
-
         return rx.Observable.from(oneTrackingFactCollection);
     }
 
