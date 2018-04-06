@@ -9,6 +9,6 @@ namespace ItHappenedDomain.Models
   {
     public string UserNickname { get; set; }
     public DateTimeOffset NicknameDateOfChange { get; set; }
-    public List<Tracking> TrackingCollection { get; set; }
+    public List<Tracking> trackingCollection { get; set; }
   }
 }

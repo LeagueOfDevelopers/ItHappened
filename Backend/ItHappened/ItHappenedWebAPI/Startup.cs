@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
+using Migrator;
 
 namespace ItHappenedWebAPI
 {
@@ -32,7 +33,7 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
-      Program.Main(new string[0]);
+      //Migrator.Program.Main(new string[0]);
 
       var userList = new UserList(db);
       services
