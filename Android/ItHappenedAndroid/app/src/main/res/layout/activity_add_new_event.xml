@@ -1,84 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="64dp">
+        android:layout_marginBottom="49dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:id="@+id/hintForNewComment"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/commentEventContainer"
+                android:paddingBottom="10dp">
 
-    <LinearLayout
-        android:layout_below="@id/hintForNewComment"
-        android:id="@+id/commentControl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/commentAccess"
+                    android:text = "Комментарий"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
 
-    <LinearLayout
-        android:layout_below="@id/commentControl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/hintForNewRating"
-        android:orientation="vertical"></LinearLayout>
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:elevation="40dp"
+                    android:paddingBottom="10dp">
 
-    <LinearLayout
-        android:id="@+id/ratingControl"
-        android:layout_below="@+id/hintForNewRating"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/hintForNewScale"
-        android:layout_width="match_parent"
-        android:layout_below="@id/ratingControl"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+                    <EditText
+                        android:id="@+id/eventCommentControl"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/custom_edit_text"
+                        android:hint="Ваш комментарий"
+                        android:paddingLeft="15dp" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_below="@+id/hintForNewScale"
-        android:id="@+id/scaleControl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+            <LinearLayout
+                android:layout_below="@id/commentEventContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/scaleEventContainer"
+                android:paddingBottom="10dp">
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text = "Количество"
+                    android:id="@+id/scaleAccess"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
 
-        </RelativeLayout>
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:elevation="40dp"
+                    android:paddingBottom="10dp">
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/eventScaleControl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:paddingRight="15dp"
+                        android:background="@drawable/custom_edit_text"
+                        android:hint="1000"
+                        android:paddingLeft="15dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:paddingTop="10dp"
+                            android:id="@+id/scaleTypeAccess"
+                            android:layout_toRightOf="@id/eventScaleControl"
+                            android:background="@drawable/custom_edit_text"
+                            android:text="Шкала"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/scaleEventContainer"
+                android:id="@+id/ratingEventContainer"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text = "Рейтинг"
+                    android:id="@+id/ratingAccess"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#FFFFFF"
+                    android:elevation="40dp"
+                    app:cardBackgroundColor="#ffffff">
+
+
+                    <RatingBar
+                        android:id="@+id/ratingEventControl"
+                        style="@style/Widget.AppCompat.RatingBar.Indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:background="@drawable/custom_edit_text"
+                        android:isIndicator="false"
+                        android:numStars="5"
+                        android:stepSize="0.5" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/ratingEventContainer"
+                android:id="@+id/dateEventContainer"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text = "Дата"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/titleHint"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:elevation="40dp"
+                    android:paddingBottom="10dp">
+
+                    <Button
+                        android:id="@+id/eventDateControl"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="Дата"
+                        android:textColor="#a9a9a9"
+                        android:background="@drawable/custom_edit_text"
+                        android:paddingLeft="15dp" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+
+
+</RelativeLayout>
     </ScrollView>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/addEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button"
-            android:text="Добавить"
-            android:textColor="#FFFFFF"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            android:background="@color/colorPrimary"
+            android:text="Создать"
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
-
 </RelativeLayout>

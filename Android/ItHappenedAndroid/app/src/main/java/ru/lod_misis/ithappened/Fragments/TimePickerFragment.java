@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -20,6 +21,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     TextView dateTimeText;
     String formatedDate;
     Calendar c;
+    Button date;
 
     Date thisDate;
 
@@ -37,6 +39,11 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @SuppressLint("ValidFragment")
     public TimePickerFragment(TextView dateTimeText, Calendar c){
         this.dateTimeText = dateTimeText;
+        this.c = c;
+    }
+
+    public TimePickerFragment(Button date, Calendar c){
+        this.date = date;
         this.c = c;
     }
 
@@ -60,6 +67,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
             dateTimeText.setText(format.format(time.getTime()));
 
+        }
+
+        if(date!=null){
+            Locale loc = new Locale("ru");
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
+            date.setText(format.format(time.getTime()));
         }
 
     }

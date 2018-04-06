@@ -5,8 +5,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -17,14 +17,17 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     String formattedDate;
 
-    EditText date;
-
     TextView datetext;
+
+    Button date;
 
     TimePickerFragment timePickerFragment;
 
     public DatePickerFragment(TextView datetext){
         this.datetext = datetext;
+    }
+    public DatePickerFragment(Button date){
+        this.date = date;
     }
 
     @Override
@@ -44,6 +47,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         if(datetext!=null){
 
             timePickerFragment = new TimePickerFragment(datetext, c);
+            timePickerFragment.show(getFragmentManager(), "TimePicker");
+        }
+        if(date!=null){
+            timePickerFragment = new TimePickerFragment(date, c);
             timePickerFragment.show(getFragmentManager(), "TimePicker");
         }
     }

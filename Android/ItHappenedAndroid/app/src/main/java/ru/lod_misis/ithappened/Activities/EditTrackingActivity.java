@@ -407,7 +407,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString();
                         }
-                        service.EditTracking(trackingId, rating, scale, comment, trackingTitle, scaleNumb);
+                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb);
                         Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                         startActivity(intent);

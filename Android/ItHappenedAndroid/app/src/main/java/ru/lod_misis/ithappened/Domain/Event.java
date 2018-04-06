@@ -12,7 +12,7 @@ import io.realm.RealmObject;
 
 public class Event extends RealmObject
 {
-    public Event(UUID eventId, UUID trackingID, Double scale, Rating rating, String comment)
+    public Event(UUID eventId, UUID trackingID, Date dateOfChange, Double scale, Rating rating, String comment)
     {
         this.eventId = eventId.toString();
         eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
@@ -20,7 +20,7 @@ public class Event extends RealmObject
         this.rating = rating;
         this.comment = comment;
         this.trackingId = trackingID.toString();
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        this.eventDate = dateOfChange;
     }
 
     public Event(){}
