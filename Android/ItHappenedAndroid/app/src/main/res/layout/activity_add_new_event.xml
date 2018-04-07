@@ -36,6 +36,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
                     android:paddingBottom="10dp">
@@ -43,7 +44,7 @@
                     <EditText
                         android:id="@+id/eventCommentControl"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:background="@drawable/custom_edit_text"
                         android:hint="Ваш комментарий"
                         android:paddingLeft="15dp" />
@@ -75,6 +76,7 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/custom_edit_text"
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:elevation="40dp"
                     android:paddingBottom="10dp">
 
@@ -85,17 +87,18 @@
                     <EditText
                         android:id="@+id/eventScaleControl"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:paddingRight="15dp"
                         android:background="@drawable/custom_edit_text"
                         android:hint="1000"
+
                         android:paddingLeft="15dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                            android:paddingTop="10dp"
+                            android:paddingTop="7dp"
                             android:id="@+id/scaleTypeAccess"
                             android:layout_toRightOf="@id/eventScaleControl"
                             android:background="@drawable/custom_edit_text"
@@ -129,9 +132,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
-                    android:background="#FFFFFF"
-                    android:elevation="40dp"
-                    app:cardBackgroundColor="#ffffff">
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
+                    android:background="@drawable/custom_edit_text"
+                    app:cardBackgroundColor="#ffffff"
+                    android:elevation="40dp">
 
 
                     <RatingBar
@@ -172,13 +176,14 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/custom_edit_text"
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:elevation="40dp"
                     android:paddingBottom="10dp">
 
                     <Button
                         android:id="@+id/eventDateControl"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:text="Дата"
                         android:textColor="#a9a9a9"
                         android:background="@drawable/custom_edit_text"

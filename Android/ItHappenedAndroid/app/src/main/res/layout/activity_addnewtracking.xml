@@ -166,8 +166,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/custom_edit_text"
-                android:elevation="20dp">
+                android:background="@drawable/custom_edit_text">
 
                 <LinearLayout
                     android:layout_width="match_parent"

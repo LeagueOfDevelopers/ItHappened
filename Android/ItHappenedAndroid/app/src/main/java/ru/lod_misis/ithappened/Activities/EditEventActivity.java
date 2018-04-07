@@ -194,7 +194,7 @@ public class EditEventActivity extends AppCompatActivity {
                         comment = commentControl.getText().toString();
                     }
                     if(!(ratingControl.getRating()==0)){
-                        rating = new Rating((int) ratingControl.getRating());
+                        rating = new Rating((int) (ratingControl.getRating()*2));
                     }
                     if(!scaleControl.getText().toString().isEmpty()){
                         try {

@@ -33,17 +33,17 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/commentAccessEdit"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:background="@drawable/custom_edit_text"
-                    android:elevation="40dp"
-                    android:paddingBottom="10dp">
+                    android:layout_marginTop="5dp"
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
+                    app:cardBackgroundColor="#ffffff">
 
                     <EditText
                         android:id="@+id/eventCommentControlEdit"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:background="@drawable/custom_edit_text"
                         android:hint="Ваш комментарий"
                         android:paddingLeft="15dp" />
@@ -74,6 +74,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
                     android:paddingBottom="10dp">
@@ -95,7 +96,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                            android:paddingTop="10dp"
+                            android:paddingTop="7dp"
                             android:id="@+id/scaleTypeAccessEdit"
                             android:layout_toRightOf="@id/eventScaleControlEdit"
                             android:background="@drawable/custom_edit_text"
@@ -129,8 +130,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:background="#FFFFFF"
                     android:elevation="40dp"
+                    android:paddingBottom="10dp"
                     app:cardBackgroundColor="#ffffff">
 
 
@@ -172,13 +175,15 @@
                     android:layout_marginTop="5dp"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
+                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:paddingBottom="10dp">
 
                     <Button
                         android:id="@+id/eventDateControlEdit"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:text="Дата"
+                        android:textAlignment="inherit"
                         android:textColor="#a9a9a9"
                         android:background="@drawable/custom_edit_text"
                         android:paddingLeft="15dp" />
