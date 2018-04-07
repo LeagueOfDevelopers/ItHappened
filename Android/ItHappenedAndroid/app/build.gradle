@@ -6,7 +6,7 @@ android {
 
     def getMyVersionCode = { ->
         return project.hasProperty('myVersionCode') ?
-                myVersionCode.toInteger() : 7
+                myVersionCode.toInteger() : 8
     }
 //
 //    def getMyVersionName = { ->
@@ -19,6 +19,7 @@ android {
     buildToolsVersion "26.0.2"
 
     defaultConfig {
+        manifestPlaceholders = [myVersionCode: getMyVersionCode()]
         applicationId "ru.lod_misis.ithappened"
         minSdkVersion 15
         targetSdkVersion 26
