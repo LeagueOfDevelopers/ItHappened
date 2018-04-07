@@ -111,6 +111,8 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
                         BarData data = new BarData(frequentTrackings, dataSet);
                         barChart.setData(data);
+                        barChart.setPinchZoom(false);
+                        barChart.setDoubleTapToZoomEnabled(false);
                         barChart.setDescription("");
 
                     }
@@ -180,6 +182,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);
                             pieChart.setDescription("");
+                            pieChart.setRotationEnabled(false);
                             pieChart.setCenterText("Дни недели");
                         }
 
@@ -220,6 +223,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             pieChart.setData(pieData);
                             pieChart.setCenterText("Время суток");
                             pieChart.setDescription("");
+                            pieChart.setRotationEnabled(false);
                         }
 
                     }
