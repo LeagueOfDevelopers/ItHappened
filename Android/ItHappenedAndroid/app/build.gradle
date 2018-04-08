@@ -24,8 +24,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         //versionCode getMyVersionCode()
-        versionCode 9
-        versionName "1.7"
+        versionCode 10
+        versionName "0.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         lintOptions {
