@@ -86,5 +86,4 @@ dependencies {
     compile 'com.nvanbenschoten.motion:library:1.1.2'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
-    compile files('build/intermediates/rs/debug/lib/lambdaj-2.4-with-dependencies.jar')
 }

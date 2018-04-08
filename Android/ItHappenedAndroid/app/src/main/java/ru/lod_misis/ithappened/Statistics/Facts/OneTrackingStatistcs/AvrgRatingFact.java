@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +60,9 @@ public class AvrgRatingFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("Среднее значение оценки для события <b>%s</b> равно </b>%.2f</b>",
-                tracking.getTrackingName(), averageValue);
+        DecimalFormat format = new DecimalFormat("#.##");
+        return String.format("Среднее значение оценки для события <b>%s</b> равно <b>%.2f</b>",
+                tracking.getTrackingName(), format.format(averageValue));
     }
 
 }

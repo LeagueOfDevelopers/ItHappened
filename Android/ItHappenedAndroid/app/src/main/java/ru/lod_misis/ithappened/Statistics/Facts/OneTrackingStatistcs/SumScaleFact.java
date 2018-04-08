@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,8 @@ public class SumScaleFact extends Fact{
 
     @Override
     public String textDescription() {
+        DecimalFormat format = new DecimalFormat("#.##");
         return String.format("Сумма значений <b>%s</b> для события <b>%s</b> равна <b>%s</b>",
-                tracking.getScaleName(), tracking.getTrackingName(), scaleSum);
+                tracking.getScaleName(), tracking.getTrackingName(), format.format(scaleSum));
     }
 }
