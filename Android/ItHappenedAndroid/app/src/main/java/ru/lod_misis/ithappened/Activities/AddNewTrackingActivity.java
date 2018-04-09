@@ -78,23 +78,6 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -372,6 +355,23 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
 
     }
 
