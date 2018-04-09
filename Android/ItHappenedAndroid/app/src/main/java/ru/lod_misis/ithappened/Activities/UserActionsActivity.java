@@ -151,7 +151,7 @@ public class UserActionsActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            setTitle("Мои отслеживания");
+            setTitle("Что произошло?");
             trackFrg = new TrackingsFragment();
 
             fTrans = getFragmentManager().beginTransaction();
@@ -196,7 +196,7 @@ public class UserActionsActivity extends AppCompatActivity
             fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
             fTrans.commit();
 
-            setTitle("Мои отслеживания");
+            setTitle("Что произошло?");
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
