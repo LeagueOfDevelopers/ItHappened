@@ -103,8 +103,10 @@ public class EventsFragment extends Fragment  {
 
         collection = new StaticInMemoryRepository(getActivity().getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
 
+        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
+
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
-        if(collection.FilterEvents(null, null, null, null, null, null, null).size()!=0) {
+        if(trackingService.FilterEventCollection(null, null, null, null, null, null, null).size()!=0) {
             hintForEventsHistory.setVisibility(View.INVISIBLE);
         }
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
@@ -142,9 +144,11 @@ public class EventsFragment extends Fragment  {
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        eventsAdpt = new EventsAdapter(collection.FilterEvents(null,null,null,null,null,null,null), getActivity(), 0);
+        eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
+                (null,null,null,
+                        null,null,null,
+                        null), getActivity(), 0);
         eventsRecycler.setAdapter(eventsAdpt);
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
 
 
         final ArrayList<UUID> idCollection = new ArrayList<UUID>();
@@ -258,7 +262,10 @@ public class EventsFragment extends Fragment  {
         filtersCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eventsAdpt = new EventsAdapter(collection.FilterEvents(null,null,null,null,null,null,null), getActivity(), 0);
+                eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
+                        (null,null,null,
+                                null,null,null,
+                                null), getActivity(), 0);
                 ratingFilter.setRating(0);
                 scaleFilter.setText("");
                 dateFromText.setText("Начальная дата");

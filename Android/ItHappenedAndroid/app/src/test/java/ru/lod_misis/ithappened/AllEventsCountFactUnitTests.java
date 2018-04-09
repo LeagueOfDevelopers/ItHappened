@@ -20,8 +20,8 @@ public class AllEventsCountFactUnitTests {
 
     @Test
     public void HaveTrackingCollectionWithTwoTrackings_GetEventCountShouldReturnTwo(){
-        Tracking tracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
-        Tracking secondTracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
+        Tracking tracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        Tracking secondTracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
         Event event = new Event(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
         Event secondEvent = new Event(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
         tracking.AddEvent(event);
