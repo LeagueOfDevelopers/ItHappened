@@ -67,7 +67,7 @@ public class AvrgScaleFact extends Fact {
     @Override
     public String textDescription() {
         DecimalFormat format = new DecimalFormat("#.##");
-        return String.format("Среднее значение <b>%s</b> для события <b>%s</b> равно <b>%.2f</b>",
+        return String.format("Среднее значение <b>%s</b> для события <b>%s</b> равно <b>%s</b>",
                 tracking.getScaleName(), tracking.getTrackingName(), format.format(averageValue));
     }
 

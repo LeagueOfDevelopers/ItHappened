@@ -1,5 +1,7 @@
 package ru.lod_misis.ithappened.Application;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -69,6 +71,12 @@ public class TrackingService
         List<Event> events = trackingCollection.FilterEvents(trackingId, from, to,
                 scaleComparison, scale,
                 ratingComparison, rating);
+        Collections.sort(events, new Comparator<Event>() {
+            @Override
+            public int compare(Event event, Event t1) {
+                return t1.GetEventDate().compareTo(event.GetEventDate());
+            }
+        });
         return events;
     }
 
