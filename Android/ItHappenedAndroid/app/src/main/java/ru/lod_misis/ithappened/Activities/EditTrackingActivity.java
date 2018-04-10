@@ -84,27 +84,11 @@ public class EditTrackingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_tracking);
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Отслеживать");
+        actionBar.setTitle("Изменить отслеживание");
+
         factRepository = StaticFactRepository.getInstance();
 
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
@@ -415,6 +399,23 @@ public class EditTrackingActivity extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
 
 
     }

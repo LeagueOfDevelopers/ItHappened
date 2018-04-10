@@ -255,10 +255,6 @@ public class EditEventActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Добавить событие");
     }
 
     private int calculateState(TrackingCustomization customization){

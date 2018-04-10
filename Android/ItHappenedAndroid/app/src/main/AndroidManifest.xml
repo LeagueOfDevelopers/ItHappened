@@ -41,6 +41,7 @@
         </activity>
 
         <activity android:name="ru.lod_misis.ithappened.Activities.EditEventActivity"
+            android:label="Изменить событие"
             android:theme="@style/Theme.MyBack"></activity>
 
         <activity android:name="ru.lod_misis.ithappened.Activities.EditTrackingActivity"
