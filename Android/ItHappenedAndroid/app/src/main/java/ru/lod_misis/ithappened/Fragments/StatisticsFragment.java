@@ -1,9 +1,11 @@
 package ru.lod_misis.ithappened.Fragments;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +34,9 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.StatisticsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 public class StatisticsFragment extends Fragment {
@@ -49,6 +54,8 @@ public class StatisticsFragment extends Fragment {
     CarouselView carousel;
     AppCompatSpinner s;
 
+    FloatingActionButton recountBtn;
+
     List<String> titles = new ArrayList<>();
 
     ITrackingRepository trackingCollection;
@@ -60,6 +67,17 @@ public class StatisticsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(ru.lod_misis.ithappened.R.layout.fragment_statistics, null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Статистика");
+
+        allTrackings = new ArrayList<>();
+        titles = new ArrayList<>();
+
         trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
                 getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
         service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
@@ -70,14 +88,6 @@ public class StatisticsFragment extends Fragment {
                 allTrackings.add(tracking);
             }
         }
-        return inflater.inflate(ru.lod_misis.ithappened.R.layout.fragment_statistics, null);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle("Статистика");
-
 
         carousel = (CarouselView) getActivity().findViewById(R.id.mainCarousel);
         carousel.setViewListener(viewListener);
@@ -92,6 +102,8 @@ public class StatisticsFragment extends Fragment {
 
         s = (AppCompatSpinner) vi.findViewById(R.id.statisticsSpinner);
 
+        recountBtn = (FloatingActionButton) getActivity().findViewById(R.id.recountStatistics);
+
         spinneradapter = new ArrayAdapter<String>(getActivity(),R.layout.statistics_spinner_item, titles);
 
         s.setAdapter(spinneradapter);
@@ -100,7 +112,43 @@ public class StatisticsFragment extends Fragment {
 
         spinneradapter.notifyDataSetChanged();
 
+        recountBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                Log.d("Statistics", "calculate");
+                                factRepository.calculateOneTrackingFacts(trackingCollection.GetTrackingCollection())
+                                        .subscribeOn(Schedulers.computation())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Action1<Fact>() {
+                                            @Override
+                                            public void call(Fact fact) {
+                                                Log.d("Statistics", "calculateOneTrackingFact");
+                                                trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                                                        getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+                                                service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
+                                                titles = new ArrayList<>();
+                                                allTrackings = new ArrayList<>();
+                                                titles.add("Общая статистика");
+                                                for(Tracking tracking: service.GetTrackingCollection()){
+                                                    if(!tracking.GetStatus()){
+                                                        titles.add(tracking.GetTrackingName());
+                                                        allTrackings.add(tracking);
+                                                    }
+                                                }
+                                                fragmentRefresh();
+                                            }
+                                        });
+                            }
+                        });
+            }
+        });
 
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -177,12 +225,6 @@ public class StatisticsFragment extends Fragment {
                         getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
 
                 facts = factRepository.getOneTrackingFactCollection(allTrackings.get(position-1).GetTrackingID());
-                /*Collections.sort(facts, new Comparator<Fact>() {
-                    @Override
-                    public int compare(Fact fact, Fact t1) {
-                        return fact.getPriority().compareTo(t1.getPriority());
-                    }
-                });*/
 
 
                 Log.e("Size", facts.size()+"");
@@ -200,21 +242,13 @@ public class StatisticsFragment extends Fragment {
         }
     };
 
-    /*private List<Fact> sortFacts(List<Fact> factCollection){
-        int size = factCollection.size();
-        for (int i = 0; i < size; i++){
-            for(int j = i; j < size; j++){
-                Fact firstFact = factCollection.get(i);
-                Fact secondFact = factCollection.get(j);
-                if(firstFact.getPriority() < secondFact.getPriority())
-                {
-                    factCollection.set(i, secondFact);
-                    factCollection.set(j, firstFact);
-                }
-            }
-        }
 
-        return factCollection;
-    }*/
+    public void fragmentRefresh(){
+
+
+
+        FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+        fragmentTransaction.detach(this).attach(this).commit();
+    }
 
 }
