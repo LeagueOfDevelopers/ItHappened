@@ -37,7 +37,6 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     app:cardBackgroundColor="#ffffff">
 
                     <EditText
@@ -74,7 +73,6 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
                     android:paddingBottom="10dp">
@@ -130,7 +128,6 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:background="#FFFFFF"
                     android:elevation="40dp"
                     android:paddingBottom="10dp"
@@ -175,7 +172,6 @@
                     android:layout_marginTop="5dp"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:paddingBottom="10dp">
 
                     <Button

@@ -35,11 +35,7 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
-                    android:background="@drawable/custom_edit_text"
-                    android:elevation="40dp"
-                    android:paddingBottom="10dp">
+                    android:layout_marginRight="20dp">
 
                     <EditText
                         android:id="@+id/eventCommentControl"
@@ -76,7 +72,6 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/custom_edit_text"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:elevation="40dp"
                     android:paddingBottom="10dp">
 
@@ -132,7 +127,6 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
                     android:background="@drawable/custom_edit_text"
                     app:cardBackgroundColor="#ffffff"
                     android:elevation="40dp">
@@ -176,8 +170,6 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/custom_edit_text"
-                    app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
-                    android:elevation="40dp"
                     android:paddingBottom="10dp">
 
                     <Button
