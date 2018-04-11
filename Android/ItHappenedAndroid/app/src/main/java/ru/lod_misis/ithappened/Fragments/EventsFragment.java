@@ -70,8 +70,6 @@ public class EventsFragment extends Fragment  {
 
     Button addFilters;
 
-    TextView dateFromText;
-    TextView dateToText;
     EditText scaleFilter;
 
     RatingBar ratingFilter;
@@ -213,16 +211,12 @@ public class EventsFragment extends Fragment  {
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
 
-        dateFromText = (TextView) view.findViewById(R.id.dateFrom);
-        dateToText = (TextView) view.findViewById(R.id.dateTo);
-
-
 
         dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
-                DialogFragment picker = new DatePickerFragment(dateFromText);
+                DialogFragment picker = new DatePickerFragment(dateFrom);
                 picker.show(fragmentManager, "from");
             }
         });
@@ -233,7 +227,7 @@ public class EventsFragment extends Fragment  {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
-                DialogFragment picker = new DatePickerFragment(dateToText);
+                DialogFragment picker = new DatePickerFragment(dateTo);
                 picker.show(fragmentManager, "to");
             }
         });
@@ -268,8 +262,8 @@ public class EventsFragment extends Fragment  {
                                 null), getActivity(), 0);
                 ratingFilter.setRating(0);
                 scaleFilter.setText("");
-                dateFromText.setText("Начальная дата");
-                dateToText.setText("Конечная дата");
+                dateFrom.setText("До");
+                dateTo.setText("После");
 
                 hintsForRatingSpinner.setSelection(0);
                 hintsForScaleSpinner.setSelection(0);
@@ -323,24 +317,24 @@ public class EventsFragment extends Fragment  {
             @Override
             public void onClick(View view) {
 
-                Date dateFrom = null;
-                Date dateTo = null;
+                Date dateF = null;
+                Date dateT = null;
                 Comparison scaleComparison = null;
                 Double scale = null;
                 Comparison ratingComparison = null;
                 Rating rating = null;
 
-                if(!dateFromText.getText().toString().isEmpty() && !dateToText.getText().toString().isEmpty()){
+                if(!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()){
                     Locale locale = new Locale("ru");
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
                     try {
-                        dateFrom = simpleDateFormat.parse(dateFromText.getText().toString());
+                        dateF = simpleDateFormat.parse(dateFrom.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
                     try {
-                        dateTo = simpleDateFormat.parse(dateToText.getText().toString());
+                        dateT = simpleDateFormat.parse(dateTo.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -360,7 +354,7 @@ public class EventsFragment extends Fragment  {
                         rating = new Rating((int) ratingFilter.getRating() * 2);
                     }
 
-                    List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateFrom, dateTo, scaleComparison, scale, ratingComparison, rating);
+                    List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateF, dateT, scaleComparison, scale, ratingComparison, rating);
                     eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 0);
                     eventsRecycler.setAdapter(eventsAdpt);
 

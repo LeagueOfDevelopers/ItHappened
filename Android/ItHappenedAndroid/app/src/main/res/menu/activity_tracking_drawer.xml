@@ -7,23 +7,23 @@
 
         <item
             android:id="@+id/my_events"
-            android:icon="@drawable/trackings"
+            android:icon="@drawable/tracks"
             android:title="@string/my_events" />
         <item
             android:id="@+id/statistics"
-            android:icon="@drawable/statistics"
+            android:icon="@drawable/stat"
             android:title="@string/statistics" />
         <item
             android:id="@+id/events_history"
-            android:icon="@drawable/history"
+            android:icon="@drawable/hstr"
             android:title="@string/events_history" />
         <item
             android:id="@+id/proile_settings"
-            android:icon="@drawable/profile"
+            android:icon="@drawable/prf"
             android:title="@string/profile_settings" />
         <item
             android:id="@+id/synchronisation"
-            android:icon="@drawable/sync"
+            android:icon="@drawable/syncr"
             android:title="@string/synchronisation"
             android:visible="true" />
     </group>

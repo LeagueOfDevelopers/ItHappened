@@ -42,164 +42,202 @@
         xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
         android:scrollbars="vertical"
         android:isScrollContainer="true"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp">
 
-        <LinearLayout
-            android:id="@+id/textForEvents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:padding="10dp"
-                android:src="@mipmap/events"
-                android:scaleType="fitXY"
-                android:textSize="19sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/spinnerForEvents"
-            android:layout_alignParentRight="true"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:id="@+id/trackingsFiltersHint"
+            android:text="Отслеживания"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:textSize="20sp"/>
+
+        <android.support.v7.widget.CardView
+            android:layout_below="@id/trackingsFiltersHint"
+            android:id="@+id/trackingsFiltersCard"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="40dp"
+            app:cardBackgroundColor="#ffffff">
+
             <ru.lod_misis.ithappened.Gui.MultiSpinner
-                android:layout_marginLeft="60dp"
-                android:layout_marginTop="17dp"
                 android:id="@+id/spinnerForTrackings"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></ru.lod_misis.ithappened.Gui.MultiSpinner>
+                android:layout_height="match_parent"></ru.lod_misis.ithappened.Gui.MultiSpinner>
+        </android.support.v7.widget.CardView>
 
-
-        </LinearLayout>
         <TextView
             android:textSize="19sp"
             android:id="@+id/hintsForSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
             android:visibility="invisible"
+            android:layout_below="@id/trackingsFiltersHint"
             android:text="Отслеживаний нет"></TextView>
 
-        <LinearLayout
-            android:layout_marginTop="17dp"
-            android:id="@+id/textForDate"
-            android:layout_below="@id/spinnerForEvents"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="Промежуток времени:"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_below="@id/trackingsFiltersCard"
+                android:id="@+id/textForDate"
+                android:text="Промежуток времени"
                 android:textSize="19sp" />
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textForDate"
+            android:weightSum="2"
+            android:id="@+id/dateFiltersHint"
+            android:paddingBottom="10dp">
+
+            <Button
+                android:id="@+id/dateFromButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_below="@id/textForDate"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="4dp"
+                android:drawableRight="@drawable/drop"
+                android:layout_weight="1"
+                android:backgroundTint="#ffffff"
+                android:elevation="3dp"
+                android:stateListAnimator="@null"
+                android:text="До" />
+
+            <Button
+                android:id="@+id/dateToButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:drawableRight="@drawable/drop"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:backgroundTint="#ffffff"
+                android:elevation="3dp"
+                android:stateListAnimator="@null"
+                android:text="После" />
+
         </LinearLayout>
 
         <TextView
-            android:layout_marginLeft="100dp"
-            android:id="@+id/dateFrom"
-            android:text="Начальная дата"
-            android:textSize="19sp"
-            android:padding="10dp"
-            android:layout_below="@+id/textForDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-        <Button
-            android:id="@+id/dateFromButton"
-            android:background="@drawable/button"
-            android:layout_below="@id/textForDate"
-            android:layout_marginRight="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:text="С"
-            android:textColor="#FFFFFF"/>
-
-        <TextView
-            android:layout_marginLeft="100dp"
-        android:id="@+id/dateTo"
-            android:text="Конечная дата"
-            android:textSize="19sp"
-            android:padding="10dp"
-        android:layout_below="@+id/dateFrom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-        />
-
-        <Button
-            android:id="@+id/dateToButton"
-            android:background="@drawable/button"
-            android:layout_below="@id/dateFrom"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:text="До"
-            android:textColor="#FFFFFF"/>
-
-        <TextView
-            android:layout_marginTop="17dp"
             android:id="@+id/textForScale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Шкала:"
+            android:layout_marginLeft="20dp"
+            android:text="Шкала"
             android:textSize="19sp"
-            android:layout_below="@id/dateToButton"/>
+            android:layout_below="@id/dateFiltersHint"/>
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_marginTop="10dp"
-android:layout_marginLeft="3dp"
-            android:id="@+id/hintsForScale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textForScale"></android.support.v7.widget.AppCompatSpinner>
-
-        <EditText
-            android:id="@+id/scaleFilter"
+        <LinearLayout
+            android:paddingTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="30dp"
             android:layout_below="@+id/textForScale"
-            android:layout_toEndOf="@+id/textForRating"
-            android:layout_toRightOf="@+id/textForRating"
-            android:hint="Шкала" />
+            android:id="@+id/scaleFiltersHint"
+            android:paddingBottom="10dp"
+            android:weightSum="2">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="0dp"
+                app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="4dp"
+                app:cardBackgroundColor="#ffffff"
+                android:layout_weight="1">
+                <android.support.v7.widget.AppCompatSpinner
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/hintsForScale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textForScale"></android.support.v7.widget.AppCompatSpinner>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                app:cardBackgroundColor="#ffffff"
+                app:cardUseCompatPadding="@bool/default_circle_indicator_centered"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1">
+                <EditText
+                    android:id="@+id/scaleFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:background="@drawable/custom_edit_text"
+                    android:paddingLeft="10dp"
+                    android:layout_below="@+id/textForScale"
+                    android:hint="Значение" />
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+
+
+
 
         <TextView
-            android:layout_marginTop="17dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/textForRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Оценка:"
+            android:text="Оценка"
+            android:layout_marginLeft="20dp"
             android:textSize="19sp"
-            android:layout_below="@id/scaleFilter"/>
+            android:layout_below="@id/scaleFiltersHint"/>
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_marginLeft="3dp"
-            android:id="@+id/hintsForRating"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_below="@id/textForRating"
+            android:id="@+id/ratingFiltersHint"
             android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textForRating"></android.support.v7.widget.AppCompatSpinner>
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            app:cardBackgroundColor="#ffffff"
+            android:layout_height="40dp">
 
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/hintsForRating"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/textForRating"></android.support.v7.widget.AppCompatSpinner>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_below="@id/ratingFiltersHint"
+            app:cardBackgroundColor="#ffffff"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp">
         <RatingBar
+            android:layout_gravity="center_vertical|center_horizontal"
             android:id="@+id/ratingFilter"
             style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/scaleFilter"
             android:layout_alignParentBottom="true"
-            android:layout_alignStart="@+id/scaleFilter"
             android:isIndicator="false" />
+        </android.support.v7.widget.CardView>
     </RelativeLayout>
     </ScrollView>
 
@@ -208,8 +246,7 @@ android:layout_marginLeft="3dp"
             android:layout_height="wrap_content"
             android:id="@+id/addFiltersButton"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/button"
-            android:layout_margin="5dp"
+            android:background="@color/colorPrimary"
             android:textColor="#FFFFFF"
             android:text="Показать результат"/>
 
