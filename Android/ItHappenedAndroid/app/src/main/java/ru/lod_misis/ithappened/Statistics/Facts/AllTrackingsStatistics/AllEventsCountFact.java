@@ -32,6 +32,10 @@ public class AllEventsCountFact extends Fact {
         calculatePriority();
     }
 
+    public int getEventCount() {
+        return eventCount;
+    }
+
     @Override
     public Double getPriority() {
         return priority;
