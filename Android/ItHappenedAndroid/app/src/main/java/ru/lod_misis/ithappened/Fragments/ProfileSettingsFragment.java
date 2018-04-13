@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,8 @@ public class ProfileSettingsFragment extends Fragment {
     TextView userMail;
     TextView userNickName;
     TextView logOut;
+
+    TextView policy;
 
     CircleImageView urlUser;
 
@@ -63,6 +67,7 @@ public class ProfileSettingsFragment extends Fragment {
         editNickName = (Button) getActivity().findViewById(R.id.editNickName);
         urlUser = (CircleImageView) getActivity().findViewById(R.id.userAvatar);
 
+        policy = (TextView) getActivity().findViewById(R.id.policy);
 
 
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
@@ -71,6 +76,17 @@ public class ProfileSettingsFragment extends Fragment {
 
         userMail.setText(sharedPreferences.getString("UserId", ""));
         userNickName.setText(sharedPreferences.getString("Nick", ""));
+
+
+        String mystring=new String("Выйти");
+        SpannableString content = new SpannableString(mystring);
+        content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+        logOut.setText(content);
+
+        mystring = new String("Политика конфиденциальности");
+        content = new SpannableString(mystring);
+        content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+        policy.setText(content);
 
         editNickName.setOnClickListener(new View.OnClickListener() {
             @Override
