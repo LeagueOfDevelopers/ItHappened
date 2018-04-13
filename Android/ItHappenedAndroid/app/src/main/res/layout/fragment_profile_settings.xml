@@ -2,102 +2,78 @@
 <RelativeLayout
     android:id="@+id/rl"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        android:layout_marginTop="7dp"
-        android:id="@+id/mailCard"
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#ffffff"
+    app:cardElevation="7dp"
+    android:id="@+id/cardView">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/mail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Здесь будет почта"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/mail"
-                android:text="Ваша почта"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:layout_marginTop="7dp"
-        android:id="@+id/nicknameCard"
-        android:layout_width="match_parent"
-        android:layout_below="@id/mailCard"
         android:layout_height="wrap_content">
-        <RelativeLayout
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userAvatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:foregroundGravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/nickname"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/userAvatar"
+            android:layout_marginTop="20dp"
+            android:text="Здесь будет имя"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/nickname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Здесь будет имя"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"
-                />
+        <TextView
+            android:id="@+id/mail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nickname"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:text="Здесь будет почта"
+            android:textSize="10sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/nickname"
-                android:text="Имя пользователя"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:id="@+id/editNickName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/nickname"
-                android:text="Изменить"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"/>
+        <Button
+            android:id="@+id/editNickName"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/mail"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button"
+            android:text="Изменить"
+            android:layout_marginBottom="20dp"
+            android:textColor="#ffffff" />
 
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-    <Button
-        android:layout_marginTop="10dp"
-        android:id="@+id/offlineSignIn"
-        android:layout_below="@id/nicknameCard"
-        android:background="@color/colorAccent"
-        android:text="Привязать аккаунт к Google"
-        android:textSize="10dp"
-        android:textColor="#FFFFFF"
-        android:textAlignment="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
-    <Button
-        android:layout_marginTop="10dp"
+    <TextView
         android:id="@+id/logout"
-        android:layout_below="@id/nicknameCard"
-        android:background="@color/colorAccent"
-        android:text="Выйти"
-        android:textSize="10dp"
-        android:textColor="#FFFFFF"
-        android:textAlignment="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:text="Выйти"/>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:text="Политика конфиденциальности"/>
+        </RelativeLayout>
+

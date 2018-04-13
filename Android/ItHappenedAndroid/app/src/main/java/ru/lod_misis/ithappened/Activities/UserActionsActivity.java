@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Activities;
 
+import android.accounts.AccountManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -26,8 +27,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.AccountPicker;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +49,7 @@ import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Models.RegistrationResponse;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
@@ -56,8 +65,19 @@ public class UserActionsActivity extends AppCompatActivity
 
     private DrawerLayout mDrawerLayout;
 
+    private final static String G_PLUS_SCOPE =
+            "oauth2:https://www.googleapis.com/auth/plus.me";
+    private final static String USERINFO_SCOPE =
+            "https://www.googleapis.com/auth/userinfo.profile";
+    private final static String EMAIL_SCOPE =
+            "https://www.googleapis.com/auth/userinfo.email";
+    private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE + " " + EMAIL_SCOPE;
+    private static final String TAG = "SignIn";
+
     InMemoryFactRepository factRepository;
     ITrackingRepository trackingRepository;
+
+    Subscription accountGoogleRx;
 
     TextView userNick;
     TrackingsFragment trackFrg;
@@ -276,12 +296,22 @@ public class UserActionsActivity extends AppCompatActivity
 
            if(id == R.id.proile_settings){
                item.setCheckable(false);
-               profileStgsFrg = new ProfileSettingsFragment();
-               fTrans = getFragmentManager().beginTransaction();
-               fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
-               fTrans.commit();
-               DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-               drawer.closeDrawer(GravityCompat.START);
+               String userId = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", "");
+               if(userId.equals("Offline")){
+                   Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
+                           false, null, null, null, null);
+                   startActivityForResult(intent, 228);
+                   DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                   drawer.closeDrawer(GravityCompat.START);
+               }else {
+                   profileStgsFrg = new ProfileSettingsFragment();
+                   fTrans = getFragmentManager().beginTransaction();
+                   fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
+                   fTrans.commit();
+                   DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                   drawer.closeDrawer(GravityCompat.START);
+               }
+
            }
         return true;
     }
@@ -327,11 +357,11 @@ public class UserActionsActivity extends AppCompatActivity
         super.onPause();
     }
 
-    private void saveDataToDb(List<Tracking> trackings){
+    /*private void saveDataToDb(List<Tracking> trackings){
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
-    }
+    }*/
 
     private void showLoading(){
         layoutFrg.setVisibility(View.INVISIBLE);
@@ -341,6 +371,118 @@ public class UserActionsActivity extends AppCompatActivity
     private void hideLoading(){
         layoutFrg.setVisibility(View.VISIBLE);
         syncPB.setVisibility(View.INVISIBLE);
+    }
+
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                 final Intent data){
+
+
+        if (requestCode == 228 && resultCode == RESULT_OK) {
+            showLoading();
+            final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+
+            AsyncTask<Void, Void, String> getToken = new AsyncTask<Void, Void, String>() {
+                @Override
+                protected String doInBackground(Void... params) {
+
+                    String idToken = "";
+
+                    try {
+                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName,
+                                SCOPES);
+                        return idToken;
+
+                    } catch (UserRecoverableAuthException userAuthEx) {
+                        startActivityForResult(userAuthEx.getIntent(), 228);
+                    } catch (IOException ioEx) {
+                        Log.e(TAG, "IOException");
+                        this.cancel(true);
+                        hideLoading();
+                        Toast.makeText(getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
+                    } catch (GoogleAuthException fatalAuthEx) {
+                        this.cancel(true);
+                        hideLoading();
+                        Log.e(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
+                        Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    return idToken;
+                }
+
+                @Override
+                protected void onPostExecute(String idToken) {
+                    reg(idToken);
+                }
+            };
+
+            getToken.execute(null, null, null);
+        }
+    }
+
+    private void reg(String idToken){
+
+        Log.e(TAG, "Токен получен");
+
+        accountGoogleRx = ItHappenedApplication.getApi().SignUp(idToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RegistrationResponse>() {
+                    @Override
+                    public void call(RegistrationResponse registrationResponse) {
+                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("UserId", registrationResponse.getUserId());
+                        editor.putString("Nick", registrationResponse.getUserNickname());
+                        editor.putString("Url", registrationResponse.getPicUrl());
+                        editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
+                        editor.commit();
+
+                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
+                                new Date(sharedPreferences.getLong("NickDate", 0)),
+                                new StaticInMemoryRepository(getApplicationContext(), "Offline").getInstance().GetTrackingCollection());
+
+                        ItHappenedApplication.
+                                getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<SynchronizationRequest>() {
+                                    @Override
+                                    public void call(SynchronizationRequest sync) {
+                                        saveDataToDb(sync.getTrackingCollection());
+
+                                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putLong("NickDate", sync.getNicknameDateOfChange().getTime());
+                                        editor.commit();
+
+                                        Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }, new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        hideLoading();
+                                        Log.e("RxSync", ""+throwable);
+                                        Toast.makeText(getApplicationContext(), "Синхронизация не прошла!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        hideLoading();
+                        Log.e("Reg", ""+throwable);
+                        Toast.makeText(getApplicationContext(), "Разорвано подключение!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    private void saveDataToDb(List<Tracking> trackings){
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
+        trackingRepository.SaveTrackingCollection(trackings);
     }
 
     public void logout(){
