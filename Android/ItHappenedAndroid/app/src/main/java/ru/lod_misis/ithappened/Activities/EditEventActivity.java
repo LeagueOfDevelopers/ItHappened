@@ -212,8 +212,8 @@ public class EditEventActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            trackingService.AddEvent(trackingId,new Event(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
-                            Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
+                            trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                            Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                             finish();
                         }catch (Exception e){
                             Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
