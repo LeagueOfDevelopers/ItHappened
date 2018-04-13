@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -10,58 +11,141 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="20dp">
 
         <TextView
             android:id="@+id/hintComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Комментарий: "
-            android:padding="15dp"
+            android:text="Комментарий"
+            android:padding="20dp"
             android:textSize="18sp"/>
-    <TextView
-        android:id="@+id/yourComment"
-        android:layout_below="@+id/hintComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:textSize="17sp"/>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/eventCommentContainer"
+                android:layout_below="@id/hintComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#ffffff"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <TextView
+                    android:id="@+id/yourComment"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:textSize="17sp"/>
+
+            </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/hintRating"
-        android:layout_below="@+id/yourComment"
+        android:layout_below="@+id/eventCommentContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17sp"
-        android:padding="15dp"
-        android:text="Оценка: "/>
+        android:padding="20dp"
+        android:text="Оценка"/>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/eventRatingContainer"
+                android:layout_below="@id/hintRating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#ffffff"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
     <android.support.v7.widget.AppCompatRatingBar
         android:id="@+id/yourRating"
-        style="@style/RatingBar"
+        style="@style/Widget.AppCompat.RatingBar.Indicator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/hintRating"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_height="40dp"
         android:numStars="5"
         android:isIndicator="true"
-        android:layout_margin="7dp" />
+        />
 
+            </android.support.v7.widget.CardView>
     <TextView
         android:id="@+id/hintScale"
-        android:layout_below="@+id/yourRating"
+        android:layout_below="@+id/eventRatingContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17sp"
-        android:padding="15dp"
-        android:text="Шкала: " />
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="10dp"
+        android:text="Количество" />
 
-    <TextView
-        android:id="@+id/yourScale"
-        android:layout_below="@+id/hintScale"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:padding="15dp" />
+            <TextView
+                android:id="@+id/hintScaleType"
+                android:layout_below="@+id/eventRatingContainer"
+                android:layout_toRightOf="@id/hintScale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingRight="20dp"
+                android:text="кг." />
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/eventScaleContainer"
+                android:layout_below="@id/hintScale"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:cardBackgroundColor="#ffffff"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+
+            <TextView
+                android:id="@+id/yourScale"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_below="@+id/hintScale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+        />
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:id="@+id/hintDate"
+                android:layout_below="@+id/eventScaleContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:text="Произошло" />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_below="@+id/hintDate"
+                app:cardBackgroundColor="#ffffff"
+                android:paddingBottom="10dp">
+
+                <Button
+                    android:id="@+id/eventDateValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/custom_edit_text"
+                    android:paddingLeft="15dp"
+                    android:text="Дата"
+                    android:textColor="#a9a9a9" />
+            </android.support.v7.widget.CardView>
+
 
         </RelativeLayout>
 
@@ -75,22 +159,20 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button"
+            android:background="@color/colorPrimary"
             android:text="Изменить"
             android:textColor="#FFFFFF"
             android:id="@+id/editEventButton"
-            android:layout_weight="1"
-            android:padding="7dp"
-            android:layout_marginLeft="7dp"/>
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/deleteEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_margin="7dp"
             android:layout_weight="1"
-            android:background="@drawable/button"
+            android:background="@color/colorPrimary"
+            android:layout_marginLeft="1dp"
             android:text="Удалить"
             android:textColor="#FFFFFF" />
     </LinearLayout>

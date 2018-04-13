@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -42,6 +46,18 @@ public class EventDetailsActivity extends AppCompatActivity {
     Button editEvent;
     Button deleteEvent;
 
+    CardView commentContainer;
+    CardView ratingContainer;
+    CardView scaleContainer;
+
+    Button eventDate;
+
+    TextView commentHint;
+    TextView ratingHint;
+    TextView scaleHint;
+
+    TextView scaleType;
+
     UUID trackingId;
     UUID eventId;
     ITrackingRepository collection;
@@ -68,6 +84,18 @@ public class EventDetailsActivity extends AppCompatActivity {
         editEvent = (Button) findViewById(R.id.editEventButton);
         deleteEvent = (Button) findViewById(R.id.deleteEventButton);
 
+        commentContainer=(CardView) findViewById(R.id.eventCommentContainer);
+        scaleContainer=(CardView) findViewById(R.id.eventScaleContainer);
+        ratingContainer=(CardView) findViewById(R.id.eventRatingContainer);
+
+        eventDate = (Button) findViewById(R.id.eventDateValue);
+
+        scaleType = (TextView) findViewById(R.id.hintScaleType);
+
+        commentHint = (TextView)findViewById(R.id.hintComment);
+        ratingHint = (TextView)findViewById(R.id.hintRating);
+        scaleHint = (TextView)findViewById(R.id.hintScale);
+
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +117,37 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         Tracking thisTracking = collection.GetTracking(trackingId);
         Event thisEvent = thisTracking.GetEvent(eventId);
+
+        if((thisTracking.GetCommentCustomization()==TrackingCustomization.None)
+                ||(thisTracking.GetCommentCustomization()==TrackingCustomization.Optional&&thisEvent.GetComment()==null)){
+            commentHint.setVisibility(View.GONE);
+            commentContainer.setVisibility(View.GONE);
+        }
+
+        if((thisTracking.GetRatingCustomization()==TrackingCustomization.None)
+                ||(thisTracking.GetRatingCustomization()==TrackingCustomization.Optional&&thisEvent.GetRating()==null)){
+            ratingHint.setVisibility(View.GONE);
+            ratingContainer.setVisibility(View.GONE);
+        }
+
+        if((thisTracking.GetScaleCustomization()==TrackingCustomization.None)
+                ||(thisTracking.GetScaleCustomization()==TrackingCustomization.Optional&&thisEvent.GetScale()==null)){
+            scaleHint.setVisibility(View.GONE);
+            scaleContainer.setVisibility(View.GONE);
+            scaleType.setVisibility(View.GONE);
+        }
+
+        if(thisTracking.getScaleName()!=null){
+            scaleType.setText(thisTracking.getScaleName());
+        }
+
+        Date thisDate = thisEvent.GetEventDate();
+
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
+        eventDate.setText(format.format(thisDate));
+
 
         TrackingCustomization commentCustomization = thisTracking.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTracking.GetScaleCustomization();
