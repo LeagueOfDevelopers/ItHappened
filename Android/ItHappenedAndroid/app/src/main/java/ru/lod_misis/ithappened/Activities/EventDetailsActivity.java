@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,35 +39,47 @@ import rx.schedulers.Schedulers;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
-    TextView yourComment;
-    TextView yourScale;
-    RatingBar yourRating;
     InMemoryFactRepository factRepository;
 
     Button editEvent;
     Button deleteEvent;
-
-    CardView commentContainer;
-    CardView ratingContainer;
-    CardView scaleContainer;
-
-    Button eventDate;
-
-    TextView commentHint;
-    TextView ratingHint;
-    TextView scaleHint;
-
-    TextView scaleType;
 
     UUID trackingId;
     UUID eventId;
     ITrackingRepository collection;
     TrackingService trackingSercvice;
 
+    CardView valuesCard;
+    CardView nullsCard;
+
+    ImageView commentHint;
+    ImageView scaleHint;
+
+    TextView commentValue;
+    TextView scaleValue;
+    TextView dateValue;
+    TextView dateValueNulls;
+    RatingBar ratingValue;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
+        valuesCard = findViewById(R.id.valuesCard);
+        nullsCard = findViewById(R.id.nullsCard);
+
+        commentHint = findViewById(R.id.commentHint);
+        scaleHint = findViewById(R.id.scaleHint);
+
+        commentValue = findViewById(R.id.commentValue);
+        scaleValue = findViewById(R.id.scaleValue);
+        ratingValue = findViewById(R.id.ratingValue);
+        dateValue = findViewById(R.id.dateValue);
+        dateValueNulls = findViewById(R.id.dateValueNulls);
+
+        editEvent = findViewById(R.id.editEventButton);
+        deleteEvent = findViewById(R.id.deleteEventButton);
 
         factRepository = StaticFactRepository.getInstance();
 
@@ -77,24 +90,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
         eventId = UUID.fromString(intent.getStringExtra("eventId"));
-
-        yourComment = (TextView) findViewById(R.id.yourComment);
-        yourScale = (TextView) findViewById(R.id.yourScale);
-        yourRating = (RatingBar) findViewById(R.id.yourRating);
-        editEvent = (Button) findViewById(R.id.editEventButton);
-        deleteEvent = (Button) findViewById(R.id.deleteEventButton);
-
-        commentContainer=(CardView) findViewById(R.id.eventCommentContainer);
-        scaleContainer=(CardView) findViewById(R.id.eventScaleContainer);
-        ratingContainer=(CardView) findViewById(R.id.eventRatingContainer);
-
-        eventDate = (Button) findViewById(R.id.eventDateValue);
-
-        scaleType = (TextView) findViewById(R.id.hintScaleType);
-
-        commentHint = (TextView)findViewById(R.id.hintComment);
-        ratingHint = (TextView)findViewById(R.id.hintRating);
-        scaleHint = (TextView)findViewById(R.id.hintScale);
 
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,74 +113,60 @@ public class EventDetailsActivity extends AppCompatActivity {
         Tracking thisTracking = collection.GetTracking(trackingId);
         Event thisEvent = thisTracking.GetEvent(eventId);
 
-        if((thisTracking.GetCommentCustomization()==TrackingCustomization.None)
-                ||(thisTracking.GetCommentCustomization()==TrackingCustomization.Optional&&thisEvent.GetComment()==null)){
-            commentHint.setVisibility(View.GONE);
-            commentContainer.setVisibility(View.GONE);
+
+        if ((thisTracking.GetCommentCustomization()==TrackingCustomization.None
+                && thisTracking.GetScaleCustomization()==TrackingCustomization.None
+                && thisTracking.GetRatingCustomization()==TrackingCustomization.None)
+                ||
+                ((thisTracking.GetCommentCustomization()==TrackingCustomization.Optional&&thisEvent.GetComment()==null)
+                &&(thisTracking.GetScaleCustomization()==TrackingCustomization.Optional&&thisEvent.GetScale()==null)
+                &&(thisTracking.GetRatingCustomization()==TrackingCustomization.Optional&&thisEvent.GetRating()==null)
+                )
+                ){
+            valuesCard.setVisibility(View.GONE);
+            nullsCard.setVisibility(View.VISIBLE);
+            Date thisDate = thisEvent.GetEventDate();
+
+            Locale loc = new Locale("ru");
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
+            dateValueNulls.setText(format.format(thisDate));
+
+        }else{
+
+            valuesCard.setVisibility(View.VISIBLE);
+            nullsCard.setVisibility(View.GONE);
+
+            Date thisDate = thisEvent.GetEventDate();
+
+            Locale loc = new Locale("ru");
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+
+            dateValue.setText(format.format(thisDate));
+
+            if(thisEvent.GetRating()!=null) {
+                ratingValue.setRating(Math.round(thisEvent.getRating().getRating() / 2));
+            }else {
+                ratingValue.setVisibility(View.GONE);
+            }
+
+            if(thisEvent.GetComment()!=null) {
+                commentValue.setText(thisEvent.GetComment());
+            }else {
+                commentValue.setVisibility(View.GONE);
+                commentHint.setVisibility(View.GONE);
+            }
+
+            if(thisEvent.GetScale()!=null) {
+                scaleValue.setText(thisEvent.GetScale().toString()+" "+thisTracking.getScaleName());
+            }else {
+                scaleValue.setVisibility(View.GONE);
+                scaleHint.setVisibility(View.GONE);
+            }
         }
-
-        if((thisTracking.GetRatingCustomization()==TrackingCustomization.None)
-                ||(thisTracking.GetRatingCustomization()==TrackingCustomization.Optional&&thisEvent.GetRating()==null)){
-            ratingHint.setVisibility(View.GONE);
-            ratingContainer.setVisibility(View.GONE);
-        }
-
-        if((thisTracking.GetScaleCustomization()==TrackingCustomization.None)
-                ||(thisTracking.GetScaleCustomization()==TrackingCustomization.Optional&&thisEvent.GetScale()==null)){
-            scaleHint.setVisibility(View.GONE);
-            scaleContainer.setVisibility(View.GONE);
-            scaleType.setVisibility(View.GONE);
-        }
-
-        if(thisTracking.getScaleName()!=null){
-            scaleType.setText(thisTracking.getScaleName());
-        }
-
-        Date thisDate = thisEvent.GetEventDate();
-
-        Locale loc = new Locale("ru");
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-
-        eventDate.setText(format.format(thisDate));
-
-
         TrackingCustomization commentCustomization = thisTracking.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTracking.GetScaleCustomization();
         TrackingCustomization ratingCustomization = thisTracking.GetRatingCustomization();
-
-        if((commentCustomization == TrackingCustomization.None)||((commentCustomization == TrackingCustomization.Optional)&&(thisEvent.GetComment()==null))){
-            yourComment.setText("У этого события нет комментария");
-        }else {
-            if (thisEvent.GetComment() != null) {
-                yourComment.setText(thisEvent.GetComment());
-            }else{
-                yourComment.setText("У этого события нет комментария");
-            }
-        }
-
-        if((scaleCustomization == TrackingCustomization.None)||((scaleCustomization == TrackingCustomization.Optional)&&(thisEvent.GetScale()==null))){
-            yourScale.setText("У этого события нет шкалы");
-        }else{
-            if(thisEvent.GetScale()!=null) {
-                yourScale.setText(thisEvent.GetScale().toString());
-            }else{
-                yourScale.setText("У этого события нет шкалы");
-            }
-            }
-
-
-        if((ratingCustomization == TrackingCustomization.None)||((ratingCustomization == TrackingCustomization.Optional)&&(thisEvent.GetRating()==null))){
-            yourRating.setRating(0);
-        }else {
-            if (thisEvent.GetRating() != null) {
-                float value = thisEvent.GetRating().GetRatingValue()/2.0f;
-                yourRating.setRating(value);
-            }else{
-                yourRating.setRating(0);
-            }
-        }
-
-
     }
 
     public void okClicked() {

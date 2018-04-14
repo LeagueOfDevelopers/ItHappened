@@ -14,136 +14,141 @@
             android:layout_height="match_parent"
             android:paddingBottom="20dp">
 
-        <TextView
-            android:id="@+id/hintComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Комментарий"
-            android:padding="20dp"
-            android:textSize="18sp"/>
-
             <android.support.v7.widget.CardView
-                android:id="@+id/eventCommentContainer"
-                android:layout_below="@id/hintComment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/valuesCard"
+                android:visibility="gone"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="5dp"
                 app:cardBackgroundColor="#ffffff"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
-                <TextView
-                    android:id="@+id/yourComment"
-                    android:layout_marginLeft="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="15dp"
-                    android:textSize="17sp"/>
-
-            </android.support.v7.widget.CardView>
-
-    <TextView
-        android:id="@+id/hintRating"
-        android:layout_below="@+id/eventCommentContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:padding="20dp"
-        android:text="Оценка"/>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/eventRatingContainer"
-                android:layout_below="@id/hintRating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#ffffff"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
-
-    <android.support.v7.widget.AppCompatRatingBar
-        android:id="@+id/yourRating"
-        style="@style/Widget.AppCompat.RatingBar.Indicator"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_height="40dp"
-        android:numStars="5"
-        android:isIndicator="true"
-        />
-
-            </android.support.v7.widget.CardView>
-    <TextView
-        android:id="@+id/hintScale"
-        android:layout_below="@+id/eventRatingContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="10dp"
-        android:text="Количество" />
-
-            <TextView
-                android:id="@+id/hintScaleType"
-                android:layout_below="@+id/eventRatingContainer"
-                android:layout_toRightOf="@id/hintScale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:paddingRight="20dp"
-                android:text="кг." />
-
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/eventScaleContainer"
-                android:layout_below="@id/hintScale"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                app:cardBackgroundColor="#ffffff"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
-
-            <TextView
-                android:id="@+id/yourScale"
-                android:layout_marginLeft="10dp"
-                android:layout_gravity="center_vertical"
-                android:layout_below="@+id/hintScale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="17sp"
-        />
-            </android.support.v7.widget.CardView>
-
-            <TextView
-                android:id="@+id/hintDate"
-                android:layout_below="@+id/eventScaleContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="10dp"
-                android:text="Произошло" />
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_below="@+id/hintDate"
-                app:cardBackgroundColor="#ffffff"
-                android:paddingBottom="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/eventDateValue"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/custom_edit_text"
-                    android:paddingLeft="15dp"
-                    android:text="Дата"
-                    android:textColor="#a9a9a9" />
+                    android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/commentHint"
+                    android:padding="20dp"
+                    android:src="@drawable/ic_insert_comment_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/commentValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_toEndOf="@+id/commentHint"
+                        android:layout_toRightOf="@+id/commentHint"
+                        android:paddingRight="20dp"
+                        android:text="КОММЕНТАРИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИЙ"
+                        android:paddingTop="20dp"/>
+
+                    <ImageView
+                        android:id="@+id/dateHint"
+                        android:layout_below="@id/commentValue"
+                        android:padding="20dp"
+                        android:src="@drawable/ic_schedule_black_24dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/dateValue"
+                        android:layout_below="@id/commentValue"
+                        android:paddingTop="22dp"
+                        android:paddingRight="20dp"
+                        android:layout_width="match_parent"
+                        android:text="26.10.2017 20:13"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/dateHint"/>
+
+                    <ImageView
+                        android:id="@+id/scaleHint"
+                        android:layout_below="@id/dateValue"
+                        android:padding="20dp"
+                        android:src="@drawable/ic_insert_chart_black_24dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/scaleValue"
+                        android:layout_below="@id/dateValue"
+                        android:paddingTop="22dp"
+                        android:paddingRight="20dp"
+                        android:layout_width="match_parent"
+                        android:text="150000000000000000000 Киллограмм"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/scaleHint"/>
+
+                    <RatingBar
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/scaleHint"
+                        android:id="@+id/ratingValue"
+                        style="@style/Widget.AppCompat.RatingBar.Indicator"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="10dp"/>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/nullsCard"
+                app:cardElevation="5dp"
+                android:layout_margin="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <TextView
+                    android:layout_marginTop="20dp"
+                    android:textColor="#a9a9a9"
+                    android:textSize="25sp"
+                    android:id="@+id/nullHint"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Отсутсвуют данные"/>
+
+
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_below="@id/nullHint"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/dateHintNulls"
+                        android:padding="20dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/ic_schedule_black_24dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/dateValueNulls"
+                        android:paddingTop="22dp"
+                        android:paddingRight="20dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="match_parent"
+                        android:text="26.10.2017 20:13"
+                        android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </RelativeLayout>
             </android.support.v7.widget.CardView>
 
 
@@ -171,10 +176,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:layout_marginLeft="1dp"
+            android:background="#E5E5E5"
             android:text="Удалить"
-            android:textColor="#FFFFFF" />
+            android:textColor="#111111" />
     </LinearLayout>
 
 
