@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#1F618D</color>
     <color name="colorPrimaryDark">#a9a9a9</color>
-    <color name="colorAccent">#163696</color>
+    <color name="colorAccent">#0E507C</color>
 
     <color name="actionbar_text_color">#a9a9a9</color>
     <color name="color_for_not_definetly">#BDB76B</color>
