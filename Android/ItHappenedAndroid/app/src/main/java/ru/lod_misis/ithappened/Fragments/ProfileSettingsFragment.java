@@ -2,9 +2,11 @@ package ru.lod_misis.ithappened.Fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -103,9 +105,22 @@ public class ProfileSettingsFragment extends Fragment {
                 logout.show(getFragmentManager(), "Logout");
             }
         });
+
+        policy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openWebURL("http://85.143.104.47:1080/privacy/policy");
+            }
+        });
     }
 
 
+
+    public void openWebURL( String inURL ) {
+        Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( inURL ) );
+
+        startActivity( browse );
+    }
 
     @Override
     public void onStop() {
