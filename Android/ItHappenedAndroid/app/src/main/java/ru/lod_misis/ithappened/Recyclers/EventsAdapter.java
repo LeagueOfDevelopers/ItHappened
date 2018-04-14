@@ -75,7 +75,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
 
         if(event.GetRating()!=null){
-            holder.ratingValue.setText(Math.round(event.GetRating().GetRatingValue()/2)+"");
+            holder.ratingValue.setText(event.GetRating().getRating()/2.0f+"");
         }else{
             holder.starIcon.setVisibility(View.GONE);
             holder.ratingValue.setVisibility(View.GONE);

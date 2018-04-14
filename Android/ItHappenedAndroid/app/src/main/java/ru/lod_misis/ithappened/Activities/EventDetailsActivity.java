@@ -145,7 +145,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             dateValue.setText(format.format(thisDate));
 
             if(thisEvent.GetRating()!=null) {
-                ratingValue.setRating(Math.round(thisEvent.getRating().getRating() / 2));
+                ratingValue.setRating(thisEvent.GetRating().getRating()/2.0f);
             }else {
                 ratingValue.setVisibility(View.GONE);
             }

@@ -149,8 +149,8 @@ public class EditEventActivity extends AppCompatActivity {
 
         if((tracking.GetRatingCustomization()==TrackingCustomization.Optional
                 || tracking.GetRatingCustomization()==TrackingCustomization.Required) && event.GetRating()!=null){
-             ratingControl.setRating(event.GetRating().GetRatingValue());
-        }
+            ratingControl.setRating(event.GetRating().getRating()/2.0f);
+            }
 
         if((tracking.GetCommentCustomization()==TrackingCustomization.Optional
                 || tracking.GetCommentCustomization()==TrackingCustomization.Required) && event.GetComment()!=null){
