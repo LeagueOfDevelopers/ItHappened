@@ -6,7 +6,7 @@ android {
 
     def getMyVersionCode = { ->
         return project.hasProperty('myVersionCode') ?
-                myVersionCode : "1"
+                project.getProperty('myVersionCode') : "1"
     }
 
 //    def getMyVersionName = { ->
@@ -23,7 +23,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode getMyVersionCode() as Integer
-        versionCode 13
+        //versionCode 13
         manifestPlaceholders = [manVersionCode: versionCode]
         versionName "0.1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
