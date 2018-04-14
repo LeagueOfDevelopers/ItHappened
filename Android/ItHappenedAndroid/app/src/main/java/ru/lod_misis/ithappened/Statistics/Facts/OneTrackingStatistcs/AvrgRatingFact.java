@@ -62,7 +62,7 @@ public class AvrgRatingFact extends Fact {
     public String textDescription() {
         DecimalFormat format = new DecimalFormat("#.##");
         return String.format("Среднее значение оценки для события <b>%s</b> равно <b>%.2f</b>",
-                tracking.getTrackingName(), averageValue);
+                tracking.getTrackingName(), format.format(averageValue));
     }
 
 }
