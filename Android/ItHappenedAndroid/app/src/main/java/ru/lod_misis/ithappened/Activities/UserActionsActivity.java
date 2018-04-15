@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
@@ -502,6 +504,20 @@ public class UserActionsActivity extends AppCompatActivity
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("Nick", request.getUserNickname());
                         editor.putLong("NickDate", request.getNicknameDateOfChange().getTime());
+                        Realm.init(getApplicationContext());
+                        RealmConfiguration config = new RealmConfiguration.Builder()
+                                .name("ItHappened.realm")
+                                .build();
+                        Realm realm = Realm.getInstance(config);
+                        realm.beginTransaction();
+                        realm.deleteAll();
+                        realm.commitTransaction();;
+                        editor.clear();
+                        editor.commit();
+                        editor.putBoolean("LOGOUT", true);
+                        editor.commit();
+                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                        startActivity(intent);
                         Toast.makeText(getApplicationContext(), "До скорой встречи!", Toast.LENGTH_SHORT).show();
                     }
                 }, new Action1<Throwable>() {
@@ -512,14 +528,9 @@ public class UserActionsActivity extends AppCompatActivity
                     }
                 });
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.commit();
 
-        editor.putBoolean("LOGOUT", true);
-        editor.commit();
 
-        this.recreate();
+
     }
 
     @Override
