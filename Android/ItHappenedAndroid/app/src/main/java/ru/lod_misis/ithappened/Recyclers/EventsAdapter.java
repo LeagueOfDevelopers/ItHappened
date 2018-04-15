@@ -43,6 +43,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     }
 
+    public void refreshData(List<Event> events){
+
+        this.events.clear();
+        this.events.addAll(events);
+        notifyDataSetChanged();
+
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 

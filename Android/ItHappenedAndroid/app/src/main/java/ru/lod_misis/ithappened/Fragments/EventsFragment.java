@@ -47,8 +47,8 @@ import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class EventsFragment extends Fragment  {
 
-    RecyclerView eventsRecycler;
-    EventsAdapter eventsAdpt;
+    static RecyclerView eventsRecycler;
+    static EventsAdapter eventsAdpt;
     int myYear;
     int myMonth;
     int myDay;
@@ -79,7 +79,7 @@ public class EventsFragment extends Fragment  {
     Spinner hintsForRatingSpinner;
     TrackingService trackingService;
 
-    ITrackingRepository collection;
+    static ITrackingRepository collection;
 
     @Nullable
     @Override
@@ -373,6 +373,13 @@ public class EventsFragment extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
+        List<Event> adapterEvents = eventsAdpt.getEvents();
+        List<Event> refreshedEvents = new ArrayList<>();
+        for(int i=0;i<adapterEvents.size();i++){
+            Tracking tracking = collection.GetTracking(adapterEvents.get(i).GetTrackingId());
+            refreshedEvents.add(tracking.GetEvent(adapterEvents.get(i).GetEventId()));
+        }
+        eventsAdpt.refreshData(refreshedEvents);
     }
 
 
