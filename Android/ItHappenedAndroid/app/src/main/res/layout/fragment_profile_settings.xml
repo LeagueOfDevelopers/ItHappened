@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/userAvatar"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="Здесь будет имя"
             android:textSize="20sp" />
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/nickname"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="10dp"
             android:textColor="@color/colorPrimary"
             android:text="Здесь будет почта"
             android:textSize="15sp" />
@@ -50,7 +50,7 @@
             android:layout_height="30dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/mail"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/button"
             android:text="Изменить"
             android:layout_marginBottom="20dp"

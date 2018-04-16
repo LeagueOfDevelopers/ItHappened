@@ -164,6 +164,7 @@ public class EventsFragment extends Fragment  {
             }
         }
 
+
         final List<String> filteredTrackingsTitles = new ArrayList<>();
         final List<UUID> filteredTrackingsUuids = new ArrayList<>();
 
@@ -381,6 +382,8 @@ public class EventsFragment extends Fragment  {
         }
         eventsAdpt.refreshData(refreshedEvents);
     }
+
+
 
 
 

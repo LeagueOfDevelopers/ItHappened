@@ -32,7 +32,10 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    app:cardUseCompatPadding="true"
+                    app:cardBackgroundColor="#ffffff"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
@@ -40,7 +43,8 @@
                     <EditText
                         android:id="@+id/eventCommentControl"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="40dp"
                         android:background="@drawable/custom_edit_text"
                         android:hint="Ваш комментарий"
                         android:paddingLeft="15dp" />
@@ -67,7 +71,9 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    app:cardUseCompatPadding="true"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
@@ -83,6 +89,7 @@
                         android:id="@+id/eventScaleControl"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:minHeight="40dp"
                         android:paddingRight="15dp"
                         android:background="@drawable/custom_edit_text"
                         android:hint="1000"
@@ -93,11 +100,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                            android:paddingTop="7dp"
+                            android:paddingTop="9dp"
                             android:id="@+id/scaleTypeAccess"
                             android:layout_toRightOf="@id/eventScaleControl"
                             android:background="@drawable/custom_edit_text"
                             android:text="Шкала"
+                            android:minHeight="40dp"
                             android:textSize="15sp" />
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>
@@ -123,7 +131,9 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    app:cardUseCompatPadding="true"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
@@ -136,7 +146,7 @@
                         android:id="@+id/ratingEventControl"
                         style="@style/Widget.AppCompat.RatingBar.Indicator"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="40dp"
                         android:layout_gravity="center_vertical|center_horizontal"
                         android:background="@drawable/custom_edit_text"
                         android:isIndicator="false"
@@ -164,7 +174,9 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    app:cardUseCompatPadding="true"
                     android:layout_below="@+id/titleHint"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
@@ -175,7 +187,7 @@
                     <Button
                         android:id="@+id/eventDateControl"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="40dp"
                         android:text="Дата"
                         android:textColor="#a9a9a9"
                         android:background="@drawable/custom_edit_text"

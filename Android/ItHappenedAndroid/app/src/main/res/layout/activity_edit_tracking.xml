@@ -28,7 +28,7 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/trackingNameContainerEdit"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/titleHintEdit"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -39,7 +39,8 @@
                 <EditText
                     android:id="@+id/editTitleOfTrackingEdit"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
                     android:background="@drawable/custom_edit_text"
                     android:hint="Введите название"
                     android:paddingLeft="15dp" />
@@ -331,7 +332,9 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/scaleTypeContainerEdit"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
+                app:cardUseCompatPadding="true"
                 android:layout_below="@+id/scaleTypeHintEdit"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -342,7 +345,8 @@
                 <EditText
                     android:id="@+id/editTypeOfScaleEdit"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
                     android:background="@drawable/custom_edit_text"
                     android:hint="Киллограмм, штук"
                     android:paddingLeft="15dp" />

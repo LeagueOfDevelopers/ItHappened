@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.internal.ForegroundLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:weightSum="1"
     >
 
+
     <android.support.v7.widget.CardView
 
+        android:id="@+id/eventCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="10dp"
         card_view:cardElevation="5dp">
 
 
@@ -40,6 +42,7 @@
                     android:layout_gravity="left"
                     android:lines="1"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginTop="3dp"
                     android:text="Сахар в крови"
                     android:textSize="20sp"></TextView>
@@ -53,7 +56,7 @@
                     android:layout_below="@+id/TrackingTitle"
                     android:paddingBottom="5dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp"
+                    android:paddingTop="6dp"
                     android:text="14.12.2017 22:54"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="15sp" />
@@ -80,48 +83,47 @@
                     android:layout_alignTop="@+id/ratingValue"
                     android:layout_toEndOf="@+id/ratingValue"
                     android:layout_toRightOf="@+id/ratingValue"
-                    android:paddingTop="8dp"
+                    android:paddingTop="7dp"
                     android:paddingBottom="5dp"
                     android:src="@mipmap/star" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/scaleValue"
-                    android:layout_below="@id/TrackingTitle"
                     android:layout_toRightOf="@id/starIcon"
-                    android:text="10000"
+                    android:layout_width="200dp"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TrackingTitle"
+                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="40dp"
                     android:paddingBottom="5dp"
+                    android:paddingRight="80dp"
+                    android:layout_marginRight="40dp"
+                    android:paddingTop="6dp"
+                    android:text="12 кг"
                     android:textColor="@color/colorPrimaryDark"
-                    android:paddingTop="7dp"
-                    android:paddingLeft="50dp"
-                    android:textSize="15sp"/>
-
-              <!--  <ImageView
-                    android:id="@+id/deleteEventIcn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:src="@mipmap/cross"
-                    android:padding="7dp"/>-->
-
-               <!-- <ImageView
-                    android:id="@+id/editEventIcn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/eventDate"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:paddingLeft="7dp"
-                    android:paddingRight="7dp"
-                    android:paddingTop="7dp"
-                    android:paddingBottom="7dp"
-                    android:src="@mipmap/edit" />-->
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
+    <!--<ImageView
+        android:id="@+id/editEventIcn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/scaleValue"
+        android:layout_alignEnd="@+id/scaleValue"
+        android:layout_alignRight="@+id/scaleValue"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginRight="27dp"
+        android:paddingBottom="7dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:paddingTop="7dp"
+        android:src="@mipmap/edit" />-->
 
 
-</RelativeLayout>
+</android.support.design.internal.ForegroundLinearLayout>

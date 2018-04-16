@@ -155,13 +155,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         TextView ratingValue;
         ImageView starIcon;
 
-        /*ImageView deleteEvent;
-        ImageView editEvent;*/
+        ImageView deleteEvent;
+        ImageView editEvent;
 
         public ViewHolder(View itemView) {
             super(itemView);
             /*deleteEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.deleteEventIcn);
-            editEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.editEventIcn);*/
+            editEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.editEventIcn);  */
             scaleValue = (TextView) itemView.findViewById(R.id.scaleValue);
             ratingValue = (TextView) itemView.findViewById(R.id.ratingValue);
             starIcon = (ImageView) itemView.findViewById(R.id.starIcon);
