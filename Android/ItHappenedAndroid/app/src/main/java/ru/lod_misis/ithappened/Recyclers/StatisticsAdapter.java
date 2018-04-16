@@ -96,13 +96,17 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         List<String> frequentTrackings = new ArrayList<>();
                         for(int i=0;i<dataList.size();i++){
                             frequentData.add(dataList.get(i).getPeriod());
-                            frequentTrackings.add(dataList.get(i).getTrackingName());
+                            if(dataList.get(i).getTrackingName().length()>=20){
+                                frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,20)+"...");
+                            }else {
+                                frequentTrackings.add(dataList.get(i).getTrackingName());
+                            }
                         }
                         barChart.setVisibility(View.VISIBLE);
                         ArrayList<BarEntry> entries = new ArrayList<>();
                         for (int i = 0; i < frequentData.size(); i++) {
                             if(frequentData.get(i)==0.0){
-                                frequentTrackings.set(i,frequentData.get(i)+" (слишком мало событий)");
+                                frequentTrackings.set(i,"слишком мало событий");
                             }
                             entries.add(new BarEntry(frequentData.get(i).floatValue(), i));
                         }
