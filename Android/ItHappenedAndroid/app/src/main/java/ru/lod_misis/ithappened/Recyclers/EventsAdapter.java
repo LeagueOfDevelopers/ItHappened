@@ -67,7 +67,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         UUID trackingId = event.GetTrackingId();
 
-        if(event.GetComment()!=null){
+        if(event.GetComment()!=null && state==0){
             holder.trackingTitle.setText(event.GetComment());
         }else {
             holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());

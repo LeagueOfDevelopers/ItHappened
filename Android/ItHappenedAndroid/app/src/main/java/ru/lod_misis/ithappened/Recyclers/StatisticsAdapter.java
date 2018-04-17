@@ -65,8 +65,6 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
         createIllustration(fact, holder.pieChart, holder.barChart,holder.lineChart, holder.eventRef);
 
-
-
     }
 
     public void createIllustration(final Fact fact, PieChart pieChart, BarChart barChart, LineChart lineChart, TextView eventRef){

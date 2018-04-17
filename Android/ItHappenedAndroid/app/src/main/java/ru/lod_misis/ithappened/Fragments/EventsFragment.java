@@ -145,7 +145,7 @@ public class EventsFragment extends Fragment  {
         eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
                 (null,null,null,
                         null,null,null,
-                        null), getActivity(), 0);
+                        null), getActivity(), 1);
         eventsRecycler.setAdapter(eventsAdpt);
 
 
@@ -262,7 +262,7 @@ public class EventsFragment extends Fragment  {
                 eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
                         (null,null,null,
                                 null,null,null,
-                                null), getActivity(), 0);
+                                null), getActivity(), 1);
                 ratingFilter.setRating(0);
                 scaleFilter.setText("");
                 dateFrom.setText("До");
@@ -358,7 +358,7 @@ public class EventsFragment extends Fragment  {
                     }
 
                     List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateF, dateT, scaleComparison, scale, ratingComparison, rating);
-                    eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 0);
+                    eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
                     eventsRecycler.setAdapter(eventsAdpt);
 
                     BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
