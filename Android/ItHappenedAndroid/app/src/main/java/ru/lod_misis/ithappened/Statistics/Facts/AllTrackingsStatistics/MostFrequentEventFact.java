@@ -2,6 +2,8 @@ package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -54,9 +56,25 @@ public class MostFrequentEventFact extends Fact{
             periodList.add(model);
         }
 
+        Collections.sort(periodList, new Comparator<FrequentEventsFactModel>() {
+            @Override
+            public int compare(FrequentEventsFactModel frequentEventsFactModel, FrequentEventsFactModel t1) {
+                return t1.getPeriod().compareTo(frequentEventsFactModel.getPeriod());
+            }
+        });
+
+        List<FrequentEventsFactModel> firstFiveModels = new ArrayList<>();
+
+        int i =0;
+        for (FrequentEventsFactModel model: periodList){
+            if (i > 5) break;
+            firstFiveModels.add(model);
+            i++;
+        }
+
         calculatePriority();
         illustartion = new IllustartionModel(IllustrationType.BAR);
-        illustartion.setFrequentEventsModelList(periodList);
+        illustartion.setFrequentEventsModelList(firstFiveModels);
 
         return periodList;
     }
