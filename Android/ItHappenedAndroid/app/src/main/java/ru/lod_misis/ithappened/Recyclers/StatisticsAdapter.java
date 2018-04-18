@@ -83,7 +83,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         }
 
                         BarDataSet dataSet = new BarDataSet(entires, "Факт");
-                        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                        dataSet.setColors(ColorTemplate.PASTEL_COLORS);
                        BarData data = new BarData(new ArrayList<String>(),dataSet);
                        barChart.setData(data);
 
@@ -110,7 +110,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         }
 
                         BarDataSet dataSet = new BarDataSet(entries, "Отслеживания");
-                        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                        dataSet.setColors(ColorTemplate.PASTEL_COLORS);
                         BarData data = new BarData(frequentTrackings, dataSet);
                         barChart.setData(data);
                         barChart.setPinchZoom(false);
@@ -179,7 +179,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 entries.add(new Entry(percentage.get(i).floatValue(), i));
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
-                            pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                            pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
                             pieDataSet.setValueTextSize(10);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);
@@ -219,7 +219,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 entries.add(new Entry(percentage.get(i).floatValue(), i));
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
-                            pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                            pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
                             pieDataSet.setValueTextSize(15);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);
