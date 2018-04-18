@@ -24,6 +24,16 @@
         android:textSize="20sp"
         android:text="Добавьте отслеживания и события!"/>
 
+    <TextView
+        android:id="@+id/hintForEventsHistoryFragmentFilters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:text="Событий не найдено"/>
+
     <include layout="@layout/bottom_filters_screen" />
 
     <android.support.design.widget.FloatingActionButton

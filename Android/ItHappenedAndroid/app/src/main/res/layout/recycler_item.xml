@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:weightSum="1">
 
     <android.support.v7.widget.CardView
+        card_view:cardBackgroundColor="#ffffff"
         android:id="@+id/itemLL"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
@@ -28,8 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Name"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:textColor="@color/actionbar_text_color"></TextView>
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"></TextView>
 
     </android.support.v7.widget.CardView>
 

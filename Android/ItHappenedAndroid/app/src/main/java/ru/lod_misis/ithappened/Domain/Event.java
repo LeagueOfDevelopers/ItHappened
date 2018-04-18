@@ -15,7 +15,7 @@ public class Event extends RealmObject
     public Event(UUID eventId, UUID trackingID, Date dateOfChange, Double scale, Rating rating, String comment)
     {
         this.eventId = eventId.toString();
-        eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        this.dateOfChange = dateOfChange;
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
