@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,10 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class EditEventActivity extends AppCompatActivity {
 
@@ -213,6 +218,24 @@ public class EditEventActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculate");
+                                        }
+                                    });
+                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculate");
+                                        }
+                                    });
                             Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                             finish();
                         }catch (Exception e){
@@ -228,6 +251,24 @@ public class EditEventActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                        factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
+                                .subscribeOn(Schedulers.computation())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Fact>() {
+                                    @Override
+                                    public void call(Fact fact) {
+                                        Log.d("Statistics", "calculate");
+                                    }
+                                });
+                        factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                                .subscribeOn(Schedulers.computation())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Fact>() {
+                                    @Override
+                                    public void call(Fact fact) {
+                                        Log.d("Statistics", "calculate");
+                                    }
+                                });
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                         finish();
                     }
