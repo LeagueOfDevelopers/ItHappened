@@ -64,7 +64,7 @@ public class WorstEvent extends Fact {
 
         String toReturn = String.format("Худшее событие <b>%s</b> произошло <b>%s</b>, " +
                 "вы поставили ему <b>%s</b>", tracking.getTrackingName(),
-                format.format(worstEvent.GetEventDate()), worstEvent.GetRating().getRating());
+                format.format(worstEvent.GetEventDate()), worstEvent.GetRating().getRating()/2.0);
 
         if (worstEvent.GetComment() == null) return toReturn;
 

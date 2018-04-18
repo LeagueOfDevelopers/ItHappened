@@ -64,7 +64,7 @@ public class BestEvent extends Fact {
 
         String toReturn = String.format("Лучшее событие <b>%s</b> произошло <b>%s</b>, " +
                         "вы поставили ему <b>%s</b>", tracking.getTrackingName(),
-                format.format(bestEvent.GetEventDate()), bestEvent.GetRating().getRating());
+                format.format(bestEvent.GetEventDate()), bestEvent.GetRating().getRating()/2.0);
 
         if (bestEvent.GetComment() == null) return toReturn;
 

@@ -40,7 +40,7 @@ public class AvrgRatingFact extends Fact {
             }
         }
 
-        averageValue = sumValue/count;
+        averageValue = sumValue/count/2;
         calculatePriority();
 
         return averageValue;
