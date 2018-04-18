@@ -56,6 +56,7 @@
             android:layout_marginLeft="20dp"
             android:textSize="20sp"/>
 
+
         <android.support.v7.widget.CardView
             android:layout_below="@id/trackingsFiltersHint"
             android:id="@+id/trackingsFiltersCard"
@@ -65,23 +66,23 @@
             android:layout_height="40dp"
             app:cardBackgroundColor="#ffffff">
 
+            <TextView
+                android:textSize="19sp"
+                android:id="@+id/hintsForSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:visibility="invisible"
+                android:layout_below="@id/trackingsFiltersHint"
+                android:text="Отслеживаний нет"></TextView>
+
             <ru.lod_misis.ithappened.Gui.MultiSpinner
                 android:id="@+id/spinnerForTrackings"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"></ru.lod_misis.ithappened.Gui.MultiSpinner>
         </android.support.v7.widget.CardView>
-
-        <TextView
-            android:textSize="19sp"
-            android:id="@+id/hintsForSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:visibility="invisible"
-            android:layout_below="@id/trackingsFiltersHint"
-            android:text="Отслеживаний нет"></TextView>
 
 
             <TextView
