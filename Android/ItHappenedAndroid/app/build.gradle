@@ -23,7 +23,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         //versionCode getMyVersionCode() as Integer
-        versionCode 14
+        versionCode 15
         manifestPlaceholders = [manVersionCode: versionCode]
         versionName "0.1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

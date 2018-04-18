@@ -69,7 +69,7 @@ public class TrackingRepository implements ITrackingRepository{
         Collections.sort(trackingCollectionToReturn, new Comparator<Tracking>() {
             @Override
             public int compare(Tracking tracking, Tracking t1) {
-                return t1.GetTrackingDate().compareTo(tracking.GetTrackingDate());
+                return t1.GetDateOfChange().compareTo(tracking.GetDateOfChange());
             }
         });
         return trackingCollectionToReturn;
