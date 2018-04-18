@@ -55,13 +55,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="SpinnerAppTheme" parent="android:Widget.Spinner">
-    <item name="android:background">@color/white</item>
-    <item name="android:dropDownSelector">@color/colorAccent</item>
-    </style>
 
-<style name="SpinnerDropDownItemAppTheme" parent="android:Widget.DropDownItem.Spinner">
-<item name="android:checkMark">@color/ColorPrimaryDark</item>
-</style>
 
 </resources>

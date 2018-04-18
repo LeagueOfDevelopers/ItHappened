@@ -124,8 +124,6 @@ public class UserActionsActivity extends AppCompatActivity
             editor.commit();
         }
 
-        if(sharedPreferences.getString("UserId", "").equals("Offline"))
-        navigationView.getMenu().getItem(4).setEnabled(false);
         navigationView.setNavigationItemSelectedListener(this);
 
         trackFrg = new TrackingsFragment();
@@ -248,52 +246,56 @@ public class UserActionsActivity extends AppCompatActivity
 
         if(id == R.id.synchronisation){
             item.setCheckable(false);
-            final Animation animationRotateCenter = AnimationUtils.loadAnimation(
-                    this, R.anim.rotate);
-            item.setActionView(new ProgressBar(this));
-            item.getActionView().postDelayed(new Runnable() {
+            if(getApplicationContext().getSharedPreferences("MAIN_KEYS",Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")){
+                Toast.makeText(getApplicationContext(),"Привяжите аккаунт к GOOGLE для синхронизации", Toast.LENGTH_SHORT).show();
+            }else {
+                final Animation animationRotateCenter = AnimationUtils.loadAnimation(
+                        this, R.anim.rotate);
+                item.setActionView(new ProgressBar(this));
+                item.getActionView().postDelayed(new Runnable() {
 
-                @Override
-                public void run() {
-                }
-            }, 1000);
+                    @Override
+                    public void run() {
+                    }
+                }, 1000);
 
-            SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-            final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
-                    new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
-                    new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
+                final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
+                        new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
+                        new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
 
-           mainSync = ItHappenedApplication.
-                    getApi().
-                    SynchronizeData(sharedPreferences.getString("UserId", ""),
-                            synchronizationRequest)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<SynchronizationRequest>() {
-                @Override
-                public void call(SynchronizationRequest request) {
-                    saveDataToDb(request.getTrackingCollection());
-                    SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("Nick", synchronizationRequest.getUserNickname());
-                    editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
-                    finish();
-                    item.setActionView(null);
-                    startActivity(getIntent());
-                    Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    Log.e("RxSync", ""+throwable);
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                    item.setActionView(null);
-                    Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
-                }
-            });
-            item.getActionView().clearAnimation();
+                mainSync = ItHappenedApplication.
+                        getApi().
+                        SynchronizeData(sharedPreferences.getString("UserId", ""),
+                                synchronizationRequest)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<SynchronizationRequest>() {
+                            @Override
+                            public void call(SynchronizationRequest request) {
+                                saveDataToDb(request.getTrackingCollection());
+                                SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("Nick", synchronizationRequest.getUserNickname());
+                                editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
+                                finish();
+                                item.setActionView(null);
+                                startActivity(getIntent());
+                                Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Log.e("RxSync", "" + throwable);
+                                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                                drawer.closeDrawer(GravityCompat.START);
+                                item.setActionView(null);
+                                Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                item.getActionView().clearAnimation();
+            }
         }
 
            if(id == R.id.proile_settings){

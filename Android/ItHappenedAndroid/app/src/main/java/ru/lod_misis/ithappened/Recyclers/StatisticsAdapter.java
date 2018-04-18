@@ -94,17 +94,31 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         List<String> frequentTrackings = new ArrayList<>();
                         for(int i=0;i<dataList.size();i++){
                             frequentData.add(dataList.get(i).getPeriod());
-                            if(dataList.get(i).getTrackingName().length()>=20){
-                                frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,20)+"...");
+                            if(dataList.get(i).getTrackingName().length()>=5 && dataList.size()==5){
+                                frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5)+"...");
                             }else {
-                                frequentTrackings.add(dataList.get(i).getTrackingName());
+                                if(dataList.size()==3 && dataList.get(i).getTrackingName().length()>=10){
+                                    frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
+                                }else {
+                                    if(dataList.size()==1 && dataList.get(i).getTrackingName().length()>=20)
+                                    frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
+                                    else {
+                                        frequentTrackings.add(dataList.get(i).getTrackingName());
+                                    }
+                                }
                             }
                         }
                         barChart.setVisibility(View.VISIBLE);
                         ArrayList<BarEntry> entries = new ArrayList<>();
                         for (int i = 0; i < frequentData.size(); i++) {
                             if(frequentData.get(i)==0.0){
-                                frequentTrackings.set(i,"слишком мало событий");
+                                if(frequentData.size()==3)
+                                frequentTrackings.set(i,"Мало событий");
+                                if(frequentData.size()==5)
+                                    frequentTrackings.set(i,"Мало с...");
+                                if(frequentData.size()==2)
+                                    frequentTrackings.set(i,"Мало событий");
+
                             }
                             entries.add(new BarEntry(frequentData.get(i).floatValue(), i));
                         }

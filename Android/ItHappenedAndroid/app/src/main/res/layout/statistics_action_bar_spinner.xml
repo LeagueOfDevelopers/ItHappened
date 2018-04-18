@@ -4,12 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    <org.angmarch.views.NiceSpinner
-        app:arrowTint="@color/colorPrimary"
-        app:textTint="@color/colorPrimary"
+    <android.support.v7.widget.AppCompatSpinner
         android:layout_width="match_parent"
         android:layout_marginRight="20dp"
         android:layout_height="wrap_content"
-        android:id="@+id/statisticsSpinner"/>
+        android:id="@+id/statisticsSpinner"
+        android:backgroundTint="@color/white"/>
 
 </LinearLayout>

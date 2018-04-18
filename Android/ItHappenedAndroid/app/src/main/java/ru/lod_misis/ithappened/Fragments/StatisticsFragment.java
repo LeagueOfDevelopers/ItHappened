@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,12 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
-
-import org.angmarch.views.NiceSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +45,8 @@ public class StatisticsFragment extends Fragment {
     RecyclerView trackingsRecycler;
     StatisticsAdapter trackAdpt;
 
+    ProgressBar loading;
+
     RecyclerView allTrackingsRecycler;
 
     InMemoryFactRepository factRepository;
@@ -53,7 +55,7 @@ public class StatisticsFragment extends Fragment {
     List<Fact> facts = new ArrayList<>();
 
     CarouselView carousel;
-    NiceSpinner s;
+    AppCompatSpinner s;
 
     FloatingActionButton recountBtn;
 
@@ -93,6 +95,7 @@ public class StatisticsFragment extends Fragment {
         carousel = (CarouselView) getActivity().findViewById(R.id.mainCarousel);
         carousel.setViewListener(viewListener);
         carousel.setPageCount(titles.size());
+        loading = getActivity().findViewById(R.id.statisticsProgressBar);
         carousel.setIndicatorVisibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         getActivity().setTitle(titles.get(0));
         ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -101,11 +104,12 @@ public class StatisticsFragment extends Fragment {
         LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View vi = inflator.inflate(R.layout.statistics_action_bar_spinner, null);
 
-        s = (NiceSpinner) vi.findViewById(R.id.statisticsSpinner);
+        s = (AppCompatSpinner) vi.findViewById(R.id.statisticsSpinner);
 
         recountBtn = (FloatingActionButton) getActivity().findViewById(R.id.recountStatistics);
 
         spinneradapter = new ArrayAdapter<String>(getActivity(),R.layout.statistics_spinner_item, titles);
+        spinneradapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
 
         s.setAdapter(spinneradapter);
 
@@ -116,7 +120,7 @@ public class StatisticsFragment extends Fragment {
         recountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showLoading();
                 factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -144,6 +148,7 @@ public class StatisticsFragment extends Fragment {
                                                     }
                                                 }
                                                 fragmentRefresh();
+                                                hideLoading();
                                             }
                                         });
                             }
@@ -179,8 +184,8 @@ public class StatisticsFragment extends Fragment {
 
             @Override
             public void onPageSelected(int i) {
-                s.setSelectedIndex(i);
-                //s.setSelection(i);
+                //s.setSelectedIndex(i);
+                s.setSelection(i);
             }
 
             @Override
@@ -249,6 +254,17 @@ public class StatisticsFragment extends Fragment {
             return customView;
         }
     };
+
+
+    private void showLoading(){
+        carousel.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading(){
+        carousel.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
+    }
 
 
     public void fragmentRefresh(){
