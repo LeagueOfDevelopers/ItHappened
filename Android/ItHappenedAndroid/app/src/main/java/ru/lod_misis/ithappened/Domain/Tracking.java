@@ -29,6 +29,7 @@ public class Tracking extends RealmObject {
         SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = trackingDate;
         eventCollection = new RealmList<>();
         this.scaleName = scaleName;
     }
