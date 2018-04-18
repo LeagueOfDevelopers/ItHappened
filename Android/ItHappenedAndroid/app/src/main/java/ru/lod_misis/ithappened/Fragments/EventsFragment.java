@@ -216,7 +216,6 @@ public class EventsFragment extends Fragment  {
         dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dateFrom.setTextSize(10);
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateFrom);
                 picker.show(fragmentManager, "from");
@@ -228,7 +227,6 @@ public class EventsFragment extends Fragment  {
         dateTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dateTo.setTextSize(10);
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateTo);
                 picker.show(fragmentManager, "to");
