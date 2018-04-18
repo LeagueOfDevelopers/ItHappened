@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
@@ -73,7 +74,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
         }
 
-        if(event.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null){
+        if(event.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null && trackingRepository.GetTracking(trackingId).GetScaleCustomization()!= TrackingCustomization.None){
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
             if(type!=null) {
                 if (type.length() >= 3) {
