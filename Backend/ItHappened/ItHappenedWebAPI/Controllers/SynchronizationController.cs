@@ -27,14 +27,6 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(response);
     }
 
-    [HttpPost]
-    [Route("add/{userId}")]
-    public IActionResult AddUser([FromRoute] string userId)
-    {
-      RegistrationResponse id = users.Reg(userId);
-      return Ok(id);
-    }
-
     private UserList users;
   }
 

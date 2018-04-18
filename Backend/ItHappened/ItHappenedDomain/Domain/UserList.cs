@@ -55,35 +55,6 @@ namespace ItHappenedDomain.Domain
       return toReturn;
     }
 
-    public RegistrationResponse Reg(string id)
-    {
-      var collection = db.GetCollection<User>("Users");
-      var iUser = collection.FindSync(us => us.UserId == id);
-
-      var result = iUser.FirstAsync();
-      if (!result.IsFaulted)
-      {
-        User user = result.Result;
-        return new RegistrationResponse()
-        {
-          PicUrl = user.PictureUrl,
-          NicknameDateOfChange = user.NicknameDateOfChange,
-          UserId = user.UserId,
-          UserNickname = user.UserNickname
-        };
-      }
-      User newUser = new User(id, null, DateTimeOffset.Now);
-      collection.InsertOne(newUser);
-      RegistrationResponse toReturn = new RegistrationResponse()
-      {
-        NicknameDateOfChange = DateTimeOffset.Now,
-        PicUrl = null,
-        UserId = newUser.UserId,
-        UserNickname = newUser.UserNickname
-      };
-      return toReturn;
-    }
-
     public SynchronisationRequest Synchronisation(string userId, DateTimeOffset NicknameDateOfChange, string UserNickname,
       List<Tracking> trackingCollection)
     {
