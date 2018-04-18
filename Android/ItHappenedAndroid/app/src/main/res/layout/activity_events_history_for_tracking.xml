@@ -41,6 +41,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:elevation="10dp"
         app:fabSize="normal"
-        app:srcCompat="@mipmap/plus_button" />
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
 
 </android.support.design.widget.CoordinatorLayout>
