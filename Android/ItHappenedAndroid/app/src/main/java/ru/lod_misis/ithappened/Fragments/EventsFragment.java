@@ -58,6 +58,8 @@ public class EventsFragment extends Fragment  {
     TextView hintForEventsHistory;
     TextView hintForSpinner;
 
+    TextView filtersHintText;
+
     RelativeLayout filtersScreen;
     RelativeLayout filtersHint;
 
@@ -139,6 +141,9 @@ public class EventsFragment extends Fragment  {
         });
 
         hintForSpinner = (TextView) getActivity().findViewById(R.id.hintsForSpinner);
+        filtersHintText = getActivity().findViewById(R.id.hintForEventsHistoryFragmentFilters);
+
+        filtersHintText.setVisibility(View.GONE);
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
@@ -305,6 +310,8 @@ public class EventsFragment extends Fragment  {
                     trackingsSpinner.setVisibility(View.INVISIBLE);
                     hintForSpinner.setVisibility(View.VISIBLE);
 
+                    filtersHintText.setVisibility(View.GONE);
+
                 }
 
                 eventsRecycler.setAdapter(eventsAdpt);
@@ -359,6 +366,11 @@ public class EventsFragment extends Fragment  {
                     eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
                     eventsRecycler.setAdapter(eventsAdpt);
 
+                    if(filteredEvents.size()==0){
+                        filtersHintText.setVisibility(View.VISIBLE);
+                    }else{
+                        filtersHintText.setVisibility(View.GONE);
+                    }
                     BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }catch (Exception e){
