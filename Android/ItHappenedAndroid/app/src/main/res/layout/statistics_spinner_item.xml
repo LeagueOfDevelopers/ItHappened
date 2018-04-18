@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:textSize="18sp"
     android:gravity="left"
-    android:textColor="@color/colorPrimary"
+    android:textColor="#111111"
     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
     android:padding="5dip"
     />

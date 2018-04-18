@@ -73,6 +73,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
 
+            date.setTextSize(10);
             date.setText(format.format(time.getTime()));
         }
 

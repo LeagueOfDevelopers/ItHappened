@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +19,8 @@ import android.widget.TextView;
 
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
+
+import org.angmarch.views.NiceSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class StatisticsFragment extends Fragment {
     List<Fact> facts = new ArrayList<>();
 
     CarouselView carousel;
-    AppCompatSpinner s;
+    NiceSpinner s;
 
     FloatingActionButton recountBtn;
 
@@ -100,7 +101,7 @@ public class StatisticsFragment extends Fragment {
         LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View vi = inflator.inflate(R.layout.statistics_action_bar_spinner, null);
 
-        s = (AppCompatSpinner) vi.findViewById(R.id.statisticsSpinner);
+        s = (NiceSpinner) vi.findViewById(R.id.statisticsSpinner);
 
         recountBtn = (FloatingActionButton) getActivity().findViewById(R.id.recountStatistics);
 
@@ -150,12 +151,18 @@ public class StatisticsFragment extends Fragment {
             }
         });
 
+        /*s.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(MaterialSpinner materialSpinner, int i, long l, Object o) {
+
+            }
+        });*/
+
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
                 carousel.setCurrentItem(i);
-
             }
 
             @Override
@@ -172,7 +179,8 @@ public class StatisticsFragment extends Fragment {
 
             @Override
             public void onPageSelected(int i) {
-                s.setSelection(i);
+                s.setSelectedIndex(i);
+                //s.setSelection(i);
             }
 
             @Override
