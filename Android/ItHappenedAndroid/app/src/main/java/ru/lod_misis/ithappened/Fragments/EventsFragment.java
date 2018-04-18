@@ -305,6 +305,7 @@ public class EventsFragment extends Fragment  {
                                     }
                                 }
                             });
+                    filtersHintText.setVisibility(View.GONE);
                 }else{
 
                     trackingsSpinner.setVisibility(View.INVISIBLE);
