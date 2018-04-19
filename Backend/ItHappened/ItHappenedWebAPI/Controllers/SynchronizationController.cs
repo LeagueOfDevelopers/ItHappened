@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappenedWebAPI.Controllers
@@ -18,7 +19,8 @@ namespace ItHappenedWebAPI.Controllers
     }
 
     [HttpPost]
-    [Route("{userId}")]
+    [Authorize]
+    [Route("synchronize")]
     public IActionResult SynchronizeData([FromRoute] string userId,
       [FromBody] SynchronisationRequest request)
     {
@@ -27,13 +29,7 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(response);
     }
 
-    [HttpPost]
-    [Route("add/{userId}")]
-    public IActionResult AddUser([FromRoute] string userId)
-    {
-      RegistrationResponse id = users.Reg(userId);
-      return Ok(id);
-    }
+    
 
     private UserList users;
   }

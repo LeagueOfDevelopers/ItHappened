@@ -1,13 +1,19 @@
-﻿using ItHappenedDomain.Domain;
+﻿using System;
+using System.Text;
+using ItHappenedDomain.Domain;
 using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Middlewares;
+using ItHappenedWebAPI.Security;
 using Loggly;
 using Loggly.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
@@ -33,9 +39,38 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
-      //Migrator.Program.Main(new string[0]);
+      var securityConfiguration = Configuration.GetSection("Security");
 
-      var userList = new UserList(db);
+      var securitySettings = new SecuritySettings(securityConfiguration["EncryptionKey"],
+        securityConfiguration["Issue"],
+        securityConfiguration.GetValue<TimeSpan>("ExpirationPeriod"));
+      var jwtIssuer = new JwtIssuer(securitySettings);
+
+      services.AddSingleton(securitySettings);
+      services.AddSingleton<IJwtIssuer>(jwtIssuer);
+
+      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.Zero,
+            IssuerSigningKey = new SymmetricSecurityKey(
+              Encoding.UTF8.GetBytes(securitySettings.EncryptionKey))
+          };
+        });
+
+      services
+        .AddAuthorization(options =>
+        {
+          options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser().Build();
+        });
+        var userList = new UserList(db);
       services
         .AddSingleton<UserList>(userList)
         .AddSingleton<ErrorHandlingMiddleware>();
@@ -61,6 +96,7 @@ namespace ItHappenedWebAPI
     private void StartLoggly()
     {
       var config = LogglyConfig.Instance;
+
       config.CustomerToken = Configuration.GetValue<string>("LogglyToken");
       config.ApplicationName = "ItHappenedWebApi";
 
