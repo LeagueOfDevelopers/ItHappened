@@ -6,6 +6,8 @@ using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ItHappenedWebAPI.Extensions;
+using ItHappenedWebAPI.Security;
 
 namespace ItHappenedWebAPI.Controllers
 {
@@ -13,25 +15,40 @@ namespace ItHappenedWebAPI.Controllers
   [Route("synchronization")]
   public class SynchronizationController : Controller
   {
-    public SynchronizationController(UserList users)
+    public SynchronizationController(UserList users, IJwtIssuer jwtIssuer)
     {
-      this.users = users;
+      this._users = users;
+      this._jwtIssuer = jwtIssuer;
     }
+
+    private UserList _users;
+    private IJwtIssuer _jwtIssuer;
 
     [HttpPost]
     [Authorize]
     [Route("synchronize")]
-    public IActionResult SynchronizeData([FromRoute] string userId,
-      [FromBody] SynchronisationRequest request)
+    public IActionResult SynchronizeData([FromBody] SynchronisationRequest request)
     {
-      SynchronisationRequest response = users.Synchronisation(userId, request.NicknameDateOfChange, 
+      var userId = Request.GetUserId();
+
+      SynchronisationRequest response = _users.Synchronisation(userId, request.NicknameDateOfChange, 
         request.UserNickname, request.trackingCollection);
       return Ok(response);
     }
 
-    
+    [HttpPost]
+    [Authorize]
+    [Route("refresh")]
+    public IActionResult RefreshToken()
+    {
+      var userId = Request.GetUserId();
+      if (!_users.UserIsExists(userId))
+        return BadRequest("User isn't exists");
 
-    private UserList users;
+      var response = _jwtIssuer.IssueJwt(userId);
+
+      return Ok(response);
+    }
   }
 
 
