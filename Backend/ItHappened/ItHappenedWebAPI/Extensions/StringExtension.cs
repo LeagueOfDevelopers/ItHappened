@@ -13,7 +13,7 @@ namespace ItHappenedWebAPI.Extensions
     {
       var auth = request.Headers["Authorization"].ToString();
       var handler = new JwtSecurityTokenHandler();
-      var userId = handler.ReadJwtToken(auth.Substring(7)).Claims.First().Value;
+      var userId = handler.ReadJwtToken(auth.Substring(7)).Claims.First(c => c.Type == "UserId").Value;
       return userId;
     }
   }
