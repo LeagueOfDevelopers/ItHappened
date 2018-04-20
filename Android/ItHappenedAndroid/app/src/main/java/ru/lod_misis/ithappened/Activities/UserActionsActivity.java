@@ -124,6 +124,26 @@ public class UserActionsActivity extends AppCompatActivity
             editor.commit();
         }
 
+        if(!sharedPreferences.getString("UserId", "").equals("Offline")){
+            ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("Token",""))
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<String>() {
+                                   @Override
+                                   public void call(String token) {
+                                       SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
+                                       editor.putString("Token", token);
+                                       editor.commit();
+                                   }
+                               },
+                            new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+                                    Log.e("Токен упал", throwable+"");
+                                }
+                            });
+        }
+
         navigationView.setNavigationItemSelectedListener(this);
 
         trackFrg = new TrackingsFragment();
@@ -259,41 +279,63 @@ public class UserActionsActivity extends AppCompatActivity
                     }
                 }, 1000);
 
-                SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-                final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
-                        new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
-                        new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
-
-                mainSync = ItHappenedApplication.
-                        getApi().
-                        SynchronizeData(sharedPreferences.getString("UserId", ""),
-                                synchronizationRequest)
-                        .subscribeOn(Schedulers.io())
+                ItHappenedApplication.getApi()
+                        .Refresh("Bearer "+sharedPreferences.getString("Token",""))
+                        .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<SynchronizationRequest>() {
-                            @Override
-                            public void call(SynchronizationRequest request) {
-                                saveDataToDb(request.getTrackingCollection());
-                                SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("Nick", synchronizationRequest.getUserNickname());
-                                editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
-                                finish();
-                                item.setActionView(null);
-                                startActivity(getIntent());
-                                Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
-                            }
-                        }, new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                Log.e("RxSync", "" + throwable);
-                                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                                drawer.closeDrawer(GravityCompat.START);
-                                item.setActionView(null);
-                                Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        .subscribe(new Action1<String>() {
+                                       @Override
+                                       public void call(String token) {
+                                           SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
+                                           editor.putString("Token", token);
+                                           editor.commit();
+
+
+                                           final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
+                                                   new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
+                                                   new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
+
+                                           mainSync = ItHappenedApplication.
+                                                   getApi().
+                                                   SynchronizeData("Bearer " + sharedPreferences.getString("Token", ""),
+                                                           synchronizationRequest)
+                                                   .subscribeOn(Schedulers.io())
+                                                   .observeOn(AndroidSchedulers.mainThread())
+                                                   .subscribe(new Action1<SynchronizationRequest>() {
+                                                       @Override
+                                                       public void call(SynchronizationRequest request) {
+                                                           saveDataToDb(request.getTrackingCollection());
+                                                           SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                                           SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                           editor.putString("Nick", synchronizationRequest.getUserNickname());
+                                                           editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
+                                                           finish();
+                                                           item.setActionView(null);
+                                                           startActivity(getIntent());
+                                                           Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
+                                                       }
+                                                   }, new Action1<Throwable>() {
+                                                       @Override
+                                                       public void call(Throwable throwable) {
+                                                           Log.e("RxSync", "" + throwable);
+                                                           DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                                                           drawer.closeDrawer(GravityCompat.START);
+                                                           item.setActionView(null);
+                                                           Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
+                                                       }
+                                                   });
+                                       }
+                                   },
+                                new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        Log.e("Токен упал", throwable+"");
+                                    }
+                                });
+
+
                 item.getActionView().clearAnimation();
             }
         }
@@ -437,6 +479,7 @@ public class UserActionsActivity extends AppCompatActivity
                         editor.putString("UserId", registrationResponse.getUserId());
                         editor.putString("Nick", registrationResponse.getUserNickname());
                         editor.putString("Url", registrationResponse.getPicUrl());
+                        editor.putString("Token", registrationResponse.getToken());
                         editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
                         editor.commit();
 
@@ -445,7 +488,7 @@ public class UserActionsActivity extends AppCompatActivity
                                 new StaticInMemoryRepository(getApplicationContext(), "Offline").getInstance().GetTrackingCollection());
 
                         ItHappenedApplication.
-                                getApi().SynchronizeData(registrationResponse.getUserId(), synchronizationRequest)
+                                getApi().SynchronizeData("Bearer "+registrationResponse.getToken(), synchronizationRequest)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<SynchronizationRequest>() {
@@ -490,45 +533,65 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void logout(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
-                new java.util.Date(sharedPreferences.getLong("NickDate", 0)),new StaticInMemoryRepository(getApplicationContext(),
-                sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
-
-        ItHappenedApplication.getApi().SynchronizeData(sharedPreferences.getString("UserId", ""), synchronizationRequest).subscribeOn(Schedulers.io())
+        ItHappenedApplication.getApi().Refresh("Bearer "+sharedPreferences.getString("Token",""))
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<SynchronizationRequest>() {
+                .subscribe(new Action1<String>() {
                     @Override
-                    public void call(SynchronizationRequest request) {
-                        saveDataToDb(request.getTrackingCollection());
-                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("Nick", request.getUserNickname());
-                        editor.putLong("NickDate", request.getNicknameDateOfChange().getTime());
-                        Realm.init(getApplicationContext());
-                        RealmConfiguration config = new RealmConfiguration.Builder()
-                                .name("ItHappened.realm")
-                                .build();
-                        Realm realm = Realm.getInstance(config);
-                        realm.beginTransaction();
-                        realm.deleteAll();
-                        realm.commitTransaction();;
-                        editor.clear();
+                    public void call(String token) {
+                        SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
+                        editor.putString("Token", token);
                         editor.commit();
-                        editor.putBoolean("LOGOUT", true);
-                        editor.commit();
-                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(getApplicationContext(), "До скорой встречи!", Toast.LENGTH_SHORT).show();
+
+                        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
+                                new java.util.Date(sharedPreferences.getLong("NickDate", 0)),new StaticInMemoryRepository(getApplicationContext(),
+                                sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
+
+                        ItHappenedApplication.getApi().SynchronizeData("Bearer "+sharedPreferences.getString("Token", ""), synchronizationRequest).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<SynchronizationRequest>() {
+                                    @Override
+                                    public void call(SynchronizationRequest request) {
+                                        saveDataToDb(request.getTrackingCollection());
+                                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("Nick", request.getUserNickname());
+                                        editor.putLong("NickDate", request.getNicknameDateOfChange().getTime());
+                                        Realm.init(getApplicationContext());
+                                        RealmConfiguration config = new RealmConfiguration.Builder()
+                                                .name("ItHappened.realm")
+                                                .build();
+                                        Realm realm = Realm.getInstance(config);
+                                        realm.beginTransaction();
+                                        realm.deleteAll();
+                                        realm.commitTransaction();;
+                                        editor.clear();
+                                        editor.commit();
+                                        editor.putBoolean("LOGOUT", true);
+                                        editor.commit();
+                                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                                        startActivity(intent);
+                                        Toast.makeText(getApplicationContext(), "До скорой встречи!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }, new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        Log.e("RxSync", ""+throwable);
+                                        Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.e("RxSync", ""+throwable);
-                        Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Log.e("Токен упал", throwable+"");
+                            }
+                        });
+
+
 
 
 
