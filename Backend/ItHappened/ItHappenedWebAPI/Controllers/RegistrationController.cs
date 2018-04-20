@@ -23,7 +23,6 @@ namespace ItHappenedWebAPI.Controllers
 
     [HttpPost]
     [Route("{idToken}")]
-    [Authorize]
     public IActionResult SignUp([FromRoute] string idToken)
     {
       var userData = userList.SignUp(idToken);
