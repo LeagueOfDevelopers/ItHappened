@@ -60,6 +60,7 @@ android {
     buildTypes {
         release{
             buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
+            signingConfig signingConfigs.release
             resValue "integer", "app_version", "${defaultConfig.versionCode}"
 
         }

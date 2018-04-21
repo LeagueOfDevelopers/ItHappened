@@ -68,7 +68,7 @@ public class MostFrequentEventFact extends Fact{
         int i =0;
         for (FrequentEventsFactModel model: periodList){
             i++;
-            if (i > 5) break;
+            if (i > 4) break;
             firstFiveModels.add(model);
         }
 
