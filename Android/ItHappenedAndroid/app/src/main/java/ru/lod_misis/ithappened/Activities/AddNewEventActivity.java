@@ -112,6 +112,11 @@ public class AddNewEventActivity extends AppCompatActivity {
 
         tracking = trackingCollection.GetTracking(trackingId);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(tracking.GetTrackingName());
+
         commentState = calculateState(tracking.GetCommentCustomization());
         ratingState = calculateState(tracking.GetRatingCustomization());
         scaleState = calculateState(tracking.GetScaleCustomization());
@@ -265,10 +270,6 @@ public class AddNewEventActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Добавить событие");
     }
 
     private int calculateState(TrackingCustomization customization){
