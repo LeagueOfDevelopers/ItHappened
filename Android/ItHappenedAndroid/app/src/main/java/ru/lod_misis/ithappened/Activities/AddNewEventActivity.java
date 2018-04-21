@@ -126,11 +126,7 @@ public class AddNewEventActivity extends AppCompatActivity {
         calculateUX(scaleContainer, scaleAccess, scaleState);
 
         if(tracking.GetScaleCustomization()!=TrackingCustomization.None && tracking.getScaleName()!=null){
-            if(tracking.getScaleName().length()>=3){
-                scaleType.setText(tracking.getScaleName().substring(0,2)+".");
-            }else{
                 scaleType.setText(tracking.getScaleName());
-            }
         }
 
         Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
