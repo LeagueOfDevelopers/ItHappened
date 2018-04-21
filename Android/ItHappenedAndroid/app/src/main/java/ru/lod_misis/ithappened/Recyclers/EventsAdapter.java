@@ -47,7 +47,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public void refreshData(List<Event> events){
 
         this.events.clear();
-        this.events.addAll(events);
+        for(Event event : events){
+            if(!event.GetStatus()){
+                this.events.add(event);
+            }
+        }
         notifyDataSetChanged();
 
     }

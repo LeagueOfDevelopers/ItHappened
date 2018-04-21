@@ -40,8 +40,6 @@ import java.util.List;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
@@ -559,18 +557,9 @@ public class UserActionsActivity extends AppCompatActivity
                                         saveDataToDb(request.getTrackingCollection());
                                         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putString("Nick", request.getUserNickname());
-                                        editor.putLong("NickDate", request.getNicknameDateOfChange().getTime());
-                                        Realm.init(getApplicationContext());
-                                        RealmConfiguration config = new RealmConfiguration.Builder()
-                                                .name("ItHappened.realm")
-                                                .build();
-                                        Realm realm = Realm.getInstance(config);
-                                        realm.beginTransaction();
-                                        realm.deleteAll();
-                                        realm.commitTransaction();;
+                                        String lastId = sharedPreferences.getString("UserId", "");
                                         editor.clear();
-                                        editor.commit();
+                                        editor.putString("LastId", lastId);
                                         editor.putBoolean("LOGOUT", true);
                                         editor.commit();
                                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
