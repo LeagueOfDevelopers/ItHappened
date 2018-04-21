@@ -112,6 +112,11 @@ public class AddNewEventActivity extends AppCompatActivity {
 
         tracking = trackingCollection.GetTracking(trackingId);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(tracking.GetTrackingName());
+
         commentState = calculateState(tracking.GetCommentCustomization());
         ratingState = calculateState(tracking.GetRatingCustomization());
         scaleState = calculateState(tracking.GetScaleCustomization());
@@ -121,11 +126,7 @@ public class AddNewEventActivity extends AppCompatActivity {
         calculateUX(scaleContainer, scaleAccess, scaleState);
 
         if(tracking.GetScaleCustomization()!=TrackingCustomization.None && tracking.getScaleName()!=null){
-            if(tracking.getScaleName().length()>=3){
-                scaleType.setText(tracking.getScaleName().substring(0,2)+".");
-            }else{
                 scaleType.setText(tracking.getScaleName());
-            }
         }
 
         Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
@@ -265,10 +266,6 @@ public class AddNewEventActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Добавить событие");
     }
 
     private int calculateState(TrackingCustomization customization){

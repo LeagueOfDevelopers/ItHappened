@@ -81,10 +81,6 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
 
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Изменить событие");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext(),sharedPreferences.getString("UserId", ""));
@@ -118,6 +114,12 @@ public class EditEventActivity extends AppCompatActivity {
         addEvent = (Button) findViewById(R.id.editEvent);
 
         tracking = trackingCollection.GetTracking(trackingId);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(tracking.GetTrackingName());
+
         event = tracking.GetEvent(eventId);
 
         commentState = calculateState(tracking.GetCommentCustomization());
@@ -129,11 +131,7 @@ public class EditEventActivity extends AppCompatActivity {
         calculateUX(scaleContainer, scaleAccess, scaleState);
 
         if(tracking.GetScaleCustomization()!=TrackingCustomization.None && tracking.getScaleName()!=null){
-            if(tracking.getScaleName().length()>=3){
-                scaleType.setText(tracking.getScaleName().substring(0,2)+".");
-            }else{
                 scaleType.setText(tracking.getScaleName());
-            }
         }
 
         Date thisDate = event.GetEventDate();

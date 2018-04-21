@@ -23,7 +23,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         //versionCode getMyVersionCode() as Integer
-        versionCode 15
+        versionCode 16
         manifestPlaceholders = [manVersionCode: versionCode]
         versionName "0.1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -59,7 +59,13 @@ android {
 
     buildTypes {
         release{
+            buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
             resValue "integer", "app_version", "${defaultConfig.versionCode}"
+
+        }
+
+        debug{
+            buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
         }
     }
 }
