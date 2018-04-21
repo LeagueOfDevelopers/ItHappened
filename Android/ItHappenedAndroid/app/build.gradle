@@ -59,7 +59,13 @@ android {
 
     buildTypes {
         release{
+            buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
             resValue "integer", "app_version", "${defaultConfig.versionCode}"
+
+        }
+
+        debug{
+            buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
         }
     }
 }
