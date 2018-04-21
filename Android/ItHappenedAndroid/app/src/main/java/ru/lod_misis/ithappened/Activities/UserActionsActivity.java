@@ -125,7 +125,7 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(!sharedPreferences.getString("UserId", "").equals("Offline")){
-            ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("Token",""))
+            ItHappenedApplication.getApi().Refresh("Bearer "+sharedPreferences.getString("Token",""))
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<String>() {
@@ -139,6 +139,7 @@ public class UserActionsActivity extends AppCompatActivity
                             new Action1<Throwable>() {
                                 @Override
                                 public void call(Throwable throwable) {
+                                    Toast.makeText(getApplicationContext(), "Токен упал(", Toast.LENGTH_SHORT).show();
                                     Log.e("Токен упал", throwable+"");
                                 }
                             });
@@ -331,6 +332,7 @@ public class UserActionsActivity extends AppCompatActivity
                                 new Action1<Throwable>() {
                                     @Override
                                     public void call(Throwable throwable) {
+                                        Toast.makeText(getApplicationContext(), "Токен упал(", Toast.LENGTH_SHORT).show();
                                         Log.e("Токен упал", throwable+"");
                                     }
                                 });
