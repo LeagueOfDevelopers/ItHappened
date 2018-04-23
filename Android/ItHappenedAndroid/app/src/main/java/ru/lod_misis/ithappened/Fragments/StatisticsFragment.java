@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -71,7 +72,9 @@ public class StatisticsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        YandexMetrica.reportEvent("Пользователь вошел в статистику");
         return inflater.inflate(ru.lod_misis.ithappened.R.layout.fragment_statistics, null);
+
     }
 
     @Override
@@ -82,10 +85,15 @@ public class StatisticsFragment extends Fragment {
         allTrackings = new ArrayList<>();
         titles = new ArrayList<>();
 
-        YandexMetrica.reportEvent("Пользователь вошел в статистику");
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
         service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
         titles.add("Общая статистика");
         for(Tracking tracking: service.GetTrackingCollection()){
@@ -205,6 +213,11 @@ public class StatisticsFragment extends Fragment {
         super.onStop();
         ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(false);
         ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         YandexMetrica.reportEvent("Пользователь перестал смотреть статистику");
     }
 

@@ -85,8 +85,13 @@ public class EditEventActivity extends AppCompatActivity {
         YandexMetrica.reportEvent("Пользователь зашел в изменение события");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext(),sharedPreferences.getString("UserId", ""));
-        trackingCollection = repository.getInstance();
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            trackingCollection = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            trackingCollection = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
         factRepository = StaticFactRepository.getInstance();

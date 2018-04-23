@@ -93,8 +93,13 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         YandexMetrica.reportEvent("Пользователь зашел в добавление отслеживания");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                sharedPreferences.getString("UserId", "")).getInstance();
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
 
         addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
 

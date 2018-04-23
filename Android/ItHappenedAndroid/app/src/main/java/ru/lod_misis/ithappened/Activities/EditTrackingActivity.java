@@ -103,8 +103,13 @@ public class EditTrackingActivity extends AppCompatActivity {
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                sharedPreferences.getString("UserId", "")).getInstance();
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
 
         service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
 

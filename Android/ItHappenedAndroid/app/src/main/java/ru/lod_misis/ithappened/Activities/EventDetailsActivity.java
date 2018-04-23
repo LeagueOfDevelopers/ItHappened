@@ -88,7 +88,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         factRepository = StaticFactRepository.getInstance();
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        collection = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId" , "")).getInstance();
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            collection = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            collection = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
         trackingSercvice = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
 
         Intent intent = getIntent();
