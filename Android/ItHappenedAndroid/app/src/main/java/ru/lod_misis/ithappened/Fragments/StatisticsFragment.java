@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
+import com.yandex.metrica.YandexMetrica;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,8 @@ public class StatisticsFragment extends Fragment {
         allTrackings = new ArrayList<>();
         titles = new ArrayList<>();
 
+        YandexMetrica.reportEvent("Пользователь вошел в статистику");
+
         trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
                 getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
         service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
@@ -121,6 +124,7 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showLoading();
+                YandexMetrica.reportEvent("Пользователь пересчитывает статистику");
                 factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -201,6 +205,7 @@ public class StatisticsFragment extends Fragment {
         super.onStop();
         ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(false);
         ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+        YandexMetrica.reportEvent("Пользователь перестал смотреть статистику");
     }
 
     ViewListener viewListener = new ViewListener() {

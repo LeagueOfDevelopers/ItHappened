@@ -31,6 +31,7 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
+import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -313,6 +314,7 @@ public class UserActionsActivity extends AppCompatActivity
                                                            finish();
                                                            item.setActionView(null);
                                                            startActivity(getIntent());
+                                                           YandexMetrica.reportEvent("Пользователь синхронизировался");
                                                            Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
                                                        }
                                                    }, new Action1<Throwable>() {
@@ -389,6 +391,7 @@ public class UserActionsActivity extends AppCompatActivity
                         Log.d("Statistics", "calculateOneTrackingFact");
                     }
                 });
+        YandexMetrica.reportEvent("Пользователь удалил отслеживание");
         Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, UserActionsActivity.class);
         startActivity(intent);
@@ -511,6 +514,7 @@ public class UserActionsActivity extends AppCompatActivity
                                         hideLoading();
                                         Log.e("RxSync", ""+throwable);
                                         Toast.makeText(getApplicationContext(), "Синхронизация не прошла!", Toast.LENGTH_SHORT).show();
+                                        YandexMetrica.reportEvent("Пользователь привязал аккаунт к google");
                                     }
                                 });
 
@@ -571,6 +575,7 @@ public class UserActionsActivity extends AppCompatActivity
                                     public void call(Throwable throwable) {
                                         Log.e("RxSync", ""+throwable);
                                         Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
+                                        YandexMetrica.reportEvent("Пользователь вышел из профиля");
                                     }
                                 });
                     }

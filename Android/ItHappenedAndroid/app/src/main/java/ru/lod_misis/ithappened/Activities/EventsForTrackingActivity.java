@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -52,7 +54,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-
+        YandexMetrica.reportEvent("Пользователь зашел в историю событий по отслеживанию");
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -110,6 +112,8 @@ public class EventsForTrackingActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), AddNewEventActivity.class);
                 intent.putExtra("trackingId", thisTracking.GetTrackingID().toString());
 
+                YandexMetrica.reportEvent("Пользователь добавляет событие");
+
                 startActivity(intent);
 
             }
@@ -120,6 +124,12 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         recreate();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из истории событий по отслеживанию");
     }
 
     @Override

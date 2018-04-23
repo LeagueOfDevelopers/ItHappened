@@ -94,6 +94,7 @@ dependencies {
     compile 'com.jaredrummler:material-spinner:1.2.5'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.nvanbenschoten.motion:library:1.1.2'
+    compile 'com.yandex.android:mobmetricalib:2.80'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
 }

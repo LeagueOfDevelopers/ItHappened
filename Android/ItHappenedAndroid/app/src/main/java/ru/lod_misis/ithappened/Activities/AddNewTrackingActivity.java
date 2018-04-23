@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -88,6 +90,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Отслеживать");
         factRepository = StaticFactRepository.getInstance();
+        YandexMetrica.reportEvent("Пользователь зашел в добавление отслеживания");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
@@ -352,6 +355,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                         }
                         Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb);
                         trackingRepository.AddNewTracking(newTracking);
+                        YandexMetrica.reportEvent("Пользователь добавил отслеживание");
                         Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTracking.GetTrackingID())
                                 .subscribeOn(Schedulers.computation())
@@ -390,6 +394,12 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из добавления отслеживания");
     }
 
     @Override

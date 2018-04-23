@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -88,6 +90,8 @@ public class EditTrackingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_tracking);
+
+        YandexMetrica.reportEvent("Пользователь зашел в изменение отслеживания");
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -415,6 +419,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                                         Log.d("Statistics", "calculate");
                                     }
                                 });
+                        YandexMetrica.reportEvent("Пользователь изменил отслеживание");
                         Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                         startActivity(intent);
@@ -441,6 +446,12 @@ public class EditTrackingActivity extends AppCompatActivity {
         super.onPostResume();
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из изменения отслеживания");
     }
 
     private int calculateState(TrackingCustomization customization,

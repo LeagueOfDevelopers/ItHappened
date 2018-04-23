@@ -26,6 +26,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,6 +100,8 @@ public class EventsFragment extends Fragment  {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
+
+        YandexMetrica.reportEvent("Пользователь зашел в историю событий");
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
@@ -271,6 +275,8 @@ public class EventsFragment extends Fragment  {
                 dateFrom.setText("До");
                 dateTo.setText("После");
 
+                YandexMetrica.reportEvent("Пользователь отменил фильтры");
+
                 hintsForRatingSpinner.setSelection(0);
                 hintsForScaleSpinner.setSelection(0);
 
@@ -326,6 +332,8 @@ public class EventsFragment extends Fragment  {
             @Override
             public void onClick(View view) {
 
+
+
                 Date dateF = null;
                 Date dateT = null;
                 Comparison scaleComparison = null;
@@ -363,6 +371,7 @@ public class EventsFragment extends Fragment  {
                         rating = new Rating((int) ratingFilter.getRating() * 2);
                     }
 
+                    YandexMetrica.reportEvent("Пользователь добавил фильтры");
                     List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateF, dateT, scaleComparison, scale, ratingComparison, rating);
                     eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
                     eventsRecycler.setAdapter(eventsAdpt);
@@ -395,8 +404,11 @@ public class EventsFragment extends Fragment  {
     }
 
 
-
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из истории");
+    }
 
     private void setUuidsCollection(List<UUID> uuids){
         for(int i =0; i<trackingService.GetTrackingCollection().size();i++){

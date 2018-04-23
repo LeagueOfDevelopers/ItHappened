@@ -16,6 +16,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -65,6 +67,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
+        YandexMetrica.reportEvent("Пользователь зашел в детали события");
 
         valuesCard = findViewById(R.id.valuesCard);
         nullsCard = findViewById(R.id.nullsCard);
@@ -190,6 +194,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                         Log.d("Statistics", "calculateOneTrackingFact");
                     }
                 });
+        YandexMetrica.reportEvent("Пользователь удалил событие");
         Toast.makeText(this, "Событие удалено", Toast.LENGTH_SHORT).show();
         this.finish();
 
@@ -205,6 +210,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     public void cancelClicked() {
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из деталей события");
     }
 
     @Override

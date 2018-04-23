@@ -20,6 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.io.InputStream;
 import java.net.URL;
 
@@ -52,6 +54,7 @@ public class ProfileSettingsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
+        YandexMetrica.reportEvent("Пользователь зашел в настройки профиля");
 
     }
 

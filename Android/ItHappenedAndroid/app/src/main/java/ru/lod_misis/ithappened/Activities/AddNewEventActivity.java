@@ -19,6 +19,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -79,6 +81,7 @@ public class AddNewEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
 
+        YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext(),sharedPreferences.getString("UserId", ""));
@@ -206,6 +209,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                                             Log.d("Statistics", "calculate");
                                         }
                                     });
+                            YandexMetrica.reportEvent("Пользователь добавил событие");
                             Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                             finish();
                         }catch (Exception e){
@@ -239,6 +243,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                                         Log.d("Statistics", "calculate");
                                     }
                                 });
+                        YandexMetrica.reportEvent("Пользователь добавил событие");
                         Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -251,6 +256,11 @@ public class AddNewEventActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из создания события");
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

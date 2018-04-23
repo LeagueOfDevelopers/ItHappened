@@ -20,6 +20,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -80,7 +82,7 @@ public class EditEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
 
-
+        YandexMetrica.reportEvent("Пользователь зашел в изменение события");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         StaticInMemoryRepository repository = new StaticInMemoryRepository(getApplicationContext(),sharedPreferences.getString("UserId", ""));
@@ -217,6 +219,7 @@ public class EditEventActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                            YandexMetrica.reportEvent("Пользователь изменил событие");
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -253,6 +256,7 @@ public class EditEventActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                        YandexMetrica.reportEvent("Пользователь изменил событие");
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -315,6 +319,12 @@ public class EditEventActivity extends AppCompatActivity {
                 break;
         }
         return 0;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из изменения события");
     }
 
     private void calculateUX(LinearLayout container, TextView access, int state){
