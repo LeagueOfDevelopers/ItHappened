@@ -20,6 +20,7 @@ namespace ItHappenedWebAPI.Controllers
     }
 
     private IJwtIssuer _jwtIssuer;
+    private UserList userList;
 
     [HttpPost]
     [Route("{idToken}")]
@@ -34,7 +35,7 @@ namespace ItHappenedWebAPI.Controllers
       return BadRequest("Registration failed");
     }
 
-    private UserList userList;
+    
   }
 
 
