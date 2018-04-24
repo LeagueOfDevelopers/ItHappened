@@ -108,16 +108,16 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             if(dataList.get(i).getTrackingName().length()>=5 && dataList.size()==5){
                                 frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5)+"...");
                             }else {
-                                if(dataList.size()==3 && dataList.get(i).getTrackingName().length()>=10){
+                                if(dataList.size()==3 && dataList.get(i).getTrackingName().length()>=5){
                                     frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
                                 }else {
-                                    if (dataList.size() == 4 && dataList.get(i).getTrackingName().length() >= 12) {
+                                    if (dataList.size() == 4 && dataList.get(i).getTrackingName().length() >= 5) {
                                         frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 10) + "...");
                                     } else {
-                                        if (dataList.size() == 1 && dataList.get(i).getTrackingName().length() >= 12)
+                                        if (dataList.size() == 1 && dataList.get(i).getTrackingName().length() >= 15)
                                             frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 10) + "...");
                                         else {
-                                            if(dataList.size() == 2 && dataList.get(i).getTrackingName().length() >= 15){
+                                            if(dataList.size() == 2 && dataList.get(i).getTrackingName().length() >= 10){
                                                 frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 12) + "...");
                                             }else {
                                                 frequentTrackings.add(dataList.get(i).getTrackingName());
