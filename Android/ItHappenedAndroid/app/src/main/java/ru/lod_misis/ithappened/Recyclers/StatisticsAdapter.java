@@ -163,6 +163,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             Intent intent = new Intent(context, EventDetailsActivity.class);
                             intent.putExtra("trackingId", event.GetTrackingId().toString());
                             intent.putExtra("eventId", event.GetEventId().toString());
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         }
                     });
