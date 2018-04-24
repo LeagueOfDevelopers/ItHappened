@@ -36,9 +36,6 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(response);
     }
 
-<<<<<<< HEAD
-    private UserList users;
-=======
     [HttpPost]
     [Authorize]
     [Route("refresh")]
@@ -52,7 +49,6 @@ namespace ItHappenedWebAPI.Controllers
 
       return Ok(response);
     }
->>>>>>> master
   }
 
 
