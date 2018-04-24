@@ -23,9 +23,9 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         //versionCode getMyVersionCode() as Integer
-        versionCode 16
+        versionCode 17
         manifestPlaceholders = [manVersionCode: versionCode]
-        versionName "0.1.4"
+        versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         lintOptions {

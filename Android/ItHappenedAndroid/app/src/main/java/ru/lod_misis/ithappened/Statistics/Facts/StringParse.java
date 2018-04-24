@@ -19,4 +19,10 @@ public class StringParse {
         if (times % 10 >= 2 && times % 10 <= 4) return "раза";
         return "раз";
     }
+
+    public static String event(int times) {
+        if (times % 100 <=20 && times % 100 >=10) return "событий";
+        if (times % 10 >= 2 && times % 10 <= 4) return "события";
+        return "событие";
+    }
 }

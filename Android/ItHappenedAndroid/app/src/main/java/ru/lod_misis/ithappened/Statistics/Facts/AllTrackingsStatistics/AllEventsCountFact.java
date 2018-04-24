@@ -5,6 +5,7 @@ import java.util.List;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 /**
  * Created by Ded on 09.03.2018.
@@ -48,6 +49,7 @@ public class AllEventsCountFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("У вас произошло уже <b>%s</b> событий!", eventCount);
+        return String.format("У вас произошло уже <b>%s</b> %s!",
+                eventCount, StringParse.event(eventCount));
     }
 }
