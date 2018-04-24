@@ -10,5 +10,7 @@ namespace ItHappenedDomain.Models
     public DateTimeOffset NicknameDateOfChange { get; set; }
     public string UserId { get; set; }
     public string PicUrl { get; set; }
+    public string Token { get; set; }
   }
 }
+

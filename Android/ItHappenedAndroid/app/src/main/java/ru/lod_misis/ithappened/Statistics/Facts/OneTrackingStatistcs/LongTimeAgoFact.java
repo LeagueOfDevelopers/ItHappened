@@ -60,7 +60,7 @@ public class LongTimeAgoFact extends Fact{
 
     @Override
     public String textDescription() {
-        NumberFormat format = new DecimalFormat("#.#");
+        NumberFormat format = new DecimalFormat("#.##");
 
         return String.format("Событие <b>%s</b> не происходило уже <b>%s</b> %s",
                 tracking.getTrackingName(), format.format(daysSinceLastEvent), StringParse.days(daysSinceLastEvent.intValue()));

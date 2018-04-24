@@ -23,4 +23,5 @@
     <ProjectReference Include="..\ItHappenedDomain\ItHappenedDomain.csproj" />
     <ProjectReference Include="..\Migrator\Migrator.csproj" />
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 </Project>

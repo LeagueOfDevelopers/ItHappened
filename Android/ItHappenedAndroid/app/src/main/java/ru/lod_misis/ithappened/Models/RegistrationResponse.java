@@ -24,6 +24,17 @@ public class RegistrationResponse{
     @Expose
     @SerializedName("nicknameDateOfChange")
     public Date NicknameDateOfChange;
+    @Expose
+    @SerializedName("token")
+    public String Token;
+
+    public String getToken() {
+        return Token;
+    }
+
+    public void setToken(String Token) {
+        this.Token = Token;
+    }
 
     public Date getNicknameDateOfChange() {
         return NicknameDateOfChange;

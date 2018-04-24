@@ -2,6 +2,7 @@ package ru.lod_misis.ithappened.Recyclers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public void refreshData(List<Event> events){
 
         this.events.clear();
-        this.events.addAll(events);
+        for(Event event : events){
+            if(!event.GetStatus()){
+                this.events.add(event);
+            }
+        }
         notifyDataSetChanged();
 
     }
@@ -61,9 +66,17 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         final Event event = events.get(position);
 
-        StaticInMemoryRepository repository = new StaticInMemoryRepository(context, context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
+        ITrackingRepository trackingRepository;
 
-        ITrackingRepository trackingRepository = repository.getInstance();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            trackingRepository = new StaticInMemoryRepository(context,
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            trackingRepository = new StaticInMemoryRepository(context,
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
 
 
         UUID trackingId = event.GetTrackingId();

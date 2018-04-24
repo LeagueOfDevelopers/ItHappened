@@ -2,6 +2,7 @@ package ru.lod_misis.ithappened.Recyclers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -37,6 +38,16 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
     private List<Fact> factCollection;
     private Context context;
+
+    public static final int[] PASTEL_COLORS = {
+            Color.rgb(64, 89, 128),
+            Color.rgb(149, 165, 124),
+            Color.rgb(217, 184, 162),
+            Color.rgb(191, 134, 134),
+            Color.rgb(179, 48, 80),
+            Color.rgb(245,124,0),
+            Color.rgb(84, 110, 122)
+    };
 
 
     public StatisticsAdapter(List<Fact> factCollection, Context context) {
@@ -100,10 +111,18 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 if(dataList.size()==3 && dataList.get(i).getTrackingName().length()>=10){
                                     frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
                                 }else {
-                                    if(dataList.size()==1 && dataList.get(i).getTrackingName().length()>=20)
-                                    frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
-                                    else {
-                                        frequentTrackings.add(dataList.get(i).getTrackingName());
+                                    if (dataList.size() == 4 && dataList.get(i).getTrackingName().length() >= 12) {
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 10) + "...");
+                                    } else {
+                                        if (dataList.size() == 1 && dataList.get(i).getTrackingName().length() >= 12)
+                                            frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 10) + "...");
+                                        else {
+                                            if(dataList.size() == 2 && dataList.get(i).getTrackingName().length() >= 15){
+                                                frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 12) + "...");
+                                            }else {
+                                                frequentTrackings.add(dataList.get(i).getTrackingName());
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -193,7 +212,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 entries.add(new Entry(percentage.get(i).floatValue(), i));
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
-                            pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
+                            pieDataSet.setColors(PASTEL_COLORS);
                             pieDataSet.setValueTextSize(10);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);
@@ -233,7 +252,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 entries.add(new Entry(percentage.get(i).floatValue(), i));
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
-                            pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
+                            pieDataSet.setColors(PASTEL_COLORS);
                             pieDataSet.setValueTextSize(15);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);

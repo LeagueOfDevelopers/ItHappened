@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -89,6 +91,8 @@ public class EditTrackingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_tracking);
 
+        YandexMetrica.reportEvent("Пользователь зашел в изменение отслеживания");
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -99,8 +103,13 @@ public class EditTrackingActivity extends AppCompatActivity {
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                sharedPreferences.getString("UserId", "")).getInstance();
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
 
         service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
 
@@ -415,6 +424,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                                         Log.d("Statistics", "calculate");
                                     }
                                 });
+                        YandexMetrica.reportEvent("Пользователь изменил отслеживание");
                         Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                         startActivity(intent);
@@ -441,6 +451,12 @@ public class EditTrackingActivity extends AppCompatActivity {
         super.onPostResume();
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.reportEvent("Пользователь вышел из изменения отслеживания");
     }
 
     private int calculateState(TrackingCustomization customization,

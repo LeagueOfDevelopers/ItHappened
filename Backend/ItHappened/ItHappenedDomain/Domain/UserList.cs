@@ -80,6 +80,15 @@ namespace ItHappenedDomain.Domain
       return toReturn;
     }
 
+    public bool UserIsExists(string userId)
+    {
+      var collection = db.GetCollection<OldUserModel>("Users");
+      var iUser = collection.FindSync(us => us.UserId == userId);
+      var result = iUser.FirstAsync();
+
+      if (result.IsFaulted) return false;
+      return true;
+    }
 
     private IMongoDatabase db;
 
