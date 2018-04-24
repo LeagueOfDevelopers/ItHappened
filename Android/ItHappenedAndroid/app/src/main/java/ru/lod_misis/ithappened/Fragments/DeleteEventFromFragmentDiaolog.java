@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,8 +46,17 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                         UUID trackingId = UUID.fromString(bundle.getString("trackingId"));
                         UUID eventId = UUID.fromString(bundle.getString("eventId"));
 
-                        ITrackingRepository collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                                getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId","")).getInstance();
+                        ITrackingRepository collection;
+
+                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS",Context.MODE_PRIVATE);
+
+                        if(sharedPreferences.getString("LastId","").isEmpty()) {
+                            collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                                    sharedPreferences.getString("UserId", "")).getInstance();
+                        }else{
+                            collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
+                                    sharedPreferences.getString("LastId", "")).getInstance();
+                        }
                         TrackingService trackingSercvice = new TrackingService("testUser", collection);
 
                         trackingSercvice.RemoveEvent(trackingId, eventId);

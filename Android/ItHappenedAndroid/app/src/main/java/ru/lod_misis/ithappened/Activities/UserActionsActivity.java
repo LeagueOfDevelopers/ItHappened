@@ -31,6 +31,7 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
+import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,8 +138,7 @@ public class UserActionsActivity extends AppCompatActivity
                             new Action1<Throwable>() {
                                 @Override
                                 public void call(Throwable throwable) {
-                                    Toast.makeText(getApplicationContext(), "Токен упал(", Toast.LENGTH_SHORT).show();
-                                    Log.e("Токен упал", throwable+"");
+                                    logout();
                                 }
                             });
         }
@@ -154,8 +154,13 @@ public class UserActionsActivity extends AppCompatActivity
         layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
 
         factRepository = StaticFactRepository.getInstance();
-        trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                sharedPreferences.getString("UserId", "")).getInstance();
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("UserId", "")).getInstance();
+        }else{
+            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
+                    sharedPreferences.getString("LastId", "")).getInstance();
+        }
 
         factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
@@ -313,6 +318,7 @@ public class UserActionsActivity extends AppCompatActivity
                                                            finish();
                                                            item.setActionView(null);
                                                            startActivity(getIntent());
+                                                           YandexMetrica.reportEvent("Пользователь синхронизировался");
                                                            Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
                                                        }
                                                    }, new Action1<Throwable>() {
@@ -389,6 +395,7 @@ public class UserActionsActivity extends AppCompatActivity
                         Log.d("Statistics", "calculateOneTrackingFact");
                     }
                 });
+        YandexMetrica.reportEvent("Пользователь удалил отслеживание");
         Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, UserActionsActivity.class);
         startActivity(intent);
@@ -475,7 +482,23 @@ public class UserActionsActivity extends AppCompatActivity
                     @Override
                     public void call(RegistrationResponse registrationResponse) {
                         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+                        ITrackingRepository collection;
+
+                        if(sharedPreferences.getString("LastId","").isEmpty()) {
+                            collection = new StaticInMemoryRepository(getApplicationContext(),
+                                    sharedPreferences.getString("Offline", "")).getInstance();
+                        }else{
+                            collection = new StaticInMemoryRepository(getApplicationContext(),
+                                    sharedPreferences.getString("LastId", "")).getInstance();
+                        }
+
+                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
+                                new Date(sharedPreferences.getLong("NickDate", 0)),
+                                collection.GetTrackingCollection());
+
                         SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.clear();
                         editor.putString("UserId", registrationResponse.getUserId());
                         editor.putString("Nick", registrationResponse.getUserNickname());
                         editor.putString("Url", registrationResponse.getPicUrl());
@@ -483,9 +506,7 @@ public class UserActionsActivity extends AppCompatActivity
                         editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
                         editor.commit();
 
-                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
-                                new Date(sharedPreferences.getLong("NickDate", 0)),
-                                new StaticInMemoryRepository(getApplicationContext(), "Offline").getInstance().GetTrackingCollection());
+
 
                         ItHappenedApplication.
                                 getApi().SynchronizeData("Bearer "+registrationResponse.getToken(), synchronizationRequest)
@@ -511,6 +532,7 @@ public class UserActionsActivity extends AppCompatActivity
                                         hideLoading();
                                         Log.e("RxSync", ""+throwable);
                                         Toast.makeText(getApplicationContext(), "Синхронизация не прошла!", Toast.LENGTH_SHORT).show();
+                                        YandexMetrica.reportEvent("Пользователь привязал аккаунт к google");
                                     }
                                 });
 
@@ -533,6 +555,7 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void logout(){
+        ProfileSettingsFragment.showProgressBar();
         final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         ItHappenedApplication.getApi().Refresh("Bearer "+sharedPreferences.getString("Token",""))
@@ -564,13 +587,26 @@ public class UserActionsActivity extends AppCompatActivity
                                         editor.commit();
                                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                                         startActivity(intent);
+                                        YandexMetrica.reportEvent("Пользователь вышел из профиля");
+                                        ProfileSettingsFragment.hideProgressBar();
                                         Toast.makeText(getApplicationContext(), "До скорой встречи!", Toast.LENGTH_SHORT).show();
                                     }
                                 }, new Action1<Throwable>() {
                                     @Override
                                     public void call(Throwable throwable) {
                                         Log.e("RxSync", ""+throwable);
-                                        Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
+                                        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        String lastId = sharedPreferences.getString("UserId", "");
+                                        editor.clear();
+                                        editor.putString("LastId", lastId);
+                                        editor.putBoolean("LOGOUT", true);
+                                        editor.commit();
+                                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                                        startActivity(intent);
+                                        Toast.makeText(getApplicationContext(), "До скорой встречи!", Toast.LENGTH_SHORT).show();
+                                        ProfileSettingsFragment.hideProgressBar();
+                                        YandexMetrica.reportEvent("Пользователь вышел из профиля");
                                     }
                                 });
                     }
@@ -578,7 +614,21 @@ public class UserActionsActivity extends AppCompatActivity
                         new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
+                                Log.e("RxSync", ""+throwable);
+                                SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                String lastId = sharedPreferences.getString("UserId", "");
+                                editor.clear();
+                                editor.putString("LastId", lastId);
+                                editor.putBoolean("LOGOUT", true);
+                                editor.commit();
+                                Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                                startActivity(intent);
+                                Toast.makeText(getApplicationContext(), "До скорой встречи!", Toast.LENGTH_SHORT).show();
+
+                                YandexMetrica.reportEvent("Пользователь вышел из профиля");
                                 Log.e("Токен упал", throwable+"");
+                                ProfileSettingsFragment.hideProgressBar();
                             }
                         });
 

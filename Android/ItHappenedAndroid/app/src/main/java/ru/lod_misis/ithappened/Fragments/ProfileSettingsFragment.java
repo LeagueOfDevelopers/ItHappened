@@ -20,6 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.io.InputStream;
 import java.net.URL;
 
@@ -36,8 +38,8 @@ public class ProfileSettingsFragment extends Fragment {
 
     CircleImageView urlUser;
 
-    ProgressBar syncPB;
-    FrameLayout layoutFrg;
+    static ProgressBar syncPB;
+    static FrameLayout layoutFrg;
 
     Button editNickName;
 
@@ -52,6 +54,7 @@ public class ProfileSettingsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
+        YandexMetrica.reportEvent("Пользователь зашел в настройки профиля");
 
     }
 
@@ -133,6 +136,16 @@ public class ProfileSettingsFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userMail.setText(sharedPreferences.getString("UserId", ""));
         userNickName.setText(sharedPreferences.getString("Nick", ""));
+    }
+
+    public static void showProgressBar(){
+        syncPB.setVisibility(View.VISIBLE);
+        layoutFrg.setVisibility(View.GONE);
+    }
+
+    public static void hideProgressBar(){
+        syncPB.setVisibility(View.GONE);
+        layoutFrg.setVisibility(View.VISIBLE);
     }
 
 
