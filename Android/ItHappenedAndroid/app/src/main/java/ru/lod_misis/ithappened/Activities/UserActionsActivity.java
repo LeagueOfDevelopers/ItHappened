@@ -75,6 +75,8 @@ public class UserActionsActivity extends AppCompatActivity
     private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE + " " + EMAIL_SCOPE;
     private static final String TAG = "SignIn";
 
+    private boolean isTokenFailed = false;
+
     InMemoryFactRepository factRepository;
     ITrackingRepository trackingRepository;
 
@@ -138,6 +140,7 @@ public class UserActionsActivity extends AppCompatActivity
                             new Action1<Throwable>() {
                                 @Override
                                 public void call(Throwable throwable) {
+                                    isTokenFailed = true;
                                     logout();
                                 }
                             });
@@ -555,6 +558,7 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void logout(){
+        if(!isTokenFailed)
         ProfileSettingsFragment.showProgressBar();
         final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
@@ -628,6 +632,7 @@ public class UserActionsActivity extends AppCompatActivity
 
                                 YandexMetrica.reportEvent("Пользователь вышел из профиля");
                                 Log.e("Токен упал", throwable+"");
+                                if(!isTokenFailed)
                                 ProfileSettingsFragment.hideProgressBar();
                             }
                         });
