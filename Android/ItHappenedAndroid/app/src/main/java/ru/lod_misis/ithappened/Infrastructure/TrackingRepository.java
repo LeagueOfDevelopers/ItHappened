@@ -145,6 +145,25 @@ public class TrackingRepository implements ITrackingRepository{
                 if (event.GetEventDate().compareTo(dateFrom) >= 0 && event.GetEventDate().compareTo(dateTo) <= 0)
                     filteredEvents.add(event);
             }
+        }else{
+            if(dateFrom!=null){
+                notFilteredEvents.clear();
+                notFilteredEvents.addAll(filteredEvents);
+                filteredEvents.clear();
+                for (Event event : notFilteredEvents) {
+                    if (event.GetEventDate().compareTo(dateFrom) >= 0)
+                        filteredEvents.add(event);
+                }
+            }
+            if(dateTo!=null){
+                notFilteredEvents.clear();
+                notFilteredEvents.addAll(filteredEvents);
+                filteredEvents.clear();
+                for (Event event : notFilteredEvents) {
+                    if (event.GetEventDate().compareTo(dateTo) <= 0)
+                        filteredEvents.add(event);
+                }
+            }
         }
 
         if (scaleComparison != null && scale != null) {

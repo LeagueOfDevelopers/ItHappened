@@ -116,7 +116,7 @@
                 android:backgroundTint="#ffffff"
                 android:elevation="3dp"
                 android:stateListAnimator="@null"
-                android:text="До" />
+                android:text="После" />
 
             <Button
                 android:id="@+id/dateToButton"
@@ -129,7 +129,7 @@
                 android:backgroundTint="#ffffff"
                 android:elevation="3dp"
                 android:stateListAnimator="@null"
-                android:text="После" />
+                android:text="До" />
 
         </LinearLayout>
 

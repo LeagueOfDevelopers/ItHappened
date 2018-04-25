@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +20,6 @@ import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
@@ -27,11 +27,18 @@ import ru.lod_misis.ithappened.StaticInMemoryRepository;
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
     private List<Event> events;
+    private List<Event> deletedEvent;
     private Context context;
     private int state = 0;
 
     public EventsAdapter(List<Event> events, Context context, int state) {
         this.events = events;
+        deletedEvent = new ArrayList<>();
+        for(Event event : deletedEvent){
+            if(event.GetStatus())
+                deletedEvent.add(event);
+        }
+        events.removeAll(deletedEvent);
         this.context = context;
         this.state = state;
     }
@@ -87,24 +94,24 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
         }
 
-        if(event.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null && trackingRepository.GetTracking(trackingId).GetScaleCustomization()!= TrackingCustomization.None){
+        if(event.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null ){
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
             if(type!=null) {
+                holder.scaleValue.setVisibility(View.VISIBLE);
                 if (type.length() >= 3) {
                     holder.scaleValue.setText(event.GetScale().toString()+" "+type.substring(0, 2) + ".");
                 } else {
                     holder.scaleValue.setText(event.GetScale().toString()+" "+type);
                 }
             }
-        }else{
-            holder.scaleValue.setVisibility(View.GONE);
         }
 
-        if(event.GetRating()!=null){
+        if(event.GetRating()!=null ){
             holder.ratingValue.setText(event.GetRating().getRating()/2.0f+"");
+            holder.starIcon.setVisibility(View.VISIBLE);
+            holder.ratingValue.setVisibility(View.VISIBLE);
         }else{
-            holder.starIcon.setVisibility(View.GONE);
-            holder.ratingValue.setVisibility(View.GONE);
+            if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
             holder.scaleValue.setPadding(holder.trackingTitle.getPaddingLeft(),holder.eventDate.getTotalPaddingTop(),7,7);
         }
 
@@ -115,6 +122,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 intent.putExtra("trackingId", event.GetTrackingId().toString());
                 String eventId = event.GetEventId().toString();
                 intent.putExtra("eventId", event.GetEventId().toString());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

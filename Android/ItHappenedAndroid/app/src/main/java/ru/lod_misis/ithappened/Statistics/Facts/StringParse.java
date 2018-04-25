@@ -23,6 +23,7 @@ public class StringParse {
     public static String event(int times) {
         if (times % 100 <=20 && times % 100 >=10) return "событий";
         if (times % 10 >= 2 && times % 10 <= 4) return "события";
-        return "событие";
+        if (times % 100 <=20 && times % 100 >=10 || times % 10 >= 5 && times % 10 <= 9 || times % 10 == 0) return "событий";
+        return "событий";
     }
 }

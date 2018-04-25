@@ -105,27 +105,38 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         List<String> frequentTrackings = new ArrayList<>();
                         for(int i=0;i<dataList.size();i++){
                             frequentData.add(dataList.get(i).getPeriod());
-                            if(dataList.get(i).getTrackingName().length()>=5 && dataList.size()==5){
-                                frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5)+"...");
-                            }else {
-                                if(dataList.size()==3 && dataList.get(i).getTrackingName().length()>=10){
-                                    frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
-                                }else {
-                                    if (dataList.size() == 4 && dataList.get(i).getTrackingName().length() >= 12) {
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 10) + "...");
-                                    } else {
-                                        if (dataList.size() == 1 && dataList.get(i).getTrackingName().length() >= 12)
-                                            frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 10) + "...");
-                                        else {
-                                            if(dataList.size() == 2 && dataList.get(i).getTrackingName().length() >= 15){
-                                                frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 12) + "...");
-                                            }else {
-                                                frequentTrackings.add(dataList.get(i).getTrackingName());
-                                            }
-                                        }
+
+                            switch (dataList.size()){
+                                case 1:
+                                    if(dataList.get(i).getTrackingName().length()>=10){
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10));
+                                    }else{
+                                        frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
-                                }
+                                    break;
+                                case 2:
+                                    if(dataList.get(i).getTrackingName().length()>=7){
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,7));
+                                    }else{
+                                        frequentTrackings.add(dataList.get(i).getTrackingName());
+                                    }
+                                    break;
+                                case 3:
+                                    if(dataList.get(i).getTrackingName().length()>=5){
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5));
+                                    }else{
+                                        frequentTrackings.add(dataList.get(i).getTrackingName());
+                                    }
+                                    break;
+                                case 4:
+                                    if(dataList.get(i).getTrackingName().length()>=3){
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,3));
+                                    }else{
+                                        frequentTrackings.add(dataList.get(i).getTrackingName());
+                                    }
+                                    break;
                             }
+
                         }
                         barChart.setVisibility(View.VISIBLE);
                         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -163,7 +174,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             Intent intent = new Intent(context, EventDetailsActivity.class);
                             intent.putExtra("trackingId", event.GetTrackingId().toString());
                             intent.putExtra("eventId", event.GetEventId().toString());
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         }
                     });

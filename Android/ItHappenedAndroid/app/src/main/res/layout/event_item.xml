@@ -74,6 +74,7 @@
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:textSize="15sp"
+                    android:visibility="gone"
                     android:textColor="@color/colorPrimaryDark"
                     android:text="2" />
 
@@ -86,6 +87,7 @@
                     android:layout_toRightOf="@+id/ratingValue"
                     android:paddingTop="7dp"
                     android:paddingBottom="5dp"
+                    android:visibility="gone"
                     android:src="@mipmap/star" />
 
                 <TextView
@@ -98,6 +100,7 @@
                     android:layout_below="@+id/TrackingTitle"
                     android:layout_marginLeft="10dp"
                     android:paddingLeft="40dp"
+                    android:visibility="gone"
                     android:paddingBottom="5dp"
                     android:paddingRight="80dp"
                     android:layout_marginRight="40dp"

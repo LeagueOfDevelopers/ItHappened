@@ -278,8 +278,10 @@ public class EventsFragment extends Fragment  {
                                 null), getActivity(), 1);
                 ratingFilter.setRating(0);
                 scaleFilter.setText("");
-                dateFrom.setText("До");
-                dateTo.setText("После");
+                dateFrom.setText("После");
+                dateFrom.setTextSize(15);
+                dateTo.setText("До");
+                dateTo.setTextSize(15);
 
                 YandexMetrica.reportEvent("Пользователь отменил фильтры");
 
@@ -374,7 +376,8 @@ public class EventsFragment extends Fragment  {
                     if (ratingFilter.getRating() != 0) {
                         int positionForRating = hintsForRatingSpinner.getSelectedItemPosition();
                         ratingComparison = comparisons[positionForRating];
-                        rating = new Rating((int) ratingFilter.getRating() * 2);
+                        double ratingVal = ratingFilter.getRating()*2;
+                        rating = new Rating((int)ratingVal );
                     }
 
                     YandexMetrica.reportEvent("Пользователь добавил фильтры");
@@ -400,13 +403,21 @@ public class EventsFragment extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
+
         List<Event> adapterEvents = eventsAdpt.getEvents();
-        List<Event> refreshedEvents = new ArrayList<>();
-        for(int i=0;i<adapterEvents.size();i++){
-            Tracking tracking = collection.GetTracking(adapterEvents.get(i).GetTrackingId());
-            refreshedEvents.add(tracking.GetEvent(adapterEvents.get(i).GetEventId()));
+        ArrayList<Event> refreshedEvents = new ArrayList<>();
+        for(Event event : adapterEvents){
+            collection.GetTracking(event.GetTrackingId());
+            Event addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
+            if(!addAbleEvent.GetStatus())
+            refreshedEvents.add(addAbleEvent);
         }
-        eventsAdpt.refreshData(refreshedEvents);
+
+        if(refreshedEvents.size()==0){
+            hintForEventsHistory.setVisibility(View.VISIBLE);
+        }
+
+        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
     }
 
 
@@ -423,8 +434,6 @@ public class EventsFragment extends Fragment  {
             }
         }
     }
-
-
     }
 
 
