@@ -112,7 +112,7 @@ public class ProfileSettingsFragment extends Fragment {
         policy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openWebURL("http://85.143.104.47:1080/privacy/policy");
+                openWebURL("https://api.ithappened.ru/privacy/policy");
             }
         });
     }

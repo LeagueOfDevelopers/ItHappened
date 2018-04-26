@@ -15,7 +15,7 @@ public class StringParse {
     }
 
     public static String time(int times){
-        if (times % 10 == 1 && times % 100 <=20 && times % 100 >=10) return "раз";
+        if (times % 10 == 1 || times % 100 <=20 && times % 100 >=10) return "раз";
         if (times % 10 >= 2 && times % 10 <= 4) return "раза";
         return "раз";
     }
