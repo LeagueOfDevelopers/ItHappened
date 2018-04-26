@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +62,12 @@ public class WorstEvent extends Fact {
     public String textDescription() {
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
         String toReturn = String.format("Худшее событие <b>%s</b> произошло <b>%s</b>, " +
                 "вы поставили ему <b>%s</b>", tracking.getTrackingName(),
-                format.format(worstEvent.GetEventDate()), worstEvent.GetRating().getRating()/2.0);
+                format.format(worstEvent.GetEventDate()),
+                decimalFormat.format(worstEvent.GetRating().getRating()/2.0));
 
         if (worstEvent.GetComment() == null) return toReturn;
 

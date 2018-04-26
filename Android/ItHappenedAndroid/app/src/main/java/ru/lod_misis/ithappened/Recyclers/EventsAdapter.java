@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,7 +110,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
 
         if(event.GetRating()!=null ){
-            holder.ratingValue.setText(event.GetRating().getRating()/2.0f+"");
+            DecimalFormat format = new DecimalFormat("#.#");
+            holder.ratingValue.setText(format.format(event.GetRating().getRating()/2.0f)+"");
             holder.starIcon.setVisibility(View.VISIBLE);
             holder.ratingValue.setVisibility(View.VISIBLE);
         }else{

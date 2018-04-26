@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 /**
  * Created by Ded on 09.03.2018.
@@ -104,8 +106,10 @@ public class MostFrequentEventFact extends Fact{
 
     @Override
     public String textDescription() {
-        return String.format("Чаще всего у вас происходит событие <b>%s</b> - раз в <b>%.2f</b> дней",
-                minModel.getTrackingName(), minModel.getPeriod());
+        DecimalFormat format = new DecimalFormat("#.##");
+        return String.format("Чаще всего у вас происходит событие <b>%s</b> - раз в <b>%s</b> %s",
+                minModel.getTrackingName(), format.format(minModel.getPeriod()),
+                StringParse.days((new Double(format.format(minModel.getPeriod()))).intValue()));
     }
 
 }

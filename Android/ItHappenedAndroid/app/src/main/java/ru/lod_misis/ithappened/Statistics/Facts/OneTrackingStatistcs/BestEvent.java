@@ -2,8 +2,11 @@ package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -39,9 +42,13 @@ public class BestEvent extends Fact {
 
         bestEvent = eventCollection.get(0);
 
+        Date curDateTime = Calendar.getInstance(TimeZone.getDefault()).getTime();
+
         for(Event event : eventCollection)
         {
+            Date bestTime = event.GetEventDate();
             if (bestEvent.GetRating().getRating() <= event.GetRating().getRating()
+                    && 7.0 < ((double)(curDateTime.getTime() - bestTime.getTime())/1000/60/60/24)
                     && bestEvent.GetEventDate().after(event.GetEventDate()))
                 bestEvent = event;
         }
