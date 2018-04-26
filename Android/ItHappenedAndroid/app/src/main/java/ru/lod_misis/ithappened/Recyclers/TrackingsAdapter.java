@@ -60,6 +60,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                 Intent intent = new Intent(context, AddNewEventActivity.class);
                 String trackId = tracking.GetTrackingID().toString();
                 intent.putExtra("trackingId", trackId);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
 
             }

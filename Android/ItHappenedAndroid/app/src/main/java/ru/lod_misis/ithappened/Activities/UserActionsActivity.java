@@ -75,6 +75,8 @@ public class UserActionsActivity extends AppCompatActivity
     private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE + " " + EMAIL_SCOPE;
     private static final String TAG = "SignIn";
 
+    private boolean isTokenFailed = false;
+
     InMemoryFactRepository factRepository;
     ITrackingRepository trackingRepository;
 
@@ -138,6 +140,7 @@ public class UserActionsActivity extends AppCompatActivity
                             new Action1<Throwable>() {
                                 @Override
                                 public void call(Throwable throwable) {
+                                    isTokenFailed = true;
                                     logout();
                                 }
                             });
@@ -493,10 +496,7 @@ public class UserActionsActivity extends AppCompatActivity
                                     sharedPreferences.getString("LastId", "")).getInstance();
                         }
 
-                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
-                                new Date(sharedPreferences.getLong("NickDate", 0)),
-                                collection.GetTrackingCollection());
-
+                        String lastId = sharedPreferences.getString("LastId", "");
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.clear();
                         editor.putString("UserId", registrationResponse.getUserId());
@@ -506,7 +506,14 @@ public class UserActionsActivity extends AppCompatActivity
                         editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
                         editor.commit();
 
+                        if(!lastId.equals(sharedPreferences.getString("UserId", ""))){
+                            collection = collection = new StaticInMemoryRepository(getApplicationContext(),
+                                    sharedPreferences.getString("UserId", "")).getInstance();
+                        }
 
+                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
+                                new Date(sharedPreferences.getLong("NickDate", 0)),
+                                collection.GetTrackingCollection());
 
                         ItHappenedApplication.
                                 getApi().SynchronizeData("Bearer "+registrationResponse.getToken(), synchronizationRequest)
@@ -555,6 +562,7 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void logout(){
+        if(!isTokenFailed)
         ProfileSettingsFragment.showProgressBar();
         final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
@@ -628,6 +636,7 @@ public class UserActionsActivity extends AppCompatActivity
 
                                 YandexMetrica.reportEvent("Пользователь вышел из профиля");
                                 Log.e("Токен упал", throwable+"");
+                                if(!isTokenFailed)
                                 ProfileSettingsFragment.hideProgressBar();
                             }
                         });

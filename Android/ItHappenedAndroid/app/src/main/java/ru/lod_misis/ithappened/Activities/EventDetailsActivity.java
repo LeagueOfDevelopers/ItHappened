@@ -142,10 +142,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             dateValueNulls.setText(format.format(thisDate));
 
-        }else{
-
-            valuesCard.setVisibility(View.VISIBLE);
-            nullsCard.setVisibility(View.GONE);
+        }
 
             Date thisDate = thisEvent.GetEventDate();
 
@@ -155,12 +152,18 @@ public class EventDetailsActivity extends AppCompatActivity {
             dateValue.setText(format.format(thisDate));
 
             if(thisEvent.GetRating()!=null) {
+                ratingValue.setVisibility(View.VISIBLE);
+                nullsCard.setVisibility(View.GONE);
+                valuesCard.setVisibility(View.VISIBLE);
                 ratingValue.setRating(thisEvent.GetRating().getRating()/2.0f);
             }else {
                 ratingValue.setVisibility(View.GONE);
             }
 
             if(thisEvent.GetComment()!=null) {
+                nullsCard.setVisibility(View.GONE);
+                valuesCard.setVisibility(View.VISIBLE);
+                commentValue.setVisibility(View.VISIBLE);
                 commentValue.setText(thisEvent.GetComment());
             }else {
                 commentValue.setVisibility(View.GONE);
@@ -168,12 +171,14 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
 
             if(thisEvent.GetScale()!=null) {
+                nullsCard.setVisibility(View.GONE);
+                valuesCard.setVisibility(View.VISIBLE);
+                scaleValue.setVisibility(View.VISIBLE);
                 scaleValue.setText(thisEvent.GetScale().toString()+" "+thisTracking.getScaleName());
             }else {
                 scaleValue.setVisibility(View.GONE);
                 scaleHint.setVisibility(View.GONE);
             }
-        }
         TrackingCustomization commentCustomization = thisTracking.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTracking.GetScaleCustomization();
         TrackingCustomization ratingCustomization = thisTracking.GetRatingCustomization();
@@ -213,6 +218,15 @@ public class EventDetailsActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle(collection.GetTracking(trackingId).GetTrackingName());
+        Event thisEvent = collection.GetTracking(trackingId).GetEvent(eventId);
+        if(thisEvent.GetRating()!=null) {
+            ratingValue.setVisibility(View.VISIBLE);
+            nullsCard.setVisibility(View.GONE);
+            valuesCard.setVisibility(View.VISIBLE);
+            ratingValue.setRating(thisEvent.GetRating().getRating()/2.0f);
+        }else {
+            ratingValue.setVisibility(View.GONE);
+        }
     }
 
     public void cancelClicked() {
