@@ -64,7 +64,7 @@ public class LongTimeAgoFact extends Fact{
 
         return String.format("Событие <b>%s</b> не происходило уже <b>%s</b> %s",
                 tracking.getTrackingName(), format.format(daysSinceLastEvent),
-                StringParse.days((new Double(format.format(daysSinceLastEvent))).intValue()));
+                StringParse.days(daysSinceLastEvent.intValue()));
     }
 
     public Double getDaysSinceLastEvent() {

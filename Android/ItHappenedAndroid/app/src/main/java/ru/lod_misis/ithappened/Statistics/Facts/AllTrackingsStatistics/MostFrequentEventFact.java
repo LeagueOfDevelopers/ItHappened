@@ -109,7 +109,7 @@ public class MostFrequentEventFact extends Fact{
         DecimalFormat format = new DecimalFormat("#.##");
         return String.format("Чаще всего у вас происходит событие <b>%s</b> - раз в <b>%s</b> %s",
                 minModel.getTrackingName(), format.format(minModel.getPeriod()),
-                StringParse.days((new Double(format.format(minModel.getPeriod()))).intValue()));
+                StringParse.days(minModel.getPeriod().intValue()));
     }
 
 }
