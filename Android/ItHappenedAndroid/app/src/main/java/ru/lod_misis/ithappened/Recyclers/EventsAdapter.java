@@ -104,6 +104,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     holder.scaleValue.setText(event.GetScale().toString()+" "+type);
                 }
             }
+        }else{
+            holder.scaleValue.setVisibility(View.GONE);
         }
 
         if(event.GetRating()!=null ){
@@ -113,6 +115,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }else{
             if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
             holder.scaleValue.setPadding(holder.trackingTitle.getPaddingLeft(),holder.eventDate.getTotalPaddingTop(),7,7);
+            holder.ratingValue.setVisibility(View.GONE);
+            holder.starIcon.setVisibility(View.GONE);
         }
 
         holder.itemLL.setOnClickListener(new View.OnClickListener() {

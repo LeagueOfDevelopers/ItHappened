@@ -218,6 +218,15 @@ public class EventDetailsActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle(collection.GetTracking(trackingId).GetTrackingName());
+        Event thisEvent = collection.GetTracking(trackingId).GetEvent(eventId);
+        if(thisEvent.GetRating()!=null) {
+            ratingValue.setVisibility(View.VISIBLE);
+            nullsCard.setVisibility(View.GONE);
+            valuesCard.setVisibility(View.VISIBLE);
+            ratingValue.setRating(thisEvent.GetRating().getRating()/2.0f);
+        }else {
+            ratingValue.setVisibility(View.GONE);
+        }
     }
 
     public void cancelClicked() {

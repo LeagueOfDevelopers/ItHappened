@@ -496,10 +496,7 @@ public class UserActionsActivity extends AppCompatActivity
                                     sharedPreferences.getString("LastId", "")).getInstance();
                         }
 
-                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
-                                new Date(sharedPreferences.getLong("NickDate", 0)),
-                                collection.GetTrackingCollection());
-
+                        String lastId = sharedPreferences.getString("LastId", "");
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.clear();
                         editor.putString("UserId", registrationResponse.getUserId());
@@ -509,7 +506,14 @@ public class UserActionsActivity extends AppCompatActivity
                         editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
                         editor.commit();
 
+                        if(!lastId.equals(sharedPreferences.getString("UserId", ""))){
+                            collection = collection = new StaticInMemoryRepository(getApplicationContext(),
+                                    sharedPreferences.getString("UserId", "")).getInstance();
+                        }
 
+                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
+                                new Date(sharedPreferences.getLong("NickDate", 0)),
+                                collection.GetTrackingCollection());
 
                         ItHappenedApplication.
                                 getApi().SynchronizeData("Bearer "+registrationResponse.getToken(), synchronizationRequest)

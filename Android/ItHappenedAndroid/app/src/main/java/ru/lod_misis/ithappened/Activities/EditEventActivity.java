@@ -2,7 +2,6 @@ package ru.lod_misis.ithappened.Activities;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -244,10 +243,7 @@ public class EditEventActivity extends AppCompatActivity {
                                         }
                                     });
                             Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), EventDetailsActivity.class);
-                            intent.putExtra("trackingId", trackingId.toString());
-                            intent.putExtra("eventId", eventId.toString());
-                            startActivity(intent);
+                            finishActivity();
                         }catch (Exception e){
                             Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
                         }
@@ -281,10 +277,7 @@ public class EditEventActivity extends AppCompatActivity {
                                     }
                                 });
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), EventDetailsActivity.class);
-                        intent.putExtra("trackingId", trackingId.toString());
-                        intent.putExtra("eventId", eventId.toString());
-                        startActivity(intent);
+                        finishActivity();
                     }
                 }else{
                     Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
@@ -330,6 +323,10 @@ public class EditEventActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent("Пользователь вышел из изменения события");
+    }
+
+    private void finishActivity(){
+        this.finish();
     }
 
     private void calculateUX(LinearLayout container, TextView access, int state){

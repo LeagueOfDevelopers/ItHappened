@@ -109,28 +109,28 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             switch (dataList.size()){
                                 case 1:
                                     if(dataList.get(i).getTrackingName().length()>=10){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10));
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
                                     }else{
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
                                     break;
                                 case 2:
                                     if(dataList.get(i).getTrackingName().length()>=7){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,7));
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,7)+"...");
                                     }else{
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
                                     break;
                                 case 3:
                                     if(dataList.get(i).getTrackingName().length()>=5){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5));
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5)+"...");
                                     }else{
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
                                     break;
                                 case 4:
-                                    if(dataList.get(i).getTrackingName().length()>=3){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,3));
+                                    if(dataList.get(i).getTrackingName().length()>=5){
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5)+"...");
                                     }else{
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
@@ -159,6 +159,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         barChart.setData(data);
                         barChart.setPinchZoom(false);
                         barChart.setDoubleTapToZoomEnabled(false);
+                        barChart.setScaleEnabled(false);
                         barChart.setDescription("");
 
                     }
