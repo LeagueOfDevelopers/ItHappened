@@ -93,6 +93,7 @@ namespace ItHappenedWebAPI
       app.UseMvc();
     }
 
+
     private void StartLoggly()
     {
       var config = LogglyConfig.Instance;
@@ -113,6 +114,7 @@ namespace ItHappenedWebAPI
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .Enrich.FromLogContext()
         .WriteTo.Loggly()
+        .WriteTo.RollingFile("log-{Date}.log")
         .CreateLogger();
       Log.Information("Loggly started");
     }
