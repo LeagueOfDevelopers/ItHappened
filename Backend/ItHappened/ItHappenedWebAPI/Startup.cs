@@ -113,6 +113,7 @@ namespace ItHappenedWebAPI
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .Enrich.FromLogContext()
         .WriteTo.Loggly()
+        .WriteTo.RollingFile("log-{Date}.log")
         .CreateLogger();
       Log.Information("Loggly started");
     }
