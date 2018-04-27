@@ -28,7 +28,7 @@ public class Tracking extends RealmObject {
         SetRatingCustomization(rating);
         SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
-        trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        trackingDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         dateOfChange = trackingDate;
         eventCollection = new RealmList<>();
         this.scaleName = scaleName;
@@ -68,7 +68,7 @@ public class Tracking extends RealmObject {
         CustomizationCheck(newEvent.getRating(), GetRatingCustomization());
         CustomizationCheck(newEvent.getComment(), GetCommentCustomization());
         eventCollection.add(newEvent);
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
 
     public void RemoveEvent (UUID eventID)
@@ -85,7 +85,7 @@ public class Tracking extends RealmObject {
         Event event = eventCollection.get(deletionEvent);
         event.RemoveEvent();
         eventCollection.set(deletionEvent, event);
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
 
     public void EditEvent(UUID eventId,
@@ -137,7 +137,7 @@ public class Tracking extends RealmObject {
             SetCommentCustomization(editedComment);
         if (editedTrackingName != null)
             trackingName = editedTrackingName;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
 
     private boolean ChangesCheck(Object value, TrackingCustomization customization)
@@ -244,7 +244,7 @@ public class Tracking extends RealmObject {
     public void DeleteTracking()
     {
         isDeleted = true;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         for (Event event: eventCollection) {
             event.RemoveEvent();
         }

@@ -15,7 +15,7 @@ public class Event extends RealmObject
     public Event(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment)
     {
         this.eventId = eventId.toString();
-        this.dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        this.dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
@@ -30,7 +30,7 @@ public class Event extends RealmObject
                  boolean status, Date changeDate)
     {
         this.eventId = eventId.toString();
-        eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        eventDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
@@ -41,26 +41,26 @@ public class Event extends RealmObject
 
     public void EditDate(Date newDate) {
         eventDate = newDate;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
 
     public void EditScale(Double scale) {
         this.scale = scale;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
     public void EditValueOfRating(Rating rating){
         this.rating = rating;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange =Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
     public void EditComment(String comment) {
         this.comment = comment;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
 
     public void RemoveEvent()
     {
         isDeleted = true;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
     }
 
 

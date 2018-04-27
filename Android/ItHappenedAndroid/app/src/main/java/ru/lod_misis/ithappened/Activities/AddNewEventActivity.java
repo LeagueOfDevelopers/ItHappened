@@ -137,10 +137,11 @@ public class AddNewEventActivity extends AppCompatActivity {
                 scaleType.setText(tracking.getScaleName());
         }
 
-        Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        Date thisDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         dateControl.setText(format.format(thisDate).toString());
 

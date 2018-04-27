@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -217,6 +218,7 @@ public class EditEventActivity extends AppCompatActivity {
                             Date eventDate = null;
                             Locale locale = new Locale("ru");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                             try {
                                 eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                             } catch (ParseException e) {
@@ -251,6 +253,7 @@ public class EditEventActivity extends AppCompatActivity {
                         Date eventDate = null;
                         Locale locale = new Locale("ru");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                         try {
                             eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                         } catch (ParseException e) {

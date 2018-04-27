@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
@@ -160,6 +161,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
         holder.eventDate.setText(format.format(eventDate));
 
     }
