@@ -288,7 +288,7 @@ public class UserActionsActivity extends AppCompatActivity
 
                 final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-                ItHappenedApplication.getApi()
+                /*ItHappenedApplication.getApi()
                         .Refresh("Bearer "+sharedPreferences.getString("Token",""))
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -297,7 +297,7 @@ public class UserActionsActivity extends AppCompatActivity
                                        public void call(String token) {
                                            SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
                                            editor.putString("Token", token);
-                                           editor.commit();
+                                           editor.commit();*/
 
 
                                            final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
@@ -334,7 +334,7 @@ public class UserActionsActivity extends AppCompatActivity
                                                            Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
                                                        }
                                                    });
-                                       }
+                                  /*     }
                                    },
                                 new Action1<Throwable>() {
                                     @Override
@@ -342,7 +342,7 @@ public class UserActionsActivity extends AppCompatActivity
                                         Toast.makeText(getApplicationContext(), "Токен упал(", Toast.LENGTH_SHORT).show();
                                         Log.e("Токен упал", throwable+"");
                                     }
-                                });
+                                });*/
 
 
                 item.getActionView().clearAnimation();

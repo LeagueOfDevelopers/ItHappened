@@ -29,7 +29,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
-        c.setTimeZone(TimeZone.getTimeZone("UTC"));
+        c.setTimeZone(TimeZone.getDefault());
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
@@ -53,7 +53,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public void onTimeSet(TimePicker timePicker, int hour, int min) {
 
         Calendar time = Calendar.getInstance();
-        time.setTimeZone(TimeZone.getTimeZone("UTC"));
+        time.setTimeZone(TimeZone.getDefault());
         Date timeDate;
         time.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
         time.set(Calendar.MONTH, c.get(Calendar.MONTH));
@@ -66,7 +66,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            format.setTimeZone(TimeZone.getDefault());
 
             dateTimeText.setText(format.format(time.getTime()));
 

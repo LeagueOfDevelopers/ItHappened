@@ -59,7 +59,7 @@ android {
 
     buildTypes {
         release{
-            buildConfigField "String", "SERVER_URL", '"https://api.ithappened.ru/"'
+            buildConfigField "String", "SERVER_URL", '"http://api.ithappened.ru/"'
             signingConfig signingConfigs.release
             resValue "integer", "app_version", "${defaultConfig.versionCode}"
 

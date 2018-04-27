@@ -145,6 +145,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         if((tracking.GetScaleCustomization()==TrackingCustomization.Optional
                 || tracking.GetScaleCustomization()==TrackingCustomization.Required) && event.GetScale()!=null){
@@ -218,7 +219,7 @@ public class EditEventActivity extends AppCompatActivity {
                             Date eventDate = null;
                             Locale locale = new Locale("ru");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
                             try {
                                 eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                             } catch (ParseException e) {
@@ -253,7 +254,7 @@ public class EditEventActivity extends AppCompatActivity {
                         Date eventDate = null;
                         Locale locale = new Locale("ru");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
                         try {
                             eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                         } catch (ParseException e) {

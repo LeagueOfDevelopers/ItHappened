@@ -16,10 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ru.lod_misis.ithappened.R;
-
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import ru.lod_misis.ithappened.R;
 
 /**
  * Created by Пользователь on 16.02.2018.
@@ -44,7 +44,7 @@ public class EditNicknameDialogFragment extends DialogFragment {
                             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("Nick", nicname.getText().toString());
-                            editor.putLong("NickDate", Calendar.getInstance(TimeZone.getDefault()).getTime().getTime());
+                            editor.putLong("NickDate", Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime().getTime());
                             editor.commit();
 
                             NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
