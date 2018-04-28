@@ -56,6 +56,9 @@ public class AddNewEventActivity extends AppCompatActivity {
     int ratingState;
     UUID trackingId;
 
+    int year = 0;
+    int month = 0;
+    int dayOfMonth = 0;
 
     LinearLayout commentContainer;
     LinearLayout scaleContainer;
@@ -137,7 +140,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                 scaleType.setText(tracking.getScaleName());
         }
 
-        Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        final Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
@@ -152,8 +155,10 @@ public class AddNewEventActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateControl);
                 picker.show(fragmentManager, "from");
+
             }
         });
+
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override

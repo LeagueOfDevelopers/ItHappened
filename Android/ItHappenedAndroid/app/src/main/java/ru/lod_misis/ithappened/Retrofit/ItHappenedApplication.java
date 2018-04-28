@@ -60,7 +60,9 @@ public class ItHappenedApplication extends Application {
 
         client.addInterceptor(loggingInterceptor);
 
-        Gson gson = new GsonBuilder().setLenient().create();
+        Gson gson = new GsonBuilder().setLenient()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.SERVER_URL)
