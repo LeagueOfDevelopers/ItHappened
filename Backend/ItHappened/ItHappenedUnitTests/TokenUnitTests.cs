@@ -17,7 +17,7 @@ namespace ItHappenedUnitTests
       var securitySettings = new SecuritySettings("asdasfsagfhjkgflsdakjfb.jgglg",
         "lod-misis.ru", TimeSpan.Parse("06:00:00"));
       var jwtIssuer = new JwtIssuer(securitySettings, null);
-      var userId = "vmargelov@gmail.com";
+      var userId = "test";
 
       var token = jwtIssuer.IssueAccessJwt(userId);
       
@@ -33,7 +33,7 @@ namespace ItHappenedUnitTests
       var securitySettings = new SecuritySettings("asdfaffhhdhgjs[]dasc.afg",
         "lod-misis.ru", TimeSpan.Parse("720:00:00"));
       var jwtIssuer = new JwtIssuer(null, securitySettings);
-      var userId = "vmargelov@gmail.com";
+      var userId = "test";
       var type = TokenType.Refresh;
 
       var token = jwtIssuer.IssueRefreshJwt(userId);
