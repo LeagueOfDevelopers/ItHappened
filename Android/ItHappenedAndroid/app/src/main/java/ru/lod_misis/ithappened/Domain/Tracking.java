@@ -3,19 +3,11 @@ package ru.lod_misis.ithappened.Domain;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.joda.time.DateTimeZone;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -36,22 +28,7 @@ public class Tracking extends RealmObject {
         SetRatingCustomization(rating);
         SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
-
-        Locale loc = new Locale("ru");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        Date date = Calendar.getInstance(TimeZone.getDefault()).getTime();
-
-        String str = formatter.format(date);
-
-        try {
-            trackingDate = formatter.parse(formatter.format(date));
-            trackingDate = new Date();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         dateOfChange = trackingDate;
         eventCollection = new RealmList<>();
         this.scaleName = scaleName;
