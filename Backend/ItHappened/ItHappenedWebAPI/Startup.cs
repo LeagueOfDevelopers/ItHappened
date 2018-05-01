@@ -39,14 +39,20 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
-      var securityConfiguration = Configuration.GetSection("Security");
+      var accessSecurityConfiguration = Configuration.GetSection("Security");
 
-      var securitySettings = new SecuritySettings(securityConfiguration["EncryptionKey"],
-        securityConfiguration["Issue"],
-        securityConfiguration.GetValue<TimeSpan>("ExpirationPeriod"));
-      var jwtIssuer = new JwtIssuer(securitySettings);
+      var accessSecuritySettings = new SecuritySettings(accessSecurityConfiguration["EncryptionKey"],
+        accessSecurityConfiguration["Issue"],
+        accessSecurityConfiguration.GetValue<TimeSpan>("ExpirationPeriod"));
 
-      services.AddSingleton(securitySettings);
+      var refreshSecurityConfiguration = Configuration.GetSection("RefreshToken");
+      var refreshSecuritySettings = new SecuritySettings(refreshSecurityConfiguration["EncryptionKey"],
+        accessSecurityConfiguration["Issue"],
+        accessSecurityConfiguration.GetValue<TimeSpan>("ExpirationPeriod"));
+      var jwtIssuer = new JwtIssuer(accessSecuritySettings, refreshSecuritySettings);
+
+      services.AddSingleton(accessSecuritySettings);
+      services.AddSingleton(refreshSecuritySettings);
       services.AddSingleton<IJwtIssuer>(jwtIssuer);
 
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -60,7 +66,7 @@ namespace ItHappenedWebAPI
             ValidateIssuerSigningKey = true,
             ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(
-              Encoding.UTF8.GetBytes(securitySettings.EncryptionKey))
+              Encoding.UTF8.GetBytes(accessSecuritySettings.EncryptionKey))
           };
         });
 
@@ -70,6 +76,8 @@ namespace ItHappenedWebAPI
           options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
             .RequireAuthenticatedUser().Build();
         });
+
+
         var userList = new UserList(db);
       services
         .AddSingleton<UserList>(userList)

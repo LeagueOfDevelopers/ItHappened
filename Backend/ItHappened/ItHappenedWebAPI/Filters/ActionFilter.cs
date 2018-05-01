@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ItHappenedWebAPI.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -19,7 +20,13 @@ namespace ItHappenedWebAPI.Filters
         context.Result = new BadRequestObjectResult(context.ModelState);
         Log.Warning(context.ActionDescriptor.DisplayName + "model is not valid");
       }
-      Log.Information("Received Arguments {@Arguments}", context.ActionArguments);
+
+      Log.Verbose("Received Arguments {@Arguments}", context.ActionArguments);
+
+      var ip = context.HttpContext.Request.Host.Host;
+
+      Log.Information("Request: {@Values} ip: {@IPAdress} ",  
+        context.ActionDescriptor.AttributeRouteInfo.Template, ip);
       base.OnActionExecuting(context);
     }
 
@@ -32,5 +39,7 @@ namespace ItHappenedWebAPI.Filters
         Log.Error(msg);
       }
     }
+
+
   }
 }
