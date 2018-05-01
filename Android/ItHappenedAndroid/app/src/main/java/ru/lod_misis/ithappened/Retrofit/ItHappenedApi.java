@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Retrofit;
 
 import retrofit2.http.Header;
+import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Models.RegistrationResponse;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 
@@ -17,7 +18,7 @@ public interface ItHappenedApi {
     @POST("synchronization/synchronize")
     Observable<SynchronizationRequest> SynchronizeData(@Header("Authorization") String token, @Body SynchronizationRequest synchronizationRequest);
 
-    @POST("synchronization/refresh")
-    Observable<String> Refresh(@Header("Authorization") String token);
+    @POST("synchronization/refresh/{refreshToken}")
+    Observable<RefreshModel> Refresh(@Path("refreshToken") String refreshToken);
 
 }
