@@ -50,7 +50,7 @@ public class Event extends RealmObject
     }
     public void EditValueOfRating(Rating rating){
         this.rating = rating;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange =Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
     public void EditComment(String comment) {
         this.comment = comment;

@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @SuppressLint("ValidFragment")
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -28,6 +29,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getDefault());
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
@@ -51,7 +53,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public void onTimeSet(TimePicker timePicker, int hour, int min) {
 
         Calendar time = Calendar.getInstance();
-
+        time.setTimeZone(TimeZone.getDefault());
         Date timeDate;
         time.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
         time.set(Calendar.MONTH, c.get(Calendar.MONTH));
@@ -64,6 +66,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+            format.setTimeZone(TimeZone.getDefault());
 
             dateTimeText.setText(format.format(time.getTime()));
 
@@ -72,6 +75,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         if(date!=null){
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             date.setTextSize(10);
             date.setText(format.format(time.getTime()));

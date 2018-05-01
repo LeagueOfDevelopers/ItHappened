@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
@@ -99,8 +100,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
             if(type!=null) {
                 holder.scaleValue.setVisibility(View.VISIBLE);
-                if (type.length() >= 3) {
-                    holder.scaleValue.setText(event.GetScale().toString()+" "+type.substring(0, 2) + ".");
+                if (type.length() >= 10 && event.GetScale()>1000000 && event.GetRating()!=null) {
+                    holder.scaleValue.setText(event.GetScale().toString()+" "+type.substring(0, 3) + ".");
                 } else {
                     holder.scaleValue.setText(event.GetScale().toString()+" "+type);
                 }
@@ -160,6 +161,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getDefault());
         holder.eventDate.setText(format.format(eventDate));
 
     }

@@ -66,6 +66,11 @@ public class UserActionsActivity extends AppCompatActivity
 
     private DrawerLayout mDrawerLayout;
 
+    boolean isTrackingHistory = true;
+    boolean isEventsHistory = false;
+    boolean isStatistics = false;
+    boolean isProfileSettings = false;
+
     private final static String G_PLUS_SCOPE =
             "oauth2:https://www.googleapis.com/auth/plus.me";
     private final static String USERINFO_SCOPE =
@@ -150,7 +155,7 @@ public class UserActionsActivity extends AppCompatActivity
 
         trackFrg = new TrackingsFragment();
         fTrans = getFragmentManager().beginTransaction();
-        fTrans.replace(R.id.trackingsFrg, trackFrg);
+        fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
         fTrans.commit();
 
         syncPB = (ProgressBar) findViewById(R.id.syncPB);
@@ -198,12 +203,21 @@ public class UserActionsActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            setTitle("Что произошло?");
-            trackFrg = new TrackingsFragment();
 
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg);
-            fTrans.commit();
+            isTrackingHistory = true;
+            isEventsHistory = false;
+            isProfileSettings = false;
+            isStatistics = false;
+
+                setTitle("Что произошло?");
+                trackFrg = new TrackingsFragment();
+
+
+
+                fTrans = getFragmentManager().beginTransaction();
+                fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
+                fTrans.commit();
+
         }
     }
 
@@ -236,25 +250,43 @@ public class UserActionsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if(id == R.id.my_events){
-            trackFrg = new TrackingsFragment();
             item.setCheckable(false);
+            if(!isTrackingHistory) {
 
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
-            fTrans.commit();
+                isTrackingHistory = true;
+                isEventsHistory = false;
+                isProfileSettings = false;
+                isStatistics = false;
 
-            setTitle("Что произошло?");
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
+                TrackingsFragment newTrackFrg = new TrackingsFragment();
+
+
+                fTrans = getFragmentManager().beginTransaction();
+                fTrans.replace(R.id.trackingsFrg, newTrackFrg).addToBackStack(null);
+                fTrans.commit();
+
+                setTitle("Что произошло?");
+            }
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+
         }
 
         if (id == R.id.events_history) {
             item.setCheckable(false);
-            setTitle("История событий");
-            EventsFragment eventsFrg = new EventsFragment();
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, eventsFrg,"EVENTS_HISTORY");
-            fTrans.commit();
+
+            if(!isEventsHistory) {
+                setTitle("История событий");
+                isTrackingHistory = false;
+                isEventsHistory = true;
+                isProfileSettings = false;
+                isStatistics = false;
+
+                EventsFragment eventsFrg = new EventsFragment();
+                fTrans = getFragmentManager().beginTransaction();
+                fTrans.replace(R.id.trackingsFrg, eventsFrg, "EVENTS_HISTORY").addToBackStack(null);
+                fTrans.commit();
+            }
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
@@ -262,11 +294,18 @@ public class UserActionsActivity extends AppCompatActivity
         if(id == R.id.statistics){
             item.setCheckable(false);
             setTitle("Статистика");
-            StatisticsFragment statFrg = new StatisticsFragment();
+            if(!isStatistics) {
+                StatisticsFragment statFrg = new StatisticsFragment();
 
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
-            fTrans.commit();
+                isTrackingHistory = false;
+                isEventsHistory = false;
+                isProfileSettings = false;
+                isStatistics = true;
+
+                fTrans = getFragmentManager().beginTransaction();
+                fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
+                fTrans.commit();
+            }
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
@@ -334,7 +373,7 @@ public class UserActionsActivity extends AppCompatActivity
                                                            Toast.makeText(getApplicationContext(), "Подключение разорвано!", Toast.LENGTH_SHORT).show();
                                                        }
                                                    });
-                                       }
+                                      }
                                    },
                                 new Action1<Throwable>() {
                                     @Override
@@ -359,16 +398,28 @@ public class UserActionsActivity extends AppCompatActivity
                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                    drawer.closeDrawer(GravityCompat.START);
                }else {
-                   profileStgsFrg = new ProfileSettingsFragment();
-                   fTrans = getFragmentManager().beginTransaction();
-                   fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
-                   fTrans.commit();
+                   if(!isProfileSettings) {
+
+                       isTrackingHistory = false;
+                       isEventsHistory = false;
+                       isProfileSettings = true;
+                       isStatistics = false;
+
+                       profileStgsFrg = new ProfileSettingsFragment();
+                       fTrans = getFragmentManager().beginTransaction();
+                       fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
+                       fTrans.commit();
+                   }
                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                    drawer.closeDrawer(GravityCompat.START);
                }
 
            }
         return true;
+    }
+
+    private void detachallFragments(){
+
     }
 
 

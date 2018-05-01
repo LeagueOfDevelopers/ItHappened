@@ -56,6 +56,9 @@ public class AddNewEventActivity extends AppCompatActivity {
     int ratingState;
     UUID trackingId;
 
+    int year = 0;
+    int month = 0;
+    int dayOfMonth = 0;
 
     LinearLayout commentContainer;
     LinearLayout scaleContainer;
@@ -137,10 +140,11 @@ public class AddNewEventActivity extends AppCompatActivity {
                 scaleType.setText(tracking.getScaleName());
         }
 
-        Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        final Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getDefault());
 
         dateControl.setText(format.format(thisDate).toString());
 
@@ -151,8 +155,10 @@ public class AddNewEventActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateControl);
                 picker.show(fragmentManager, "from");
+
             }
         });
+
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,6 +196,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                             Date eventDate = null;
                             Locale locale = new Locale("ru");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
                             try {
                                 eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                             } catch (ParseException e) {
@@ -224,6 +231,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                         Date eventDate = null;
                         Locale locale = new Locale("ru");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
                         try {
                             eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                         } catch (ParseException e) {

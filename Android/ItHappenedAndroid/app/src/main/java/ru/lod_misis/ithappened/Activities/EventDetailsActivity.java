@@ -21,6 +21,7 @@ import com.yandex.metrica.YandexMetrica;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -139,6 +140,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+            format.setTimeZone(TimeZone.getDefault());
 
             dateValueNulls.setText(format.format(thisDate));
 
@@ -148,6 +150,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+            format.setTimeZone(TimeZone.getDefault());
 
             dateValue.setText(format.format(thisDate));
 

@@ -267,7 +267,7 @@ public class Tracking extends RealmObject {
     public void DeleteTracking()
     {
         isDeleted = true;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime();
         for (Event event: eventCollection) {
             event.RemoveEvent();
         }
