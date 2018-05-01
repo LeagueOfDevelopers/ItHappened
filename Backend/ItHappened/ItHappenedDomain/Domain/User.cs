@@ -22,16 +22,6 @@ namespace ItHappenedDomain.Domain
       TrackingCollection = new TrackingCollection();
     }
 
-    //public User(OldUserModel user)
-    //{
-    //  _id = user._id;
-    //  UserId = user.UserId;
-    //  UserNickname = user.UserNickname;
-    //  PictureUrl = user.PictureUrl;
-    //  NicknameDateOfChange = user.NicknameDateOfChange;
-    //  TrackingCollection = new TrackingCollection(user.TrackingCollection);
-    //}
-
     public List<Tracking> ChangeTrackingCollection(List<Tracking> trackingCollection)
     {
       return TrackingCollection.ChangeTrackingCollection(trackingCollection);

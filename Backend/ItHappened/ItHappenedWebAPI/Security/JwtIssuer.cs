@@ -11,20 +11,41 @@ namespace ItHappenedWebAPI.Security
 {
   public class JwtIssuer : IJwtIssuer
   {
-    private readonly SecuritySettings _securitySettings;
+    private readonly SecuritySettings _accessSecuritySettings;
+    private readonly SecuritySettings _refreshSecuritySettings;
 
-    public JwtIssuer(SecuritySettings securitySettings)
+    public JwtIssuer(SecuritySettings accessSecuritySettings, SecuritySettings refreshSecuritySettings)
     {
-      _securitySettings = securitySettings;
-      
+      _accessSecuritySettings = accessSecuritySettings;
+      _refreshSecuritySettings = refreshSecuritySettings;
     }
 
-    public string IssueJwt(string id)
+    public string IssueAccessJwt(string id)
     {
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securitySettings.EncryptionKey));
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_accessSecuritySettings.EncryptionKey));
       var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-      var claims = new Claim[] {new Claim("UserId", id)};
-      var token = new JwtSecurityToken(_securitySettings.Issue, claims: claims, expires: DateTime.Now.Add(_securitySettings.ExpirationPeriod),
+      var claims = new Claim[]
+      {
+        new Claim("UserId", id),
+        new Claim("TokenType", TokenType.Access)
+      };
+      var token = new JwtSecurityToken(_accessSecuritySettings.Issue, claims: claims, expires: DateTime.Now.Add(_accessSecuritySettings.ExpirationPeriod),
+        signingCredentials: credentials);
+      
+      return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public string IssueRefreshJwt(string id)
+    {
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_refreshSecuritySettings.EncryptionKey));
+      var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+      var claims = new Claim[]
+      {
+        new Claim("UserId", id),
+        new Claim("TokenType", TokenType.Refresh)
+      };
+      var token = new JwtSecurityToken(_refreshSecuritySettings.Issue, claims: claims,
+        expires: DateTime.Now.Add(_refreshSecuritySettings.ExpirationPeriod),
         signingCredentials: credentials);
 
       return new JwtSecurityTokenHandler().WriteToken(token);

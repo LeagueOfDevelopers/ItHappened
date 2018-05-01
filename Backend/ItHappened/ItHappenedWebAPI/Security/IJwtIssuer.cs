@@ -9,6 +9,7 @@ namespace ItHappenedWebAPI.Security
 {
   public interface IJwtIssuer
   {
-    string IssueJwt(string id);
+    string IssueAccessJwt(string id);
+    string IssueRefreshJwt(string id);
   }
 }
