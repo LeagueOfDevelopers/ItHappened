@@ -100,8 +100,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
             if(type!=null) {
                 holder.scaleValue.setVisibility(View.VISIBLE);
-                if (type.length() >= 3) {
-                    holder.scaleValue.setText(event.GetScale().toString()+" "+type.substring(0, 2) + ".");
+                if (type.length() >= 10 && event.GetScale()>1000000 && event.GetRating()!=null) {
+                    holder.scaleValue.setText(event.GetScale().toString()+" "+type.substring(0, 3) + ".");
                 } else {
                     holder.scaleValue.setText(event.GetScale().toString()+" "+type);
                 }
