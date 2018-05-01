@@ -50,6 +50,7 @@ import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Models.RegistrationResponse;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.R;
@@ -131,14 +132,15 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
         if(!sharedPreferences.getString("UserId", "").equals("Offline")){
-            ItHappenedApplication.getApi().Refresh("Bearer "+sharedPreferences.getString("Token",""))
+            ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("refreshToken",""))
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<String>() {
+                    .subscribe(new Action1<RefreshModel>() {
                                    @Override
-                                   public void call(String token) {
+                                   public void call(RefreshModel model) {
                                        SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
-                                       editor.putString("Token", token);
+                                       editor.putString("Token", model.getAccessToken());
+                                       editor.putString("refreshToken", model.getRefreshToken());
                                        editor.commit();
                                    }
                                },
@@ -328,14 +330,15 @@ public class UserActionsActivity extends AppCompatActivity
                 final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
                 ItHappenedApplication.getApi()
-                        .Refresh("Bearer "+sharedPreferences.getString("Token",""))
+                        .Refresh(sharedPreferences.getString("refreshToken",""))
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<String>() {
+                        .subscribe(new Action1<RefreshModel>() {
                                        @Override
-                                       public void call(String token) {
+                                       public void call(RefreshModel model) {
                                            SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
-                                           editor.putString("Token", token);
+                                           editor.putString("Token", model.getAccessToken());
+                                           editor.putString("refreshToken", model.getRefreshToken());
                                            editor.commit();
 
 
@@ -361,7 +364,7 @@ public class UserActionsActivity extends AppCompatActivity
                                                            item.setActionView(null);
                                                            startActivity(getIntent());
                                                            YandexMetrica.reportEvent("Пользователь синхронизировался");
-                                                           Toast.makeText(getApplicationContext(), "Синхронизировано!", Toast.LENGTH_SHORT).show();
+                                                           Toast.makeText(getApplicationContext(), "Синхронизировано", Toast.LENGTH_SHORT).show();
                                                        }
                                                    }, new Action1<Throwable>() {
                                                        @Override
@@ -378,7 +381,7 @@ public class UserActionsActivity extends AppCompatActivity
                                 new Action1<Throwable>() {
                                     @Override
                                     public void call(Throwable throwable) {
-                                        Toast.makeText(getApplicationContext(), "Токен упал(", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getApplicationContext(), "Токен упал(", Toast.LENGTH_SHORT).show();
                                         Log.e("Токен упал", throwable+"");
                                     }
                                 });
@@ -555,6 +558,7 @@ public class UserActionsActivity extends AppCompatActivity
                         editor.putString("Url", registrationResponse.getPicUrl());
                         editor.putString("Token", registrationResponse.getToken());
                         editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
+                        editor.putString("refreshToken", registrationResponse.getRefreshToken());
                         editor.commit();
 
                         if(!lastId.equals(sharedPreferences.getString("UserId", ""))){
@@ -617,14 +621,15 @@ public class UserActionsActivity extends AppCompatActivity
         ProfileSettingsFragment.showProgressBar();
         final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        ItHappenedApplication.getApi().Refresh("Bearer "+sharedPreferences.getString("Token",""))
+        ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("refreshToken",""))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
+                .subscribe(new Action1<RefreshModel>() {
                     @Override
-                    public void call(String token) {
+                    public void call(RefreshModel model) {
                         SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
-                        editor.putString("Token", token);
+                        editor.putString("Token", model.getAccessToken());
+                        editor.putString("refreshToken", model.getRefreshToken());
                         editor.commit();
 
                         final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),

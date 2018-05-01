@@ -27,6 +27,17 @@ public class RegistrationResponse{
     @Expose
     @SerializedName("token")
     public String Token;
+    @Expose
+    @SerializedName("refreshToken")
+    public String RefreshToken;
+
+    public String getRefreshToken() {
+        return RefreshToken;
+    }
+
+    public void setRefreshToken(String RefreshToken) {
+        this.RefreshToken = RefreshToken;
+    }
 
     public String getToken() {
         return Token;
