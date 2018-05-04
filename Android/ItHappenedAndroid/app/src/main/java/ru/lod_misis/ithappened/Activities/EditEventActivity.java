@@ -40,6 +40,7 @@ import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -149,7 +150,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         if((tracking.GetScaleCustomization()==TrackingCustomization.Optional
                 || tracking.GetScaleCustomization()==TrackingCustomization.Required) && event.GetScale()!=null){
-            scaleControl.setText(event.GetScale().toString());
+            scaleControl.setText(StringParse.parseDouble(event.GetScale().doubleValue()));
             if(tracking.getScaleName()!=null){
                 if(tracking.getScaleName().length()>=3){
                     scaleType.setText(tracking.getScaleName().substring(0,2));

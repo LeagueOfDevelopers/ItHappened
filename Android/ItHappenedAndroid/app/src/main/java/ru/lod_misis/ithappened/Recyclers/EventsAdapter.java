@@ -25,6 +25,7 @@ import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
@@ -101,9 +102,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             if(type!=null) {
                 holder.scaleValue.setVisibility(View.VISIBLE);
                 if (type.length() >= 10 && event.GetScale()>1000000 && event.GetRating()!=null) {
-                    holder.scaleValue.setText(event.GetScale().toString()+" "+type.substring(0, 3) + ".");
+                    holder.scaleValue.setText(StringParse.parseDouble(event.GetScale().doubleValue())+" "+type.substring(0, 3) + ".");
                 } else {
-                    holder.scaleValue.setText(event.GetScale().toString()+" "+type);
+                    holder.scaleValue.setText(StringParse.parseDouble(event.GetScale().doubleValue())+" "+type);
                 }
             }
         }else{
