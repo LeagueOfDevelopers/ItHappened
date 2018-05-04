@@ -14,12 +14,5 @@ namespace ItHappenedWebAPI.Extensions
       var userId = handler.ReadJwtToken(request).Claims.First(c => c.Type == "UserId").Value;
       return userId;
     }
-
-    public static string GetTokenType(this string request)
-    {
-      var handler = new JwtSecurityTokenHandler();
-      var type = handler.ReadJwtToken(request).Claims.First(c => c.Type == "TokenType").Value;
-      return type;
-    }
   }
 }

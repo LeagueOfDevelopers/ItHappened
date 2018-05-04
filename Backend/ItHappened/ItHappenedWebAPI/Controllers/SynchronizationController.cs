@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using ItHappenedDomain.Domain;
@@ -7,8 +8,10 @@ using ItHappenedDomain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ItHappenedWebAPI.Extensions;
+using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Models;
 using ItHappenedWebAPI.Security;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ItHappenedWebAPI.Controllers
 {
@@ -26,39 +29,50 @@ namespace ItHappenedWebAPI.Controllers
     }
 
     [HttpPost]
-    [Authorize]
+    [ServiceFilter(typeof(AccessFilter))]
     [Route("synchronize")]
     public IActionResult SynchronizeData([FromBody] SynchronisationRequest request)
     {
-      if (Request.GetTokenType() == TokenType.Refresh)
-        return Unauthorized();
-
-      var userId = Request.GetUserId();
+      var userId = HttpContext.GetUserId();
 
       if (!_users.UserIsExists(userId))
-        return BadRequest("User isn't exists");
+        return BadRequest("User does not exist");
 
-      SynchronisationRequest response = _users.Synchronisation(userId, request.NicknameDateOfChange, 
+      var response = _users.Synchronisation(userId, request.NicknameDateOfChange, 
         request.UserNickname, request.trackingCollection);
       return Ok(response);
     }
 
-    [HttpPost]
+    [ServiceFilter(typeof(RefreshTokenFilter))]
+    [HttpGet]
     [Route("refresh/{RefreshToken}")]
     public IActionResult RefreshToken([FromRoute] string refreshToken)
     {
-      if (refreshToken.GetTokenType() == TokenType.Access)
-        return Unauthorized();
-
-      var userId = refreshToken.GetUserId();
+      //var userId = refreshToken.GetUserId();
+      var userId = HttpContext.GetUserId();
       if (!_users.UserIsExists(userId))
-        return BadRequest("User isn't exists");
+        return BadRequest("User does not exist");
 
       var response = new RefreshModel
         {
         AccessToken = _jwtIssuer.IssueAccessJwt(userId),
         RefreshToken = _jwtIssuer.IssueRefreshJwt(userId)
         };
+
+      return Ok(response);
+    }
+
+    [Obsolete]
+    [HttpPost]
+    [Authorize]
+    [Route("refresh")]
+    public IActionResult RefreshToken()
+    {
+      var userId = Request.GetUserId();
+      if (!_users.UserIsExists(userId))
+        return BadRequest("User does not exist");
+
+      var response = _jwtIssuer.IssueAccessJwt(userId);
 
       return Ok(response);
     }

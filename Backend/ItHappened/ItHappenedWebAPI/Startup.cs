@@ -39,35 +39,34 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
-      var accessSecurityConfiguration = Configuration.GetSection("Security");
+      var securityConfiguration = Configuration.GetSection("Security");
 
-      var accessSecuritySettings = new SecuritySettings(accessSecurityConfiguration["EncryptionKey"],
-        accessSecurityConfiguration["Issue"],
-        accessSecurityConfiguration.GetValue<TimeSpan>("ExpirationPeriod"));
+      var securitySettings = new SecuritySettings(securityConfiguration["Issue"],
+        securityConfiguration["AccessEncryptionKey"],
+        securityConfiguration.GetValue<TimeSpan>("AccessExpirationPeriod"),
+        securityConfiguration["RefreshEncryptionKey"],
+        securityConfiguration.GetValue<TimeSpan>("RefreshExpirationPeriod"));
 
-      var refreshSecurityConfiguration = Configuration.GetSection("RefreshToken");
-      var refreshSecuritySettings = new SecuritySettings(refreshSecurityConfiguration["EncryptionKey"],
-        accessSecurityConfiguration["Issue"],
-        accessSecurityConfiguration.GetValue<TimeSpan>("ExpirationPeriod"));
-      var jwtIssuer = new JwtIssuer(accessSecuritySettings, refreshSecuritySettings);
+      var jwtIssuer = new JwtIssuer(securitySettings);
 
-      services.AddSingleton(accessSecuritySettings);
-      services.AddSingleton(refreshSecuritySettings);
+      services.AddSingleton(securitySettings);
       services.AddSingleton<IJwtIssuer>(jwtIssuer);
+
+      var accessTokenValidationParameters = new TokenValidationParameters
+      {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(
+          Encoding.UTF8.GetBytes(securitySettings.AccessEncryptionKey))
+      };
 
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
-          options.TokenValidationParameters = new TokenValidationParameters
-          {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = new SymmetricSecurityKey(
-              Encoding.UTF8.GetBytes(accessSecuritySettings.EncryptionKey))
-          };
+          options.TokenValidationParameters = accessTokenValidationParameters;
         });
 
       services
@@ -77,14 +76,33 @@ namespace ItHappenedWebAPI
             .RequireAuthenticatedUser().Build();
         });
 
+      var accessFilter = new AccessFilter(accessTokenValidationParameters);
 
-        var userList = new UserList(db);
+      var refreshTokenValidationParameters = new TokenValidationParameters
+      {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+          Encoding.UTF8.GetBytes(securitySettings.RefreshEncryptionKey)),
+        ClockSkew = TimeSpan.Zero
+      };
+
+      var refreshFilter = new RefreshTokenFilter(refreshTokenValidationParameters);
+
+      services.AddSingleton(refreshFilter);
+      services.AddSingleton(accessFilter);
+
+
+      var userList = new UserList(db);
       services
         .AddSingleton<UserList>(userList)
         .AddSingleton<ErrorHandlingMiddleware>();
       services.AddMvc(o =>
       {
         o.Filters.Add(new ActionFilter());
+        o.Filters.Add(new ExceptionFilter());
       });
     }
 

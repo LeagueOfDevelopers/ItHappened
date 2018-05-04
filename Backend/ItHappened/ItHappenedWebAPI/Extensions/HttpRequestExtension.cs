@@ -12,17 +12,8 @@ namespace ItHappenedWebAPI.Extensions
     public static string GetUserId(this HttpRequest request)
     {
       var auth = request.Headers["Authorization"].ToString();
-      var handler = new JwtSecurityTokenHandler();
-      var userId = handler.ReadJwtToken(auth.Substring(7)).Claims.First(c => c.Type == "UserId").Value;
+      var userId = auth.Substring(7).GetUserId();
       return userId;
-    }
-
-    public static string GetTokenType(this HttpRequest request)
-    {
-      var auth = request.Headers["Authorization"].ToString();
-      var handler = new JwtSecurityTokenHandler();
-      var type = handler.ReadJwtToken(auth.Substring(7)).Claims.First(c => c.Type == "TokenType").Value;
-      return type;
     }
   }
 }

@@ -7,16 +7,21 @@ namespace ItHappenedWebAPI.Security
 {
   public class SecuritySettings
   {
-    public SecuritySettings(string encryptionKey, string issue, TimeSpan expirationPeriod)
+    public SecuritySettings(string issue, string accessEncryptionKey, TimeSpan accessExpirationPeriod,
+      string refreshEncryptionKey, TimeSpan refreshExpirationPeriod)
     {
-      EncryptionKey = encryptionKey;
+      AccessEncryptionKey = accessEncryptionKey;
       Issue = issue;
-      ExpirationPeriod = expirationPeriod;
+      AccessExpirationPeriod = accessExpirationPeriod;
+      RefreshEncryptionKey = refreshEncryptionKey;
+      RefreshExpirationPeriod = refreshExpirationPeriod;
     }
 
-    public string EncryptionKey { get; }
+    public string AccessEncryptionKey { get; }
+    public string RefreshEncryptionKey { get; }
     public string Issue { get; }
-    public TimeSpan ExpirationPeriod { get; }
+    public TimeSpan AccessExpirationPeriod { get; }
+    public TimeSpan RefreshExpirationPeriod { get; }
   }
 }
 

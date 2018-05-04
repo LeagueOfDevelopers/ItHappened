@@ -11,41 +11,33 @@ namespace ItHappenedWebAPI.Security
 {
   public class JwtIssuer : IJwtIssuer
   {
-    private readonly SecuritySettings _accessSecuritySettings;
-    private readonly SecuritySettings _refreshSecuritySettings;
+    private readonly SecuritySettings _securitySettings;
 
-    public JwtIssuer(SecuritySettings accessSecuritySettings, SecuritySettings refreshSecuritySettings)
+    public JwtIssuer(SecuritySettings securitySettings)
     {
-      _accessSecuritySettings = accessSecuritySettings;
-      _refreshSecuritySettings = refreshSecuritySettings;
+      _securitySettings = securitySettings;
     }
 
     public string IssueAccessJwt(string id)
     {
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_accessSecuritySettings.EncryptionKey));
-      var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-      var claims = new Claim[]
-      {
-        new Claim("UserId", id),
-        new Claim("TokenType", TokenType.Access)
-      };
-      var token = new JwtSecurityToken(_accessSecuritySettings.Issue, claims: claims, expires: DateTime.Now.Add(_accessSecuritySettings.ExpirationPeriod),
-        signingCredentials: credentials);
-      
-      return new JwtSecurityTokenHandler().WriteToken(token);
+      return CreateToken(_securitySettings.AccessEncryptionKey, _securitySettings.AccessExpirationPeriod, id);
     }
 
     public string IssueRefreshJwt(string id)
     {
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_refreshSecuritySettings.EncryptionKey));
+      return CreateToken(_securitySettings.RefreshEncryptionKey, _securitySettings.RefreshExpirationPeriod, id);
+    }
+
+    private string CreateToken(string encryptionKey, TimeSpan expirationPeriod, string id)
+    {
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(encryptionKey));
       var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
       var claims = new Claim[]
       {
-        new Claim("UserId", id),
-        new Claim("TokenType", TokenType.Refresh)
+        new Claim("UserId", id)
       };
-      var token = new JwtSecurityToken(_refreshSecuritySettings.Issue, claims: claims,
-        expires: DateTime.Now.Add(_refreshSecuritySettings.ExpirationPeriod),
+      var token = new JwtSecurityToken(_securitySettings.Issue, claims: claims,
+        expires: DateTime.Now.Add(expirationPeriod),
         signingCredentials: credentials);
 
       return new JwtSecurityTokenHandler().WriteToken(token);
