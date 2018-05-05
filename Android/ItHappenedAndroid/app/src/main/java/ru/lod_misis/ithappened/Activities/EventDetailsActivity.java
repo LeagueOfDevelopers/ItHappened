@@ -35,6 +35,7 @@ import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -177,7 +178,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 nullsCard.setVisibility(View.GONE);
                 valuesCard.setVisibility(View.VISIBLE);
                 scaleValue.setVisibility(View.VISIBLE);
-                scaleValue.setText(thisEvent.GetScale().toString()+" "+thisTracking.getScaleName());
+                scaleValue.setText(StringParse.parseDouble(thisEvent.GetScale().doubleValue())+" "+thisTracking.getScaleName());
             }else {
                 scaleValue.setVisibility(View.GONE);
                 scaleHint.setVisibility(View.GONE);
