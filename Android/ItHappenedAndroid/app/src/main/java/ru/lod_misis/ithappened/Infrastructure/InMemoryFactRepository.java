@@ -131,6 +131,8 @@ public class InMemoryFactRepository {
         if (factToAdd != null) {
             oneTrackingFactCollection.add(factToAdd);
         }
+
+        sortOneTrackingFacts();
     }
 
     public List<Fact> getAllTrackingsFactCollection()
@@ -152,14 +154,14 @@ public class InMemoryFactRepository {
         this.oneTrackingFactCollection = oneTrackingFactCollection;
     }
 
-   /* private void sortOneTrackingFacts(){
+    private void sortOneTrackingFacts(){
         Collections.sort(oneTrackingFactCollection, new Comparator<Fact>() {
             @Override
             public int compare(Fact fact, Fact t1) {
                 return fact.getPriority().compareTo(t1.getPriority());
             }
-        });*/
-    //}
+        });
+    }
 
     private void sortAllTrackingsFacts(){
         Collections.sort(allTrackingsFactCollection, new Comparator<Fact>() {
