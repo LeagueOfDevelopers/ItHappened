@@ -172,8 +172,8 @@ public class InMemoryFactRepository {
         });
     }
 
-    List<Fact> oneTrackingFactCollection = new ArrayList<>();
-    List<Fact> allTrackingsFactCollection = new ArrayList<>();
-    FunctionApplicability functionApplicability;
+    private List<Fact> oneTrackingFactCollection = new ArrayList<>();
+    private List<Fact> allTrackingsFactCollection = new ArrayList<>();
+    private FunctionApplicability functionApplicability;
 
 }

@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:name="ru.lod_misis.ithappened.Retrofit.ItHappenedApplication"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a34afa9902a6b1e67f5f73a97f430acb267fba06" />
         <activity
             android:screenOrientation="portrait"
             android:name="ru.lod_misis.ithappened.Activities.UserActionsActivity"
