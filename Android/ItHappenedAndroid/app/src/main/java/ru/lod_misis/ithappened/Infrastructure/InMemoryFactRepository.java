@@ -51,7 +51,8 @@ public class InMemoryFactRepository {
         functionApplicabilityCheck(changedTracking);
 
 
-        //sortOneTrackingFacts();
+        if(allTrackingsFactCollection.size() > 1)
+            sortAllTrackingsFacts();
 
         return rx.Observable.from(oneTrackingFactCollection);
     }
@@ -71,8 +72,8 @@ public class InMemoryFactRepository {
             factToAdd.calculateData();
             allTrackingsFactCollection.add(factToAdd);
         }
-
-        sortAllTrackingsFacts();
+        if(allTrackingsFactCollection.size() > 1)
+            sortAllTrackingsFacts();
 
         return rx.Observable.from(allTrackingsFactCollection);
     }
@@ -132,7 +133,8 @@ public class InMemoryFactRepository {
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        sortOneTrackingFacts();
+        if (oneTrackingFactCollection.size() > 1)
+            sortOneTrackingFacts();
     }
 
     public List<Fact> getAllTrackingsFactCollection()
