@@ -17,7 +17,6 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
-using Migrator;
 
 namespace ItHappenedWebAPI
 {

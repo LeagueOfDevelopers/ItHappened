@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace ItHappenedWebAPI.Filters
 {
@@ -33,11 +34,15 @@ namespace ItHappenedWebAPI.Filters
       }
       catch (SecurityTokenValidationException e)
       {
-        throw new RefreshTokenValidationException($"Token failed validation: {e.Message}");
+        Log.Information($"Refresh token failed validation: {e.Message}");
+        context.Result = new UnauthorizedResult();
+        return;
       }
       catch (ArgumentException e)
       {
-        throw new RefreshTokenValidationException($"Token was invalid: {e.Message}");
+        Log.Information($"Refresh token was invalid: {e.Message}");
+        context.Result = new UnauthorizedResult();
+        return;
       }
       var userId = claims.Claims.First().Value;
       context.HttpContext.Items.Add("Id", userId);

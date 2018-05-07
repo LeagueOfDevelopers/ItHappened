@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace ItHappenedWebAPI.Filters
 {
@@ -34,6 +35,7 @@ namespace ItHappenedWebAPI.Filters
       catch (Exception e)
       {
         context.Result = new UnauthorizedResult();
+        Log.Information($"Ivalid token {bearerToken}");
         return;
       }
 
@@ -46,13 +48,22 @@ namespace ItHappenedWebAPI.Filters
       catch (SecurityTokenValidationException e)
       {
         context.Result = new UnauthorizedResult();
+        Log.Information($"Ivalid token {bearerToken}");
         return;
       }
       catch (ArgumentException e)
       {
         context.Result = new UnauthorizedResult();
+        Log.Information($"Ivalid token {bearerToken}");
         return;
       }
+      catch (Exception e)
+      {
+        context.Result = new UnauthorizedResult();
+        Log.Warning($"Unknown error: {e.Message}");
+        return;
+      }
+
       var userId = claims.Claims.First().Value;
       context.HttpContext.Items.Add("Id", userId);
     }

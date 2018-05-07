@@ -37,7 +37,7 @@ namespace ItHappenedWebAPI.Security
         new Claim("UserId", id)
       };
       var token = new JwtSecurityToken(_securitySettings.Issue, claims: claims,
-        expires: DateTime.Now.Add(expirationPeriod),
+        expires: DateTime.UtcNow.Add(expirationPeriod),
         signingCredentials: credentials);
 
       return new JwtSecurityTokenHandler().WriteToken(token);
