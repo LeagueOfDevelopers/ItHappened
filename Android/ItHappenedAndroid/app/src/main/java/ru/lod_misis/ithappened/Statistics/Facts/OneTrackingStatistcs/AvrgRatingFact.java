@@ -55,7 +55,7 @@ public class AvrgRatingFact extends Fact {
 
     @Override
     public void calculatePriority() {
-        Math.sqrt(averageValue);
+        priority = Math.sqrt(averageValue);
     }
 
     @Override
