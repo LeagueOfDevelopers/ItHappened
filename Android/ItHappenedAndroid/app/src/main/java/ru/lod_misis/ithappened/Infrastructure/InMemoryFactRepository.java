@@ -160,7 +160,7 @@ public class InMemoryFactRepository {
         Collections.sort(oneTrackingFactCollection, new Comparator<Fact>() {
             @Override
             public int compare(Fact fact, Fact t1) {
-                return fact.getPriority().compareTo(t1.getPriority());
+                return t1.getPriority().compareTo(fact.getPriority());
             }
         });
     }
@@ -169,7 +169,7 @@ public class InMemoryFactRepository {
         Collections.sort(allTrackingsFactCollection, new Comparator<Fact>() {
             @Override
             public int compare(Fact fact, Fact t1) {
-                return fact.getPriority().compareTo(t1.getPriority());
+                return t1.getPriority().compareTo(fact.getPriority());
             }
         });
     }
