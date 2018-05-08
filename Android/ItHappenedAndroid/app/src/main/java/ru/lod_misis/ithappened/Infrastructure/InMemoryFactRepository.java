@@ -51,7 +51,8 @@ public class InMemoryFactRepository {
         functionApplicabilityCheck(changedTracking);
 
 
-        //sortOneTrackingFacts();
+        if(allTrackingsFactCollection.size() > 1)
+            sortAllTrackingsFacts();
 
         return rx.Observable.from(oneTrackingFactCollection);
     }
@@ -71,8 +72,8 @@ public class InMemoryFactRepository {
             factToAdd.calculateData();
             allTrackingsFactCollection.add(factToAdd);
         }
-
-        sortAllTrackingsFacts();
+        if(allTrackingsFactCollection.size() > 1)
+            sortAllTrackingsFacts();
 
         return rx.Observable.from(allTrackingsFactCollection);
     }
@@ -131,6 +132,9 @@ public class InMemoryFactRepository {
         if (factToAdd != null) {
             oneTrackingFactCollection.add(factToAdd);
         }
+
+        if (oneTrackingFactCollection.size() > 1)
+            sortOneTrackingFacts();
     }
 
     public List<Fact> getAllTrackingsFactCollection()
@@ -152,26 +156,26 @@ public class InMemoryFactRepository {
         this.oneTrackingFactCollection = oneTrackingFactCollection;
     }
 
-   /* private void sortOneTrackingFacts(){
+    private void sortOneTrackingFacts(){
         Collections.sort(oneTrackingFactCollection, new Comparator<Fact>() {
             @Override
             public int compare(Fact fact, Fact t1) {
-                return fact.getPriority().compareTo(t1.getPriority());
+                return t1.getPriority().compareTo(fact.getPriority());
             }
-        });*/
-    //}
+        });
+    }
 
     private void sortAllTrackingsFacts(){
         Collections.sort(allTrackingsFactCollection, new Comparator<Fact>() {
             @Override
             public int compare(Fact fact, Fact t1) {
-                return fact.getPriority().compareTo(t1.getPriority());
+                return t1.getPriority().compareTo(fact.getPriority());
             }
         });
     }
 
-    List<Fact> oneTrackingFactCollection = new ArrayList<>();
-    List<Fact> allTrackingsFactCollection = new ArrayList<>();
-    FunctionApplicability functionApplicability;
+    private List<Fact> oneTrackingFactCollection = new ArrayList<>();
+    private List<Fact> allTrackingsFactCollection = new ArrayList<>();
+    private FunctionApplicability functionApplicability;
 
 }

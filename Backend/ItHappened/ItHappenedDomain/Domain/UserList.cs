@@ -42,7 +42,7 @@ namespace ItHappenedDomain.Domain
           UserNickname = user.UserNickname
         };
       }
-      DateTimeOffset date = DateTimeOffset.Now;
+      DateTimeOffset date = DateTimeOffset.UtcNow;
       User newUser = new User(response.email, response.picture, date);
       collection.InsertOne(newUser);
       RegistrationResponse toReturn = new RegistrationResponse

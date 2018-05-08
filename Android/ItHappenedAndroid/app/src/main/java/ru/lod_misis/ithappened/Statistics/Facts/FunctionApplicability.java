@@ -54,8 +54,10 @@ public final class FunctionApplicability  {
     {
         int count=0;
         for (Tracking tracking: trackingCollection) {
-            for (Event event: tracking.getEventCollection()) {
-                if (!event.isDeleted()) count++;
+            if (!tracking.isDeleted()) {
+                for (Event event : tracking.getEventCollection()) {
+                    if (!event.isDeleted()) count++;
+                }
             }
         }
         if (count <= 5) return null;

@@ -48,7 +48,6 @@ namespace ItHappenedWebAPI.Controllers
     [Route("refresh/{RefreshToken}")]
     public IActionResult RefreshToken([FromRoute] string refreshToken)
     {
-      //var userId = refreshToken.GetUserId();
       var userId = HttpContext.GetUserId();
       if (!_users.UserIsExists(userId))
         return BadRequest("User does not exist");
@@ -64,11 +63,11 @@ namespace ItHappenedWebAPI.Controllers
 
     [Obsolete]
     [HttpPost]
-    [Authorize]
+    [ServiceFilter(typeof(AccessFilter))]
     [Route("refresh")]
     public IActionResult RefreshToken()
     {
-      var userId = Request.GetUserId();
+      var userId = HttpContext.GetUserId();
       if (!_users.UserIsExists(userId))
         return BadRequest("User does not exist");
 

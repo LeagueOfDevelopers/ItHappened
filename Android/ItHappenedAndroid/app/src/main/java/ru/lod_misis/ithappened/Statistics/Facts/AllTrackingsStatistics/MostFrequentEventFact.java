@@ -65,18 +65,18 @@ public class MostFrequentEventFact extends Fact{
             }
         });
 
-        List<FrequentEventsFactModel> firstFiveModels = new ArrayList<>();
+        List<FrequentEventsFactModel> firstModels = new ArrayList<>();
 
         int i =0;
         for (FrequentEventsFactModel model: periodList){
             i++;
             if (i > 4) break;
-            firstFiveModels.add(model);
+            firstModels.add(model);
         }
 
         calculatePriority();
         illustartion = new IllustartionModel(IllustrationType.BAR);
-        illustartion.setFrequentEventsModelList(firstFiveModels);
+        illustartion.setFrequentEventsModelList(firstModels);
 
         return periodList;
     }
