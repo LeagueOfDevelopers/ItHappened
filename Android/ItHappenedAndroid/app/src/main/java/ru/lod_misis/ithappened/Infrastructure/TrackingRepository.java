@@ -117,7 +117,8 @@ public class TrackingRepository implements ITrackingRepository{
 
     public List<Event> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
                                     Comparison scaleComparison, Double scale,
-                                    Comparison ratingComparison, Rating rating) {
+                                    Comparison ratingComparison, Rating rating,
+                                    int fromIndex, int count) {
 
         List<Tracking> trackingCollection = GetTrackingCollection();
 
@@ -183,13 +184,21 @@ public class TrackingRepository implements ITrackingRepository{
             filteredEvents.clear();
             for (Event event : notFilteredEvents) {
                 if (event.GetRating() != null)
-                    if (CompareValues(ratingComparison, event.GetRating().GetRatingValue().doubleValue(),
+                    if (CompareValues(ratingComparison,
+                            event.GetRating().GetRatingValue().doubleValue(),
                             rating.GetRatingValue().doubleValue()))
                         filteredEvents.add(event);
             }
         }
 
-        return RemoveDeletedEventsAndTrackingsFromCollection(filteredEvents);
+        if (fromIndex == filteredEvents.size()) return null;
+
+        int toIndex = fromIndex + count - 1;
+
+        if(filteredEvents.size()< toIndex) toIndex = filteredEvents.size() - 1;
+
+        return RemoveDeletedEventsAndTrackingsFromCollection(
+                filteredEvents.subList(fromIndex, toIndex));
     }
 
     private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)

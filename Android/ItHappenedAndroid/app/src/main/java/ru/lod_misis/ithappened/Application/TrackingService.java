@@ -22,12 +22,10 @@ public class TrackingService
         trackingCollection = trackingRepository;
     }
 
-
     public void SaveTrackingCollection(List<Tracking> trackingList)
     {
         trackingCollection.SaveTrackingCollection(trackingList);
     }
-
 
     public void AddTracking(Tracking newTracking)
     {
@@ -64,13 +62,14 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
-    public List<Event> FilterEventCollection (List<UUID> trackingId, Date from, Date to,
+    public List<Event> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
                                               Comparison scaleComparison, Double scale,
-                                              Comparison ratingComparison, Rating rating)
+                                              Comparison ratingComparison, Rating rating,
+                                              int fromElement, int count)
     {
-        List<Event> events = trackingCollection.FilterEvents(trackingId, from, to,
+        List<Event> events = trackingCollection.FilterEvents(trackingId, dateFrom, dateTo,
                 scaleComparison, scale,
-                ratingComparison, rating);
+                ratingComparison, rating, fromElement, count);
         Collections.sort(events, new Comparator<Event>() {
             @Override
             public int compare(Event event, Event t1) {
