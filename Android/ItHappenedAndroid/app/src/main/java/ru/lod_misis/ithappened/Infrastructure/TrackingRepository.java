@@ -197,6 +197,13 @@ public class TrackingRepository implements ITrackingRepository{
 
         if(filteredEvents.size()< toIndex) toIndex = filteredEvents.size() - 1;
 
+        Collections.sort(filteredEvents, new Comparator<Event>() {
+            @Override
+            public int compare(Event event, Event t1) {
+                return t1.GetEventDate().compareTo(event.GetEventDate());
+            }
+        });
+
         return RemoveDeletedEventsAndTrackingsFromCollection(
                 filteredEvents.subList(fromIndex, toIndex));
     }

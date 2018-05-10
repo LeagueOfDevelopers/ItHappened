@@ -70,12 +70,7 @@ public class TrackingService
         List<Event> events = trackingCollection.FilterEvents(trackingId, dateFrom, dateTo,
                 scaleComparison, scale,
                 ratingComparison, rating, fromElement, count);
-        Collections.sort(events, new Comparator<Event>() {
-            @Override
-            public int compare(Event event, Event t1) {
-                return t1.GetEventDate().compareTo(event.GetEventDate());
-            }
-        });
+
         return events;
     }
 
