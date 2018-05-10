@@ -100,8 +100,10 @@ public class UserActionsActivity extends AppCompatActivity
     ProfileSettingsFragment profileStgsFrg;
 
     ProgressBar syncPB;
+    TextView lable;
 
     Subscription mainSync;
+    TextView loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +157,9 @@ public class UserActionsActivity extends AppCompatActivity
                                     logout();
                                 }
                             });
+        }else{
+            navigationView.getMenu().getItem(3).setVisible(false);
+            navigationView.setNavigationItemSelectedListener(this);
         }
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -240,10 +245,31 @@ public class UserActionsActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userNick = (TextView) findViewById(R.id.userNickname);
         userNick.setText(sharedPreferences.getString("Nick",""));
+        loginButton = (TextView) findViewById(R.id.loginButton);
+        urlUser = (CircleImageView) findViewById(R.id.imageView);
+        lable = (TextView) findViewById(R.id.menuTitle);
         if(!sharedPreferences.getString("UserId", "").equals("Offline")) {
-            urlUser = (CircleImageView) findViewById(R.id.imageView);
-
+            loginButton.setVisibility(View.GONE);
             new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
+        }else{
+
+            loginButton.setVisibility(View.VISIBLE);
+            lable.setVisibility(View.GONE);
+            userNick.setVisibility(View.GONE);
+            urlUser.setVisibility(View.GONE);
+
+
+            loginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
+                            false, null, null, null, null);
+                    startActivityForResult(intent, 228);
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
+
         }
 
         return true;
@@ -399,12 +425,11 @@ public class UserActionsActivity extends AppCompatActivity
                item.setCheckable(false);
                String userId = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", "");
                if(userId.equals("Offline")){
-                   Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
-                           false, null, null, null, null);
-                   startActivityForResult(intent, 228);
+                   item.setVisible(false);
                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                    drawer.closeDrawer(GravityCompat.START);
                }else {
+
                    if(!isProfileSettings) {
 
                        isTrackingHistory = false;
@@ -424,11 +449,6 @@ public class UserActionsActivity extends AppCompatActivity
            }
         return true;
     }
-
-    private void detachallFragments(){
-
-    }
-
 
 
     public void okClicked(UUID trackingId) {
