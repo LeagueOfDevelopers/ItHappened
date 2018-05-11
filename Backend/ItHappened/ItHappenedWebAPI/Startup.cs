@@ -11,12 +11,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.Splunk;
 
 namespace ItHappenedWebAPI
 {
@@ -32,7 +34,7 @@ namespace ItHappenedWebAPI
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      StartLoggly();
+      StartLogging();
 
       var connectionString = "mongodb://localhost";
       var client = new MongoClient(connectionString);
@@ -118,8 +120,7 @@ namespace ItHappenedWebAPI
       app.UseMvc();
     }
 
-
-    private void StartLoggly()
+    private void StartLogging()
     {
       var config = LogglyConfig.Instance;
 
@@ -134,11 +135,16 @@ namespace ItHappenedWebAPI
       ct.Formatter = "application-{0}";
       config.TagConfig.Tags.Add(ct);
 
+      var splunkConfiguration = Configuration.GetSection("Splunk");
+      var splunkUrl = splunkConfiguration["SplunkUrl"];
+      var splunkToken = splunkConfiguration["SplunkToken"];
+
       Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Information()
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .Enrich.FromLogContext()
         .WriteTo.Loggly()
+        .WriteTo.EventCollector(splunkUrl, splunkToken)
         .WriteTo.RollingFile("log-{Date}.log")
         .CreateLogger();
       Log.Information("Loggly started");
