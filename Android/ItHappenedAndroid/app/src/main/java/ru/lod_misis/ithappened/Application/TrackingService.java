@@ -64,12 +64,11 @@ public class TrackingService
 
     public Observable<Event> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
                                                     Comparison scaleComparison, Double scale,
-                                                    Comparison ratingComparison, Rating rating,
-                                                    int fromElement, int count)
+                                                    Comparison ratingComparison, Rating rating)
     {
         List<Event> events = trackingCollection.FilterEvents(trackingId, dateFrom, dateTo,
                 scaleComparison, scale,
-                ratingComparison, rating, fromElement, count);
+                ratingComparison, rating);
 
         if(events == null) events = new ArrayList<>();
 
