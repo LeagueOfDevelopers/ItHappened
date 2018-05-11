@@ -1,7 +1,6 @@
 package ru.lod_misis.ithappened.Application;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +11,7 @@ import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import rx.Observable;
 
 
 public class TrackingService
@@ -62,16 +62,18 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
-    public List<Event> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
-                                              Comparison scaleComparison, Double scale,
-                                              Comparison ratingComparison, Rating rating,
-                                              int fromElement, int count)
+    public Observable<Event> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
+                                                    Comparison scaleComparison, Double scale,
+                                                    Comparison ratingComparison, Rating rating,
+                                                    int fromElement, int count)
     {
         List<Event> events = trackingCollection.FilterEvents(trackingId, dateFrom, dateTo,
                 scaleComparison, scale,
                 ratingComparison, rating, fromElement, count);
 
-        return events;
+        if(events == null) events = new ArrayList<>();
+
+        return Observable.from(events);
     }
 
     public void RemoveEvent(UUID trackingId, UUID eventId)

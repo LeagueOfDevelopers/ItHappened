@@ -28,24 +28,22 @@ import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Gui.MultiSpinner;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class EventsFragment extends Fragment  {
 
@@ -54,6 +52,8 @@ public class EventsFragment extends Fragment  {
     int myYear;
     int myMonth;
     int myDay;
+
+    List<Event> eventsForAdapter = new ArrayList<>();
 
     List<Boolean> flags;
 
@@ -116,9 +116,9 @@ public class EventsFragment extends Fragment  {
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
 
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
-        if(trackingService.FilterEventCollection(null, null, null, null, null, null, null).size()!=0) {
+/*        if(trackingService.FilterEventCollection(null, null, null, null, null, null, null,0,10).size()!=0) {
             hintForEventsHistory.setVisibility(View.INVISIBLE);
-        }
+        }*/
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
 
 
@@ -157,11 +157,31 @@ public class EventsFragment extends Fragment  {
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
+        /*eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
                 (null,null,null,
                         null,null,null,
-                        null), getActivity(), 1);
-        eventsRecycler.setAdapter(eventsAdpt);
+                        null,0,10), getActivity(), 1);*/
+
+        trackingService.FilterEventCollection(null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0,
+                10).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Event>() {
+                    @Override
+                    public void call(Event event) {
+                        eventsForAdapter.add(event);
+                        eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
+                        eventsRecycler.setAdapter(eventsAdpt);
+                    }
+                });
+
+
 
 
         final ArrayList<UUID> idCollection = new ArrayList<UUID>();
@@ -269,13 +289,14 @@ public class EventsFragment extends Fragment  {
         ratingFilter = (RatingBar) getActivity().findViewById(R.id.ratingFilter);
 
 
-        filtersCancel.setOnClickListener(new View.OnClickListener() {
+        /*filtersCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
                         (null,null,null,
                                 null,null,null,
-                                null), getActivity(), 1);
+                                null,0,10), getActivity(), 1);
                 ratingFilter.setRating(0);
                 scaleFilter.setText("");
                 dateFrom.setText("После");
@@ -331,12 +352,12 @@ public class EventsFragment extends Fragment  {
 
                 eventsRecycler.setAdapter(eventsAdpt);
             }
-        });
+        });*/
 
 
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
-        addFilters.setOnClickListener(new View.OnClickListener() {
+       /* addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -381,7 +402,7 @@ public class EventsFragment extends Fragment  {
                     }
 
                     YandexMetrica.reportEvent("Пользователь добавил фильтры");
-                    List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateF, dateT, scaleComparison, scale, ratingComparison, rating);
+                    List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateF, dateT, scaleComparison, scale, ratingComparison, rating,0,10);
                     eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
                     eventsRecycler.setAdapter(eventsAdpt);
 
@@ -394,18 +415,20 @@ public class EventsFragment extends Fragment  {
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }catch (Exception e){
                     Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
-                }
+
 
             }
-        });
+        }
+        );*/
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        List<Event> adapterEvents = eventsAdpt.getEvents();
+/*        List<Event> adapterEvents = eventsAdpt.getEvents();
         ArrayList<Event> refreshedEvents = new ArrayList<>();
+        if(adapterEvents!=null)
         for(Event event : adapterEvents){
             collection.GetTracking(event.GetTrackingId());
             Event addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
@@ -417,7 +440,7 @@ public class EventsFragment extends Fragment  {
             hintForEventsHistory.setVisibility(View.VISIBLE);
         }
 
-        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));*/
     }
 
 

@@ -41,6 +41,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             if(event.GetStatus())
                 deletedEvent.add(event);
         }
+        if(events!=null)
         events.removeAll(deletedEvent);
         this.context = context;
         this.state = state;
