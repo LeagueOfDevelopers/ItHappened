@@ -62,7 +62,7 @@ android {
             buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
             signingConfig signingConfigs.release
             resValue "integer", "app_version", "${defaultConfig.versionCode}"
-
+            ext.betaDistributionGroupAliases="testers"
         }
 
         debug{
@@ -105,5 +105,4 @@ dependencies {
 crashlytics {
     androidNdkOut 'src/main/obj'
     androidNdkLibsOut 'src/main/libs'
-    ext.betaDistributionGroupAliases="testers"
 }
