@@ -105,4 +105,5 @@ dependencies {
 crashlytics {
     androidNdkOut 'src/main/obj'
     androidNdkLibsOut 'src/main/libs'
+    ext.betaDistributionGroupAliases="testers"
 }
