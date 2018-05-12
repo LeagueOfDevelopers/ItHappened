@@ -21,8 +21,10 @@ public class Tracking extends RealmObject {
                     TrackingCustomization scale,
                     TrackingCustomization rating,
                     TrackingCustomization comment,
-                    String scaleName)
+                    String scaleName,
+                    String color)
     {
+        this.color = color;
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
@@ -42,8 +44,10 @@ public class Tracking extends RealmObject {
                     Date trackingDate,
                     List<Event> eventCollection,
                     boolean status, Date changeDate,
-                    String scaleName)
+                    String scaleName,
+                    String color)
     {
+        this.color = color;
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
@@ -125,7 +129,7 @@ public class Tracking extends RealmObject {
                              TrackingCustomization editedRating,
                              TrackingCustomization editedComment,
                              String editedTrackingName,
-                             String scaleName)
+                             String scaleName, String color)
     {
         if(scaleName != null)
             setScaleName(scaleName);
@@ -137,14 +141,13 @@ public class Tracking extends RealmObject {
             SetCommentCustomization(editedComment);
         if (editedTrackingName != null)
             trackingName = editedTrackingName;
+        if (color != null) this.color = color;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
     private boolean ChangesCheck(Object value, TrackingCustomization customization)
     {
-        if (value != null && customization != TrackingCustomization.None)
-            return true;
-        return false;
+        return value != null && customization != TrackingCustomization.None;
     }
 
     private void CustomizationCheck(Object value, TrackingCustomization customization)
@@ -283,6 +286,10 @@ public class Tracking extends RealmObject {
     public void SetStatus(boolean status) { isDeleted = status; }
     public void setScaleName(String name) {scaleName = name;}
 
+    public String getColor() { return color; }
+
+    public void setColor(String color) { this.color = color; }
+
     @Expose
     @SerializedName("scaleName")
     private String scaleName = "Шкала";
@@ -308,4 +315,6 @@ public class Tracking extends RealmObject {
     private Date dateOfChange;
     @Expose
     private boolean isDeleted = false;
+    @Expose
+    private String color;
 }

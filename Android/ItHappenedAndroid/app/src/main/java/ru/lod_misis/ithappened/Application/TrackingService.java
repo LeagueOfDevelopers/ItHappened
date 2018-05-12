@@ -37,10 +37,11 @@ public class TrackingService
                              TrackingCustomization editedScale,
                              TrackingCustomization editedComment,
                              String editedTrackingName,
-                             String scaleName)
+                             String scaleName,
+                             String color)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName, scaleName);
+        tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName, scaleName, color);
         trackingCollection.ChangeTracking(tracking);
     }
 
