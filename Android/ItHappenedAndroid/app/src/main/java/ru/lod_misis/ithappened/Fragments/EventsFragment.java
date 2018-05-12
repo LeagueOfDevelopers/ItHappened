@@ -28,13 +28,19 @@ import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Gui.MultiSpinner;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -42,6 +48,7 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -116,9 +123,6 @@ public class EventsFragment extends Fragment  {
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
 
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
-/*        if(trackingService.FilterEventCollection(null, null, null, null, null, null, null,0,10).size()!=0) {
-            hintForEventsHistory.setVisibility(View.INVISIBLE);
-        }*/
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
 
 
@@ -157,10 +161,6 @@ public class EventsFragment extends Fragment  {
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        /*eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
-                (null,null,null,
-                        null,null,null,
-                        null,0,10), getActivity(), 1);*/
 
         trackingService.FilterEventCollection(null,
                 null,
@@ -168,18 +168,26 @@ public class EventsFragment extends Fragment  {
                 null,
                 null,
                 null,
-                null,
-                0,
-                10).subscribeOn(Schedulers.io())
+                null).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Event>() {
-                    @Override
-                    public void call(Event event) {
-                        eventsForAdapter.add(event);
-                        eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
-                        eventsRecycler.setAdapter(eventsAdpt);
-                    }
-                });
+                               @Override
+                               public void call(Event event) {
+                                   eventsForAdapter.add(event);
+                                   hintForEventsHistory.setVisibility(View.GONE);
+                               }
+                           }, new Action1<Throwable>() {
+                               @Override
+                               public void call(Throwable throwable) {
+
+                               }
+                           },
+                        new Action0() {
+                            @Override
+                            public void call() {
+                                eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
+                            }
+                        });
 
 
 
@@ -289,78 +297,105 @@ public class EventsFragment extends Fragment  {
         ratingFilter = (RatingBar) getActivity().findViewById(R.id.ratingFilter);
 
 
-        /*filtersCancel.setOnClickListener(new View.OnClickListener() {
+        filtersCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                eventsAdpt = new EventsAdapter(trackingService.FilterEventCollection
+                final List<Event> allEvents = new ArrayList<>();
+
+                trackingService.FilterEventCollection
                         (null,null,null,
                                 null,null,null,
-                                null,0,10), getActivity(), 1);
-                ratingFilter.setRating(0);
-                scaleFilter.setText("");
-                dateFrom.setText("После");
-                dateFrom.setTextSize(15);
-                dateTo.setText("До");
-                dateTo.setTextSize(15);
+                                null)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Event>() {
+                                       @Override
+                                       public void call(Event event) {
+                                           allEvents.add(event);
+                                       }
+                                   },
+                                new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+
+                                    }
+                                },
+                                new Action0() {
+                                    @Override
+                                    public void call() {
+                                        ratingFilter.setRating(0);
+                                        scaleFilter.setText("");
+                                        dateFrom.setText("После");
+                                        dateFrom.setTextSize(15);
+                                        dateTo.setText("До");
+                                        dateTo.setTextSize(15);
+
+                                        hintsForRatingSpinner.setSelection(0);
+                                        hintsForScaleSpinner.setSelection(0);
+
+                                        String allText = "";
+                                        for (int i = 0; i < strings.size(); i++) {
+                                            if (i != strings.size()) {
+                                                allText += strings.get(i) + ", ";
+                                            }
+                                        }
+
+                                        if (strings.size() != 0) {
+                                            trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
+                                                    new MultiSpinner.MultiSpinnerListener() {
+
+                                                        @Override
+                                                        public void onItemsSelected(boolean[] selected) {
+
+                                                            for (int i = 0; i < selected.length; i++) {
+
+                                                                Log.e("FILTER", selected[i] + "");
+                                                                if (selected[i]) {
+                                                                    filteredTrackingsTitles.add(strings.get(i));
+                                                                    if (flags.get(i)) {
+                                                                        filteredTrackingsUuids.add(idCollection.get(i));
+                                                                    }
+                                                                }
+                                                                if (!selected[i]) {
+                                                                    filteredTrackingsUuids.remove(idCollection.get(i));
+                                                                    flags.set(i, true);
+                                                                }
+
+                                                            }
+                                                        }
+                                                    });
+                                            filtersHintText.setVisibility(View.GONE);
+                                        } else {
+
+                                            trackingsSpinner.setVisibility(View.INVISIBLE);
+                                            hintForSpinner.setVisibility(View.VISIBLE);
+
+                                            filtersHintText.setVisibility(View.GONE);
+
+                                        }
+
+                                        eventsAdpt = new EventsAdapter(allEvents, getActivity(), 1);
+
+                                        eventsRecycler.setAdapter(eventsAdpt);
+                                    }
+                                });
+
 
                 YandexMetrica.reportEvent("Пользователь отменил фильтры");
 
-                hintsForRatingSpinner.setSelection(0);
-                hintsForScaleSpinner.setSelection(0);
 
-                String allText = "";
-                for(int i=0;i<strings.size();i++) {
-                    if (i != strings.size()) {
-                        allText += strings.get(i) + ", ";
-                    }
-                }
 
-                if(strings.size()!=0) {
-                    trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
-                            new MultiSpinner.MultiSpinnerListener() {
 
-                                @Override
-                                public void onItemsSelected(boolean[] selected) {
-
-                                    for (int i = 0; i < selected.length; i++) {
-
-                                        Log.e("FILTER", selected[i] + "");
-                                        if (selected[i]) {
-                                            filteredTrackingsTitles.add(strings.get(i));
-                                            if(flags.get(i)) {
-                                                filteredTrackingsUuids.add(idCollection.get(i));
-                                            }
-                                        }
-                                        if (!selected[i]) {
-                                            filteredTrackingsUuids.remove(idCollection.get(i));
-                                            flags.set(i, true);
-                                        }
-
-                                    }
-                                }
-                            });
-                    filtersHintText.setVisibility(View.GONE);
-                }else{
-
-                    trackingsSpinner.setVisibility(View.INVISIBLE);
-                    hintForSpinner.setVisibility(View.VISIBLE);
-
-                    filtersHintText.setVisibility(View.GONE);
-
-                }
-
-                eventsRecycler.setAdapter(eventsAdpt);
             }
-        });*/
+        });
 
 
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
-       /* addFilters.setOnClickListener(new View.OnClickListener() {
+       addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
 
                 Date dateF = null;
@@ -370,7 +405,7 @@ public class EventsFragment extends Fragment  {
                 Comparison ratingComparison = null;
                 Rating rating = null;
 
-                if(!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()){
+                if (!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()) {
                     Locale locale = new Locale("ru");
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
                     try {
@@ -397,50 +432,76 @@ public class EventsFragment extends Fragment  {
                     if (ratingFilter.getRating() != 0) {
                         int positionForRating = hintsForRatingSpinner.getSelectedItemPosition();
                         ratingComparison = comparisons[positionForRating];
-                        double ratingVal = ratingFilter.getRating()*2;
-                        rating = new Rating((int)ratingVal );
+                        double ratingVal = ratingFilter.getRating() * 2;
+                        rating = new Rating((int) ratingVal);
                     }
 
                     YandexMetrica.reportEvent("Пользователь добавил фильтры");
-                    List<Event> filteredEvents = trackingService.FilterEventCollection(filteredTrackingsUuids, dateF, dateT, scaleComparison, scale, ratingComparison, rating,0,10);
-                    eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
-                    eventsRecycler.setAdapter(eventsAdpt);
+                    final List<Event> filteredEvents = new ArrayList<>();
 
-                    if(filteredEvents.size()==0){
-                        filtersHintText.setVisibility(View.VISIBLE);
-                    }else{
-                        filtersHintText.setVisibility(View.GONE);
-                    }
-                    BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }catch (Exception e){
+                    trackingService.FilterEventCollection(filteredTrackingsUuids,
+                            dateF,
+                            dateT,
+                            scaleComparison,
+                            scale,
+                            ratingComparison,
+                            rating)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()).subscribe(
+                            new Action1<Event>() {
+                                @Override
+                                public void call(Event event) {
+                                    filteredEvents.add(event);
+                                }
+                            }, new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+
+                                }
+                            },
+                            new Action0() {
+                                @Override
+                                public void call() {
+                                    eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
+                                    eventsRecycler.setAdapter(eventsAdpt);
+
+                                    if (filteredEvents.size() == 0) {
+                                        filtersHintText.setVisibility(View.VISIBLE);
+                                    } else {
+                                        filtersHintText.setVisibility(View.GONE);
+                                    }
+                                    BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
+                                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                }
+                            });
+
+                } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
-
-
-            }
-        }
-        );*/
+                }
+            }});
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-/*        List<Event> adapterEvents = eventsAdpt.getEvents();
-        ArrayList<Event> refreshedEvents = new ArrayList<>();
-        if(adapterEvents!=null)
-        for(Event event : adapterEvents){
-            collection.GetTracking(event.GetTrackingId());
-            Event addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
-            if(!addAbleEvent.GetStatus())
-            refreshedEvents.add(addAbleEvent);
-        }
+        if(eventsAdpt!=null) {
+            List<Event> adapterEvents = eventsAdpt.getEvents();
+            ArrayList<Event> refreshedEvents = new ArrayList<>();
+            if (adapterEvents != null)
+                for (Event event : adapterEvents) {
+                    collection.GetTracking(event.GetTrackingId());
+                    Event addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
+                    if (!addAbleEvent.GetStatus())
+                        refreshedEvents.add(addAbleEvent);
+                }
 
-        if(refreshedEvents.size()==0){
-            hintForEventsHistory.setVisibility(View.VISIBLE);
-        }
+            if (refreshedEvents.size() == 0) {
+                hintForEventsHistory.setVisibility(View.VISIBLE);
+            }
 
-        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));*/
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+        }
     }
 
 
