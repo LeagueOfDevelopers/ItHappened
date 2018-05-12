@@ -16,6 +16,7 @@ import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.CorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequentEventFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgRatingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFact;
@@ -287,5 +288,24 @@ public final class FunctionApplicability  {
         });
 
         return  eventCollection;
+    }
+
+    public static List<Fact> correlationFactApplicability(List<Tracking> trackingCollection) {
+        List<Fact> facts = new ArrayList<>();
+        for (int i = 0; i < trackingCollection.size() - 1; i++) {
+            for (int j = i + 1; j < trackingCollection.size(); j++) {
+                if (trackingCollection.get(i).GetEventCollection().size() >= 40 &&
+                        !trackingCollection.get(i).isDeleted() &&
+                        trackingCollection.get(j).GetEventCollection().size() >= 40 &&
+                        !trackingCollection.get(j).isDeleted()) {
+                    CorrelationFact fact = new CorrelationFact(trackingCollection.get(i), trackingCollection.get(j));
+                    fact.calculateData();
+                    if (fact.IsBoolCorrSignificant() &&
+                            fact.IsDoubleCorrSignificant() &&
+                            fact.IsMultinomialCorrSignificant()) facts.add(fact);
+                }
+            }
+        }
+        return facts;
     }
 }

@@ -101,6 +101,9 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true;
     }
+    compile files('build/libs/colt.jar')
+    compile files('build/libs/concurrent.jar')
+    compile files('build/libs/joda-time-2.9.9-dist/joda-time-2.9.9.jar')
 }
 crashlytics {
     androidNdkOut 'src/main/obj'
