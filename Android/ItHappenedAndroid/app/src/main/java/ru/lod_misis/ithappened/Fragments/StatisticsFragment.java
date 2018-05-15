@@ -88,11 +88,11 @@ public class StatisticsFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         if(sharedPreferences.getString("LastId","").isEmpty()) {
-            trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                    sharedPreferences.getString("UserId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
+            trackingCollection = StaticInMemoryRepository.getInstance();
         }else{
-            trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                    sharedPreferences.getString("LastId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
+            trackingCollection = StaticInMemoryRepository.getInstance();
         }
         service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
         titles.add("Общая статистика");
@@ -147,8 +147,8 @@ public class StatisticsFragment extends Fragment {
                                             @Override
                                             public void call(Fact fact) {
                                                 Log.d("Statistics", "calculateOneTrackingFact");
-                                                trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                                                        getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+                                                StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
+                                                trackingCollection = StaticInMemoryRepository.getInstance();
                                                 service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
                                                 titles = new ArrayList<>();
                                                 allTrackings = new ArrayList<>();
@@ -229,16 +229,10 @@ public class StatisticsFragment extends Fragment {
             if(position==0) {
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.all_statistics_layout, null);
-                ITrackingRepository trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                        getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+                StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences(
+                        "MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
+                ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
                 facts = factRepository.getAllTrackingsFactCollection();
-
-               /* Collections.sort(facts, new Comparator<Fact>() {
-                    @Override
-                    public int compare(Fact fact, Fact t1) {
-                        return fact.getPriority().compareTo(t1.getPriority());
-                    }
-                });*/
 
                 if(facts.size()!=0) {
                     hint = (TextView) customView.findViewById(R.id.hintAllTrackingsFacts);
@@ -252,8 +246,10 @@ public class StatisticsFragment extends Fragment {
 
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.one_tracking_statistics_layout, null);
-                ITrackingRepository trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                        getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "")).getInstance();
+                StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences(
+                                "MAIN_KEYS",
+                                Context.MODE_PRIVATE).getString("UserId", ""));
+                ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
 
                 facts = factRepository.getOneTrackingFactCollection(allTrackings.get(position-1).GetTrackingID());
 

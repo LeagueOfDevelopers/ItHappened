@@ -94,11 +94,11 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         if(sharedPreferences.getString("LastId","").isEmpty()) {
-            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                    sharedPreferences.getString("UserId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }else{
-            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                    sharedPreferences.getString("LastId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }
 
         addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
@@ -358,7 +358,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString();
                         }
-                        Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb);
+                        Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, "111111");
                         trackingRepository.AddNewTracking(newTracking);
                         YandexMetrica.reportEvent("Пользователь добавил отслеживание");
                         Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();

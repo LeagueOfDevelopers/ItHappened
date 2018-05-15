@@ -21,8 +21,10 @@ public class Tracking extends RealmObject {
                     TrackingCustomization scale,
                     TrackingCustomization rating,
                     TrackingCustomization comment,
-                    String scaleName)
+                    String scaleName,
+                    String color)
     {
+        this.color = color;
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
@@ -42,8 +44,9 @@ public class Tracking extends RealmObject {
                     Date trackingDate,
                     List<Event> eventCollection,
                     boolean status, Date changeDate,
-                    String scaleName)
+                    String scaleName, String color)
     {
+        this.color = color;
         this.trackingName = trackingName;
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
@@ -125,10 +128,12 @@ public class Tracking extends RealmObject {
                              TrackingCustomization editedRating,
                              TrackingCustomization editedComment,
                              String editedTrackingName,
-                             String scaleName)
+                             String scaleName, String color)
     {
         if(scaleName != null)
             setScaleName(scaleName);
+        if (color != null)
+            this.color = color;
         if (editedScale != null)
             SetScaleCustomization(editedScale);
         if (editedRating != null)
@@ -283,6 +288,9 @@ public class Tracking extends RealmObject {
     public void SetStatus(boolean status) { isDeleted = status; }
     public void setScaleName(String name) {scaleName = name;}
 
+    public String getColor() { return color; }
+    public void setColor(String color) { this.color = color; }
+
     @Expose
     @SerializedName("scaleName")
     private String scaleName = "Шкала";
@@ -308,4 +316,6 @@ public class Tracking extends RealmObject {
     private Date dateOfChange;
     @Expose
     private boolean isDeleted = false;
+    @Expose
+    private String color;
 }

@@ -59,11 +59,9 @@ public class TrackingsFragment extends Fragment {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         if(sharedPreferences.getString("LastId","").isEmpty()) {
-            trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                    sharedPreferences.getString("UserId", "")).getInstance();
+            trackingCollection = StaticInMemoryRepository.getInstance();
         }else{
-            trackingCollection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                    sharedPreferences.getString("LastId", "")).getInstance();
+            trackingCollection = StaticInMemoryRepository.getInstance();
         }
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 

@@ -10,10 +10,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmResults;
+import io.realm.RealmSchema;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -31,7 +36,6 @@ public class TrackingRepository implements ITrackingRepository{
 
     public void SaveTrackingCollection(List<Tracking> trackingCollection)
     {
-        onCreate();
         realm.beginTransaction();
         DbModel model = new DbModel(trackingCollection, userId);
         RealmResults<DbModel> result = realm.where(DbModel.class).equalTo("userId", userId).findAll();
@@ -40,6 +44,8 @@ public class TrackingRepository implements ITrackingRepository{
         realm.copyToRealm(model);
         realm.commitTransaction();
     }
+
+    public void setUserId(String userId) { this.userId = userId; }
 
     public Tracking GetTracking(UUID trackingId)
     {
@@ -57,7 +63,6 @@ public class TrackingRepository implements ITrackingRepository{
 
     public List<Tracking> GetTrackingCollection()
     {
-        onCreate();
         RealmResults<DbModel> results = realm.where(DbModel.class)
                 .equalTo("userId", userId).findAll();
         List<DbModel> modelCollection = realm.copyFromRealm(results);
@@ -77,7 +82,6 @@ public class TrackingRepository implements ITrackingRepository{
 
     public void AddNewTracking(Tracking tracking)
     {
-        onCreate();
        realm.beginTransaction();
         RealmResults<DbModel> results = realm.where(DbModel.class)
                 .equalTo("userId", userId).findAll();
@@ -224,7 +228,6 @@ public class TrackingRepository implements ITrackingRepository{
     }
 
     public void ChangeTracking(final Tracking tracking) {
-        onCreate();
         realm.beginTransaction();
         RealmResults<DbModel> result = realm.where(DbModel.class)
                 .equalTo("userId", userId).findAll();
@@ -247,15 +250,6 @@ public class TrackingRepository implements ITrackingRepository{
         realm.commitTransaction();
     }
 
-    private void onCreate()
-    {
-        RealmConfiguration config = new RealmConfiguration.Builder()
-                .name("ItHappened.realm")
-                .build();
-
-        realm = Realm.getInstance(config);
-    }
-
     private List<Event> RemoveDeletedEventsAndTrackingsFromCollection(List<Event> collection)
     {
         List<Event> collectionToReturn = new ArrayList<>();
@@ -265,6 +259,31 @@ public class TrackingRepository implements ITrackingRepository{
                 collectionToReturn.add(event);
         }
         return collectionToReturn;
+    }
+
+    public void configureRealm()
+    {
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("ItHappened.realm").schemaVersion(2).migration(new RealmMigration() {
+                    @Override
+                    public void migrate(final DynamicRealm dynamicRealm, long oldVersion, long newVersion) {
+                        final RealmSchema schema = dynamicRealm.getSchema();
+
+                        if (oldVersion == 1){
+                            final RealmObjectSchema newSchema = schema.get("DbModel");
+                            newSchema.addField("color", String.class);
+                            newSchema.transform(new RealmObjectSchema.Function() {
+                                @Override
+                                public void apply(DynamicRealmObject dynamicRealmObject) {
+                                    dynamicRealmObject.setString("color", "111111");
+                                }
+                            });
+                        }
+                    }
+                })
+                .build();
+
+        realm = Realm.getInstance(config);
     }
 
     Context context;

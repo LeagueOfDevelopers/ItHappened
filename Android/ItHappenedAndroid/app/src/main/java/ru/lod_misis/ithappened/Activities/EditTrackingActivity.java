@@ -104,11 +104,11 @@ public class EditTrackingActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         if(sharedPreferences.getString("LastId","").isEmpty()) {
-            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                    sharedPreferences.getString("UserId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }else{
-            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                    sharedPreferences.getString("LastId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }
 
         service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
@@ -405,7 +405,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString();
                         }
-                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb);
+                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb, null);
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
