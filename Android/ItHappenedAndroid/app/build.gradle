@@ -83,6 +83,7 @@ dependencies {
     compile 'com.synnapps:carouselview:0.1.4'
     compile 'com.wdullaer:materialdatetimepicker:3.5.0'
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
+    compile 'com.thebluealliance:spectrum:0.7.1'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'io.reactivex:rxjava:1.1.3'

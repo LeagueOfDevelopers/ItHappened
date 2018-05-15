@@ -351,6 +351,30 @@
                     android:paddingLeft="15dp" />
             </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.CardView
+                android:id="@+id/colorPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/scaleTypeContainer"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/custom_edit_text"
+                android:elevation="20dp">
+                <TextView
+                    android:id="@+id/colorText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:text="Цвет отслеживания"
+                    android:textSize="18sp"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:background="@drawable/custom_edit_text"
+                    android:paddingLeft="15dp" />
+            </android.support.v7.widget.CardView>
+
         </RelativeLayout>
     </ScrollView>
 

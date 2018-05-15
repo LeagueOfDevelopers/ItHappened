@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
@@ -44,6 +45,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     TextView ratingEnabled;
     TextView commentEnabled;
     TextView scaleEnabled;
+
+    CardView colorPickerButton;
+    TextView colorPickerText;
 
     LinearLayout ratingDont;
     LinearLayout ratingOptional;
@@ -118,6 +122,8 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
         ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheck);
 
+        colorPickerButton = findViewById(R.id.colorPicker);
+
         commentDont = (LinearLayout) findViewById(R.id.commentBackColorDont);
         commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheck);
         commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheck);
@@ -137,6 +143,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
         scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
         scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
+        colorPickerText = findViewById(R.id.colorText);
 
         visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
         visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
@@ -237,8 +244,6 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
 
 
-
-
         scaleDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -291,6 +296,27 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
+            }
+        });
+
+        colorPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
+                colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
+                        .setColors(getApplicationContext().getResources().getIntArray(R.array.rainbow))
+                        .setDismissOnColorSelected(false)
+                        .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
+                            @Override
+                            public void onColorSelected(boolean b, int i) {
+                                if(b){
+                                    Toast.makeText(getApplicationContext(), Integer.toHexString(i)+"", Toast.LENGTH_SHORT).show();
+                                    colorPickerText.setTextColor(i  );
+                                }
+                            }
+                        });
+                SpectrumDialog dialog = colorPickerDialogBuilder.build();
+                dialog.show(getSupportFragmentManager(), "Tag");
             }
         });
 
