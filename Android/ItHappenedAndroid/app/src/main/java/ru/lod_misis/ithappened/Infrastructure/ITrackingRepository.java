@@ -20,5 +20,7 @@ public interface ITrackingRepository
                              Comparison scaleComparison, Double scale,
                              Comparison ratingComparison, Rating rating);
     void SaveTrackingCollection(List<Tracking> trackingCollection);
+    void configureRealm();
+    void setUserId(String userId);
 
 }

@@ -174,11 +174,12 @@ public class UserActionsActivity extends AppCompatActivity
 
         factRepository = StaticFactRepository.getInstance();
         if(sharedPreferences.getString("LastId","").isEmpty()) {
-            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                    sharedPreferences.getString("UserId", "")).getInstance();
+            StaticInMemoryRepository.setInstance(getApplicationContext(),
+                    sharedPreferences.getString("UserId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }else{
-            trackingRepository = new StaticInMemoryRepository(getApplicationContext(),
-                    sharedPreferences.getString("LastId", "")).getInstance();
+            StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("LastId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }
 
         factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
@@ -374,7 +375,7 @@ public class UserActionsActivity extends AppCompatActivity
 
                                            final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
                                                    new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
-                                                   new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
+                                                   StaticInMemoryRepository.getInstance().GetTrackingCollection());
 
                                            mainSync = ItHappenedApplication.
                                                    getApi().
@@ -455,8 +456,7 @@ public class UserActionsActivity extends AppCompatActivity
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        TrackingService trackingService = new TrackingService("", new StaticInMemoryRepository(getApplicationContext(),
-                sharedPreferences.getString("UserId", "")).getInstance());
+        TrackingService trackingService = new TrackingService("", StaticInMemoryRepository.getInstance());
         trackingService.RemoveTracking(trackingId);
         factRepository.onChangeCalculateOneTrackingFacts(trackingService.GetTrackingCollection(), trackingId)
                 .subscribeOn(Schedulers.computation())
@@ -567,11 +567,11 @@ public class UserActionsActivity extends AppCompatActivity
                         ITrackingRepository collection;
 
                         if(sharedPreferences.getString("LastId","").isEmpty()) {
-                            collection = new StaticInMemoryRepository(getApplicationContext(),
-                                    sharedPreferences.getString("Offline", "")).getInstance();
+                            StaticInMemoryRepository.setUserId(sharedPreferences.getString("Offline", ""));
+                            collection = StaticInMemoryRepository.getInstance();
                         }else{
-                            collection = new StaticInMemoryRepository(getApplicationContext(),
-                                    sharedPreferences.getString("LastId", "")).getInstance();
+                            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
+                            collection = StaticInMemoryRepository.getInstance();
                         }
 
                         String lastId = sharedPreferences.getString("LastId", "");
@@ -586,8 +586,8 @@ public class UserActionsActivity extends AppCompatActivity
                         editor.commit();
 
                         if(!lastId.equals(sharedPreferences.getString("UserId", ""))){
-                            collection = collection = new StaticInMemoryRepository(getApplicationContext(),
-                                    sharedPreferences.getString("UserId", "")).getInstance();
+                            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
+                            collection = StaticInMemoryRepository.getInstance();
                         }
 
                         SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
@@ -636,7 +636,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     private void saveDataToDb(List<Tracking> trackings){
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
+        ITrackingRepository trackingRepository = StaticInMemoryRepository.getInstance();
         trackingRepository.SaveTrackingCollection(trackings);
     }
 
@@ -657,8 +657,7 @@ public class UserActionsActivity extends AppCompatActivity
                         editor.commit();
 
                         final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
-                                new java.util.Date(sharedPreferences.getLong("NickDate", 0)),new StaticInMemoryRepository(getApplicationContext(),
-                                sharedPreferences.getString("UserId", "")).getInstance().GetTrackingCollection());
+                                new java.util.Date(sharedPreferences.getLong("NickDate", 0)), StaticInMemoryRepository.getInstance().GetTrackingCollection());
 
                         ItHappenedApplication.getApi().SynchronizeData("Bearer "+sharedPreferences.getString("Token", ""), synchronizationRequest).subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())

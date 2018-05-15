@@ -82,11 +82,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         if(sharedPreferences.getString("LastId","").isEmpty()) {
-            trackingRepository = new StaticInMemoryRepository(context,
-                    sharedPreferences.getString("UserId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }else{
-            trackingRepository = new StaticInMemoryRepository(context,
-                    sharedPreferences.getString("LastId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
         }
 
 

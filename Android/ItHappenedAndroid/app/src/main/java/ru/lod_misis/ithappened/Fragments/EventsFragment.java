@@ -113,11 +113,11 @@ public class EventsFragment extends Fragment  {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         if(sharedPreferences.getString("LastId","").isEmpty()) {
-            collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                    sharedPreferences.getString("UserId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
+            collection = StaticInMemoryRepository.getInstance();
         }else{
-            collection = new StaticInMemoryRepository(getActivity().getApplicationContext(),
-                    sharedPreferences.getString("LastId", "")).getInstance();
+            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
+            collection = StaticInMemoryRepository.getInstance();
         }
 
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);

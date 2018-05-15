@@ -41,7 +41,9 @@ public class TrackingService
                              String color)
     {
         Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditTracking(editedCounter, editedScale, editedComment, editedTrackingName, scaleName, color);
+        tracking.EditTracking(
+                editedCounter, editedScale, editedComment,
+                editedTrackingName, scaleName, color);
         trackingCollection.ChangeTracking(tracking);
     }
 
