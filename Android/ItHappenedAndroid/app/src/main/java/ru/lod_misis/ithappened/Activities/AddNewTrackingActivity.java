@@ -299,22 +299,25 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             }
         });
 
+        final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
+        colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
+                .setColors(getApplicationContext().getResources().getIntArray(R.array.rainbow))
+                .setDismissOnColorSelected(false)
+                .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(boolean b, int i) {
+                        if(b){
+                            Toast.makeText(getApplicationContext(), Integer.toHexString(i)+"", Toast.LENGTH_SHORT).show();
+                            colorPickerDialogBuilder.setSelectedColor(i);
+                            colorPickerText.setTextColor(i  );
+                        }
+                    }
+                });
+
         colorPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
-                colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
-                        .setColors(getApplicationContext().getResources().getIntArray(R.array.rainbow))
-                        .setDismissOnColorSelected(false)
-                        .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
-                            @Override
-                            public void onColorSelected(boolean b, int i) {
-                                if(b){
-                                    Toast.makeText(getApplicationContext(), Integer.toHexString(i)+"", Toast.LENGTH_SHORT).show();
-                                    colorPickerText.setTextColor(i  );
-                                }
-                            }
-                        });
+
                 SpectrumDialog dialog = colorPickerDialogBuilder.build();
                 dialog.show(getSupportFragmentManager(), "Tag");
             }
