@@ -73,6 +73,8 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     ImageView scaleOptionalImage;
     ImageView scaleRequiredImage;
 
+    String trackingColor;
+
 
     CardView visibilityScaleType;
     TextView visbilityScaleTypeHint;
@@ -330,6 +332,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
                 }else{
 
+                    trackingColor = String.valueOf(colorPickerText.getCurrentTextColor());
                     String trackingTitle = trackingName.getText().toString();
 
                     TrackingCustomization rating = TrackingCustomization.None;
@@ -387,7 +390,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString();
                         }
-                        Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, "111111");
+                        Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, trackingColor);
                         trackingRepository.AddNewTracking(newTracking);
                         YandexMetrica.reportEvent("Пользователь добавил отслеживание");
                         Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();

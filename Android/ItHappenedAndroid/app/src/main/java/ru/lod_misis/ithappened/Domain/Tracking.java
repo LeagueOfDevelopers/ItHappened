@@ -64,6 +64,13 @@ public class Tracking extends RealmObject {
 
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     public void AddEvent (Event newEvent)
     {
