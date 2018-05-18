@@ -26,6 +26,23 @@
         <item>@color/magenta</item>
     </array>
 
+    <array name="second_palette">
+        <item>@color/first</item>
+        <item>@color/second</item>
+        <item>@color/third</item>
+        <item>@color/fourth</item>
+        <item>@color/fifth</item>
+        <item>@color/sixth</item>
+        <item>@color/seventh</item>
+        <item>@color/eighth</item>
+        <item>@color/nine</item>
+        <item>@color/ten</item>
+        <item>@color/eleven</item>
+        <item>@color/twelve</item>
+        <item>@color/thirteen</item>
+        <item>@color/fourteen</item>
+    </array>
+
     <color name="bright_pink">#e8eaf6</color>
     <color name="red">#c5cae9</color>
     <color name="orange">#9fa8da</color>
@@ -38,4 +55,22 @@
     <color name="blue">#1a237e</color>
     <color name="violet">#8c9eff</color>
     <color name="magenta">#3d5afe</color>
+
+
+
+
+    <color name="first">#a9a9a9</color>
+    <color name="second">#95a31a</color>
+    <color name="third">#7b7f6d</color>
+    <color name="fourth">#7986cb</color>
+    <color name="fifth">#7C07A9</color>
+    <color name="sixth">#65247F</color>
+    <color name="seventh">#50026E</color>
+    <color name="eighth">#B564D4</color>
+    <color name="nine">#FF7600</color>
+    <color name="ten">#A64D00</color>
+    <color name="eleven">#FF9840</color>
+    <color name="twelve">#00AC6B</color>
+    <color name="thirteen">#007046</color>
+    <color name="fourteen">#60D6A9</color>
 </resources>

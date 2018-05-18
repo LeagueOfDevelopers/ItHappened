@@ -303,7 +303,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
         final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
         colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
-                .setColors(getApplicationContext().getResources().getIntArray(R.array.rainbow))
+                .setColors(getApplicationContext().getResources().getIntArray(R.array.second_palette))
                 .setDismissOnColorSelected(false)
                 .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override

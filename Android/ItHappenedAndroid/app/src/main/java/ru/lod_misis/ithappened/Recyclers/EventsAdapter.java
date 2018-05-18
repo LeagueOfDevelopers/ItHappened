@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Recyclers;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,6 +92,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
 
         UUID trackingId = event.GetTrackingId();
+
+        holder.trackingColor.setCardBackgroundColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()));
 
         if(event.GetComment()!=null && state==0){
             holder.trackingTitle.setText(event.GetComment());
@@ -187,6 +190,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         TextView ratingValue;
         ImageView starIcon;
 
+        CardView trackingColor;
+
         ImageView deleteEvent;
         ImageView editEvent;
 
@@ -197,6 +202,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             scaleValue = (TextView) itemView.findViewById(R.id.scaleValue);
             ratingValue = (TextView) itemView.findViewById(R.id.ratingValue);
             starIcon = (ImageView) itemView.findViewById(R.id.starIcon);
+            trackingColor = itemView.findViewById(R.id.trackingColorEvent);
             eventDate = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventDate);
             trackingTitle = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.TrackingTitle);
             itemLL = (RelativeLayout) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventRL);
