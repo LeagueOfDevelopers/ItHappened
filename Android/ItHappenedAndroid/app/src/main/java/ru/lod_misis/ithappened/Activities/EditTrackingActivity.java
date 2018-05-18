@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
@@ -46,6 +47,11 @@ public class EditTrackingActivity extends AppCompatActivity {
     TextView ratingEnabled;
     TextView commentEnabled;
     TextView scaleEnabled;
+
+    CardView colorTrackingEdit;
+    TextView colorTrackingTextEdit;
+
+    String trackingColor;
 
     LinearLayout ratingDont;
     LinearLayout ratingOptional;
@@ -139,6 +145,9 @@ public class EditTrackingActivity extends AppCompatActivity {
         ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheckEdit);
         ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheckEdit);
 
+        colorTrackingEdit = findViewById(R.id.colorPickerEdit);
+        colorTrackingTextEdit = findViewById(R.id.colorTextEdit);
+
         commentDontImage = (ImageView) findViewById(R.id.commentBackImageDontEdit);
         commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheckEdit);
         commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheckEdit);
@@ -155,6 +164,32 @@ public class EditTrackingActivity extends AppCompatActivity {
         editableTracking = trackingRepository.GetTracking(trackingId);
 
         trackingName.setText(editableTracking.GetTrackingName());
+
+        final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
+        colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
+                .setColors(getApplicationContext().getResources().getIntArray(R.array.rainbow))
+                .setSelectedColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()))
+                .setDismissOnColorSelected(false)
+                .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(boolean b, int i) {
+                        if(b){
+                            Toast.makeText(getApplicationContext(), Integer.toHexString(i)+"", Toast.LENGTH_SHORT).show();
+                            colorPickerDialogBuilder.setSelectedColor(i);
+                            colorTrackingTextEdit.setTextColor(i  );
+                        }
+                    }
+                });
+
+        colorTrackingTextEdit.setTextColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()));
+
+        colorTrackingEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SpectrumDialog dialog = colorPickerDialogBuilder.build();
+                dialog.show(getSupportFragmentManager(), "Tag");
+            }
+        });
 
         if(editableTracking.GetScaleCustomization() == TrackingCustomization.None) {
             visbilityScaleTypeHint.setVisibility(View.GONE);
@@ -348,6 +383,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
                 }else{
 
+                    trackingColor = ""+colorTrackingTextEdit.getCurrentTextColor();
                     String trackingTitle = trackingName.getText().toString();
 
                     TrackingCustomization rating = TrackingCustomization.None;
@@ -405,7 +441,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString();
                         }
-                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb, null);
+                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb, trackingColor);
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
