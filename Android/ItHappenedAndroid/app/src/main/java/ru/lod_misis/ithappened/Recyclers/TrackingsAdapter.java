@@ -49,7 +49,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
         final Tracking tracking = trackings.get(position);
         holder.trackingTitle.setText(tracking.GetTrackingName());
-        holder.itemLL.setCardBackgroundColor(Integer.parseInt(tracking.getColor()));
+        holder.trackingColor.setCardBackgroundColor(Integer.parseInt(tracking.getColor()));
 
         holder.itemLL.setOnClickListener(new View.OnClickListener(){
 
@@ -136,11 +136,13 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
         TextView trackingTitle;
         CardView itemLL;
+        CardView trackingColor;
 
         public ViewHolder(View itemView) {
             super(itemView);
             trackingTitle = (TextView) itemView.findViewById(R.id.TracingTitle);
             itemLL = (CardView) itemView.findViewById(R.id.itemLL);
+            trackingColor = itemView.findViewById(R.id.trackingColor);
         }
     }
 
