@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import jp.shts.android.library.TriangleLabelView;
 import ru.lod_misis.ithappened.Activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.Activities.EditTrackingActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
@@ -49,7 +50,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
         final Tracking tracking = trackings.get(position);
         holder.trackingTitle.setText(tracking.GetTrackingName());
-        holder.trackingColor.setCardBackgroundColor(Integer.parseInt(tracking.getColor()));
+        holder.trackingColor.setTriangleBackgroundColor(Integer.parseInt(tracking.getColor()));
 
         holder.itemLL.setOnClickListener(new View.OnClickListener(){
 
@@ -136,7 +137,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
         TextView trackingTitle;
         CardView itemLL;
-        CardView trackingColor;
+        TriangleLabelView trackingColor;
 
         public ViewHolder(View itemView) {
             super(itemView);
