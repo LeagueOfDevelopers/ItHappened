@@ -15,6 +15,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
+import ru.lod_misis.ithappened.ConnectionReciver;
 
 /**
  * Created by Пользователь on 19.01.2018.
@@ -26,6 +27,7 @@ public class ItHappenedApplication extends Application {
     private Retrofit retrofit;
     private final String API_KEY = "18db6cc1-8c43-408e-8298-a8f3b04bb595";
     boolean isFirts = false;
+    private static ItHappenedApplication mInstance;
 
     public String getAPI_KEY() {
         return API_KEY;
@@ -34,6 +36,7 @@ public class ItHappenedApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        mInstance = this;
 
 
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
@@ -72,6 +75,14 @@ public class ItHappenedApplication extends Application {
                 .build();
 
         itHappenedApi = retrofit.create(ItHappenedApi.class);
+    }
+
+    public static synchronized ItHappenedApplication getInstance() {
+        return mInstance;
+    }
+
+    public void setConnectionListener(ConnectionReciver.ConnectionReciverListener listener) {
+        ConnectionReciver.connectionReciverListener = listener;
     }
 
     public static ItHappenedApi getApi(){

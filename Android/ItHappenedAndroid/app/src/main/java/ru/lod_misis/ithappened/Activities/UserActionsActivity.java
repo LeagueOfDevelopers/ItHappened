@@ -4,10 +4,12 @@ import android.accounts.AccountManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -44,6 +46,8 @@ import java.util.UUID;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
 import ru.lod_misis.ithappened.Application.TrackingService;
+import ru.lod_misis.ithappened.ConnectionReciver;
+import ru.lod_misis.ithappened.ConnectionReciver.ConnectionReciverListener;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
@@ -65,7 +69,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class UserActionsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ConnectionReciverListener {
 
     private DrawerLayout mDrawerLayout;
 
@@ -73,6 +77,8 @@ public class UserActionsActivity extends AppCompatActivity
     boolean isEventsHistory = false;
     boolean isStatistics = false;
     boolean isProfileSettings = false;
+
+    NavigationView navigationView;
 
     private final static String G_PLUS_SCOPE =
             "oauth2:https://www.googleapis.com/auth/plus.me";
@@ -125,7 +131,7 @@ public class UserActionsActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
@@ -209,6 +215,7 @@ public class UserActionsActivity extends AppCompatActivity
         super.onPostResume();
         }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -240,6 +247,10 @@ public class UserActionsActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -728,6 +739,19 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        ConnectionReciver connectivityReceiver = new ConnectionReciver();
+        registerReceiver(connectivityReceiver, intentFilter);
+
+        ItHappenedApplication.getInstance().setConnectionListener(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if(mainSync!=null)
@@ -735,6 +759,20 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     public void cancelLogout(){}
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if(isConnected) {
+
+            Toast.makeText(getApplicationContext(), "Подключено", Toast.LENGTH_SHORT).show();
+            Log.e("Connect", "Vkl");
+
+        }else{
+
+            Toast.makeText(getApplicationContext(), "Отключено", Toast.LENGTH_SHORT).show();
+            Log.e("Connect", "Vikl");
+        }
+    }
 
 
     private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
