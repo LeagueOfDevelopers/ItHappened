@@ -77,6 +77,7 @@ public class UserActionsActivity extends AppCompatActivity
     boolean isEventsHistory = false;
     boolean isStatistics = false;
     boolean isProfileSettings = false;
+    boolean connectionToken = false;
 
     NavigationView navigationView;
 
@@ -131,6 +132,8 @@ public class UserActionsActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        connectionToken = ConnectionReciver.isConnected();
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
 
@@ -143,7 +146,7 @@ public class UserActionsActivity extends AppCompatActivity
             editor.commit();
         }
 
-        if(!sharedPreferences.getString("UserId", "").equals("Offline")){
+        if(!sharedPreferences.getString("UserId", "").equals("Offline")&&connectionToken){
             ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("refreshToken",""))
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -762,16 +765,15 @@ public class UserActionsActivity extends AppCompatActivity
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
-        if(isConnected) {
 
-            Toast.makeText(getApplicationContext(), "Подключено", Toast.LENGTH_SHORT).show();
-            Log.e("Connect", "Vkl");
+        final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        }else{
+        if(!sharedPreferences.getString("UserId","").equals("Offline")) {
 
-            Toast.makeText(getApplicationContext(), "Отключено", Toast.LENGTH_SHORT).show();
-            Log.e("Connect", "Vikl");
+            navigationView.getMenu().getItem(4).setEnabled(isConnected);
+            navigationView.setNavigationItemSelectedListener(this);
         }
+
     }
 
 
