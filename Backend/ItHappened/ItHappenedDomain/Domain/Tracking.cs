@@ -28,7 +28,7 @@ namespace ItHappenedDomain.Domain
       this.dateOfChange = dateOfChange;
       this.isDeleted = isDeleted;
       this.EventCollection = eventCollection;
-      this.Color = color ?? "111111";
+      this.color = color ?? "111111";
     }
 
     public string trackingName { set; get; }
@@ -41,6 +41,6 @@ namespace ItHappenedDomain.Domain
     public bool isDeleted { set; get; }
     public string scaleName { set; get; }
     public List<Event> EventCollection {get; set;}
-    public string Color { get; set; }
+    public string color { get; set; }
   }
 }
