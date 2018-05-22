@@ -5,10 +5,12 @@ import java.util.List;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 
 public class DbModel extends RealmObject {
     RealmList<Tracking> trackingCollection;
+    RealmList<Event> eventCollection;
     @PrimaryKey
     String userId;
 
@@ -36,5 +38,13 @@ public class DbModel extends RealmObject {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public RealmList<Event> getEventCollection() {
+        return eventCollection;
+    }
+
+    public void setEventCollection(RealmList<Event> eventCollection) {
+        this.eventCollection = eventCollection;
     }
 }
