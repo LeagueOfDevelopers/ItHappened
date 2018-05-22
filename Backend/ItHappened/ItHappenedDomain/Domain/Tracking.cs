@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using MongoDB.Bson.Serialization.Attributes;
@@ -28,7 +28,7 @@ namespace ItHappenedDomain.Domain
       this.dateOfChange = dateOfChange;
       this.isDeleted = isDeleted;
       this.EventCollection = eventCollection;
-      this.color = color ?? "11119017";
+      this.color = color ?? "111111";
     }
 
     public string trackingName { set; get; }
