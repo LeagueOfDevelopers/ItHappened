@@ -9,6 +9,9 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Event extends RealmObject
 {
@@ -147,12 +150,15 @@ public class Event extends RealmObject
     }
 
     @Expose
+    @PrimaryKey
+    @Required
     @SerializedName("eventId")
     private String eventId;
     @Expose
     @SerializedName("trackingId")
     private String trackingId;
     @Expose
+    @Index
     @SerializedName("eventDate")
     private Date eventDate;
     @Expose
