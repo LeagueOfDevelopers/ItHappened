@@ -13,6 +13,8 @@ import java.util.UUID;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Tracking extends RealmObject {
 
@@ -300,6 +302,8 @@ public class Tracking extends RealmObject {
     @Expose
     private String trackingName;
     @Expose
+    @PrimaryKey
+    @Required
     private String trackingId;
     @Expose
     @SerializedName("trackingDate")
