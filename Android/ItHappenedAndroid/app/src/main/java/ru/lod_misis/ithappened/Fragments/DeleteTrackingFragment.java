@@ -7,9 +7,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import ru.lod_misis.ithappened.Activities.UserActionsActivity;
-
 import java.util.UUID;
+
+import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 
 /**
  * Created by Пользователь on 30.01.2018.

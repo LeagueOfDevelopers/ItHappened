@@ -384,7 +384,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                 }else{
 
                     trackingColor = ""+colorTrackingTextEdit.getCurrentTextColor();
-                    String trackingTitle = trackingName.getText().toString();
+                    String trackingTitle = trackingName.getText().toString().trim();
 
                     TrackingCustomization rating = TrackingCustomization.None;
                     TrackingCustomization comment = TrackingCustomization.None;
@@ -435,11 +435,13 @@ public class EditTrackingActivity extends AppCompatActivity {
                             break;
                     }
 
-                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&scaleType.getText().toString().isEmpty()){
+                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
+                            (scaleType.getText().toString().isEmpty()
+                            ||scaleType.getText().toString().trim().isEmpty())){
                         Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
                     }else{
                         if(scale != TrackingCustomization.None){
-                            scaleNumb = scaleType.getText().toString();
+                            scaleNumb = scaleType.getText().toString().trim();
                         }
                         service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb, trackingColor);
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
