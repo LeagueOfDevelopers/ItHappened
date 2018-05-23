@@ -36,6 +36,8 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
     TextView userMail;
     TextView userNickName;
     TextView logOut;
+    SharedPreferences sharedPreferences;
+    ProfileSettingsFragmentPresenterImpl logoutPresenter;
 
     TextView policy;
 
@@ -65,29 +67,22 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
     public void onResume() {
         super.onResume();
         getActivity().setTitle("Настройки профиля");
-
         syncPB = (ProgressBar) getActivity().findViewById(R.id.syncPB);
         layoutFrg = (FrameLayout) getActivity().findViewById(R.id.trackingsFrg);
-
         userMail =(TextView) getActivity().findViewById(R.id.mail);
         userNickName = (TextView) getActivity().findViewById(R.id.nickname);
         logOut = (TextView) getActivity().findViewById(R.id.logout);
         editNickName = (Button) getActivity().findViewById(R.id.editNickName);
         urlUser = (CircleImageView) getActivity().findViewById(R.id.userAvatar);
-
         policy = (TextView) getActivity().findViewById(R.id.policy);
 
-
-
-
-        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        final ProfileSettingsFragmentPresenterImpl logoutPresenter = new ProfileSettingsFragmentPresenterImpl(this ,sharedPreferences, getActivity());
+        sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        logoutPresenter = new ProfileSettingsFragmentPresenterImpl(this ,sharedPreferences, getActivity());
 
         new ProfileSettingsFragment.DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
 
         userMail.setText(sharedPreferences.getString("UserId", ""));
         userNickName.setText(sharedPreferences.getString("Nick", ""));
-
 
         String mystring=new String("Выйти");
         SpannableString content = new SpannableString(mystring);

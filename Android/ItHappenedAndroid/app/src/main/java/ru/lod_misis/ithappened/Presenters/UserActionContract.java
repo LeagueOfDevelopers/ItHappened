@@ -1,7 +1,5 @@
 package ru.lod_misis.ithappened.Presenters;
 
-import rx.Subscription;
-
 /**
  * Created by Пользователь on 23.05.2018.
  */
@@ -20,8 +18,9 @@ public interface UserActionContract {
 
     interface UserActionPresenter{
         void getGoogleToken();
-        Subscription registrate(String idToken);
+        void registrate(String idToken);
         void syncronization();
+        boolean updateToken();
     }
 
 }

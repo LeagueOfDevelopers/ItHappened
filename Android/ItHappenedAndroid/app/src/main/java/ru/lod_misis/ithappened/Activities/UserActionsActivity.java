@@ -51,13 +51,12 @@ import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
-import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Presenters.UserActionContract;
 import ru.lod_misis.ithappened.Presenters.UserActionPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -102,6 +101,8 @@ public class UserActionsActivity extends AppCompatActivity
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
 
+    FactCalculator factCalculator;
+
     CircleImageView urlUser;
 
     ProfileSettingsFragment profileStgsFrg;
@@ -119,15 +120,11 @@ public class UserActionsActivity extends AppCompatActivity
 
         Fabric.with(this, new Crashlytics());
 
-
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -135,19 +132,9 @@ public class UserActionsActivity extends AppCompatActivity
         toggle.syncState();
 
         connectionToken = ConnectionReciver.isConnected();
-
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-
-        if(sharedPreferences.getString("UserId", "").isEmpty()){
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("UserId", "Offline");
-            editor.putString("Nick", "Offline");
-            editor.commit();
-        }
-
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId",""));
 
         if (sharedPreferences.getString("LastId", "").isEmpty()) {
@@ -157,27 +144,19 @@ public class UserActionsActivity extends AppCompatActivity
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
             trackingRepository = StaticInMemoryRepository.getInstance();
         }
+        userActionPresenter = new UserActionPresenterImpl(this, this, sharedPreferences, trackingRepository);
+
+        factCalculator = new FactCalculator(trackingRepository);
+
+        if(sharedPreferences.getString("UserId", "").isEmpty()){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("UserId", "Offline");
+            editor.putString("Nick", "Offline");
+            editor.commit();
+        }
 
         if(!sharedPreferences.getString("UserId", "").equals("Offline")&&connectionToken){
-            ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("refreshToken",""))
-                    .subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<RefreshModel>() {
-                                   @Override
-                                   public void call(RefreshModel model) {
-                                       SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
-                                       editor.putString("Token", model.getAccessToken());
-                                       editor.putString("refreshToken", model.getRefreshToken());
-                                       editor.commit();
-                                   }
-                               },
-                            new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    isTokenFailed = true;
-                                    //logout();
-                                }
-                            });
+            isTokenFailed = userActionPresenter.updateToken();
         }else{
             navigationView.getMenu().getItem(3).setVisible(false);
             navigationView.setNavigationItemSelectedListener(this);
@@ -193,7 +172,6 @@ public class UserActionsActivity extends AppCompatActivity
         syncPB = (ProgressBar) findViewById(R.id.syncPB);
         layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
 
-        factRepository = StaticFactRepository.getInstance();
         if(sharedPreferences.getString("LastId","").isEmpty()) {
             StaticInMemoryRepository.setInstance(getApplicationContext(),
                     sharedPreferences.getString("UserId", ""));
@@ -203,27 +181,7 @@ public class UserActionsActivity extends AppCompatActivity
             trackingRepository = StaticInMemoryRepository.getInstance();
         }
 
-        userActionPresenter = new UserActionPresenterImpl(this, this, sharedPreferences, trackingRepository);
-
-        factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Fact>() {
-                    @Override
-                    public void call(Fact fact) {
-                        Log.d("Statistics", "calculate");
-                    }
-                });
-
-        factRepository.calculateOneTrackingFacts(trackingRepository.GetTrackingCollection())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Fact>() {
-                    @Override
-                    public void call(Fact fact) {
-                        Log.d("Statistics", "calculateOneTrackingFact");
-                    }
-                });
+        factCalculator.calculateFacts();
 
     }
 
@@ -449,19 +407,6 @@ public class UserActionsActivity extends AppCompatActivity
 
     }
 
-    public void cancelClicked() {
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    /*private void saveDataToDb(List<Tracking> trackings){
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        ITrackingRepository trackingRepository = new StaticInMemoryRepository(getApplicationContext(), sharedPreferences.getString("UserId", "")).getInstance();
-        trackingRepository.SaveTrackingCollection(trackings);
-    }*/
 
      @Override
      public void showLoading(){

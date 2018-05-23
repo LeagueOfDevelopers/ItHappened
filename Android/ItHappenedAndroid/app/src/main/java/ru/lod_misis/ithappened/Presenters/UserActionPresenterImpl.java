@@ -19,7 +19,6 @@ import ru.lod_misis.ithappened.Models.RegistrationResponse;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -35,6 +34,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     Context context;
     SharedPreferences sharedPreferences;
     ITrackingRepository repository;
+    boolean isTokenFailed = false;
 
     public UserActionPresenterImpl(UserActionContract.UserActionView userActionView, Context context, SharedPreferences sharedPreferences, ITrackingRepository repository) {
         this.userActionView = userActionView;
@@ -52,12 +52,12 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     }
 
     @Override
-    public Subscription registrate(String idToken) {
+    public void registrate(String idToken) {
 
 
         Log.e(TAG, "Токен получен");
 
-        Subscription accountGoogleRx = ItHappenedApplication.getApi().SignUp(idToken)
+        ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RegistrationResponse>() {
@@ -127,15 +127,13 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                     }
                 });
 
-        return accountGoogleRx;
-
     }
 
     @Override
     public void syncronization() {
 
         userActionView.startMenuAnimation();
-        
+
         ItHappenedApplication.getApi()
                 .Refresh(sharedPreferences.getString("refreshToken",""))
                 .subscribeOn(Schedulers.io())
@@ -195,6 +193,32 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                 Log.e("Токен упал", throwable+"");
                             }
                         });
+    }
+
+    @Override
+    public boolean updateToken() {
+
+        ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("refreshToken",""))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RefreshModel>() {
+                               @Override
+                               public void call(RefreshModel model) {
+                                   SharedPreferences.Editor editor = sharedPreferences.edit();
+                                   editor.putString("Token", model.getAccessToken());
+                                   editor.putString("refreshToken", model.getRefreshToken());
+                                   editor.commit();
+                               }
+                           },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                isTokenFailed = true;
+                                //logout();
+                            }
+                        });
+
+        return isTokenFailed;
     }
 
     private void saveDataToDb(List<Tracking> trackings){
