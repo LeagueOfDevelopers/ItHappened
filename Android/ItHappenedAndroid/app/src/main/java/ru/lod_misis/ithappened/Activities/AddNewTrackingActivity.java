@@ -328,7 +328,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(trackingName.getText().toString().isEmpty()){
+                if(trackingName.getText().toString().isEmpty()||trackingName.getText().toString().trim().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
                 }else{
 

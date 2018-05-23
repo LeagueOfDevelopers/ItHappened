@@ -50,7 +50,8 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
         final Tracking tracking = trackings.get(position);
         holder.trackingTitle.setText(tracking.GetTrackingName());
-        holder.trackingColor.setTriangleBackgroundColor(Integer.parseInt(tracking.getColor()));
+        if(tracking.getColor()!=null)
+            holder.trackingColor.setTriangleBackgroundColor(Integer.parseInt(tracking.getColor()));
 
         holder.itemLL.setOnClickListener(new View.OnClickListener(){
 

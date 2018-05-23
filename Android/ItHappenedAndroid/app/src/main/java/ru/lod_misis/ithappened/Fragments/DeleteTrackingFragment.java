@@ -29,7 +29,7 @@ public class DeleteTrackingFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Вы болше не сможете восстановить это отслеживание!")
+        builder.setMessage("Вы больше не сможете восстановить это отслеживание!")
                 .setTitle("Вы действительно хотите удалить это отслеживание?")
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

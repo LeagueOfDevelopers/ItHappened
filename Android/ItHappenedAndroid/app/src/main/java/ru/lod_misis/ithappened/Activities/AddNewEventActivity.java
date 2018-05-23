@@ -195,7 +195,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                 Rating rating = null;
 
                 if(commentFlag&&ratingFlag&&scaleFlag){
-                    if(!commentControl.getText().toString().isEmpty()){
+                    if(!commentControl.getText().toString().isEmpty()&&!commentControl.getText().toString().trim().isEmpty()){
                         comment = commentControl.getText().toString();
                     }
                     if(!(ratingControl.getRating()==0)){

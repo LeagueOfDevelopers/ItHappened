@@ -400,7 +400,12 @@ public class UserActionsActivity extends AppCompatActivity
                                                    .subscribe(new Action1<SynchronizationRequest>() {
                                                        @Override
                                                        public void call(SynchronizationRequest request) {
-                                                           saveDataToDb(request.getTrackingCollection());
+                                                           List<Tracking> trackings = request.getTrackingCollection();
+                                                           for(Tracking tracking : trackings){
+                                                               if(tracking.getColor()==null)
+                                                                   tracking.setColor("11119017");
+                                                           }
+                                                           saveDataToDb(trackings);
                                                            SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                                                            SharedPreferences.Editor editor = sharedPreferences.edit();
                                                            editor.putString("Nick", synchronizationRequest.getUserNickname());
@@ -615,7 +620,12 @@ public class UserActionsActivity extends AppCompatActivity
                                 .subscribe(new Action1<SynchronizationRequest>() {
                                     @Override
                                     public void call(SynchronizationRequest sync) {
-                                        saveDataToDb(sync.getTrackingCollection());
+                                        List<Tracking> trackings = sync.getTrackingCollection();
+                                        for(Tracking tracking : trackings){
+                                            if(tracking.getColor()==null)
+                                                tracking.setColor("11119017");
+                                        }
+                                        saveDataToDb(trackings);
 
                                         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor editor = sharedPreferences.edit();

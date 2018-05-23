@@ -369,6 +369,7 @@
                     android:layout_height="wrap_content"
                     android:minHeight="40dp"
                     android:text="Цвет отслеживания"
+                    android:maxLength="100"
                     android:textSize="18sp"
                     android:textAlignment="center"
                     android:gravity="center"

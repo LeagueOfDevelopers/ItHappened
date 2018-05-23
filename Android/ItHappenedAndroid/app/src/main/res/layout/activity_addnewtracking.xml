@@ -40,6 +40,7 @@
                     android:id="@+id/editTitleOfTracking"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLength="100"
                     android:minHeight="40dp"
                     android:background="@drawable/custom_edit_text"
                     android:hint="Введите название"
