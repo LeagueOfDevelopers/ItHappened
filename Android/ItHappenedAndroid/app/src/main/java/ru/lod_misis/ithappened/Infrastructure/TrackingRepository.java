@@ -192,13 +192,6 @@ public class TrackingRepository implements ITrackingRepository{
             }
         }
 
-//        Collections.sort(filteredEvents, new Comparator<Event>() {
-//            @Override
-//            public int compare(Event event, Event t1) {
-//                return t1.GetEventDate().compareTo(event.GetEventDate());
-//            }
-//        });
-
         return RemoveDeletedEventsAndTrackingsFromCollection(
                 filteredEvents);
     }
@@ -227,32 +220,7 @@ public class TrackingRepository implements ITrackingRepository{
 
     public void ChangeTracking(final Tracking tracking) {
         realm.beginTransaction();
-//        RealmResults<DbModel> result = realm.where(DbModel.class)
-//                .equalTo("userId", userId).findAll();
-//        if (result.isEmpty())
-//            throw new IllegalArgumentException("User with such ID doesn't exists");
-//        List<DbModel> modelCollection = realm.copyFromRealm(result);
-//        DbModel model = modelCollection.get(0);
-//        RealmList<Tracking> trackingCollection = model.getTrackingCollection();
-//        int index=0;
-//        for (Tracking trc: trackingCollection) {
-//            if (trc.GetTrackingID().equals(tracking.GetTrackingID()))
-//                break;
-//            index++;
-//        }
-//        trackingCollection.set(index, tracking);
-//        Log.e("DB", index+" "+tracking.GetTrackingName());
-//        model.setTrackingCollection(trackingCollection);
-//        DbModel newModel = new DbModel(model.getTrackingCollection(), userId);
-        List<Tracking> trackingList = new ArrayList<>();
-        trackingList.add(tracking);
-        DbModel model = new DbModel(trackingList, userId);
-
-        RealmList<Event> eventList = new RealmList<>();
-        eventList.addAll(tracking.GetEventCollection());
-        model.setEventCollection(eventList);
-
-        realm.copyToRealmOrUpdate(model);
+        realm.copyToRealmOrUpdate(tracking);
         realm.commitTransaction();
     }
 
@@ -277,24 +245,22 @@ public class TrackingRepository implements ITrackingRepository{
                         if (oldVersion == 0){
                             final RealmObjectSchema newTrackingSchema = schema.get("Tracking");
                             newTrackingSchema.addField("color", String.class);
-                            newTrackingSchema.addField("tmpTrackingId", String.class);
+                            newTrackingSchema.addPrimaryKey("trackingId");
+
                             newTrackingSchema.transform(new RealmObjectSchema.Function() {
                                 @Override
                                 public void apply(DynamicRealmObject dynamicRealmObject) {
                                     dynamicRealmObject.setString("color", "111111");
                                     final String id = dynamicRealmObject.getString("trackingId");
-                                    dynamicRealmObject.setString("tmpTrackingId", id);
                                 }
                             });
-                            newTrackingSchema.removeField("trackingId");
-                            newTrackingSchema.addPrimaryKey("tmpTrackingId");
-                            newTrackingSchema.renameField("tmpTrackingId", "trackingId");
 
                             final RealmObjectSchema newDbModelSchema = schema.get("DbModel");
                             newDbModelSchema.addRealmListField("eventCollection", schema.get(Event.class.getSimpleName()));
 
-                            schema.get("Event").addIndex("eventDate").addPrimaryKey("eventId");
-
+                            final RealmObjectSchema newEventSchema = schema.get("Event");
+                            newEventSchema.addIndex("eventDate").addPrimaryKey("eventId")
+                                    .setRequired("eventId", true);
                         }
                     }
                 })
@@ -304,7 +270,8 @@ public class TrackingRepository implements ITrackingRepository{
 
         realm.beginTransaction();
 
-        List<DbModel> models = realm.where(DbModel.class).isEmpty("eventCollection").findAll();
+        List<DbModel> models = realm.where(DbModel.class).isEmpty("eventCollection")
+                .isNotEmpty("trackingCollection").findAll();
         for (DbModel model: models) {
             model.setEventCollection(addEventsToEventCollection(model.getTrackingCollection(), model.getUserId()));
             realm.copyToRealmOrUpdate(model);
@@ -315,7 +282,7 @@ public class TrackingRepository implements ITrackingRepository{
     private RealmList<Event> addEventsToEventCollection(List<Tracking> trackingCollection, String userId){
 
         DbModel  dbModel= realm.where(DbModel.class).
-                equalTo("userId", userId).findAll().get(0);
+                equalTo("userId", userId).findFirst();
         RealmList<Event> eventCollection = dbModel.getEventCollection();
 
         if (eventCollection.size() == 0){
