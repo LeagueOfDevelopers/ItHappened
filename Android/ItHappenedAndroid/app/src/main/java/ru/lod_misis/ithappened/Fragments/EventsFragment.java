@@ -28,14 +28,13 @@ import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
@@ -44,51 +43,44 @@ import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Gui.MultiSpinner;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
+import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
-public class EventsFragment extends Fragment  {
+public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
 
-    static RecyclerView eventsRecycler;
-    static EventsAdapter eventsAdpt;
-    int myYear;
-    int myMonth;
-    int myDay;
+    RecyclerView eventsRecycler;
+    EventsAdapter eventsAdpt;
+
+    EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
 
     List<Event> eventsForAdapter = new ArrayList<>();
-
     List<Boolean> flags;
 
-    TextView hintForEventsHistory;
-    TextView hintForSpinner;
-
-    TextView filtersHintText;
-
-    RelativeLayout filtersScreen;
-    RelativeLayout filtersHint;
-
-    FloatingActionButton filtersCancel;
+    List<String> filteredTrackingsTitles;
+    List<UUID> filteredTrackingsUuids;
+    ArrayList<UUID> idCollection;
+    List<String> strings;
 
     int stateForHint;
 
     Button dateFrom;
     Button dateTo;
-
     Button addFilters;
-
     EditText scaleFilter;
-
     RatingBar ratingFilter;
-
     MultiSpinner trackingsSpinner;
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     TrackingService trackingService;
+    TextView hintForEventsHistory;
+    TextView hintForSpinner;
+    TextView filtersHintText;
+    RelativeLayout filtersScreen;
+    RelativeLayout filtersHint;
+    FloatingActionButton filtersCancel;
 
     static ITrackingRepository collection;
 
@@ -109,7 +101,6 @@ public class EventsFragment extends Fragment  {
         getActivity().setTitle("История событий");
 
         YandexMetrica.reportEvent("Пользователь зашел в историю событий");
-
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         if(sharedPreferences.getString("LastId","").isEmpty()) {
@@ -121,11 +112,11 @@ public class EventsFragment extends Fragment  {
         }
 
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
+        eventsHistoryPresenter = new EventsHistoryPresenterImpl(collection, trackingService, getActivity(), this);
 
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
-
-
+        eventsHistoryPresenter.loadEvents();
 
         filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
@@ -162,38 +153,8 @@ public class EventsFragment extends Fragment  {
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
-        trackingService.FilterEventCollection(null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Event>() {
-                               @Override
-                               public void call(Event event) {
-                                   eventsForAdapter.add(event);
-                                   hintForEventsHistory.setVisibility(View.GONE);
-                               }
-                           }, new Action1<Throwable>() {
-                               @Override
-                               public void call(Throwable throwable) {
-
-                               }
-                           },
-                        new Action0() {
-                            @Override
-                            public void call() {
-                                eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
-                            }
-                        });
-
-
-
-
-        final ArrayList<UUID> idCollection = new ArrayList<UUID>();
-        final List<String> strings = new ArrayList<String>();
+        idCollection = new ArrayList<UUID>();
+        strings = new ArrayList<String>();
         flags = new ArrayList<>();
 
         List<Tracking> trackings = new ArrayList<>();
@@ -207,9 +168,8 @@ public class EventsFragment extends Fragment  {
             }
         }
 
-
-        final List<String> filteredTrackingsTitles = new ArrayList<>();
-        final List<UUID> filteredTrackingsUuids = new ArrayList<>();
+        filteredTrackingsTitles = new ArrayList<>();
+        filteredTrackingsUuids = new ArrayList<>();
 
         setUuidsCollection(filteredTrackingsUuids);
 
@@ -221,7 +181,6 @@ public class EventsFragment extends Fragment  {
                 allText += strings.get(i) + ", ";
             }
         }
-
 
         if(strings.size()!=0) {
             trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
@@ -246,15 +205,12 @@ public class EventsFragment extends Fragment  {
                 }
             });
         }else{
-
             trackingsSpinner.setVisibility(View.INVISIBLE);
             hintForSpinner.setVisibility(View.VISIBLE);
-
         }
 
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
-
 
         dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,8 +220,6 @@ public class EventsFragment extends Fragment  {
                 picker.show(fragmentManager, "from");
             }
         });
-
-
 
         dateTo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -290,7 +244,6 @@ public class EventsFragment extends Fragment  {
         hintsForRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
-
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleFilter = (EditText) getActivity().findViewById(R.id.scaleFilter);
         scaleFilter.setKeyListener(keyListener);
@@ -302,102 +255,15 @@ public class EventsFragment extends Fragment  {
             public void onClick(View view) {
 
                 final List<Event> allEvents = new ArrayList<>();
-
-                trackingService.FilterEventCollection
-                        (null,null,null,
-                                null,null,null,
-                                null)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Event>() {
-                                       @Override
-                                       public void call(Event event) {
-                                           allEvents.add(event);
-                                       }
-                                   },
-                                new Action1<Throwable>() {
-                                    @Override
-                                    public void call(Throwable throwable) {
-
-                                    }
-                                },
-                                new Action0() {
-                                    @Override
-                                    public void call() {
-                                        ratingFilter.setRating(0);
-                                        scaleFilter.setText("");
-                                        dateFrom.setText("После");
-                                        dateFrom.setTextSize(15);
-                                        dateTo.setText("До");
-                                        dateTo.setTextSize(15);
-
-                                        hintsForRatingSpinner.setSelection(0);
-                                        hintsForScaleSpinner.setSelection(0);
-
-                                        String allText = "";
-                                        for (int i = 0; i < strings.size(); i++) {
-                                            if (i != strings.size()) {
-                                                allText += strings.get(i) + ", ";
-                                            }
-                                        }
-
-                                        if (strings.size() != 0) {
-                                            trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
-                                                    new MultiSpinner.MultiSpinnerListener() {
-
-                                                        @Override
-                                                        public void onItemsSelected(boolean[] selected) {
-
-                                                            for (int i = 0; i < selected.length; i++) {
-
-                                                                Log.e("FILTER", selected[i] + "");
-                                                                if (selected[i]) {
-                                                                    filteredTrackingsTitles.add(strings.get(i));
-                                                                    if (flags.get(i)) {
-                                                                        filteredTrackingsUuids.add(idCollection.get(i));
-                                                                    }
-                                                                }
-                                                                if (!selected[i]) {
-                                                                    filteredTrackingsUuids.remove(idCollection.get(i));
-                                                                    flags.set(i, true);
-                                                                }
-
-                                                            }
-                                                        }
-                                                    });
-                                            filtersHintText.setVisibility(View.GONE);
-                                        } else {
-
-                                            trackingsSpinner.setVisibility(View.INVISIBLE);
-                                            hintForSpinner.setVisibility(View.VISIBLE);
-
-                                            filtersHintText.setVisibility(View.GONE);
-
-                                        }
-
-                                        eventsAdpt = new EventsAdapter(allEvents, getActivity(), 1);
-
-                                        eventsRecycler.setAdapter(eventsAdpt);
-                                    }
-                                });
-
-
                 YandexMetrica.reportEvent("Пользователь отменил фильтры");
-
-
-
-
             }
         });
 
-
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
-       addFilters.setOnClickListener(new View.OnClickListener() {
+        addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 Date dateF = null;
                 Date dateT = null;
                 Comparison scaleComparison = null;
@@ -435,50 +301,33 @@ public class EventsFragment extends Fragment  {
                         double ratingVal = ratingFilter.getRating() * 2;
                         rating = new Rating((int) ratingVal);
                     }
-
                     YandexMetrica.reportEvent("Пользователь добавил фильтры");
-                    final List<Event> filteredEvents = new ArrayList<>();
 
-                    trackingService.FilterEventCollection(filteredTrackingsUuids,
+                    eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
                             dateF,
                             dateT,
                             scaleComparison,
                             scale,
                             ratingComparison,
-                            rating)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread()).subscribe(
-                            new Action1<Event>() {
-                                @Override
-                                public void call(Event event) {
-                                    filteredEvents.add(event);
-                                }
-                            }, new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-
-                                }
-                            },
-                            new Action0() {
-                                @Override
-                                public void call() {
-                                    eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
-                                    eventsRecycler.setAdapter(eventsAdpt);
-
-                                    if (filteredEvents.size() == 0) {
-                                        filtersHintText.setVisibility(View.VISIBLE);
-                                    } else {
-                                        filtersHintText.setVisibility(View.GONE);
-                                    }
-                                    BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
-                                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                }
-                            });
+                            rating);
 
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
             }});
+    }
+
+    @Override
+    public void showEvents(List<Event> events) {
+        if(events.size()==0){
+            hintForEventsHistory.setVisibility(View.VISIBLE);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+        }else{
+            hintForEventsHistory.setVisibility(View.GONE);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+        }
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     @Override
@@ -509,6 +358,60 @@ public class EventsFragment extends Fragment  {
     public void onPause() {
         super.onPause();
         YandexMetrica.reportEvent("Пользователь вышел из истории");
+    }
+
+    @Override
+    public void cancelFilters() {
+        ratingFilter.setRating(0);
+        scaleFilter.setText("");
+        dateFrom.setText("После");
+        dateFrom.setTextSize(15);
+        dateTo.setText("До");
+        dateTo.setTextSize(15);
+
+        hintsForRatingSpinner.setSelection(0);
+        hintsForScaleSpinner.setSelection(0);
+
+        String allText = "";
+        for (int i = 0; i < strings.size(); i++) {
+            if (i != strings.size()) {
+                allText += strings.get(i) + ", ";
+            }
+        }
+
+        if (strings.size() != 0) {
+            trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
+                    new MultiSpinner.MultiSpinnerListener() {
+
+                        @Override
+                        public void onItemsSelected(boolean[] selected) {
+
+                            for (int i = 0; i < selected.length; i++) {
+
+                                Log.e("FILTER", selected[i] + "");
+                                if (selected[i]) {
+                                    filteredTrackingsTitles.add(strings.get(i));
+                                    if (flags.get(i)) {
+                                        filteredTrackingsUuids.add(idCollection.get(i));
+                                    }
+                                }
+                                if (!selected[i]) {
+                                    filteredTrackingsUuids.remove(idCollection.get(i));
+                                    flags.set(i, true);
+                                }
+
+                            }
+                        }
+                    });
+            filtersHintText.setVisibility(View.GONE);
+        } else {
+
+            trackingsSpinner.setVisibility(View.INVISIBLE);
+            hintForSpinner.setVisibility(View.VISIBLE);
+
+            filtersHintText.setVisibility(View.GONE);
+
+        }
     }
 
     private void setUuidsCollection(List<UUID> uuids){

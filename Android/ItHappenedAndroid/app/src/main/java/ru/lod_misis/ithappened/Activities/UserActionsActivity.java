@@ -37,7 +37,6 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
@@ -48,7 +47,6 @@ import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Presenters.UserActionContract;
 import ru.lod_misis.ithappened.Presenters.UserActionPresenterImpl;
 import ru.lod_misis.ithappened.R;
@@ -85,26 +83,17 @@ public class UserActionsActivity extends AppCompatActivity
 
     private boolean isTokenFailed = false;
 
-    InMemoryFactRepository factRepository;
     ITrackingRepository trackingRepository;
-
-    Subscription accountGoogleRx;
-
     TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
-
     FactCalculator factCalculator;
-
     CircleImageView urlUser;
-
     ProfileSettingsFragment profileStgsFrg;
-
     ProgressBar syncPB;
     TextView lable;
     SharedPreferences sharedPreferences;
-
     Subscription mainSync;
     TextView loginButton;
 
@@ -181,12 +170,6 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        }
-
-
-    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -209,11 +192,6 @@ public class UserActionsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -369,12 +347,6 @@ public class UserActionsActivity extends AppCompatActivity
             public void run() {
             }
         }, 1000);
-    }
-
-    public void okClicked(UUID trackingId) {
-
-
-
     }
 
 
