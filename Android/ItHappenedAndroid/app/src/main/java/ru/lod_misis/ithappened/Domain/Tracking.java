@@ -300,7 +300,6 @@ public class Tracking extends RealmObject {
     private String trackingName;
     @Expose
     @PrimaryKey
-    @Required
     private String trackingId;
     @Expose
     @SerializedName("trackingDate")
