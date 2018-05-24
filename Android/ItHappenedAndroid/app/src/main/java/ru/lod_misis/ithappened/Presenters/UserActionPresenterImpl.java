@@ -23,10 +23,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Пользователь on 23.05.2018.
- */
-
 public class UserActionPresenterImpl implements UserActionContract.UserActionPresenter {
 
     private static final String TAG = "Registration";
@@ -36,7 +32,10 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     ITrackingRepository repository;
     boolean isTokenFailed = false;
 
-    public UserActionPresenterImpl(UserActionContract.UserActionView userActionView, Context context, SharedPreferences sharedPreferences, ITrackingRepository repository) {
+    public UserActionPresenterImpl(UserActionContract.UserActionView userActionView,
+                                   Context context,
+                                   SharedPreferences sharedPreferences,
+                                   ITrackingRepository repository) {
         this.userActionView = userActionView;
         this.context = context;
         this.sharedPreferences = sharedPreferences;
@@ -104,6 +103,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                         editor.commit();
                                         userActionView.showMessage("Синхронизировано");
                                         Intent intent = new Intent(context, UserActionsActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         context.startActivity(intent);
                                     }
                                 }, new Action1<Throwable>() {
@@ -121,9 +121,8 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                     @Override
                     public void call(Throwable throwable) {
                         userActionView.hideLoading();
-                        //Log.e("Reg", "" + throwable);
+                        Log.e("Reg", "" + throwable);
                         userActionView.showMessage("Разорвано подключение!");
-                        userActionView.showMessage("" + throwable);
                     }
                 });
 
@@ -178,8 +177,6 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                                @Override
                                                public void call(Throwable throwable) {
                                                    Log.e("RxSync", "" + throwable);
-                                                   /*DrawerLayout drawer = (DrawerLayout) context.findViewById(R.id.drawer_layout);
-                                                   drawer.closeDrawer(GravityCompat.START);*/
                                                    userActionView.stopMenuAnimation();
                                                    userActionView.showMessage("Подключение разорвано!");
                                                }
@@ -189,7 +186,6 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                         new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
-                                //Toast.makeText(getApplicationContext(), "Токен упал(", Toast.LENGTH_SHORT).show();
                                 Log.e("Токен упал", throwable+"");
                             }
                         });
@@ -214,7 +210,6 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                             @Override
                             public void call(Throwable throwable) {
                                 isTokenFailed = true;
-                                //logout();
                             }
                         });
 

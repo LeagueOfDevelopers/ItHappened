@@ -23,6 +23,7 @@ import ru.lod_misis.ithappened.Activities.EditTrackingActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Fragments.DeleteTrackingFragment;
+import ru.lod_misis.ithappened.Presenters.TrackingsContract;
 import ru.lod_misis.ithappened.R;
 
 public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.ViewHolder> implements View.OnCreateContextMenuListener{
@@ -31,11 +32,14 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     private Context context;
     FragmentManager fManage;
     FragmentTransaction fTrans;
+    TrackingsContract.TrackingsPresenter trackingsPresenter;
 
-
-    public TrackingsAdapter(List<Tracking> trackings, Context context) {
+    public TrackingsAdapter(List<Tracking> trackings,
+                            Context context,
+                            TrackingsContract.TrackingsPresenter trackingsPresenter) {
         this.trackings = trackings;
         this.context = context;
+        this.trackingsPresenter = trackingsPresenter;
     }
 
     @Override
@@ -89,35 +93,29 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                                 String trackId = tracking.GetTrackingID().toString();
                                 intent.putExtra("id", trackId);
                                 context.startActivity(intent);
-
                                 return true;
 
                             case R.id.edit_tracking:
                                 String trackIdForEdit = tracking.GetTrackingID().toString();
-
                                 Intent intent1 = new Intent((Activity) context, EditTrackingActivity.class);
                                 intent1.putExtra("trackingId", trackIdForEdit);
                                 context.startActivity(intent1);
-
                                 return true;
 
                             case R.id.delete_tracking:
-                                DeleteTrackingFragment delete = new DeleteTrackingFragment(tracking.GetTrackingID());
+                                DeleteTrackingFragment delete = new DeleteTrackingFragment();
+                                delete.setTrackingId(tracking.GetTrackingID());
+                                delete.setTrackingsPresenter(trackingsPresenter);
                                 delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
                                 return true;
-
                         }
-
-
                         return false;
                     }
                 });
                 popup.show();
-
                 return false;
             }
         });
-
     }
 
     @Override

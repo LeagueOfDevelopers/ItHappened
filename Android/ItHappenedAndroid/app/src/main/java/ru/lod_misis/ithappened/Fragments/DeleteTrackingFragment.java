@@ -9,7 +9,7 @@ import android.os.Bundle;
 
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Activities.UserActionsActivity;
+import ru.lod_misis.ithappened.Presenters.TrackingsContract;
 
 /**
  * Created by Пользователь on 30.01.2018.
@@ -19,11 +19,7 @@ import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 public class DeleteTrackingFragment extends DialogFragment {
 
     UUID trackingId;
-
-    @SuppressLint("ValidFragment")
-    public DeleteTrackingFragment(UUID trackingId){
-        this.trackingId = trackingId;
-    }
+    TrackingsContract.TrackingsPresenter trackingsPresenter;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,12 +29,12 @@ public class DeleteTrackingFragment extends DialogFragment {
                 .setTitle("Вы действительно хотите удалить это отслеживание?")
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ((UserActionsActivity) getActivity()).okClicked(trackingId);
+                        trackingsPresenter.deleteTracking(trackingId);
                     }
                 })
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ((UserActionsActivity) getActivity()).cancelClicked();
+                        trackingsPresenter.cancelDeleting();
                     }
                 });
 
@@ -46,4 +42,11 @@ public class DeleteTrackingFragment extends DialogFragment {
 
     }
 
+    public void setTrackingsPresenter(TrackingsContract.TrackingsPresenter trackingsPresenter){
+        this.trackingsPresenter = trackingsPresenter;
+    }
+
+    public void setTrackingId(UUID trackingId) {
+        this.trackingId = trackingId;
+    }
 }

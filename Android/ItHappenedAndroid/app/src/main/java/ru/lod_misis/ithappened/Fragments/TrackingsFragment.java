@@ -1,7 +1,6 @@
 package ru.lod_misis.ithappened.Fragments;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,30 +13,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.AddNewTrackingActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Presenters.TrackingsContract;
+import ru.lod_misis.ithappened.Presenters.TrackingsPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.TrackingsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
-public class TrackingsFragment extends Fragment {
+public class TrackingsFragment extends Fragment implements TrackingsContract.TrackingsView {
 
     TextView hintForTrackings;
-
-    FragmentTransaction fTrans;
     RecyclerView trackingsRecycler;
     TrackingsAdapter trackAdpt;
     FloatingActionButton addTracking;
     ITrackingRepository trackingCollection;
-    String userName;
     TrackingService trackingService;
-
+    TrackingsContract.TrackingsPresenter trackingsPresenter;
 
     @Nullable
     @Override
@@ -65,28 +63,17 @@ public class TrackingsFragment extends Fragment {
         }
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
-
-
+        trackingsPresenter = new TrackingsPresenterImpl(
+                trackingService,
+                getActivity(),
+                this,
+                trackingCollection,
+                sharedPreferences);
 
         trackingsRecycler = (RecyclerView)getActivity().findViewById(R.id.tracingsRV);
         trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        List<Tracking> allTrackings = trackingService.GetTrackingCollection();
-        List<Tracking> visibleTrackings = new ArrayList<>();
-
-        for(int i =0;i<allTrackings.size();i++){
-            if(!allTrackings.get(i).GetStatus()){
-                visibleTrackings.add(allTrackings.get(i));
-            }
-        }
-
-        if(visibleTrackings.size()!=0){
-            hintForTrackings.setVisibility(View.INVISIBLE);
-        }
-
-        //trackLoad = new TrackingLoader();
-        trackAdpt = new TrackingsAdapter(visibleTrackings,getActivity());
-        trackingsRecycler.setAdapter(trackAdpt);
+        trackingsPresenter.loadTrackings();
 
         addTracking = (FloatingActionButton) getActivity().findViewById(R.id.addNewTracking);
         addTracking.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +85,22 @@ public class TrackingsFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void showTrackings(List<Tracking> visibleTrackings) {
+
+        if(visibleTrackings.size()!=0){
+            hintForTrackings.setVisibility(View.INVISIBLE);
+        }
+        trackAdpt = new TrackingsAdapter(visibleTrackings,getActivity(), trackingsPresenter);
+        trackingsRecycler.setAdapter(trackAdpt);
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT);
     }
 
     @Override

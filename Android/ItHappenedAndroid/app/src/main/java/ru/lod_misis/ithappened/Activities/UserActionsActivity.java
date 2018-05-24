@@ -33,7 +33,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +41,6 @@ import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
-import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.ConnectionReciver;
 import ru.lod_misis.ithappened.ConnectionReciver.ConnectionReciverListener;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
@@ -57,11 +55,7 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ConnectionReciverListener, UserActionContract.UserActionView {
@@ -109,6 +103,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     ProgressBar syncPB;
     TextView lable;
+    SharedPreferences sharedPreferences;
 
     Subscription mainSync;
     TextView loginButton;
@@ -134,7 +129,7 @@ public class UserActionsActivity extends AppCompatActivity
         connectionToken = ConnectionReciver.isConnected();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId",""));
 
         if (sharedPreferences.getString("LastId", "").isEmpty()) {
@@ -223,7 +218,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         userNick = (TextView) findViewById(R.id.userNickname);
         userNick.setText(sharedPreferences.getString("Nick",""));
         loginButton = (TextView) findViewById(R.id.loginButton);
@@ -378,32 +373,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     public void okClicked(UUID trackingId) {
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        TrackingService trackingService = new TrackingService("", StaticInMemoryRepository.getInstance());
-        trackingService.RemoveTracking(trackingId);
-        factRepository.onChangeCalculateOneTrackingFacts(trackingService.GetTrackingCollection(), trackingId)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Fact>() {
-                    @Override
-                    public void call(Fact fact) {
-                        Log.d("Statistics", "calculateOneTrackingFact");
-                    }
-                });
-        factRepository.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Fact>() {
-                    @Override
-                    public void call(Fact fact) {
-                        Log.d("Statistics", "calculateOneTrackingFact");
-                    }
-                });
-        YandexMetrica.reportEvent("Пользователь удалил отслеживание");
-        Toast.makeText(this, "Отслеживание удалено", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, UserActionsActivity.class);
-        startActivity(intent);
 
     }
 
@@ -505,7 +475,7 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
 
-        final SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         if(!sharedPreferences.getString("UserId","").equals("Offline")) {
 
