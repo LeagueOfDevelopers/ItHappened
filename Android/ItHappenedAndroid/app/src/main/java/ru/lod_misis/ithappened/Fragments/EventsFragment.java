@@ -181,7 +181,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 allText += strings.get(i) + ", ";
             }
         }
-
         if(strings.size()!=0) {
             trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
 
@@ -249,7 +248,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         scaleFilter.setKeyListener(keyListener);
         ratingFilter = (RatingBar) getActivity().findViewById(R.id.ratingFilter);
 
-
         filtersCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -279,22 +277,18 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
                     try {
                         dateT = simpleDateFormat.parse(dateTo.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
-
                 try {
-
                     if (!scaleFilter.getText().toString().isEmpty()) {
                         int positionForScale = hintsForScaleSpinner.getSelectedItemPosition();
                         scaleComparison = comparisons[positionForScale];
                         scale = Double.parseDouble(scaleFilter.getText().toString());
                     }
-
                     if (ratingFilter.getRating() != 0) {
                         int positionForRating = hintsForRatingSpinner.getSelectedItemPosition();
                         ratingComparison = comparisons[positionForRating];
@@ -302,7 +296,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         rating = new Rating((int) ratingVal);
                     }
                     YandexMetrica.reportEvent("Пользователь добавил фильтры");
-
                     eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
                             dateF,
                             dateT,
@@ -310,7 +303,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             scale,
                             ratingComparison,
                             rating);
-
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
@@ -326,14 +318,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             hintForEventsHistory.setVisibility(View.GONE);
             eventsAdpt = new EventsAdapter(events, getActivity(), 1);
         }
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         if(eventsAdpt!=null) {
             List<Event> adapterEvents = eventsAdpt.getEvents();
             ArrayList<Event> refreshedEvents = new ArrayList<>();
@@ -344,11 +328,31 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                     if (!addAbleEvent.GetStatus())
                         refreshedEvents.add(addAbleEvent);
                 }
-
             if (refreshedEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+        }
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(eventsAdpt!=null) {
+            List<Event> adapterEvents = eventsAdpt.getEvents();
+            ArrayList<Event> refreshedEvents = new ArrayList<>();
+            if (adapterEvents != null)
+                for (Event event : adapterEvents) {
+                    collection.GetTracking(event.GetTrackingId());
+                    Event addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
+                    if (!addAbleEvent.GetStatus())
+                        refreshedEvents.add(addAbleEvent);
+                }
+            if (refreshedEvents.size() == 0) {
+                hintForEventsHistory.setVisibility(View.VISIBLE);
+            }
             eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
         }
     }
@@ -368,7 +372,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         dateFrom.setTextSize(15);
         dateTo.setText("До");
         dateTo.setTextSize(15);
-
         hintsForRatingSpinner.setSelection(0);
         hintsForScaleSpinner.setSelection(0);
 
@@ -385,7 +388,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
                         @Override
                         public void onItemsSelected(boolean[] selected) {
-
                             for (int i = 0; i < selected.length; i++) {
 
                                 Log.e("FILTER", selected[i] + "");
@@ -399,18 +401,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                                     filteredTrackingsUuids.remove(idCollection.get(i));
                                     flags.set(i, true);
                                 }
-
                             }
                         }
                     });
             filtersHintText.setVisibility(View.GONE);
         } else {
-
             trackingsSpinner.setVisibility(View.INVISIBLE);
             hintForSpinner.setVisibility(View.VISIBLE);
-
             filtersHintText.setVisibility(View.GONE);
-
         }
     }
 

@@ -105,7 +105,7 @@ public class UserActionsActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
