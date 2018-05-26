@@ -1,9 +1,6 @@
 package ru.lod_misis.ithappened.Infrastructure;
 
 import android.content.Context;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +11,6 @@ import java.util.UUID;
 
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
-import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -22,7 +18,6 @@ import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmResults;
 import io.realm.RealmSchema;
-import io.realm.annotations.PrimaryKey;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -239,10 +234,58 @@ public class TrackingRepository implements ITrackingRepository{
     {
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("ItHappened.realm").schemaVersion(1).migration(new RealmMigration() {
+
+                    private void deleteDuplicateEventsFromRealm(final DynamicRealm dynamicRealm){
+                        List<DynamicRealmObject> objectsToFilter = dynamicRealm
+                                .where("Event").findAll();
+
+                        List<String> idList = new ArrayList<>();
+                        for (DynamicRealmObject event : objectsToFilter){
+                            String id = event.get("eventId");
+                            if (!idList.contains(id))
+                                idList.add(id);
+                        }
+
+                        for (String entry : idList)
+                        {
+                            List<DynamicRealmObject> results = dynamicRealm.where("Event")
+                                    .equalTo("eventId", entry).findAll();
+
+                            while (results.size() > 1){
+                                results.get(0).deleteFromRealm();
+                            }
+                        }
+                    }
+
+                    private void deleteDuplicateTrackingsFromRealm(final DynamicRealm dynamicRealm){
+                        List<DynamicRealmObject> objectsToFilter = dynamicRealm
+                                .where("Tracking").findAll();
+
+                        List<String> idList = new ArrayList<>();
+                        for (DynamicRealmObject tracking : objectsToFilter){
+                            String id = tracking.get("trackingId");
+                            if (!idList.contains(id))
+                                idList.add(id);
+                        }
+
+                        for (String entry : idList)
+                        {
+                            List<DynamicRealmObject> results = dynamicRealm.where("Tracking")
+                                    .equalTo("trackingId", entry).findAll();
+
+                            while (results.size() > 1){
+                                results.get(0).deleteFromRealm();
+                            }
+                        }
+                    }
+
                     @Override
                     public void migrate(final DynamicRealm dynamicRealm, long oldVersion, long newVersion) {
                         final RealmSchema schema = dynamicRealm.getSchema();
                         if (oldVersion == 0){
+                            deleteDuplicateTrackingsFromRealm(dynamicRealm);
+                            deleteDuplicateEventsFromRealm(dynamicRealm);
+
                             final RealmObjectSchema newTrackingSchema = schema.get("Tracking");
                             newTrackingSchema.addField("color", String.class);
                             newTrackingSchema.addPrimaryKey("trackingId");
@@ -250,7 +293,7 @@ public class TrackingRepository implements ITrackingRepository{
                             newTrackingSchema.transform(new RealmObjectSchema.Function() {
                                 @Override
                                 public void apply(DynamicRealmObject dynamicRealmObject) {
-                                    dynamicRealmObject.setString("color", "111111");
+                                    dynamicRealmObject.setString("color", "11119017");
                                     final String id = dynamicRealmObject.getString("trackingId");
                                 }
                             });
