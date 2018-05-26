@@ -27,10 +27,12 @@ public class MostFrequentEventFact extends Fact{
     FrequentEventsFactModel minModel;
     List<FrequentEventsFactModel> periodList= new ArrayList<>();
     Double priority = 10.0;
+    List<Integer> colors;
 
     public MostFrequentEventFact(List<Tracking> trackingCollection)
     {
         this.trackingCollection = trackingCollection;
+        colors = new ArrayList<>();
         trackingId = null;
     }
 
@@ -54,7 +56,7 @@ public class MostFrequentEventFact extends Fact{
                         - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24 / eventCount);
             }
             FrequentEventsFactModel model = new FrequentEventsFactModel
-                    (period, tracking.GetTrackingName(), tracking.getTrackingId());
+                    (period, tracking.GetTrackingName(), tracking.getTrackingId(), Integer.parseInt(tracking.getColor()));
             periodList.add(model);
         }
 

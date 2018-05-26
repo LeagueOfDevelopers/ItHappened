@@ -14,6 +14,7 @@ public class IllustartionModel {
     private List<FrequentEventsFactModel> frequentEventsList;
     private List<WeekDaysFactModel> weekDaysFactList;
     private List<DayTimeFactModel> dayTimeFactList;
+    private List<Integer> colors;
 
     public IllustartionModel(IllustrationType type){
         this.type = type;
@@ -83,5 +84,17 @@ public class IllustartionModel {
 
     public void setFrequentEventsModelList(List<FrequentEventsFactModel> frequentEventsModelList) {
         this.frequentEventsList = frequentEventsModelList;
+    }
+
+    public void setFrequentEventsList(List<FrequentEventsFactModel> frequentEventsList) {
+        this.frequentEventsList = frequentEventsList;
+    }
+
+    public List<Integer> getColors() {
+        return colors;
+    }
+
+    public void setColors(List<Integer> colors) {
+        this.colors = colors;
     }
 }
