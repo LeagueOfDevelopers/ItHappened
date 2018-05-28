@@ -22,5 +22,6 @@ public interface ITrackingRepository
     void SaveTrackingCollection(List<Tracking> trackingCollection);
     void configureRealm();
     void setUserId(String userId);
+    Event getEvent(UUID eventId);
 
 }

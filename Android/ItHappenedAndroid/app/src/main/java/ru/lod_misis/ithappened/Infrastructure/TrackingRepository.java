@@ -48,16 +48,13 @@ public class TrackingRepository implements ITrackingRepository{
 
     public Tracking GetTracking(UUID trackingId)
     {
-        List<Tracking> trackingCollection = GetTrackingCollection();
+        Tracking tracking =  realm.where(Tracking.class)
+                .equalTo("trackingId", trackingId.toString())
+                .findFirst();
 
-        for (Tracking item: trackingCollection)
-        {
-            if (item.GetTrackingID().equals(trackingId))
-            {
-                return item;
-            }
-        }
-        throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+        if (tracking == null)
+            throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+        return tracking;
     }
 
     public List<Tracking> GetTrackingCollection()
@@ -103,8 +100,6 @@ public class TrackingRepository implements ITrackingRepository{
             }
             if (!contains) {
                 List<Tracking> newList = new ArrayList<>();
-                RealmResults<DbModel> resultsWithSize = realm.where(DbModel.class)
-                        .equalTo("userId", userId).findAll();
                 List<DbModel> modelWithSize = realm.copyFromRealm(results);
                 for (Tracking item : modelWithSize.get(0).getTrackingCollection()) {
                     newList.add(item);
@@ -115,6 +110,11 @@ public class TrackingRepository implements ITrackingRepository{
             else throw new IllegalArgumentException("Tracking with such ID already exists");
         }
         realm.commitTransaction();
+    }
+
+    public Event getEvent(UUID eventId)
+    {
+        return realm.where(Event.class).equalTo("eventId", eventId.toString()).findFirst();
     }
 
     public List<Event> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,

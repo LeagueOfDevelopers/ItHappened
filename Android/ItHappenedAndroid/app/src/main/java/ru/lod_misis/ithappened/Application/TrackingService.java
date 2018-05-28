@@ -92,11 +92,9 @@ public class TrackingService
         trackingCollection.ChangeTracking(tracking);
     }
 
-    public Event GetEvent (UUID trackingId, UUID eventId)
+    public Event GetEvent (UUID eventId)
     {
-        Tracking tracking = trackingCollection.GetTracking(trackingId);
-        Event event = tracking.GetEvent(eventId);
-        return event;
+        return trackingCollection.getEvent(eventId);
     }
 
     public List<Tracking> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}
