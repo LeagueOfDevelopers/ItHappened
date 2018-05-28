@@ -59,7 +59,7 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                         }
                         TrackingService trackingSercvice = new TrackingService("testUser", collection);
 
-                        trackingSercvice.RemoveEvent(trackingId, eventId);
+                        trackingSercvice.RemoveEvent(eventId);
                         factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())

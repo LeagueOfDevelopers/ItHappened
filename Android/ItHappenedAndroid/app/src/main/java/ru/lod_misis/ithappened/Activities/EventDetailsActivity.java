@@ -190,7 +190,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void okClicked() {
 
-        trackingSercvice.RemoveEvent(trackingId, eventId);
+        trackingSercvice.RemoveEvent(eventId);
         factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
