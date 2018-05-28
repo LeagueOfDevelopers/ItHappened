@@ -114,7 +114,33 @@ public class TrackingRepository implements ITrackingRepository{
 
     public Event getEvent(UUID eventId)
     {
-        return realm.where(Event.class).equalTo("eventId", eventId.toString()).findFirst();
+        return realm.where(Event.class).
+                equalTo("eventId", eventId.toString())
+                .findFirst();
+    }
+
+    public void deleteTrackingFromRealm(UUID trackingId)
+    {
+        Tracking tracking = realm.where(Tracking.class)
+                .equalTo("trackingId", trackingId.toString()).findFirst();
+
+        if (tracking == null)
+            throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+
+        tracking.setDeleted(true);
+        realm.copyToRealmOrUpdate(tracking);
+    }
+
+    public void deleteEventFromRealm(UUID eventId)
+    {
+        Event event = realm.where(Event.class)
+                .equalTo("eventId", eventId.toString()).findFirst();
+
+        if (event == null)
+            throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+
+        event.setDeleted(true);
+        realm.copyToRealmOrUpdate(event);
     }
 
     public List<Event> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,

@@ -78,18 +78,14 @@ public class TrackingService
         return Observable.from(events);
     }
 
-    public void RemoveEvent(UUID trackingId, UUID eventId)
+    public void RemoveEvent(UUID eventId)
     {
-        Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.RemoveEvent(eventId);
-        trackingCollection.ChangeTracking(tracking);
+        trackingCollection.deleteEventFromRealm(eventId);
     }
 
     public void RemoveTracking(UUID trackingId)
     {
-        Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.DeleteTracking();
-        trackingCollection.ChangeTracking(tracking);
+        trackingCollection.deleteTrackingFromRealm(trackingId);
     }
 
     public Event GetEvent (UUID eventId)

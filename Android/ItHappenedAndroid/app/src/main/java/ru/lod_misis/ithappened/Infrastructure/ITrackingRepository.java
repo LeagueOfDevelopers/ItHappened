@@ -23,5 +23,7 @@ public interface ITrackingRepository
     void configureRealm();
     void setUserId(String userId);
     Event getEvent(UUID eventId);
+    void deleteEventFromRealm(UUID eventId);
+    void deleteTrackingFromRealm(UUID trackingId);
 
 }
