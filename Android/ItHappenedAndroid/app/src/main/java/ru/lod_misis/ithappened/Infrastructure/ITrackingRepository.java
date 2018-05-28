@@ -25,5 +25,5 @@ public interface ITrackingRepository
     Event getEvent(UUID eventId);
     void deleteEventFromRealm(UUID eventId);
     void deleteTrackingFromRealm(UUID trackingId);
-
+    void editEvent(Event event);
 }
