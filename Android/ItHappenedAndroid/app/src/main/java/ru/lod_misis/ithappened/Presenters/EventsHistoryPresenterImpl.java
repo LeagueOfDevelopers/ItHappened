@@ -46,7 +46,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 null,
                 null,
                 null,
-                null).subscribeOn(Schedulers.io())
+                null).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Event>() {
                                @Override
