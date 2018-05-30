@@ -40,29 +40,21 @@ public class TrackingService
                              String scaleName,
                              String color)
     {
-        Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditTracking(
+        trackingCollection.editTracking(trackingId,
                 editedCounter, editedScale, editedComment,
                 editedTrackingName, scaleName, color);
-        trackingCollection.ChangeTracking(tracking);
     }
 
     public void AddEvent(UUID trackingId, Event newEvent)
     {
-        Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.AddEvent(newEvent);
-        trackingCollection.ChangeTracking(tracking);
+        trackingCollection.addEvent(trackingId, newEvent);
     }
 
     public void EditEvent(UUID trackingId, UUID eventId,
-                          Double newScale,
-                          Rating newRating,
-                          String newComment,
+                          Double newScale, Rating newRating, String newComment,
                           Date newDate)
     {
-        Tracking tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
-        trackingCollection.ChangeTracking(tracking);
+        trackingCollection.editEvent(trackingId, eventId, newScale, newRating, newComment, newDate);
     }
 
     public Observable<Event> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
@@ -78,14 +70,18 @@ public class TrackingService
         return Observable.from(events);
     }
 
+    public List<Event> getEventCollection(UUID trackingId){
+        return trackingCollection.getEventCollection(trackingId);
+    }
+
     public void RemoveEvent(UUID eventId)
     {
-        trackingCollection.deleteEventFromRealm(eventId);
+        trackingCollection.deleteEvent(eventId);
     }
 
     public void RemoveTracking(UUID trackingId)
     {
-        trackingCollection.deleteTrackingFromRealm(trackingId);
+        trackingCollection.deleteTracking(trackingId);
     }
 
     public Event GetEvent (UUID eventId)

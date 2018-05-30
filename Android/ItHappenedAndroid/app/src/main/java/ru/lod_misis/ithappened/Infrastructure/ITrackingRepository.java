@@ -4,6 +4,7 @@ import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,20 @@ public interface ITrackingRepository
     void configureRealm();
     void setUserId(String userId);
     Event getEvent(UUID eventId);
-    void deleteEventFromRealm(UUID eventId);
-    void deleteTrackingFromRealm(UUID trackingId);
-    void editEvent(Event event);
+    void deleteEvent(UUID eventId);
+    void deleteTracking(UUID trackingId);
+    void editEvent(UUID trackingId, UUID eventId,
+                   Double newScale,
+                   Rating newRating,
+                   String newComment,
+                   Date newDate);
+    void editTracking(UUID trackingId,
+                      TrackingCustomization editedCounter,
+                      TrackingCustomization editedScale,
+                      TrackingCustomization editedComment,
+                      String editedTrackingName,
+                      String scaleName,
+                      String color);
+    void addEvent(UUID trackingId, Event newEvent);
+    List<Event> getEventCollection(UUID trackingId);
 }

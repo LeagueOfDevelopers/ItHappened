@@ -81,7 +81,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         thisTracking = trackingsCollection.GetTracking(trackingId);
         actionBar.setTitle(thisTracking.GetTrackingName());
 
-        events = thisTracking.GetEventCollection();
+        events = trackingsCollection.getEventCollection(trackingId);
 
         for(int i = 0;i<events.size();i++){
             if(events.get(i).GetStatus()){
