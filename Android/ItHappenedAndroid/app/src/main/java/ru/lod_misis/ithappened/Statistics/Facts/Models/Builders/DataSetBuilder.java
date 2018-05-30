@@ -13,6 +13,7 @@ import java.util.Map;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 
 public class DataSetBuilder {
 
@@ -206,9 +207,47 @@ public class DataSetBuilder {
         return new ArrayList<>(events);
     }
 
-    private static boolean IsDateInInterval(Date first, Date second, Date date) {
-        return date.before(new Date(second.getTime() + 1)) &&
-                date.after(new Date(first.getTime() - 1));
+    public static Sequence BuildScaleSequence(List<Event> events) {
+        List<Double> result = new ArrayList<>();
+        for (Event e: events) {
+            if (e.GetScale() != null && !e.isDeleted())
+                result.add(e.GetScale());
+        }
+        return new Sequence(result);
     }
-    // Временной интервал развинут на единицу, чтобы туда влезли крайние события
+
+    public static Sequence BuildRatingSequence(List<Event> events) {
+        List<Double> result = new ArrayList<>();
+        for (Event e: events) {
+            if (e.GetRating() != null)
+                result.add((double)e.GetRating().GetRatingValue());
+        }
+        return new Sequence(result);
+    }
+
+    public static Sequence BuildFrequencySequence(List<Event> events) {
+        List<Event> copy = MakeEventListCopy(events);
+        SortCopyByTime(copy);
+        long leftBorder = copy.get(0).GetEventDate().getTime();
+        long rightBorder = copy.get(copy.size() - 1).GetEventDate().getTime();
+        long dateDelta = (rightBorder - leftBorder) / (events.size());
+        List<Double> frequencies = new ArrayList<>();
+        int eventInd = 0;
+        for (int i = 0; i < copy.size(); i++) {
+            int count = 0;
+            for (int j = eventInd; j < copy.size(); j++) {
+
+                if (leftBorder + dateDelta * (i) <= copy.get(j).getEventDate().getTime() &&
+                        copy.get(j).getEventDate().getTime() < leftBorder + dateDelta * (i + 1)) {
+                    count++;
+                }
+                else {
+                    eventInd = j;
+                    break;
+                }
+            }
+            frequencies.add((double)count);
+        }
+        return new Sequence(frequencies);
+    }
 }

@@ -1,8 +1,16 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models.Builders;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import ru.lod_misis.ithappened.Statistics.Facts.Models.CorrelationModels.CorrelationData;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendDelta;
 
 public class DescriptionBuilder {
+
+    private static final String DateFormatPattern = "EEE, dd MMM yyyy HH:mm:ss";
+    private static final Locale DateFormatLocalization = new Locale("ru");
 
     public static String BuildCorrelationReport(CorrelationData Correlation,
                                          String FirstTrackingName,
@@ -108,4 +116,34 @@ public class DescriptionBuilder {
         return result;
     }
     // Рамки для текстового описания корреляции (сильная слабая и тд) взяты по шкале Чеддока.
+
+    public static String BuildScaleTrendReport(TrendDelta delta, String trackingName, String scaleName) {
+        String deltaDescription = delta.getAverangeDelta() > 0 ? "увеличилось" : "уменьшилось";
+        String orientation = "";
+        if (delta.getPoint().getAlphaCoefficient() > 0) {
+            orientation = "положительный";
+        }
+        if (delta.getPoint().getAlphaCoefficient() < 0) {
+            orientation = "отрицательный";
+        }
+        SimpleDateFormat format = new SimpleDateFormat(DateFormatPattern, DateFormatLocalization);
+        return "В значениях шкалы " + scaleName + " отслеживания " + trackingName + " выявлен "
+                + orientation + " тренд. С момента " + format.format(delta.getPoint().getPointEventDate())
+                + " среднее значение шкалы " + deltaDescription + " на " + Math.abs(delta.getAverangeDelta());
+    }
+
+    public static String BuildRatingTrendReport(TrendDelta delta, String trackingName) {
+        String deltaDescription = delta.getAverangeDelta() > 0 ? "увеличилось" : "уменьшилось";
+        String orientation = "";
+        if (delta.getPoint().getAlphaCoefficient() > 0) {
+            orientation = "положительный";
+        }
+        if (delta.getPoint().getAlphaCoefficient() < 0) {
+            orientation = "отрицательный";
+        }
+        SimpleDateFormat format = new SimpleDateFormat(DateFormatPattern, DateFormatLocalization);
+        return "В значениях рейтинга отслеживания " + trackingName + " выявлен "
+                + orientation + " тренд. С " + format.format(delta.getPoint().getPointEventDate())
+                + " среднее значение шкалы " + deltaDescription + " на " + Math.abs(delta.getAverangeDelta());
+    }
 }

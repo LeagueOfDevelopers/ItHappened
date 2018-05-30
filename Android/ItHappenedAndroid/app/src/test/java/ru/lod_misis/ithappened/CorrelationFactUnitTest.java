@@ -23,37 +23,6 @@ public class CorrelationFactUnitTest {
     private DataSet<Integer> TestMultinomialData;
 
     @Test
-    public void PrepareDoubleDatasetTest_PrepareDoubleDatasetFunctionWorksCorrect() {
-        List<List<Event>> eventSet = GenerateEventCollectionPair(10);
-        DataSet<Integer> intDS = DataSetBuilder.BuildBooleanDataset(eventSet.get(0), eventSet.get(1), 1);
-        DataSet<Double> doubleDS = DataSetBuilder.BuildDoubleDataSet(eventSet.get(0), eventSet.get(1), 1);
-
-        Assert.assertEquals(intDS.Length(), 9);
-        Assert.assertEquals(doubleDS.Length(), 9);
-    }
-
-    private List<List<Event>> GenerateEventCollectionPair(int count) {
-        List<List<Event>> result = new ArrayList<>();
-        List<Event> events1 = new ArrayList<>();
-        List<Event> events2 = new ArrayList<>();
-        for (int i = 1; i <= count; i += 2) {
-            Event event = new Event();
-            event.EditDate(new Date(2000, 1, i));
-            event.EditScale((double)i * 100);
-            events1.add(event);
-        }
-        for (int i = 2; i <= count; i += 2) {
-            Event event = new Event();
-            event.EditDate(new Date(2000, 1, i));
-            event.EditScale((double)i * 100);
-            events2.add(event);
-        }
-        result.add(events1);
-        result.add(events2);
-        return result;
-    }
-
-    @Test
     public void CalculateCorrelationTest_GotCorrectCorrelationValue() {
         InitializeDoubleDataset();
         InitializeBooleanDataset();
@@ -80,38 +49,6 @@ public class CorrelationFactUnitTest {
         Assert.assertTrue(perfectMultCorr - acceptedDeltaValue <
                 fact.getCorrelation().getMultinomialCorrelation() &&
                 fact.getCorrelation().getMultinomialCorrelation() < perfectMultCorr + acceptedDeltaValue);
-    }
-
-    @Test
-    public void DescriptionBuilderTest_DescriptionBuilderBuildCorrectDecription() {
-        InitializeDoubleDataset();
-        InitializeBooleanDataset();
-        InitializeMultinomialDataset();
-        Tracking tracking1 = InitializeDoubleTracking(TestDoubleData.GetColumn(0),
-                "килограммы", "я поел мороженного", 0);
-        Tracking tracking2 = InitializeDoubleTracking(TestDoubleData.GetColumn(1),
-                "килограммы", "я потолстел", 1);
-        CorrelationFact fact = new CorrelationFact(tracking1, tracking2);
-        fact.calculateData();
-
-        String description = fact.textDescription().trim();
-        Assert.assertTrue(description.equals("Между значениями килограммы событий я поел мороженного и значениями килограммы событий я потолстел выявлена слабая положительная взаимосвязь. Между фактами возникновения события я поел мороженного и фактами возникновения события я потолстел выявлена сильная положительная взаимосвязь."));
-    }
-
-    private Tracking InitializeDoubleTracking(List<Double> data, String scaleName, String trackingName, int dayseed) {
-        Tracking tracking = new Tracking(trackingName,
-                UUID.randomUUID(),
-                TrackingCustomization.Required,
-                TrackingCustomization.None,
-                TrackingCustomization.None,
-                scaleName);
-        for (int i = 0; i < data.size(); i++) {
-            Event event = new Event();
-            event.SetScale(data.get(i));
-            event.setEventDate(new Date(2000, i / 30 + 1, i % 30 + dayseed));
-            tracking.AddEvent(event);
-        }
-        return tracking;
     }
 
     private void InitializeDoubleDataset() {

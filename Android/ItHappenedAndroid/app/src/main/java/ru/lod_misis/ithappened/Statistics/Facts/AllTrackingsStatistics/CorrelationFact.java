@@ -100,13 +100,11 @@ public class CorrelationFact extends Fact {
     }
     // Данная функция проверяет значимость корреляции между бинарными признаками
     // (alpha - порог уровня значимости р. Если р > alpha, то корреляция незначима)
-    // Метод выведен в паблик для использования в функции применимости. Множитель 2,
-    // так как используется двухсторонняя альтернатива.
+    // Метод выведен в паблик для использования в функции применимости.
 
     private Double CalculateSpearmanCorrelation(DataSet<Double> ds) {
         if (ds.Length() <= 4) return null;
-        DataSetBuilder builder = new DataSetBuilder();
-        DataSet<Double> ranks = builder.ConvertToRanks(ds);
+        DataSet<Double> ranks = DataSetBuilder.ConvertToRanks(ds);
         List<Double> ranks1 = ranks.GetColumn(0);
         List<Double> ranks2 = ranks.GetColumn(1);
         double corrCoef = 0.0;
@@ -217,8 +215,8 @@ public class CorrelationFact extends Fact {
         if (Correlation.getMultinomialCorrelation() == null || MultinomialData.Length() < 10) return false;
         double D = (double)(4 * MultinomialData.Length() + 10) / (9 * MultinomialData.Length() * (MultinomialData.Length() - 1));
         double stat = Math.abs(Correlation.getMultinomialCorrelation() / Math.sqrt(D));
-        double p = Probability.normalInverse(1 - Alpha / 2);
-        return p <= stat; // Вычисление квантили стандартного нормального распределения
+        double p = Probability.normalInverse(1 - Alpha / 2); // Вычисление квантили стандартного нормального распределения
+        return p <= stat;
     }
     // В данном методе происходит сравнение статистики с квантилью стандартного нормального распределения.
     // Говоря простым языком, если значение статистики больше, чем 1 - alpha / 2 квантиль, то вероятность
