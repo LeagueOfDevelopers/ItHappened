@@ -12,7 +12,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 
-public class DataSetBulderTest {
+public class DataSetBuilderTest {
 
     @Test
     public void PrepareDoubleDatasetTest_PrepareDoubleDatasetFunctionWorksCorrect() {

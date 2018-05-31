@@ -1,11 +1,13 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models;
 
+import org.joda.time.Duration;
+
 import java.util.Date;
 import java.util.UUID;
 
 public class BreakData {
 
-    private Date Interval;
+    private Duration Duration;
     private Date FirstEventDate;
     private Date SecondEventDate;
     private UUID FirstEventId;
@@ -16,11 +18,11 @@ public class BreakData {
         SecondEventDate = secondEventDate;
         FirstEventId = firstEventId;
         SecondEventId = secondEventId;
-        Interval = new Date(SecondEventDate.getTime() - FirstEventDate.getTime());
+        Duration = new Duration(SecondEventDate.getTime() - FirstEventDate.getTime());
     }
 
-    public Date getInterval() {
-        return Interval;
+    public Duration getDuration() {
+        return Duration;
     }
 
     public Date getFirstEventDate() {

@@ -17,6 +17,7 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.CorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequentEventFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.RatingTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.ScaleTrendChangingFact;
@@ -332,6 +333,18 @@ public final class FunctionApplicability  {
                 RatingTrendChangingFact fact = new RatingTrendChangingFact(t);
                 fact.calculateData();
                 facts.add(fact);
+            }
+        }
+        return facts;
+    }
+
+    public static List<Fact> LongestBreakFactApplicability(List<Tracking> tracking) {
+        List<Fact> facts = new ArrayList<>();
+        for (Tracking t: tracking) {
+            if (t.GetEventCollection().size() >= 10) {
+                LongestBreakFact fact = new LongestBreakFact(t);
+                fact.calculateData();
+                if (fact.getLongestBreak() != null) facts.add(fact);
             }
         }
         return facts;

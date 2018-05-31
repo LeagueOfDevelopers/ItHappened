@@ -1,5 +1,8 @@
 package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +30,10 @@ public class LongestBreakFact extends Fact {
         Events = events;
     }
 
+    public BreakData getLongestBreak() {
+        return LongestBreak;
+    }
+
     @Override
     public void calculateData() {
         LongestBreak = FindLongestBreak();
@@ -44,21 +51,38 @@ public class LongestBreakFact extends Fact {
 
     private BreakData FindLongestBreak () {
         List<Event> copy = SortEventsByDate(Events);
-        long maxInterval = copy.get(1).GetEventDate().getTime() - copy.get(0).getEventDate().getTime();
-        Event firstEvent = copy.get(0);
-        Event secondEvent = copy.get(1);
+        long maxInterval = 0;
+        BreakData data = null;
         for (int i = 1; i < copy.size() - 1; i++) {
             long delta = copy.get(i + 1).getEventDate().getTime() - copy.get(i).getEventDate().getTime();
             if (delta > maxInterval) {
-                firstEvent = copy.get(i);
-                secondEvent = copy.get(i + 1);
-                maxInterval = delta;
+                BreakData point = new BreakData(
+                        copy.get(i).GetEventDate(),
+                        copy.get(i + 1).GetEventDate(),
+                        copy.get(i).GetEventId(),
+                        copy.get(i + 1).GetEventId());
+                if (IsBreakSignificant(point)) {
+                    data = point;
+                    maxInterval = delta;
+                }
             }
         }
-        return new BreakData(firstEvent.GetEventDate(),
-                secondEvent.GetEventDate(),
-                firstEvent.GetEventId(),
-                secondEvent.GetEventId());
+        return data;
+    }
+
+    private boolean IsBreakSignificant(BreakData dataToCheck) {
+        List<Event> copy = SortEventsByDate(Events);
+        Duration averange = Duration.ZERO;
+        boolean IsSignificant = true;
+        for (int i = 0; i < copy.size() - 1; i++) {
+            averange = averange.plus((copy.get(i + 1).GetEventDate().getTime() -
+                    copy.get(i).GetEventDate().getTime()) * 3 / (copy.size() - 1));
+        }
+        if (averange.isLongerThan(dataToCheck.getDuration())) IsSignificant = false;
+        if (new DateTime().minusDays(7).isAfter(dataToCheck.getSecondEventDate().getTime())) {
+            IsSignificant = false;
+        }
+        return IsSignificant;
     }
 
     private List<Event> SortEventsByDate(List<Event> events) {
