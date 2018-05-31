@@ -27,6 +27,7 @@ public class ScaleTrendChangingFact extends Fact {
 
     public ScaleTrendChangingFact(Tracking tracking) {
         ScaleName = tracking.getScaleName();
+        trackingId = tracking.GetTrackingID();
         TrackingName = tracking.GetTrackingName();
         Events = new ArrayList<>();
         NewAverange = 0.0;

@@ -25,6 +25,7 @@ public class RatingTrendChangingFact extends Fact {
 
     public RatingTrendChangingFact(Tracking tracking) {
         TrackingName = tracking.GetTrackingName();
+        trackingId = tracking.GetTrackingID();
         Events = new ArrayList<>();
         NewAverange = 0.0;
         double sum = 0.0;

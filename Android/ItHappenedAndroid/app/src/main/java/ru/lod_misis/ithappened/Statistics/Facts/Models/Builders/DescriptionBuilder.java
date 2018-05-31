@@ -1,7 +1,10 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models.Builders;
 
+import org.joda.time.Interval;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import ru.lod_misis.ithappened.Statistics.Facts.Models.CorrelationModels.CorrelationData;
@@ -11,6 +14,7 @@ public class DescriptionBuilder {
 
     private static final String DateFormatPattern = "EEE, dd MMM yyyy HH:mm:ss";
     private static final Locale DateFormatLocalization = new Locale("ru");
+    private static final SimpleDateFormat DateFormatter = new SimpleDateFormat(DateFormatPattern, DateFormatLocalization);
 
     public static String BuildCorrelationReport(CorrelationData Correlation,
                                          String FirstTrackingName,
@@ -126,9 +130,8 @@ public class DescriptionBuilder {
         if (delta.getPoint().getAlphaCoefficient() < 0) {
             orientation = "отрицательный";
         }
-        SimpleDateFormat format = new SimpleDateFormat(DateFormatPattern, DateFormatLocalization);
         return "В значениях шкалы " + scaleName + " отслеживания " + trackingName + " выявлен "
-                + orientation + " тренд. С момента " + format.format(delta.getPoint().getPointEventDate())
+                + orientation + " тренд. С момента " + DateFormatter.format(delta.getPoint().getPointEventDate())
                 + " среднее значение шкалы " + deltaDescription + " на " + Math.abs(delta.getAverangeDelta());
     }
 
@@ -141,9 +144,17 @@ public class DescriptionBuilder {
         if (delta.getPoint().getAlphaCoefficient() < 0) {
             orientation = "отрицательный";
         }
-        SimpleDateFormat format = new SimpleDateFormat(DateFormatPattern, DateFormatLocalization);
         return "В значениях рейтинга отслеживания " + trackingName + " выявлен "
-                + orientation + " тренд. С " + format.format(delta.getPoint().getPointEventDate())
+                + orientation + " тренд. С " + DateFormatter.format(delta.getPoint().getPointEventDate())
                 + " среднее значение шкалы " + deltaDescription + " на " + Math.abs(delta.getAverangeDelta());
+    }
+
+    public static String BuildLongestBreakDEscription(String trackingName,
+                                                      Date firstEventDate,
+                                                      Date secondEventDate) {
+        return "Самый большой перерыв в " + trackingName + " произошёл с "
+                + DateFormatter.format(firstEventDate) +
+                " до " + DateFormatter.format(secondEventDate) + ". Длина перерыва в днях: " +
+                (secondEventDate.getTime() - firstEventDate.getTime()) / (1000 * 60 * 60 * 24);
     }
 }

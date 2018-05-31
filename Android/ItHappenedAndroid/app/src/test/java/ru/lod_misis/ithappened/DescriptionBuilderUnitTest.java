@@ -14,6 +14,7 @@ import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.CorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 
@@ -42,6 +43,15 @@ public class DescriptionBuilderUnitTest {
         fact.calculateData();
         String descr = fact.textDescription();
         Assert.assertTrue(descr.contains("В значениях шкалы scale отслеживания tracking выявлен положительный тренд."));
+    }
+
+    @Test
+    public void DescriptionBuilderBuildLongestBreakDescriptionTest_DescriptionBuilderBuildsCorrectReport() {
+        Tracking tracking = GenerateScaleRaisingUpTracking();
+        LongestBreakFact fact = new LongestBreakFact(tracking);
+        fact.calculateData();
+        String descr = fact.textDescription();
+        Assert.assertTrue(descr.contains("Длина перерыва в днях: 2"));
     }
 
     private Tracking GenerateScaleRaisingUpTracking() {
