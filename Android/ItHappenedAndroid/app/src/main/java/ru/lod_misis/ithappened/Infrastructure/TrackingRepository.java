@@ -201,7 +201,7 @@ public class TrackingRepository implements ITrackingRepository{
         filteredEvents.addAll(notFilteredEvents);
 
         if (trackingId != null) {
-            filteredEvents.clear();
+            filteredEvents = new ArrayList<>();
             for (Event event : notFilteredEvents) {
                 if (trackingId.contains(event.GetTrackingId()))
                     filteredEvents.add(event);
@@ -209,27 +209,27 @@ public class TrackingRepository implements ITrackingRepository{
         }
 
         if (dateFrom != null && dateTo != null) {
-            notFilteredEvents.clear();
+            notFilteredEvents = new ArrayList<>();
             notFilteredEvents.addAll(filteredEvents);
-            filteredEvents.clear();
+            filteredEvents = new ArrayList<>();
             for (Event event : notFilteredEvents) {
                 if (event.GetEventDate().compareTo(dateFrom) >= 0 && event.GetEventDate().compareTo(dateTo) <= 0)
                     filteredEvents.add(event);
             }
         }else{
             if(dateFrom!=null){
-                notFilteredEvents.clear();
+                notFilteredEvents = new ArrayList<>();
                 notFilteredEvents.addAll(filteredEvents);
-                filteredEvents.clear();
+                filteredEvents = new ArrayList<>();
                 for (Event event : notFilteredEvents) {
                     if (event.GetEventDate().compareTo(dateFrom) >= 0)
                         filteredEvents.add(event);
                 }
             }
             if(dateTo!=null){
-                notFilteredEvents.clear();
+                notFilteredEvents = new ArrayList<>();
                 notFilteredEvents.addAll(filteredEvents);
-                filteredEvents.clear();
+                filteredEvents = new ArrayList<>();
                 for (Event event : notFilteredEvents) {
                     if (event.GetEventDate().compareTo(dateTo) <= 0)
                         filteredEvents.add(event);
@@ -238,9 +238,9 @@ public class TrackingRepository implements ITrackingRepository{
         }
 
         if (scaleComparison != null && scale != null) {
-            notFilteredEvents.clear();
+            notFilteredEvents = new ArrayList<>();
             notFilteredEvents.addAll(filteredEvents);
-            filteredEvents.clear();
+            filteredEvents = new ArrayList<>();
             for (Event event : notFilteredEvents) {
                 if(event.GetScale()!=null)
                 if (CompareValues(scaleComparison, event.GetScale(), scale))
@@ -249,9 +249,9 @@ public class TrackingRepository implements ITrackingRepository{
         }
 
         if (ratingComparison != null && rating != null) {
-            notFilteredEvents.clear();
+            notFilteredEvents = new ArrayList<>();
             notFilteredEvents.addAll(filteredEvents);
-            filteredEvents.clear();
+            filteredEvents = new ArrayList<>();
             for (Event event : notFilteredEvents) {
                 if (event.GetRating() != null)
                     if (CompareValues(ratingComparison,

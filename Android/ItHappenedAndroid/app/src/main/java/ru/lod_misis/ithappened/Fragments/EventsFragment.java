@@ -254,6 +254,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
                 final List<Event> allEvents = new ArrayList<>();
                 YandexMetrica.reportEvent("Пользователь отменил фильтры");
+                eventsHistoryPresenter.loadEvents();
             }
         });
 
@@ -303,7 +304,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             scale,
                             ratingComparison,
                             rating);
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
             }});
