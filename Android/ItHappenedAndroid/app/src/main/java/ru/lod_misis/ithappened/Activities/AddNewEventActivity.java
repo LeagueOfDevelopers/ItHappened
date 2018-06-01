@@ -70,8 +70,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     int eventMinuets;
     int eventSeconds;
 
+    boolean timeSetFlag = false;
 
-    Date eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+
+    Date eventDate;
 
     LinearLayout commentContainer;
     LinearLayout scaleContainer;
@@ -110,7 +112,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
         factRepository = StaticFactRepository.getInstance();
-
+        eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
 
 
@@ -257,14 +259,15 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                             Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
                         }
                     }else {
-                        Date eventDate = null;
-                        Locale locale = new Locale("ru");
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                        try {
-                            eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        if(timeSetFlag) {
+                            Locale locale = new Locale("ru");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                            try {
+                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                         trackingService.AddEvent(trackingId, new Event(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
@@ -336,7 +339,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
-
+        timeSetFlag = true;
         dateControl.setText(format.format(eventDate).toString());
 
     }
