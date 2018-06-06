@@ -78,10 +78,16 @@
                 android:layout_below="@id/trackingsFiltersHint"
                 android:text="Отслеживаний нет"></TextView>
 
-            <ru.lod_misis.ithappened.Gui.MultiSpinner
+            <!--<ru.lod_misis.ithappened.Gui.MultiSpinner
                 android:id="@+id/spinnerForTrackings"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></ru.lod_misis.ithappened.Gui.MultiSpinner>
+                android:layout_height="match_parent"></ru.lod_misis.ithappened.Gui.MultiSpinner>-->
+            <TextView
+                android:id="@+id/trackingsPickerText"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </android.support.v7.widget.CardView>
 
 

@@ -84,6 +84,14 @@ public class MultiSpinner extends Spinner implements
                         dialog.cancel();
                     }
                 });
+        builder.setNeutralButton("Почистить все", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int k) {
+           for(int i=0;i<selected.length;i++){
+               selected[i] = false;
+           }
+            }
+        });
         builder.setOnCancelListener(this);
         builder.show();
         return true;
