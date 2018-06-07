@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -74,7 +75,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     Button addFilters;
     EditText scaleFilter;
     RatingBar ratingFilter;
-    //MultiSpinner trackingsSpinner;
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     CardView trackingsPickerBtn;
@@ -180,8 +180,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         setUuidsCollection(allTrackingsId);
 
-        //trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
-
         String allText = "";
         for(int i=0;i<strings.size();i++) {
             if (i != strings.size()) {
@@ -205,7 +203,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 @Override
                 public void onClick(View view) {
                     filteredTrackingsUuids.clear();
-                    AlertDialog.Builder trackingsPicker = new AlertDialog.Builder(getActivity());
+                    final AlertDialog trackingsPickerDiaolg;
+                    final AlertDialog.Builder trackingsPicker = new AlertDialog.Builder(getActivity());
                     trackingsPicker.setTitle("Выберите отслеживания");
                     trackingsPicker.setMultiChoiceItems(trackingsTitles, selectedArray, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
@@ -229,56 +228,51 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                                 }
                             }
                             trackingsPickerText.setText(item);
-                        }
-                    });
-                    trackingsPicker.setNegativeButton("Снять все", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int k) {
-                            for (int i = 0; i < selectedArray.length; i++) {
-                                selectedArray[i] = false;
-                                selectedPositionItems.clear();
+                            if(item.isEmpty()){
                                 trackingsPickerText.setText("Не выбрано отслеживаний");
                             }
                         }
                     });
-                    trackingsPicker.setNeutralButton("Выбрать все", new DialogInterface.OnClickListener() {
+                    trackingsPicker.setNegativeButton("Снять все",  null);
+                    trackingsPicker.setNeutralButton("Выбрать все", null);
+
+                    trackingsPickerDiaolg = trackingsPicker.show();
+
+                    Button selectAll = trackingsPickerDiaolg.getButton(AlertDialog.BUTTON_NEUTRAL);
+                    Button unselectAll = trackingsPickerDiaolg.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+                    selectAll.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int k) {
+                        public void onClick(View view) {
                             selectedPositionItems.clear();
                             for (int i = 0; i < selectedArray.length; i++) {
                                 selectedArray[i] = true;
                                 selectedPositionItems.add(i);
                                 trackingsPickerText.setText("Выбраны все отслеживания");
                             }
+                            ListView curList = trackingsPickerDiaolg.getListView();
+                            for(int i = 0; i < trackingsTitles.length; ++i)
+                                curList.setItemChecked(i, true);
+
                         }
                     });
-                    trackingsPicker.show();
+
+                    unselectAll.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            for (int i = 0; i < selectedArray.length; i++) {
+                                selectedArray[i] = false;
+                                selectedPositionItems.clear();
+                            }
+
+                            ListView curList = trackingsPickerDiaolg.getListView();
+                            for(int i = 0; i < trackingsTitles.length; ++i)
+                                curList.setItemChecked(i, false);
+                        }
+                    });
                 }
             });
-
-            /*trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
-
-                @Override
-                public void onItemsSelected(boolean[] selected) {
-
-                    for (int i = 0; i < selected.length; i++) {
-
-                        Log.e("FILTER", selected[i] + "");
-                        if (selected[i]) {
-                            if(flags.get(i)) {
-                                filteredTrackingsUuids.add(idCollection.get(i));
-                            }
-                        }
-                        if (!selected[i]) {
-                            filteredTrackingsUuids.remove(idCollection.get(i));
-                            flags.set(i, true);
-                        }
-
-                    }
-                }
-            });*/
         }else{
-            //trackingsSpinner.setVisibility(View.INVISIBLE);
             trackingsPickerText.setText("Отслеживания отсутствуют");
             hintForSpinner.setVisibility(View.VISIBLE);
         }
@@ -464,30 +458,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
 
         if (strings.size() != 0) {
-           /* trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
-                    new MultiSpinner.MultiSpinnerListener() {
-
-                        @Override
-                        public void onItemsSelected(boolean[] selected) {
-                            for (int i = 0; i < selected.length; i++) {
-
-                                Log.e("FILTER", selected[i] + "");
-                                if (selected[i]) {
-                                    filteredTrackingsTitles.add(strings.get(i));
-                                    if (flags.get(i)) {
-                                        filteredTrackingsUuids.add(idCollection.get(i));
-                                    }
-                                }
-                                if (!selected[i]) {
-                                    filteredTrackingsUuids.remove(idCollection.get(i));
-                                    flags.set(i, true);
-                                }
-                            }
-                        }
-                    });*/
+            trackingsPickerText.setText(allText);
+            filteredTrackingsUuids.clear();
+            selectedPositionItems.clear();
             filtersHintText.setVisibility(View.GONE);
         } else {
-            //trackingsSpinner.setVisibility(View.INVISIBLE);
             hintForSpinner.setVisibility(View.VISIBLE);
             filtersHintText.setVisibility(View.GONE);
         }
