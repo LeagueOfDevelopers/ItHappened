@@ -90,6 +90,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         factRepository = StaticFactRepository.getInstance();
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
         if(sharedPreferences.getString("LastId","").isEmpty()) {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
             collection = StaticInMemoryRepository.getInstance();
