@@ -180,7 +180,6 @@ public class UserActionsActivity extends AppCompatActivity
             isProfileSettings = false;
             isStatistics = false;
                 setTitle("Что произошло?");
-                trackFrg = new TrackingsFragment();
                 fTrans = getFragmentManager().beginTransaction();
                 fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
                 fTrans.commit();
