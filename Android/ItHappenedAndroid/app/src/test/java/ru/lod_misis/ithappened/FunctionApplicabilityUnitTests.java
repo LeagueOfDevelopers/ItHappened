@@ -281,6 +281,4 @@ public class FunctionApplicabilityUnitTests {
 
         Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(tracking), null);
     }
-
-
 }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,10 +229,10 @@ public class DataSetBuilder {
         SortCopyByTime(copy);
         long leftBorder = copy.get(0).GetEventDate().getTime();
         long rightBorder = copy.get(copy.size() - 1).GetEventDate().getTime();
-        long dateDelta = (rightBorder - leftBorder) / (events.size());
+        long dateDelta = (rightBorder - leftBorder) / (events.size() - 1);
         List<Double> frequencies = new ArrayList<>();
         int eventInd = 0;
-        for (int i = 0; i < copy.size(); i++) {
+        for (int i = 0; i < copy.size() - 1; i++) {
             int count = 0;
             for (int j = eventInd; j < copy.size(); j++) {
 

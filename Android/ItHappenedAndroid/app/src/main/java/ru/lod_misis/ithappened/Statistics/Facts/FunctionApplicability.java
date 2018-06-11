@@ -17,6 +17,7 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.CorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.FrequencyTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequentEventFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.RatingTrendChangingFact;
@@ -26,6 +27,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFa
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.BestEvent;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainDayTimeFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainWeekDaysFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.DayWithLargestEventCount;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongTimeAgoFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
@@ -319,20 +321,32 @@ public final class FunctionApplicability  {
                     CheckScaleEventCollection(t.GetEventCollection())) {
                 ScaleTrendChangingFact fact = new ScaleTrendChangingFact(t);
                 fact.calculateData();
-                facts.add(fact);
+                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
             }
         }
         return facts;
     }
 
-    public static List<Fact> RatingTrendChangingFactApplicability(List<Tracking> tracking) {
+    public static List<Fact> RatingTrendChangingFactApplicability(List<Tracking> trackings) {
         List<Fact> facts = new ArrayList<>();
-        for (Tracking t: tracking) {
+        for (Tracking t: trackings) {
             if (t.GetRatingCustomization() != TrackingCustomization.None &&
                     CheckRatingEventCollection(t.GetEventCollection())) {
                 RatingTrendChangingFact fact = new RatingTrendChangingFact(t);
                 fact.calculateData();
-                facts.add(fact);
+                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
+            }
+        }
+        return facts;
+    }
+
+    public static List<Fact> FrequencyTrendChangingFactApplicability(List<Tracking> trackings) {
+        List<Fact> facts = new ArrayList<>();
+        for (Tracking t: trackings) {
+            if (CheckFrequencyEventCollection(t.GetEventCollection())) {
+                FrequencyTrendChangingFact fact = new FrequencyTrendChangingFact(t);
+                fact.calculateData();
+                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
             }
         }
         return facts;
@@ -350,9 +364,16 @@ public final class FunctionApplicability  {
         return facts;
     }
 
+    public static Fact DayWithLargestEventCountApplicability(List<Tracking> trackings) {
+        DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
+        fact.calculateData();
+        if (!fact.IsFactSignificant()) return null;
+        return fact;
+    }
+
     private static boolean CheckScaleEventCollection(List<Event> events) {
         int count = 0;
-        int limitEventCount = 10; //Менять в случае, если мы хотим допустить
+        int limitEventCount = 5; //Менять в случае, если мы хотим допустить
         // применимость вычисления тренда для меньшего размера коллекции
         for (Event e: events) {
             if (!e.isDeleted() && e.GetScale() != null) count++;
@@ -362,10 +383,19 @@ public final class FunctionApplicability  {
 
     private static boolean CheckRatingEventCollection(List<Event> events) {
         int count = 0;
-        int limitEventCount = 10; //Менять в случае, если мы хотим допустить
+        int limitEventCount = 5; //Менять в случае, если мы хотим допустить
         // применимость вычисления тренда для меньшего размера коллекции
         for (Event e: events) {
             if (!e.isDeleted() && e.GetRating() != null) count++;
+        }
+        return count >= limitEventCount;
+    }
+
+    private static boolean CheckFrequencyEventCollection(List<Event> events) {
+        int count = 0;
+        int limitEventCount = 5;
+        for (Event e: events) {
+            if (!e.isDeleted()) count++;
         }
         return count >= limitEventCount;
     }

@@ -59,7 +59,7 @@ public class CorrelationFact extends Fact {
 
     @Override
     protected void calculatePriority() {
-
+        priority = 40.0;
     }
 
     @Override

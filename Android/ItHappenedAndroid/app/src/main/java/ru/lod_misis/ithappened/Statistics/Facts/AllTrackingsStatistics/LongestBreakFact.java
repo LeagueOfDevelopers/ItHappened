@@ -41,12 +41,13 @@ public class LongestBreakFact extends Fact {
 
     @Override
     protected void calculatePriority() {
-
+        priority = Math.sqrt(LongestBreak.getDuration().toStandardDays().getDays());
     }
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.BuildLongestBreakDEscription(TrackingName, LongestBreak.getFirstEventDate(), LongestBreak.getSecondEventDate());
+        return DescriptionBuilder.BuildLongestBreakDEscription(TrackingName,
+                LongestBreak.getFirstEventDate(), LongestBreak.getSecondEventDate());
     }
 
     private BreakData FindLongestBreak () {
@@ -72,18 +73,23 @@ public class LongestBreakFact extends Fact {
 
     private boolean IsBreakSignificant(BreakData dataToCheck) {
         List<Event> copy = SortEventsByDate(Events);
-        Duration averange = Duration.ZERO;
+        Duration tripleAverange = Duration.ZERO;
         boolean IsSignificant = true;
         for (int i = 0; i < copy.size() - 1; i++) {
-            averange = averange.plus((copy.get(i + 1).GetEventDate().getTime() -
+            tripleAverange = tripleAverange.plus((copy.get(i + 1).GetEventDate().getTime() -
                     copy.get(i).GetEventDate().getTime()) * 3 / (copy.size() - 1));
         }
-        if (averange.isLongerThan(dataToCheck.getDuration())) IsSignificant = false;
+        if (tripleAverange.isLongerThan(dataToCheck.getDuration())) IsSignificant = false;
         if (new DateTime().minusDays(7).isAfter(dataToCheck.getSecondEventDate().getTime())) {
             IsSignificant = false;
         }
         return IsSignificant;
     }
+    // Значимо, если перерыв в 3 раза больше, чем среденее время между
+    // событиями, количество эвентов в отслеживании больше 10 и первое
+    // событие после перерыва было более недели назад (размер коллекции
+    // проверяется в функции применимости, а здесь проверяется все остальное,
+    // чтобы в случае, если размер коллекции меньше 10, не пришлось считать)
 
     private List<Event> SortEventsByDate(List<Event> events) {
         List<Event> copy = new ArrayList<>(events);

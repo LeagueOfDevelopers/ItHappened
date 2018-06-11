@@ -1,5 +1,8 @@
 package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,12 +48,28 @@ public class RatingTrendChangingFact extends Fact {
 
     @Override
     protected void calculatePriority() {
-
+        priority = Math.abs(NewAverange - TrendDelta.getPoint().getAverangeValue()) * 10 /
+                (new Interval(DateTime.now().minus(TrendDelta
+                .getPoint()
+                .getPointEventDate()
+                .getTime()))
+                .toDuration() // Преобразование в класс длительности
+                .toStandardDays() // Достаем дни
+                .getDays());
     }
+    // В данном методе мы сначала вычисляем абсолют разницы средних в данный момент и
+    // в точке изменения тренда, а затем делим все это на протяженность периода в днях.
+    // Чтобы получить ее используется класс интервал из библиотеки joda time, в конструктор
+    // которого передается протяженность интервала в миллисекундах. Затем он преобразуется
+    // в класс длительности, из которого потом достаются дни.
 
     @Override
     public String textDescription() {
         return DescriptionBuilder.BuildRatingTrendReport(TrendDelta, TrackingName);
+    }
+
+    public boolean IsTrendDeltaSignificant() {
+        return TrendDelta.getAverangeDelta() != 0;
     }
 
     private TrendDelta CalculateTrendDelta() {

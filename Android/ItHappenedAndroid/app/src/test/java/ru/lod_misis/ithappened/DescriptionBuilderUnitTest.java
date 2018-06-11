@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,13 +18,14 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlati
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.DayWithLargestEventCount;
 
 public class DescriptionBuilderUnitTest {
 
     private DataSet<Double> TestDoubleData;
 
     @Test
-    public void DescriptionBuilderCorrDescriptionTest_DescriptionBuilderBuildCorrectCorrelationDescription() {
+    public void CorrDescriptionTest_DescriptionBuilderBuildCorrectCorrelationDescription() {
         InitializeDoubleDataset();
         Tracking tracking1 = InitializeDoubleTracking(TestDoubleData.GetColumn(0),
                 "килограммы", "я поел мороженного", 0);
@@ -33,25 +35,58 @@ public class DescriptionBuilderUnitTest {
         fact.calculateData();
 
         String description = fact.textDescription().trim();
-        Assert.assertTrue(description.equals("Между значениями килограммы событий я поел мороженного и значениями килограммы событий я потолстел выявлена слабая положительная взаимосвязь. Между фактами возникновения события я поел мороженного и фактами возникновения события я потолстел выявлена сильная положительная взаимосвязь."));
+        Assert.assertTrue(description.equals("C маленькой вероятностью при увеличении количества килограммы в событии я поел мороженного происходит увеличение количества килограммы в событии я потолстел. C большой вероятностью при увеличении числа событий я поел мороженного происходит увеличение числа событий я потолстел."));
     }
 
     @Test
-    public void DescriptionBuilderTrendDescriptionTest_DescriptionBuilderBuildsCorrectTrendDescription() {
+    public void TrendDescriptionTest_DescriptionBuilderBuildsCorrectTrendDescription() {
         Tracking tracking = GenerateScaleRaisingUpTracking();
         ScaleTrendChangingFact fact = new ScaleTrendChangingFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertTrue(descr.contains("В значениях шкалы scale отслеживания tracking выявлен положительный тренд."));
+        Assert.assertTrue(descr.contains("среднее значение шкалы 'scale' cобытия 'tracking' увеличилось"));
     }
 
     @Test
-    public void DescriptionBuilderBuildLongestBreakDescriptionTest_DescriptionBuilderBuildsCorrectReport() {
-        Tracking tracking = GenerateScaleRaisingUpTracking();
+    public void BuildLongestBreakDescriptionTest_DescriptionBuilderBuildsCorrectReport() {
+        Tracking tracking = GenerateTrackingWithDateBreak();
         LongestBreakFact fact = new LongestBreakFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertTrue(descr.contains("Длина перерыва в днях: 2"));
+        Assert.assertTrue(descr.contains("Длина перерыва в днях: 9"));
+    }
+
+    @Test
+    public void BuildDayWithMostEventCountDescriptionTest_BuilderBuildsCorrectReport() {
+        Tracking tracking = GenerateTrackingWithDateBreak();
+        List<Tracking> trackings = new ArrayList<>();
+        trackings.add(tracking);
+        DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
+        fact.calculateData();
+        String descr = fact.textDescription();
+        Assert.assertEquals(descr, "Самый насыщенный событиями день был 5 декабря 3900 года. Тогда произошло 2 события.");
+    }
+
+    private Tracking GenerateTrackingWithDateBreak() {
+        Tracking tracking = new Tracking("tracking",
+                UUID.randomUUID(),
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                "scale");
+        String dates = "1 2 3 4 5 5 7 10 11 12 14 16 25";
+        List<Integer> dateArr = new ArrayList<>();
+        for (String date: dates.split(" ")) {
+            dateArr.add(Integer.parseInt(date));
+        }
+        for (Integer i: dateArr) {
+            Event event = new Event();
+            Date date = new Date(2000, 3, i);
+            event.SetEventDate(date);
+            event.SetEventId(UUID.randomUUID());
+            tracking.AddEvent(event);
+        }
+        return tracking;
     }
 
     private Tracking GenerateScaleRaisingUpTracking() {

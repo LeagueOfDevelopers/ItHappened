@@ -1,5 +1,8 @@
 package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,6 +42,7 @@ public class ScaleTrendChangingFact extends Fact {
         }
         NewAverange = NewAverange / Events.size();
     }
+    // Если событие не удалено и содержит значение шкалы, добавляем его
 
     @Override
     public void calculateData() {
@@ -47,12 +51,28 @@ public class ScaleTrendChangingFact extends Fact {
 
     @Override
     protected void calculatePriority() {
-
+        priority = Math.abs(NewAverange - TrendDelta.getPoint().getAverangeValue()) * 10 /
+                (new Interval(DateTime.now().minus(TrendDelta
+                        .getPoint()
+                        .getPointEventDate()
+                        .getTime()))
+                        .toDuration() // Преобразование в класс длительности
+                        .toStandardDays() // Достаем дни
+                        .getDays()); // Достает целочисленное значение из обьекта Days
     }
+    // В данном методе мы сначала вычисляем абсолют разницы средних в данный момент и
+    // в точке изменения тренда, а затем делим все это на протяженность периода в днях.
+    // Чтобы получить ее используется класс интервал из библиотеки joda time, в конструктор
+    // которого передается протяженность интервала в миллисекундах. Затем он преобразуется
+    // в класс длительности, из которого потом достаются дни.
 
     @Override
     public String textDescription() {
         return DescriptionBuilder.BuildScaleTrendReport(TrendDelta, TrackingName, ScaleName);
+    }
+
+    public boolean IsTrendDeltaSignificant() {
+        return TrendDelta.getAverangeDelta() != 0;
     }
 
     private TrendDelta CalculateTrendDelta() {
@@ -65,6 +85,10 @@ public class ScaleTrendChangingFact extends Fact {
                 Events.get(trendData.getEventInCollectionId()).GetEventDate());
         return new TrendDelta(point, NewAverange);
     }
+    // Сначала преобразовываем массив эвентов в массив скаляров. Затем вычисляем
+    // точку изменения тренда. И наконец создаем обьект класса TrendChangingPoint,
+    // представляющего из себя набор всех необходимых данных для описания точки
+    // изменения тренда, который и возвращаем
 
     private List<Event> SortEventsByDate(List<Event> events) {
         List<Event> copy = new ArrayList<>(events);
