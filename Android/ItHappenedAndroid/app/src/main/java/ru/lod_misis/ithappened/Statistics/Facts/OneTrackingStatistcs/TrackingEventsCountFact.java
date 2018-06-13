@@ -1,7 +1,7 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
@@ -11,13 +11,13 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class TrackingEventsCountFact extends Fact {
 
-    Tracking tracking;
+    NewTracking newTracking;
     int eventCount;
 
-    public TrackingEventsCountFact(Tracking tracking)
+    public TrackingEventsCountFact(NewTracking newTracking)
     {
-        trackingId = tracking.GetTrackingID();
-        this.tracking = tracking;
+        trackingId = newTracking.GetTrackingID();
+        this.newTracking = newTracking;
         eventCount = 0;
     }
 
@@ -25,8 +25,8 @@ public class TrackingEventsCountFact extends Fact {
     @Override
     public void calculateData() {
 
-        for (Event event: tracking.getEventCollection()) {
-            if (!event.isDeleted()) eventCount++;
+        for (NewEvent newEvent : newTracking.getNewEventCollection()) {
+            if (!newEvent.isDeleted()) eventCount++;
         }
         calculatePriority();
     }
@@ -43,7 +43,7 @@ public class TrackingEventsCountFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("Событие <b>%s</b> произошло <b>%s</b> %s", tracking.getTrackingName(),
+        return String.format("Событие <b>%s</b> произошло <b>%s</b> %s", newTracking.getTrackingName(),
                 eventCount, StringParse.time(eventCount));
     }
 }

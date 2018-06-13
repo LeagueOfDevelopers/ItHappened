@@ -2,8 +2,8 @@ package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
 
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
@@ -13,21 +13,21 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class AllEventsCountFact extends Fact {
 
-    private List<Tracking> trackingCollection;
+    private List<NewTracking> newTrackingCollection;
     private int eventCount;
 
-    public AllEventsCountFact(List<Tracking> trackingCollection)
+    public AllEventsCountFact(List<NewTracking> newTrackingCollection)
     {
-        this.trackingCollection = trackingCollection;
+        this.newTrackingCollection = newTrackingCollection;
         eventCount = 0;
         trackingId = null;
     }
 
     @Override
     public void calculateData() {
-        for (Tracking tracking: trackingCollection) {
-            for (Event event: tracking.getEventCollection()) {
-                if (!event.isDeleted()) eventCount++;
+        for (NewTracking newTracking : newTrackingCollection) {
+            for (NewEvent newEvent : newTracking.getNewEventCollection()) {
+                if (!newEvent.isDeleted()) eventCount++;
             }
         }
         calculatePriority();

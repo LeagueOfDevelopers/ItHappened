@@ -1,10 +1,7 @@
 package ru.lod_misis.ithappened.Statistics.Facts;
 
-import java.lang.annotation.Target;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,8 +9,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequentEventFact;
@@ -30,116 +27,116 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WorstEvent;
 public final class FunctionApplicability  {
     public FunctionApplicability(){}
 
-    public static Fact mostFrequentEventApplicability(List<Tracking> trackingCollection)
+    public static Fact mostFrequentEventApplicability(List<NewTracking> newTrackingCollection)
     {
-        List<Tracking> trckngs = new ArrayList<>();
-        for (Tracking tracking: trackingCollection){
-            if (!tracking.isDeleted()) trckngs.add(tracking);
+        List<NewTracking> trckngs = new ArrayList<>();
+        for (NewTracking newTracking : newTrackingCollection){
+            if (!newTracking.isDeleted()) trckngs.add(newTracking);
         }
-        trackingCollection = trckngs;
+        newTrackingCollection = trckngs;
         int trackingCount = 0;
-        if (trackingCollection.size() < 2) return null;
-        for (Tracking tracking: trackingCollection) {
+        if (newTrackingCollection.size() < 2) return null;
+        for (NewTracking newTracking : newTrackingCollection) {
             int eventCount = 0;
-            for (Event event: tracking.getEventCollection()) {
-                if (!event.isDeleted()) eventCount++;
+            for (NewEvent newEvent : newTracking.getNewEventCollection()) {
+                if (!newEvent.isDeleted()) eventCount++;
             }
             if (eventCount > 2) trackingCount++;
         }
         if (trackingCount < 2) return null;
-        return new MostFrequentEventFact(trackingCollection);
+        return new MostFrequentEventFact(newTrackingCollection);
     }
 
-    public static Fact allEventsCountFactApplicability(List<Tracking> trackingCollection)
+    public static Fact allEventsCountFactApplicability(List<NewTracking> newTrackingCollection)
     {
         int count=0;
-        for (Tracking tracking: trackingCollection) {
-            if (!tracking.isDeleted()) {
-                for (Event event : tracking.getEventCollection()) {
-                    if (!event.isDeleted()) count++;
+        for (NewTracking newTracking : newTrackingCollection) {
+            if (!newTracking.isDeleted()) {
+                for (NewEvent newEvent : newTracking.getNewEventCollection()) {
+                    if (!newEvent.isDeleted()) count++;
                 }
             }
         }
         if (count <= 5) return null;
-        return new AllEventsCountFact(trackingCollection);
+        return new AllEventsCountFact(newTrackingCollection);
     }
 
-    public static Fact trackingEventsCountApplicability(Tracking tracking)
+    public static Fact trackingEventsCountApplicability(NewTracking newTracking)
     {
         int eventCount = 0;
-        for (Event event: tracking.getEventCollection()) {
-            if (!event.isDeleted()) eventCount++;
+        for (NewEvent newEvent : newTracking.getNewEventCollection()) {
+            if (!newEvent.isDeleted()) eventCount++;
         }
         if (eventCount == 0) return null;
-        return new TrackingEventsCountFact(tracking);
+        return new TrackingEventsCountFact(newTracking);
     }
 
-    public static Fact avrgRatingApplicability(Tracking tracking)
+    public static Fact avrgRatingApplicability(NewTracking newTracking)
     {
-        if (tracking.GetRatingCustomization() == TrackingCustomization.None) return null;
+        if (newTracking.GetRatingCustomization() == TrackingCustomization.None) return null;
 
-        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.GetEventCollection());
 
         int eventsWithRating = 0;
-        for (Event event: eventCollection) {
-            if (event.getRating() != null) eventsWithRating++;
+        for (NewEvent newEvent : newEventCollection) {
+            if (newEvent.getRating() != null) eventsWithRating++;
         }
         if (eventsWithRating <= 1) return null;
 
-        return new AvrgRatingFact(tracking);
+        return new AvrgRatingFact(newTracking);
     }
 
-    public static Fact avrgScaleApplicability(Tracking tracking)
+    public static Fact avrgScaleApplicability(NewTracking newTracking)
     {
-        if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
+        if (newTracking.GetScaleCustomization() == TrackingCustomization.None) return null;
 
-        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.GetEventCollection());
 
         int eventsWithScale = 0;
-        for (Event event: eventCollection) {
-            if (event.getScale() != null) eventsWithScale++;
+        for (NewEvent newEvent : newEventCollection) {
+            if (newEvent.getScale() != null) eventsWithScale++;
         }
         if (eventsWithScale <= 1) return null;
 
-        return new AvrgScaleFact(tracking);
+        return new AvrgScaleFact(newTracking);
     }
 
-    public static Fact sumScaleApplicability(Tracking tracking)
+    public static Fact sumScaleApplicability(NewTracking newTracking)
     {
-        if (tracking.GetScaleCustomization() == TrackingCustomization.None) return null;
+        if (newTracking.GetScaleCustomization() == TrackingCustomization.None) return null;
 
-        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.GetEventCollection());
 
         int eventsWithScale = 0;
-        for (Event event: eventCollection) {
-            if (event.getScale() != null) eventsWithScale++;
+        for (NewEvent newEvent : newEventCollection) {
+            if (newEvent.getScale() != null) eventsWithScale++;
         }
         if (eventsWithScale <= 1) return null;
 
-        return new SumScaleFact(tracking);
+        return new SumScaleFact(newTracking);
     }
 
-    public static Fact worstEventApplicability(Tracking tracking)
+    public static Fact worstEventApplicability(NewTracking newTracking)
     {
-        if(tracking.GetRatingCustomization() == TrackingCustomization.None) return null;
+        if(newTracking.GetRatingCustomization() == TrackingCustomization.None) return null;
 
         int ratingCount =0;
-        List<Event> eventCollection = removeDeletedEvents(tracking.getEventCollection());
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.getNewEventCollection());
 
-        for (Event event: eventCollection)
+        for (NewEvent newEvent : newEventCollection)
         {
-            if (event.getRating() != null) ratingCount ++;
+            if (newEvent.getRating() != null) ratingCount ++;
         }
         if(ratingCount <= 10 ) return null;
 
-        int monthDifferece = diffMonth(firstEventDate(eventCollection));
+        int monthDifferece = diffMonth(firstEventDate(newEventCollection));
         if(monthDifferece < 3) return null;
 
-        WorstEvent worstEventFact = new WorstEvent(tracking);
+        WorstEvent worstEventFact = new WorstEvent(newTracking);
         worstEventFact.calculateData();
-        Event worstEvent = worstEventFact.getWorstEvent();
+        NewEvent worstNewEvent = worstEventFact.getWorstNewEvent();
 
-        Date worstEventDate = worstEvent.GetEventDate();
+        Date worstEventDate = worstNewEvent.GetEventDate();
         Date currentDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         long curDateTime = currentDate.getTime();
@@ -151,27 +148,27 @@ public final class FunctionApplicability  {
         return worstEventFact;
     }
 
-    public static Fact bestEventApplicability(Tracking tracking)
+    public static Fact bestEventApplicability(NewTracking newTracking)
     {
-        if(tracking.GetRatingCustomization() == TrackingCustomization.None) return null;
+        if(newTracking.GetRatingCustomization() == TrackingCustomization.None) return null;
 
         int ratingCount =0;
-        List<Event> eventCollection = removeDeletedEvents(tracking.getEventCollection());
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.getNewEventCollection());
 
-        for (Event event: eventCollection)
+        for (NewEvent newEvent : newEventCollection)
         {
-            if (event.getRating() != null) ratingCount ++;
+            if (newEvent.getRating() != null) ratingCount ++;
         }
         if(ratingCount <= 10 ) return null;
 
-        int monthDifferece = diffMonth(firstEventDate(eventCollection));
+        int monthDifferece = diffMonth(firstEventDate(newEventCollection));
         if(monthDifferece < 3) return null;
 
-        BestEvent bestEventFact = new BestEvent(tracking);
+        BestEvent bestEventFact = new BestEvent(newTracking);
         bestEventFact.calculateData();
-        Event bestEvent = bestEventFact.getBestEvent();
+        NewEvent bestNewEvent = bestEventFact.getBestNewEvent();
 
-        Date bestEventDate = bestEvent.GetEventDate();
+        Date bestEventDate = bestNewEvent.GetEventDate();
         Date currentDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         long curDateTime = currentDate.getTime();
@@ -184,12 +181,12 @@ public final class FunctionApplicability  {
         return bestEventFact;
     }
 
-    public static Fact certainWeekDaysApplicability(Tracking tracking)
+    public static Fact certainWeekDaysApplicability(NewTracking newTracking)
     {
-        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
-        if(eventCollection.size() <= 7) return null;
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.GetEventCollection());
+        if(newEventCollection.size() <= 7) return null;
 
-        CertainWeekDaysFact fact = new CertainWeekDaysFact(tracking);
+        CertainWeekDaysFact fact = new CertainWeekDaysFact(newTracking);
         fact.calculateData();
 
         if(fact.getHighestPercentage().getPercetage() < 25.0) return null;
@@ -197,12 +194,12 @@ public final class FunctionApplicability  {
         return fact;
     }
 
-    public static Fact certainDayTimeApplicability(Tracking tracking)
+    public static Fact certainDayTimeApplicability(NewTracking newTracking)
     {
-        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
-        if(eventCollection.size() <= 7) return null;
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.GetEventCollection());
+        if(newEventCollection.size() <= 7) return null;
 
-        CertainDayTimeFact fact = new CertainDayTimeFact(tracking);
+        CertainDayTimeFact fact = new CertainDayTimeFact(newTracking);
         fact.calculateData();
 
         if(fact.getHighestPercentage().getPercetage() < 70.0) return null;
@@ -210,22 +207,22 @@ public final class FunctionApplicability  {
         return fact;
     }
 
-    public static Fact longTimeAgoApplicability(Tracking tracking){
+    public static Fact longTimeAgoApplicability(NewTracking newTracking){
 
-        LongTimeAgoFact fact = new LongTimeAgoFact(tracking);
+        LongTimeAgoFact fact = new LongTimeAgoFact(newTracking);
         fact.calculateData();
 
         Double daysSinceLastEvent = fact.getDaysSinceLastEvent();
         if(daysSinceLastEvent <= 7) return null;
 
-        List<Event> eventCollection = removeDeletedEvents(tracking.GetEventCollection());
-        if(eventCollection.size() <= 2) return null;
+        List<NewEvent> newEventCollection = removeDeletedEvents(newTracking.GetEventCollection());
+        if(newEventCollection.size() <= 2) return null;
 
-        eventCollection = sortEventCollectionByDate(eventCollection);
+        newEventCollection = sortEventCollectionByDate(newEventCollection);
 
-        for(int i = 0; i < eventCollection.size() - 1; i++){
-            Date firstEventDate = eventCollection.get(i).GetEventDate();
-            Date secondEventDate = eventCollection.get(i+1).GetEventDate();
+        for(int i = 0; i < newEventCollection.size() - 1; i++){
+            Date firstEventDate = newEventCollection.get(i).GetEventDate();
+            Date secondEventDate = newEventCollection.get(i+1).GetEventDate();
 
             double interval = (double)(secondEventDate.getTime() - firstEventDate.getTime())/
                     1000/60/60/24;
@@ -236,27 +233,27 @@ public final class FunctionApplicability  {
         return fact;
     }
 
-    private static List<Event> removeDeletedEvents(List<Event> eventCollection)
+    private static List<NewEvent> removeDeletedEvents(List<NewEvent> newEventCollection)
     {
-        List<Event> eventCollectionToReturn = new ArrayList<>();
-        for(Event event : eventCollection){
-            if(!event.GetStatus()){
-                eventCollectionToReturn.add(event);
+        List<NewEvent> newEventCollectionToReturn = new ArrayList<>();
+        for(NewEvent newEvent : newEventCollection){
+            if(!newEvent.GetStatus()){
+                newEventCollectionToReturn.add(newEvent);
             }
         }
 
-        return eventCollectionToReturn;
+        return newEventCollectionToReturn;
     }
 
-    private static Date firstEventDate(List<Event> eventCollection)
+    private static Date firstEventDate(List<NewEvent> newEventCollection)
     {
         Date firstEventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
-        for(Event event: eventCollection)
+        for(NewEvent newEvent : newEventCollection)
         {
-            if(event.GetEventDate().before(firstEventDate))
+            if(newEvent.GetEventDate().before(firstEventDate))
             {
-                firstEventDate = event.GetEventDate();
+                firstEventDate = newEvent.GetEventDate();
             }
         }
 
@@ -277,15 +274,15 @@ public final class FunctionApplicability  {
         return diffMonth;
     }
 
-    public static List<Event> sortEventCollectionByDate(List<Event> eventCollection) {
+    public static List<NewEvent> sortEventCollectionByDate(List<NewEvent> newEventCollection) {
 
-        Collections.sort(eventCollection, new Comparator<Event>() {
+        Collections.sort(newEventCollection, new Comparator<NewEvent>() {
             @Override
-            public int compare(Event event, Event t1) {
-                return event.GetEventDate().compareTo(t1.GetEventDate());
+            public int compare(NewEvent newEvent, NewEvent t1) {
+                return newEvent.GetEventDate().compareTo(t1.GetEventDate());
             }
         });
 
-        return  eventCollection;
+        return newEventCollection;
     }
 }

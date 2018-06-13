@@ -29,7 +29,7 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
@@ -65,7 +65,7 @@ public class StatisticsFragment extends Fragment {
 
     ITrackingRepository trackingCollection;
     TrackingService service;
-    List<Tracking> allTrackings = new ArrayList<>();
+    List<NewTracking> allNewTrackings = new ArrayList<>();
 
     ArrayAdapter<String> spinneradapter;
 
@@ -82,7 +82,7 @@ public class StatisticsFragment extends Fragment {
         super.onResume();
         getActivity().setTitle("Статистика");
 
-        allTrackings = new ArrayList<>();
+        allNewTrackings = new ArrayList<>();
         titles = new ArrayList<>();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
@@ -96,10 +96,10 @@ public class StatisticsFragment extends Fragment {
         }
         service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
         titles.add("Общая статистика");
-        for(Tracking tracking: service.GetTrackingCollection()){
-            if(!tracking.GetStatus()){
-                titles.add(tracking.GetTrackingName());
-                allTrackings.add(tracking);
+        for(NewTracking newTracking : service.GetTrackingCollection()){
+            if(!newTracking.GetStatus()){
+                titles.add(newTracking.GetTrackingName());
+                allNewTrackings.add(newTracking);
             }
         }
 
@@ -151,12 +151,12 @@ public class StatisticsFragment extends Fragment {
                                                 trackingCollection = StaticInMemoryRepository.getInstance();
                                                 service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
                                                 titles = new ArrayList<>();
-                                                allTrackings = new ArrayList<>();
+                                                allNewTrackings = new ArrayList<>();
                                                 titles.add("Общая статистика");
-                                                for(Tracking tracking: service.GetTrackingCollection()){
-                                                    if(!tracking.GetStatus()){
-                                                        titles.add(tracking.GetTrackingName());
-                                                        allTrackings.add(tracking);
+                                                for(NewTracking newTracking : service.GetTrackingCollection()){
+                                                    if(!newTracking.GetStatus()){
+                                                        titles.add(newTracking.GetTrackingName());
+                                                        allNewTrackings.add(newTracking);
                                                     }
                                                 }
                                                 fragmentRefresh();
@@ -251,7 +251,7 @@ public class StatisticsFragment extends Fragment {
                                 Context.MODE_PRIVATE).getString("UserId", ""));
                 ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
 
-                facts = factRepository.getOneTrackingFactCollection(allTrackings.get(position-1).GetTrackingID());
+                facts = factRepository.getOneTrackingFactCollection(allNewTrackings.get(position-1).GetTrackingID());
 
 
                 Log.e("Size", facts.size()+"");

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
 
@@ -25,36 +25,36 @@ public class AllEventsCountFactUnitTests {
 
     @Test
     public void HaveTrackingCollectionWithTwoTrackings_GetEventCountShouldReturnTwo(){
-        Tracking tracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        Tracking secondTracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        Event event = new Event(UUID.randomUUID(), tracking.GetTrackingID(), evDate, null, null,  "122");
-        Event secondEvent = new Event(UUID.randomUUID(), secondTracking.GetTrackingID(), evDate, null, null,  "122");
-        tracking.AddEvent(event);
-        secondTracking.AddEvent(secondEvent);
+        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        NewTracking secondNewTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        NewEvent newEvent = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        NewEvent secondNewEvent = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
+        newTracking.AddEvent(newEvent);
+        secondNewTracking.AddEvent(secondNewEvent);
 
-        List<Tracking> trackingCollection = new ArrayList<>();
-        trackingCollection.add(tracking);
-        trackingCollection.add(secondTracking);
+        List<NewTracking> newTrackingCollection = new ArrayList<>();
+        newTrackingCollection.add(newTracking);
+        newTrackingCollection.add(secondNewTracking);
 
-        AllEventsCountFact fact = new AllEventsCountFact(trackingCollection);
+        AllEventsCountFact fact = new AllEventsCountFact(newTrackingCollection);
         fact.calculateData();
         Assert.assertEquals(fact.getEventCount(), 2);
     }
 
     @Test
     public void HaveTrackingCollectionWithTwoTrackings_GetTextDescriptionShouldReturnValidData(){
-        Tracking tracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        Tracking secondTracking = new Tracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        Event event = new Event(UUID.randomUUID(), tracking.GetTrackingID(), evDate, null, null,  "122");
-        Event secondEvent = new Event(UUID.randomUUID(), secondTracking.GetTrackingID(), evDate, null, null,  "122");
-        tracking.AddEvent(event);
-        secondTracking.AddEvent(secondEvent);
+        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        NewTracking secondNewTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        NewEvent newEvent = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        NewEvent secondNewEvent = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
+        newTracking.AddEvent(newEvent);
+        secondNewTracking.AddEvent(secondNewEvent);
 
-        List<Tracking> trackingCollection = new ArrayList<>();
-        trackingCollection.add(tracking);
-        trackingCollection.add(secondTracking);
+        List<NewTracking> newTrackingCollection = new ArrayList<>();
+        newTrackingCollection.add(newTracking);
+        newTrackingCollection.add(secondNewTracking);
 
-        AllEventsCountFact fact = new AllEventsCountFact(trackingCollection);
+        AllEventsCountFact fact = new AllEventsCountFact(newTrackingCollection);
         fact.calculateData();
         Assert.assertEquals(fact.textDescription(), "У вас произошло уже <b>2</b> событий!");
     }

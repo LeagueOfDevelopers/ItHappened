@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
@@ -20,48 +20,48 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 
 public class BestEvent extends Fact {
 
-    Tracking tracking;
-    List<Event> eventCollection;
-    Event bestEvent;
+    NewTracking newTracking;
+    List<NewEvent> newEventCollection;
+    NewEvent bestNewEvent;
 
-    public BestEvent(Tracking tracking)
+    public BestEvent(NewTracking newTracking)
     {
-        this.tracking = tracking;
-        this.trackingId = tracking.GetTrackingID();
-        eventCollection = new ArrayList<>();
+        this.newTracking = newTracking;
+        this.trackingId = newTracking.GetTrackingID();
+        newEventCollection = new ArrayList<>();
     }
 
     @Override
     public void calculateData() {
 
-        for(Event event : tracking.GetEventCollection()){
-            if(!event.GetStatus() && event.GetRating()!=null){
-                eventCollection.add(event);
+        for(NewEvent newEvent : newTracking.GetEventCollection()){
+            if(!newEvent.GetStatus() && newEvent.GetRating()!=null){
+                newEventCollection.add(newEvent);
             }
         }
 
-        bestEvent = eventCollection.get(0);
+        bestNewEvent = newEventCollection.get(0);
 
         Date curDateTime = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
-        for(Event event : eventCollection)
+        for(NewEvent newEvent : newEventCollection)
         {
-            Date bestTime = event.GetEventDate();
-            if (bestEvent.GetRating().getRating() <= event.GetRating().getRating()
+            Date bestTime = newEvent.GetEventDate();
+            if (bestNewEvent.GetRating().getRating() <= newEvent.GetRating().getRating()
                     && 7.0 < ((double)(curDateTime.getTime() - bestTime.getTime())/1000/60/60/24)
-                    && bestEvent.GetEventDate().after(event.GetEventDate()))
-                bestEvent = event;
+                    && bestNewEvent.GetEventDate().after(newEvent.GetEventDate()))
+                bestNewEvent = newEvent;
         }
 
         illustartion = new IllustartionModel(IllustrationType.EVENTREF);
-        illustartion.setEventRef(bestEvent);
+        illustartion.setNewEventRef(bestNewEvent);
 
         calculatePriority();
     }
 
     @Override
     public void calculatePriority() {
-        priority = (double)bestEvent.GetRating().getRating();
+        priority = (double) bestNewEvent.GetRating().getRating();
     }
 
     @Override
@@ -70,13 +70,13 @@ public class BestEvent extends Fact {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
 
         String toReturn = String.format("Лучшее событие <b>%s</b> произошло <b>%s</b>, " +
-                        "вы поставили ему <b>%s</b>", tracking.getTrackingName(),
-                format.format(bestEvent.GetEventDate()), bestEvent.GetRating().getRating()/2.0);
+                        "вы поставили ему <b>%s</b>", newTracking.getTrackingName(),
+                format.format(bestNewEvent.GetEventDate()), bestNewEvent.GetRating().getRating()/2.0);
 
-        if (bestEvent.GetComment() == null) return toReturn;
+        if (bestNewEvent.GetComment() == null) return toReturn;
 
-        return String.format(toReturn, " с комментарием <b>%s</b>", bestEvent.GetComment());
+        return String.format(toReturn, " с комментарием <b>%s</b>", bestNewEvent.GetComment());
     }
 
-    public Event getBestEvent() { return bestEvent; }
+    public NewEvent getBestNewEvent() { return bestNewEvent; }
 }

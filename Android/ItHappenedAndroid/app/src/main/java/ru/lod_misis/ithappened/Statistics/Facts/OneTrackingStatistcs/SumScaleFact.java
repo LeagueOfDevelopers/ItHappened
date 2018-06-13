@@ -4,34 +4,34 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 public class SumScaleFact extends Fact{
 
-    Tracking tracking;
+    NewTracking newTracking;
     Double scaleSum;
-    List<Event> eventCollection = new ArrayList<>();
+    List<NewEvent> newEventCollection = new ArrayList<>();
 
-    public SumScaleFact(Tracking tracking){
-        this.tracking = tracking;
-        trackingId = tracking.GetTrackingID();
+    public SumScaleFact(NewTracking newTracking){
+        this.newTracking = newTracking;
+        trackingId = newTracking.GetTrackingID();
     }
 
     @Override
     public void calculateData() {
-        for(Event event : tracking.GetEventCollection()){
-            if(!event.GetStatus()){
-                eventCollection.add(event);
+        for(NewEvent newEvent : newTracking.GetEventCollection()){
+            if(!newEvent.GetStatus()){
+                newEventCollection.add(newEvent);
             }
         }
 
         scaleSum = 0.0;
 
-        for(Event event : eventCollection){
-            if(event.GetScale() != null){
-                scaleSum+=event.GetScale();
+        for(NewEvent newEvent : newEventCollection){
+            if(newEvent.GetScale() != null){
+                scaleSum+= newEvent.GetScale();
             }
         }
 
@@ -51,6 +51,6 @@ public class SumScaleFact extends Fact{
     public String textDescription() {
         DecimalFormat format = new DecimalFormat("#.##");
         return String.format("Сумма значений <b>%s</b> для события <b>%s</b> равна <b>%s</b>",
-                tracking.getScaleName(), tracking.getTrackingName(), format.format(scaleSum));
+                newTracking.getScaleName(), newTracking.getTrackingName(), format.format(scaleSum));
     }
 }

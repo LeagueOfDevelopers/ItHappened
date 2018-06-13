@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
@@ -40,16 +40,16 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
 
     @Override
     public void loadTrackings() {
-        List<Tracking> allTrackings = service.GetTrackingCollection();
-        List<Tracking> visibleTrackings = new ArrayList<>();
+        List<NewTracking> allNewTrackings = service.GetTrackingCollection();
+        List<NewTracking> visibleNewTrackings = new ArrayList<>();
 
-        for(int i =0;i<allTrackings.size();i++){
-            if(!allTrackings.get(i).GetStatus()){
-                visibleTrackings.add(allTrackings.get(i));
+        for(int i = 0; i< allNewTrackings.size(); i++){
+            if(!allNewTrackings.get(i).GetStatus()){
+                visibleNewTrackings.add(allNewTrackings.get(i));
             }
         }
 
-        trackingView.showTrackings(visibleTrackings);
+        trackingView.showTrackings(visibleNewTrackings);
     }
 
     @Override

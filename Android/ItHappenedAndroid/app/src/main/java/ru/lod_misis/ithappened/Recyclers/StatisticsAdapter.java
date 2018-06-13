@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.DayTimeFactModel;
@@ -165,10 +165,10 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         @Override
                         public void onClick(View view) {
                             IllustartionModel illustration = fact.getIllustration();
-                            Event event = illustration.getEventRef();
+                            NewEvent newEvent = illustration.getNewEventRef();
                             Intent intent = new Intent(context, EventDetailsActivity.class);
-                            intent.putExtra("trackingId", event.GetTrackingId().toString());
-                            intent.putExtra("eventId", event.GetEventId().toString());
+                            intent.putExtra("trackingId", newEvent.GetTrackingId().toString());
+                            intent.putExtra("eventId", newEvent.GetEventId().toString());
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         }

@@ -32,9 +32,9 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -79,7 +79,7 @@ public class AddNewEventActivity extends AppCompatActivity {
 
     Button addEvent;
 
-    Tracking tracking;
+    NewTracking newTracking;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,23 +132,23 @@ public class AddNewEventActivity extends AppCompatActivity {
 
         addEvent = (Button) findViewById(R.id.addEvent);
 
-        tracking = trackingCollection.GetTracking(trackingId);
+        newTracking = trackingCollection.GetTracking(trackingId);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(tracking.GetTrackingName());
+        actionBar.setTitle(newTracking.GetTrackingName());
 
-        commentState = calculateState(tracking.GetCommentCustomization());
-        ratingState = calculateState(tracking.GetRatingCustomization());
-        scaleState = calculateState(tracking.GetScaleCustomization());
+        commentState = calculateState(newTracking.GetCommentCustomization());
+        ratingState = calculateState(newTracking.GetRatingCustomization());
+        scaleState = calculateState(newTracking.GetScaleCustomization());
 
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
 
-        if(tracking.GetScaleCustomization()!=TrackingCustomization.None && tracking.getScaleName()!=null){
-                scaleType.setText(tracking.getScaleName());
+        if(newTracking.GetScaleCustomization()!=TrackingCustomization.None && newTracking.getScaleName()!=null){
+                scaleType.setText(newTracking.getScaleName());
         }
 
         final Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
@@ -213,7 +213,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            trackingService.AddEvent(trackingId,new Event(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
+                            trackingService.AddEvent(trackingId,new NewEvent(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -248,7 +248,7 @@ public class AddNewEventActivity extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        trackingService.AddEvent(trackingId, new Event(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
+                        trackingService.AddEvent(trackingId, new NewEvent(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())

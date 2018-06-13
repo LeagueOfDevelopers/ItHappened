@@ -10,7 +10,7 @@ import com.yandex.metrica.YandexMetrica;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
@@ -62,7 +62,7 @@ public class ProfileSettingsFragmentPresenterImpl implements ProfileSettingsFrag
                                            .subscribe(new Action1<SynchronizationRequest>() {
                                                @Override
                                                public void call(SynchronizationRequest request) {
-                                                   saveDataToDb(request.getTrackingCollection());
+                                                   saveDataToDb(request.getNewTrackingCollection());
                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
                                                    String lastId = sharedPreferences.getString("UserId", "");
                                                    editor.clear();
@@ -115,9 +115,9 @@ public class ProfileSettingsFragmentPresenterImpl implements ProfileSettingsFrag
 
     }
 
-        private void saveDataToDb(List<Tracking> trackings){
+        private void saveDataToDb(List<NewTracking> newTrackings){
             ITrackingRepository trackingRepository = StaticInMemoryRepository.getInstance();
-            trackingRepository.SaveTrackingCollection(trackings);
+            trackingRepository.SaveTrackingCollection(newTrackings);
         }
 
     @Override

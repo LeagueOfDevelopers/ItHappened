@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.Comparison;
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.Domain.Rating;
 
 public interface EventsHistoryContract {
     interface EventsHistoryView{
 
-        void showEvents(List<Event> events);
+        void showEvents(List<NewEvent> newEvents);
         void cancelFilters();
 
     }

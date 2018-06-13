@@ -2,13 +2,13 @@ package ru.lod_misis.ithappened.Statistics.Facts.Models;
 
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
 
 public class IllustartionModel {
 
     private IllustrationType type;
     private List<Double> pieData;
-    private Event eventRef;
+    private NewEvent newEventRef;
     private List<Double> graphData;
     private List<Double> barData;
     private List<FrequentEventsFactModel> frequentEventsList;
@@ -19,7 +19,7 @@ public class IllustartionModel {
     public IllustartionModel(IllustrationType type){
         this.type = type;
         this.pieData = null;
-        this.eventRef = null;
+        this.newEventRef = null;
         this.graphData = null;
         this.barData = null;
     }
@@ -54,12 +54,12 @@ public class IllustartionModel {
         this.pieData = pieData;
     }
 
-    public Event getEventRef() {
-        return eventRef;
+    public NewEvent getNewEventRef() {
+        return newEventRef;
     }
 
-    public void setEventRef(Event eventRef) {
-        this.eventRef = eventRef;
+    public void setNewEventRef(NewEvent newEventRef) {
+        this.newEventRef = newEventRef;
     }
 
     public List<Double> getGraphData() {

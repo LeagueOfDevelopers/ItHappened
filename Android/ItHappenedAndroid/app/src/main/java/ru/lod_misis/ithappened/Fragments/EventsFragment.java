@@ -38,9 +38,9 @@ import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Gui.MultiSpinner;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
@@ -56,7 +56,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
 
-    List<Event> eventsForAdapter = new ArrayList<>();
+    List<NewEvent> eventsForAdapter = new ArrayList<>();
     List<Boolean> flags;
 
     List<String> filteredTrackingsTitles;
@@ -157,13 +157,13 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         strings = new ArrayList<String>();
         flags = new ArrayList<>();
 
-        List<Tracking> trackings = new ArrayList<>();
-        trackings = trackingService.GetTrackingCollection();
+        List<NewTracking> newTrackings = new ArrayList<>();
+        newTrackings = trackingService.GetTrackingCollection();
 
-        for(int i=0;i<trackings.size();i++){
-            if(!trackings.get(i).GetStatus()) {
-                strings.add(trackings.get(i).GetTrackingName());
-                idCollection.add(trackings.get(i).GetTrackingID());
+        for(int i = 0; i< newTrackings.size(); i++){
+            if(!newTrackings.get(i).GetStatus()) {
+                strings.add(newTrackings.get(i).GetTrackingName());
+                idCollection.add(newTrackings.get(i).GetTrackingID());
                 flags.add(false);
             }
         }
@@ -252,7 +252,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             @Override
             public void onClick(View view) {
 
-                final List<Event> allEvents = new ArrayList<>();
+                final List<NewEvent> allNewEvents = new ArrayList<>();
                 YandexMetrica.reportEvent("Пользователь отменил фильтры");
                 eventsHistoryPresenter.loadEvents();
             }
@@ -311,28 +311,28 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void showEvents(List<Event> events) {
-        if(events.size()==0){
+    public void showEvents(List<NewEvent> newEvents) {
+        if(newEvents.size()==0){
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(newEvents, getActivity(), 1);
         }else{
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(newEvents, getActivity(), 1);
         }
         if(eventsAdpt!=null) {
-            List<Event> adapterEvents = eventsAdpt.getEvents();
-            ArrayList<Event> refreshedEvents = new ArrayList<>();
-            if (adapterEvents != null)
-                for (Event event : adapterEvents) {
-                    collection.GetTracking(event.GetTrackingId());
-                    Event addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
-                    if (!addAbleEvent.GetStatus())
-                        refreshedEvents.add(addAbleEvent);
+            List<NewEvent> adapterNewEvents = eventsAdpt.getNewEvents();
+            ArrayList<NewEvent> refreshedNewEvents = new ArrayList<>();
+            if (adapterNewEvents != null)
+                for (NewEvent newEvent : adapterNewEvents) {
+                    collection.GetTracking(newEvent.GetTrackingId());
+                    NewEvent addAbleNewEvent = collection.GetTracking(newEvent.GetTrackingId()).GetEvent(newEvent.GetEventId());
+                    if (!addAbleNewEvent.GetStatus())
+                        refreshedNewEvents.add(addAbleNewEvent);
                 }
-            if (refreshedEvents.size() == 0) {
+            if (refreshedNewEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedNewEvents, getActivity().getApplicationContext(), 1));
         }
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -342,19 +342,19 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     public void onResume() {
         super.onResume();
         if(eventsAdpt!=null) {
-            List<Event> adapterEvents = eventsAdpt.getEvents();
-            ArrayList<Event> refreshedEvents = new ArrayList<>();
-            if (adapterEvents != null)
-                for (Event event : adapterEvents) {
-                    collection.GetTracking(event.GetTrackingId());
-                    Event addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
-                    if (!addAbleEvent.GetStatus())
-                        refreshedEvents.add(addAbleEvent);
+            List<NewEvent> adapterNewEvents = eventsAdpt.getNewEvents();
+            ArrayList<NewEvent> refreshedNewEvents = new ArrayList<>();
+            if (adapterNewEvents != null)
+                for (NewEvent newEvent : adapterNewEvents) {
+                    collection.GetTracking(newEvent.GetTrackingId());
+                    NewEvent addAbleNewEvent = collection.GetTracking(newEvent.GetTrackingId()).GetEvent(newEvent.GetEventId());
+                    if (!addAbleNewEvent.GetStatus())
+                        refreshedNewEvents.add(addAbleNewEvent);
                 }
-            if (refreshedEvents.size() == 0) {
+            if (refreshedNewEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedNewEvents, getActivity().getApplicationContext(), 1));
         }
     }
 

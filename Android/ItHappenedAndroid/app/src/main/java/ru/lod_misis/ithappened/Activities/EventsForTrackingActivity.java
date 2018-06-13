@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
@@ -35,9 +35,9 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     TextView hintForEvents;
 
     FloatingActionButton addNewEvent;
-    Tracking thisTracking;
+    NewTracking thisNewTracking;
 
-    List<Event> events;
+    List<NewEvent> newEvents;
     UUID trackingId;
 
     ITrackingRepository trackingsCollection;
@@ -78,34 +78,34 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingsCollection);
 
 
-        thisTracking = trackingsCollection.GetTracking(trackingId);
-        actionBar.setTitle(thisTracking.GetTrackingName());
+        thisNewTracking = trackingsCollection.GetTracking(trackingId);
+        actionBar.setTitle(thisNewTracking.GetTrackingName());
 
-        events = trackingsCollection.getEventCollection(trackingId);
+        newEvents = trackingsCollection.getEventCollection(trackingId);
 
-        for(int i = 0;i<events.size();i++){
-            if(events.get(i).GetStatus()){
-                events.remove(i);
+        for(int i = 0; i< newEvents.size(); i++){
+            if(newEvents.get(i).GetStatus()){
+                newEvents.remove(i);
             }
         }
 
-        List<Event> visibleEvents = new ArrayList<>();
+        List<NewEvent> visibleNewEvents = new ArrayList<>();
 
-        for(int i=0;i<events.size();i++){
-            if(!events.get(i).GetStatus()){
-                visibleEvents.add(events.get(i));
+        for(int i = 0; i< newEvents.size(); i++){
+            if(!newEvents.get(i).GetStatus()){
+                visibleNewEvents.add(newEvents.get(i));
             }
         }
 
-        if(visibleEvents.size()!=0){
+        if(visibleNewEvents.size()!=0){
             hintForEvents.setVisibility(View.INVISIBLE);
         }
 
-        setTitle(thisTracking.GetTrackingName());
+        setTitle(thisNewTracking.GetTrackingName());
 
         eventsRecycler = (RecyclerView) findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsAdpt = new EventsAdapter(visibleEvents , this, 0);
+        eventsAdpt = new EventsAdapter(visibleNewEvents, this, 0);
         eventsRecycler.setAdapter(eventsAdpt);
 
 
@@ -116,7 +116,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(getApplicationContext(), AddNewEventActivity.class);
-                intent.putExtra("trackingId", thisTracking.GetTrackingID().toString());
+                intent.putExtra("trackingId", thisNewTracking.GetTrackingID().toString());
 
                 YandexMetrica.reportEvent("Пользователь добавляет событие");
 
