@@ -51,10 +51,14 @@ public class FrequencyTrendChangingFact extends Fact {
 
     @Override
     protected void calculatePriority() {
+        Integer days = LastInterval.toDuration().toStandardDays().getDays();
         if (TrendDelta.getAverangeDelta() > 0)
-            priority = (double)LastPeriodEventCount / LastInterval.toDuration().toStandardDays().getDays();
+            if (days != 0)
+                priority = (double)LastPeriodEventCount / days;
+            else
+                priority = Double.MAX_VALUE;
         else
-            priority = (double)LastInterval.toDuration().toStandardDays().getDays() / LastPeriodEventCount;
+            priority = (double)days / LastPeriodEventCount;
     }
 
     @Override

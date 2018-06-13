@@ -38,11 +38,15 @@ public class ScaleCorrelationFact extends Fact {
     @Override
     public void calculateData() {
         Correlation = CalculateSpearmanCorrelation(ScaleData);
+        calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
-        priority = 40.0 * Math.abs(Correlation);
+        if (Correlation != null)
+            priority = 40.0 * Math.abs(Correlation);
+        else
+            priority = 0.0;
     }
 
     @Override

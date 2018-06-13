@@ -36,11 +36,15 @@ public class BinaryCorrelationFact extends Fact {
     @Override
     public void calculateData() {
         Correlation = CalculateMatthewsCorrelation(BinaryData);
+        calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
-        priority = 40.0 * Math.abs(Correlation);
+        if (Correlation != null)
+            priority = 40.0 * Math.abs(Correlation);
+        else
+            priority = 0.0;
     }
 
     @Override

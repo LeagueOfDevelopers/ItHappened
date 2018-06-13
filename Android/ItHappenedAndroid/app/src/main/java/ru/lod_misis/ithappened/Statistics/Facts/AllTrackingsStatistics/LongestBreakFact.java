@@ -37,11 +37,15 @@ public class LongestBreakFact extends Fact {
     @Override
     public void calculateData() {
         LongestBreak = FindLongestBreak();
+        calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
-        priority = Math.sqrt(LongestBreak.getDuration().toStandardDays().getDays());
+        if (LongestBreak != null)
+            priority = Math.sqrt(LongestBreak.getDuration().toStandardDays().getDays());
+        else
+            priority = 0.0;
     }
 
     @Override

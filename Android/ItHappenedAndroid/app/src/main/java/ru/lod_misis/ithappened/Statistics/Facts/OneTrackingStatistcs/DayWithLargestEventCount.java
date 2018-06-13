@@ -33,6 +33,7 @@ public class DayWithLargestEventCount extends Fact {
     @Override
     public void calculateData() {
         CalculateLargestByEventCountDay();
+        calculatePriority();
     }
 
     @Override

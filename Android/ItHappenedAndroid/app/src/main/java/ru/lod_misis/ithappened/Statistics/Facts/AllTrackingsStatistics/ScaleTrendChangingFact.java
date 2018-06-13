@@ -51,18 +51,21 @@ public class ScaleTrendChangingFact extends Fact {
         CalculateTrendDelta();
         illustartion = new IllustartionModel(IllustrationType.GRAPH);
         illustartion.setGraphData(DataSetBuilder.BuildScaleSequence(Events).ToList());
+        calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
-        priority = Math.abs(NewAverange - TrendDelta.getPoint().getAverangeValue()) * 10 /
-                (new Interval(DateTime.now().minus(TrendDelta
-                        .getPoint()
-                        .getPointEventDate()
-                        .getTime()))
-                        .toDuration() // Преобразование в класс длительности
-                        .toStandardDays() // Достаем дни
-                        .getDays()); // Достает целочисленное значение из обьекта Days
+        Integer days = new Interval(TrendDelta.getPoint().getPointEventDate().getTime(),
+                DateTime.now().toDate().getTime())
+                .toDuration() // Преобразование в класс длительности
+                .toStandardDays() // Достаем дни
+                .getDays();
+        if (days != 0)
+            priority = Math.abs(NewAverange - TrendDelta.getPoint().getAverangeValue()) * 10 / days;
+        // Достает целочисленное значение из обьекта Days
+        else
+            priority = Double.MAX_VALUE;
     }
     // В данном методе мы сначала вычисляем абсолют разницы средних в данный момент и
     // в точке изменения тренда, а затем делим все это на протяженность периода в днях.

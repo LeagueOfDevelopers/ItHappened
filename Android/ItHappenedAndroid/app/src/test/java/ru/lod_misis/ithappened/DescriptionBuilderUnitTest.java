@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -108,7 +109,7 @@ public class DescriptionBuilderUnitTest {
         for (int i = 0; i < 100; i++) {
             Event event = new Event();
             event.SetScale((double)rand.nextInt(10 + i) + i);
-            event.SetEventDate(new Date(2000, i / 30 + 1, i % 30));
+            event.SetEventDate(new DateTime(2000, i / 30 + 3, i % 30 + 1, 0, 0).toDate());
             event.SetEventId(UUID.randomUUID());
             tracking.AddEvent(event);
         }

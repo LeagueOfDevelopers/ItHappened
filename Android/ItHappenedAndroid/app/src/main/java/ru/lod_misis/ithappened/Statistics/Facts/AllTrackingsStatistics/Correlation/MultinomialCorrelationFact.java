@@ -35,11 +35,15 @@ public class MultinomialCorrelationFact extends Fact {
     @Override
     public void calculateData() {
         Correlation = CalculateKendallCorrelation(MultinomialData);
+        calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
-        priority = 40.0 * Math.abs(Correlation);
+        if (Correlation != null)
+            priority = 40.0 * Math.abs(Correlation);
+        else
+            priority = 0.0;
     }
 
     @Override
