@@ -14,6 +14,8 @@ import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
@@ -44,6 +46,8 @@ public class RatingTrendChangingFact extends Fact {
     @Override
     public void calculateData() {
         TrendDelta = CalculateTrendDelta();
+        illustartion = new IllustartionModel(IllustrationType.GRAPH);
+        illustartion.setGraphData(DataSetBuilder.BuildRatingSequence(Events).ToList());
     }
 
     @Override

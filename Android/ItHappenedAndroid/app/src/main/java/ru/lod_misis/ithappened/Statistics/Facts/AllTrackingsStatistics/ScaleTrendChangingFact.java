@@ -15,6 +15,8 @@ import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
@@ -46,7 +48,9 @@ public class ScaleTrendChangingFact extends Fact {
 
     @Override
     public void calculateData() {
-        TrendDelta = CalculateTrendDelta();
+        CalculateTrendDelta();
+        illustartion = new IllustartionModel(IllustrationType.GRAPH);
+        illustartion.setGraphData(DataSetBuilder.BuildScaleSequence(Events).ToList());
     }
 
     @Override
@@ -75,7 +79,7 @@ public class ScaleTrendChangingFact extends Fact {
         return TrendDelta.getAverangeDelta() != 0;
     }
 
-    private TrendDelta CalculateTrendDelta() {
+    private void CalculateTrendDelta() {
         Sequence data = DataSetBuilder.BuildScaleSequence(SortEventsByDate(Events));
         TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
         TrendChangingPoint point = new TrendChangingPoint(
@@ -83,7 +87,7 @@ public class ScaleTrendChangingFact extends Fact {
                 data.Slice(0, trendData.getEventInCollectionId()).Mean(),
                 trendData.getAlphaCoefficient(),
                 Events.get(trendData.getEventInCollectionId()).GetEventDate());
-        return new TrendDelta(point, NewAverange);
+        TrendDelta = new TrendDelta(point, NewAverange);
     }
     // Сначала преобразовываем массив эвентов в массив скаляров. Затем вычисляем
     // точку изменения тренда. И наконец создаем обьект класса TrendChangingPoint,

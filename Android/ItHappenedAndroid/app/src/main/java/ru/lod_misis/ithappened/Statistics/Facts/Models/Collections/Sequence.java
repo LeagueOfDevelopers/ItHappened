@@ -68,4 +68,8 @@ public class Sequence {
         }
         return new Sequence(result);
     }
+
+    public List<Double> ToList() {
+        return Data;
+    }
 }

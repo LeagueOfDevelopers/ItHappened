@@ -48,113 +48,129 @@ public class DescriptionBuilder {
     private static final String LargestEventCountReportFormat =
             "Самый насыщенный событиями день был %s. Тогда произошло %s ";
 
-    public static String BuildCorrelationReport(CorrelationData Correlation,
-                                         String FirstTrackingName,
-                                         String FirstTrackingScaleName,
-                                         String SecondTrackingName,
-                                         String SecondTrackingScaleName) {
-        String result = "";
-        String orientation = "";
-        if (Correlation.getScaleCorrelation() != null) {
-            if (Correlation.getScaleCorrelation() > 0)
-                orientation = "увеличение";
-            if (Correlation.getScaleCorrelation() < 0)
-                orientation = "уменьшение";
-            if (Correlation.getScaleCorrelation() == 0)
-                result += String.format("Между событиями %s и %s взаимосвязи не выявлено. ",
-                        FirstTrackingName, SecondTrackingName);
-            String probDesc = "";
-            if (Math.abs(Correlation.getScaleCorrelation()) > 0 &&
-                    Math.abs(Correlation.getScaleCorrelation()) <= 0.3) {
-                probDesc = "очень маленькой";
-            }
-            if (Math.abs(Correlation.getScaleCorrelation()) > 0.3 &&
-                    Math.abs(Correlation.getScaleCorrelation()) <= 0.5) {
-                probDesc = "маленькой";
-            }
-            if (Math.abs(Correlation.getScaleCorrelation()) > 0.5 &&
-                    Math.abs(Correlation.getScaleCorrelation()) <= 0.7) {
-                probDesc = "средней";
-            }
-            if (Math.abs(Correlation.getScaleCorrelation()) > 0.7 &&
-                    Math.abs(Correlation.getScaleCorrelation()) <= 0.9) {
-                probDesc = "большой";
-            }
-            if (Math.abs(Correlation.getScaleCorrelation()) > 0.9 &&
-                    Math.abs(Correlation.getScaleCorrelation()) <= 1) {
-                probDesc = "очень большой";
-            }
-            result += String.format(ScaleCorrReportFormat, probDesc,
-                    FirstTrackingScaleName, FirstTrackingName, orientation,
-                    SecondTrackingScaleName, SecondTrackingName);
-        }
+    public static String BuildBinaryCorrelationReport(Double corr,
+                                                      String firstTrackingName,
+                                                      String secondTrackingName) {
 
-        if (Correlation.getBinaryCorrelation() != null) {
-            if (Correlation.getBinaryCorrelation() > 0)
+        if (corr != null) {
+            String orientation = "";
+            if (corr > 0)
                 orientation = "увеличение";
-            if (Correlation.getBinaryCorrelation() < 0)
+            if (corr < 0)
                 orientation = "уменьшение";
-            if (Correlation.getBinaryCorrelation() == 0)
-                result += String.format("Между %s и %s взаимосвязи не выявлено. ",
-                        FirstTrackingName, SecondTrackingName);
+            if (corr == 0)
+                return String.format("Между %s и %s взаимосвязи не выявлено. ",
+                        firstTrackingName, secondTrackingName);
             String probDesc = "";
-            if (Math.abs(Correlation.getBinaryCorrelation()) > 0 &&
-                    Math.abs(Correlation.getBinaryCorrelation()) <= 0.3) {
+            if (Math.abs(corr) > 0 &&
+                    Math.abs(corr) <= 0.3) {
                 probDesc = "очень маленькой";
             }
-            if (Math.abs(Correlation.getBinaryCorrelation()) > 0.3 &&
-                    Math.abs(Correlation.getBinaryCorrelation()) <= 0.5) {
+            if (Math.abs(corr) > 0.3 &&
+                    Math.abs(corr) <= 0.5) {
                 probDesc = "маленькой";
             }
-            if (Math.abs(Correlation.getBinaryCorrelation()) > 0.5 &&
-                    Math.abs(Correlation.getBinaryCorrelation()) <= 0.7) {
+            if (Math.abs(corr) > 0.5 &&
+                    Math.abs(corr) <= 0.7) {
                 probDesc = "средней";
             }
-            if (Math.abs(Correlation.getBinaryCorrelation()) > 0.7 &&
-                    Math.abs(Correlation.getBinaryCorrelation()) <= 0.9) {
+            if (Math.abs(corr) > 0.7 &&
+                    Math.abs(corr) <= 0.9) {
                 probDesc = "большой";
             }
-            if (Math.abs(Correlation.getBinaryCorrelation()) > 0.9 &&
-                    Math.abs(Correlation.getBinaryCorrelation()) <= 1) {
+            if (Math.abs(corr) > 0.9 &&
+                    Math.abs(corr) <= 1) {
                 probDesc = "очень большой";
             }
-            result += String.format(BoolCorrReportFormat, probDesc,
-                    FirstTrackingName, orientation, SecondTrackingName);
+            return String.format(BoolCorrReportFormat, probDesc,
+                    firstTrackingName, orientation, secondTrackingName).trim();
         }
+        return "";
+    }
+    // Рамки для текстового описания корреляции (сильная слабая и тд) взяты по шкале Чеддока.
 
-        if (Correlation.getMultinomialCorrelation() != null) {
-            if (Correlation.getMultinomialCorrelation() > 0)
+    public static String BuildScaleCorrelationReport(Double corr,
+                                                     String firstTrackingName,
+                                                     String firstTrackingScaleName,
+                                                     String secondTrackingName,
+                                                     String secondTrackingScaleName) {
+
+        if (corr != null) {
+            String orientation = "";
+            if (corr > 0)
                 orientation = "увеличение";
-            if (Correlation.getMultinomialCorrelation() < 0)
+            if (corr < 0)
                 orientation = "уменьшение";
-            if (Correlation.getMultinomialCorrelation() == 0)
-                result += String.format("Между %s и %s взаимосвязи не выявлено.",
-                        FirstTrackingName, SecondTrackingName);
+            if (corr == 0)
+                return String.format("Между событиями %s и %s взаимосвязи не выявлено. ",
+                        firstTrackingName, secondTrackingName);
             String probDesc = "";
-            if (Math.abs(Correlation.getMultinomialCorrelation()) > 0 &&
-                    Math.abs(Correlation.getMultinomialCorrelation()) <= 0.3) {
+            if (Math.abs(corr) > 0 &&
+                    Math.abs(corr) <= 0.3) {
                 probDesc = "очень маленькой";
             }
-            if (Math.abs(Correlation.getMultinomialCorrelation()) > 0.3 &&
-                    Math.abs(Correlation.getMultinomialCorrelation()) <= 0.5) {
+            if (Math.abs(corr) > 0.3 &&
+                    Math.abs(corr) <= 0.5) {
                 probDesc = "маленькой";
             }
-            if (Math.abs(Correlation.getMultinomialCorrelation()) > 0.5 &&
-                    Math.abs(Correlation.getMultinomialCorrelation()) <= 0.7) {
+            if (Math.abs(corr) > 0.5 &&
+                    Math.abs(corr) <= 0.7) {
                 probDesc = "средней";
             }
-            if (Math.abs(Correlation.getMultinomialCorrelation()) > 0.7 &&
-                    Math.abs(Correlation.getMultinomialCorrelation()) <= 0.9) {
+            if (Math.abs(corr) > 0.7 &&
+                    Math.abs(corr) <= 0.9) {
                 probDesc = "большой";
             }
-            if (Math.abs(Correlation.getMultinomialCorrelation()) > 0.9 &&
-                    Math.abs(Correlation.getMultinomialCorrelation()) <= 1) {
+            if (Math.abs(corr) > 0.9 &&
+                    Math.abs(corr) <= 1) {
                 probDesc = "очень большой";
             }
-            result += String.format(RatingCorrReportFormat, probDesc,
-                    FirstTrackingName, orientation, SecondTrackingName);
+            return String.format(ScaleCorrReportFormat, probDesc,
+                    firstTrackingScaleName, firstTrackingName, orientation,
+                    secondTrackingScaleName, secondTrackingName).trim();
         }
-        return result.trim();
+        return "";
+    }
+    // Рамки для текстового описания корреляции (сильная слабая и тд) взяты по шкале Чеддока.
+
+    public static String BuildMultinomialCorrelationReport(Double corr,
+                                                           String firstTrackingName,
+                                                           String secondTrackingName) {
+
+        if (corr != null) {
+            String orientation = "";
+            if (corr > 0)
+                orientation = "увеличение";
+            if (corr < 0)
+                orientation = "уменьшение";
+            if (corr == 0)
+                return String.format("Между %s и %s взаимосвязи не выявлено.",
+                        firstTrackingName, secondTrackingName);
+            String probDesc = "";
+            if (Math.abs(corr) > 0 &&
+                    Math.abs(corr) <= 0.3) {
+                probDesc = "очень маленькой";
+            }
+            if (Math.abs(corr) > 0.3 &&
+                    Math.abs(corr) <= 0.5) {
+                probDesc = "маленькой";
+            }
+            if (Math.abs(corr) > 0.5 &&
+                    Math.abs(corr) <= 0.7) {
+                probDesc = "средней";
+            }
+            if (Math.abs(corr) > 0.7 &&
+                    Math.abs(corr) <= 0.9) {
+                probDesc = "большой";
+            }
+            if (Math.abs(corr) > 0.9 &&
+                    Math.abs(corr) <= 1) {
+                probDesc = "очень большой";
+            }
+            return String.format(RatingCorrReportFormat, probDesc,
+                    firstTrackingName, orientation, secondTrackingName).trim();
+        }
+        return "";
     }
     // Рамки для текстового описания корреляции (сильная слабая и тд) взяты по шкале Чеддока.
 

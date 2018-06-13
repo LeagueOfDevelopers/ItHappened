@@ -26,6 +26,7 @@ public class DataSetBuilder {
         DataSet<Double> data = new DataSet<>(true);
         for (Event e1: copy1) {
             for (Event e2: copy2) {
+                if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e1.getEventDate().before(e2.getEventDate())) {
                     Interval timedelta = new Interval(e1.GetEventDate().getTime(),
                             e2.GetEventDate().getTime());
@@ -39,6 +40,7 @@ public class DataSetBuilder {
         }
         for (Event e2: copy2) {
             for (Event e1: copy1) {
+                if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e2.getEventDate().before(e1.getEventDate())) {
                     Interval timedelta = new Interval(e2.GetEventDate().getTime(),
                             e1.GetEventDate().getTime());
@@ -63,6 +65,7 @@ public class DataSetBuilder {
         DataSet<Integer> data = new DataSet<>(true);
         for (Event e1: copy1) {
             for (Event e2: copy2) {
+                if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e1.getEventDate().before(e2.getEventDate())) {
                     Interval timedelta = new Interval(e1.GetEventDate().getTime(),
                             e2.GetEventDate().getTime());
@@ -80,6 +83,7 @@ public class DataSetBuilder {
         }
         for (Event e2: copy2) {
             for (Event e1: copy1) {
+                if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e2.getEventDate().before(e1.getEventDate())) {
                     Interval timedelta = new Interval(e2.GetEventDate().getTime(),
                             e1.GetEventDate().getTime());
@@ -121,6 +125,7 @@ public class DataSetBuilder {
         DataSet<Integer> data = new DataSet<>(true);
         for (Event e1: copy1) {
             for (Event e2: copy2) {
+                if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e1.getEventDate().before(e2.getEventDate())) {
                     Interval timedelta = new Interval(e1.GetEventDate().getTime(),
                             e2.GetEventDate().getTime());
@@ -134,6 +139,7 @@ public class DataSetBuilder {
         }
         for (Event e2: copy2) {
             for (Event e1: copy1) {
+                if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e2.getEventDate().before(e1.getEventDate())) {
                     Interval timedelta = new Interval(e2.GetEventDate().getTime(),
                             e1.GetEventDate().getTime());

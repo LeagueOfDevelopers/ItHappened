@@ -3,18 +3,13 @@ package ru.lod_misis.ithappened;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.CorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 
 public class CorrelationFactUnitTest {
 
@@ -27,28 +22,35 @@ public class CorrelationFactUnitTest {
         InitializeDoubleDataset();
         InitializeBooleanDataset();
         InitializeMultinomialDataset();
-        CorrelationFact fact = new CorrelationFact(TestBooleanData, TestDoubleData, TestMultinomialData);
+
+        BinaryCorrelationFact binaryCorrelationFact = new BinaryCorrelationFact(TestBooleanData);
+        ScaleCorrelationFact scaleCorrelationFact = new ScaleCorrelationFact(TestDoubleData);
+        MultinomialCorrelationFact multinomialCorrelationFact = new MultinomialCorrelationFact(TestMultinomialData);
+
         double perfectDoubleCorr = 0.752962;
         double perfectBinaryCorr = -0.3333333;
         double perfectMultCorr = 0.006732;
         double acceptedDeltaValue = 0.003; //Допустимое значение отклонения расчитанной корреляции от эталонной
-        fact.calculateData();
 
-        Assert.assertTrue(fact.IsDoubleCorrSignificant());
-        Assert.assertTrue(fact.IsBoolCorrSignificant());
-        Assert.assertFalse(fact.IsMultinomialCorrSignificant());
+        binaryCorrelationFact.calculateData();
+        scaleCorrelationFact.calculateData();
+        multinomialCorrelationFact.calculateData();
+
+        Assert.assertTrue(scaleCorrelationFact.IsDoubleCorrSignificant());
+        Assert.assertTrue(binaryCorrelationFact.IsBoolCorrSignificant());
+        Assert.assertFalse(multinomialCorrelationFact.IsMultinomialCorrSignificant());
 
         Assert.assertTrue(perfectBinaryCorr - acceptedDeltaValue <
-                fact.getCorrelation().getBinaryCorrelation() &&
-                fact.getCorrelation().getBinaryCorrelation() < perfectBinaryCorr + acceptedDeltaValue);
+                binaryCorrelationFact.getCorrelation() &&
+                binaryCorrelationFact.getCorrelation() < perfectBinaryCorr + acceptedDeltaValue);
 
         Assert.assertTrue(perfectDoubleCorr - acceptedDeltaValue <
-                fact.getCorrelation().getScaleCorrelation() &&
-                fact.getCorrelation().getScaleCorrelation() < perfectDoubleCorr + acceptedDeltaValue);
+                scaleCorrelationFact.getCorrelation() &&
+                scaleCorrelationFact.getCorrelation() < perfectDoubleCorr + acceptedDeltaValue);
 
         Assert.assertTrue(perfectMultCorr - acceptedDeltaValue <
-                fact.getCorrelation().getMultinomialCorrelation() &&
-                fact.getCorrelation().getMultinomialCorrelation() < perfectMultCorr + acceptedDeltaValue);
+                multinomialCorrelationFact.getCorrelation() &&
+                multinomialCorrelationFact.getCorrelation() < perfectMultCorr + acceptedDeltaValue);
     }
 
     private void InitializeDoubleDataset() {

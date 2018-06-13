@@ -6,7 +6,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -14,7 +13,9 @@ import java.util.UUID;
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.CorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
@@ -31,11 +32,18 @@ public class DescriptionBuilderUnitTest {
                 "килограммы", "я поел мороженного", 0);
         Tracking tracking2 = InitializeDoubleTracking(TestDoubleData.GetColumn(1),
                 "килограммы", "я потолстел", 1);
-        CorrelationFact fact = new CorrelationFact(tracking1, tracking2);
-        fact.calculateData();
 
-        String description = fact.textDescription().trim();
-        Assert.assertTrue(description.equals("C маленькой вероятностью при увеличении количества килограммы в событии я поел мороженного происходит увеличение количества килограммы в событии я потолстел. C большой вероятностью при увеличении числа событий я поел мороженного происходит увеличение числа событий я потолстел."));
+        ScaleCorrelationFact fact1 = new ScaleCorrelationFact(tracking1, tracking2);
+        BinaryCorrelationFact fact2 = new BinaryCorrelationFact(tracking1, tracking2);
+        MultinomialCorrelationFact fact3 = new MultinomialCorrelationFact(tracking1, tracking2);
+
+        fact1.calculateData();
+        fact2.calculateData();
+        fact3.calculateData();
+
+        Assert.assertTrue(fact1.textDescription().equals("C маленькой вероятностью при увеличении количества килограммы в событии я поел мороженного происходит увеличение количества килограммы в событии я потолстел."));
+        Assert.assertTrue(fact2.textDescription().equals("C большой вероятностью при увеличении числа событий я поел мороженного происходит увеличение числа событий я потолстел."));
+        Assert.assertTrue(fact3.textDescription().equals(""));
     }
 
     @Test
