@@ -146,7 +146,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        format.setTimeZone(TimeZone.getDefault());
 
         if((newTracking.GetScaleCustomization()==TrackingCustomization.Optional
                 || newTracking.GetScaleCustomization()==TrackingCustomization.Required) && newEvent.GetScale()!=null){

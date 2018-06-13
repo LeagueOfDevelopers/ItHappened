@@ -1,25 +1,28 @@
 package ru.lod_misis.ithappened.Fragments;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -41,6 +44,7 @@ import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Gui.MultiSpinner;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
@@ -56,13 +60,15 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
 
-    List<NewEvent> eventsForAdapter = new ArrayList<>();
-    List<Boolean> flags;
+    List<Event> eventsForAdapter = new ArrayList<>();
+    List<Boolean> selectedItems;
+    ArrayList<Integer> selectedPositionItems = new ArrayList<>();
 
     List<String> filteredTrackingsTitles;
     List<UUID> filteredTrackingsUuids;
     ArrayList<UUID> idCollection;
     List<String> strings;
+    ArrayList<UUID> allTrackingsId;
 
     int stateForHint;
 
@@ -71,9 +77,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     Button addFilters;
     EditText scaleFilter;
     RatingBar ratingFilter;
-    MultiSpinner trackingsSpinner;
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
+    CardView trackingsPickerBtn;
     TrackingService trackingService;
     TextView hintForEventsHistory;
     TextView hintForSpinner;
@@ -81,8 +87,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     RelativeLayout filtersScreen;
     RelativeLayout filtersHint;
     FloatingActionButton filtersCancel;
+    TextView trackingsPickerText;
 
-    static ITrackingRepository collection;
+    ITrackingRepository collection;
 
     @Nullable
     @Override
@@ -113,7 +120,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
         eventsHistoryPresenter = new EventsHistoryPresenterImpl(collection, trackingService, getActivity(), this);
-
+        trackingsPickerText = getActivity().findViewById(R.id.trackingsPickerText);
+        trackingsPickerBtn = getActivity().findViewById(R.id.trackingsFiltersCard);
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
         eventsHistoryPresenter.loadEvents();
@@ -155,25 +163,24 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         idCollection = new ArrayList<UUID>();
         strings = new ArrayList<String>();
-        flags = new ArrayList<>();
+        selectedItems = new ArrayList<>();
 
         List<NewTracking> newTrackings = new ArrayList<>();
         newTrackings = trackingService.GetTrackingCollection();
 
-        for(int i = 0; i< newTrackings.size(); i++){
-            if(!newTrackings.get(i).GetStatus()) {
-                strings.add(newTrackings.get(i).GetTrackingName());
-                idCollection.add(newTrackings.get(i).GetTrackingID());
+        for(int i=0;i<trackings.size();i++){
+            if(!trackings.get(i).GetStatus()) {
+                strings.add(trackings.get(i).GetTrackingName());
+                idCollection.add(trackings.get(i).GetTrackingID());
                 flags.add(false);
             }
         }
 
         filteredTrackingsTitles = new ArrayList<>();
         filteredTrackingsUuids = new ArrayList<>();
+        allTrackingsId = new ArrayList<>();
 
-        setUuidsCollection(filteredTrackingsUuids);
-
-        trackingsSpinner = (MultiSpinner) view.findViewById(R.id.spinnerForTrackings);
+        setUuidsCollection(allTrackingsId);
 
         String allText = "";
         for(int i=0;i<strings.size();i++) {
@@ -181,30 +188,94 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 allText += strings.get(i) + ", ";
             }
         }
+        trackingsPickerText.setText(allText.substring(0, allText.length()-2));
+
+        final String[] trackingsTitles = new String[strings.size()];
+        final boolean[] selectedArray = new boolean[strings.size()];
+
+        for(int i = 0;i < strings.size();i++){
+            trackingsTitles[i] = strings.get(i);
+            selectedArray[i] = selectedItems.get(i);
+            selectedPositionItems.add(i);
+        }
+
+
         if(strings.size()!=0) {
-            trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2), new MultiSpinner.MultiSpinnerListener() {
-
+            trackingsPickerText.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onItemsSelected(boolean[] selected) {
+                public void onClick(View view) {
+                    filteredTrackingsUuids.clear();
+                    final AlertDialog trackingsPickerDiaolg;
+                    final AlertDialog.Builder trackingsPicker = new AlertDialog.Builder(getActivity());
+                    trackingsPicker.setTitle("Выберите отслеживания");
+                    trackingsPicker.setMultiChoiceItems(trackingsTitles, selectedArray, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
 
-                    for (int i = 0; i < selected.length; i++) {
-
-                        Log.e("FILTER", selected[i] + "");
-                        if (selected[i]) {
-                            if(flags.get(i)) {
-                                filteredTrackingsUuids.add(idCollection.get(i));
+                            if(isChecked){
+                                selectedPositionItems.add(position);
+                            }else{
+                                selectedPositionItems.remove((Integer.valueOf(position)));
                             }
                         }
-                        if (!selected[i]) {
-                            filteredTrackingsUuids.remove(idCollection.get(i));
-                            flags.set(i, true);
+                    });
+                    trackingsPicker.setPositiveButton("Применить", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int k) {
+                            String item = "";
+                            for (int i = 0; i < selectedPositionItems.size(); i++) {
+                                item = item + trackingsTitles[selectedPositionItems.get(i)];
+                                if (i != selectedPositionItems.size() - 1) {
+                                    item = item + ", ";
+                                }
+                            }
+                            trackingsPickerText.setText(item);
+                            if(item.isEmpty()){
+                                trackingsPickerText.setText("Не выбрано отслеживаний");
+                            }
                         }
+                    });
+                    trackingsPicker.setNegativeButton("Снять все",  null);
+                    trackingsPicker.setNeutralButton("Выбрать все", null);
 
-                    }
+                    trackingsPickerDiaolg = trackingsPicker.show();
+
+                    Button selectAll = trackingsPickerDiaolg.getButton(AlertDialog.BUTTON_NEUTRAL);
+                    Button unselectAll = trackingsPickerDiaolg.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+                    selectAll.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            selectedPositionItems.clear();
+                            for (int i = 0; i < selectedArray.length; i++) {
+                                selectedArray[i] = true;
+                                selectedPositionItems.add(i);
+                                trackingsPickerText.setText("Выбраны все отслеживания");
+                            }
+                            ListView curList = trackingsPickerDiaolg.getListView();
+                            for(int i = 0; i < trackingsTitles.length; ++i)
+                                curList.setItemChecked(i, true);
+
+                        }
+                    });
+
+                    unselectAll.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            for (int i = 0; i < selectedArray.length; i++) {
+                                selectedArray[i] = false;
+                                selectedPositionItems.clear();
+                            }
+
+                            ListView curList = trackingsPickerDiaolg.getListView();
+                            for(int i = 0; i < trackingsTitles.length; ++i)
+                                curList.setItemChecked(i, false);
+                        }
+                    });
                 }
             });
         }else{
-            trackingsSpinner.setVisibility(View.INVISIBLE);
+            trackingsPickerText.setText("Отслеживания отсутствуют");
             hintForSpinner.setVisibility(View.VISIBLE);
         }
 
@@ -269,6 +340,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 Double scale = null;
                 Comparison ratingComparison = null;
                 Rating rating = null;
+
+                for(int i=0;i<selectedPositionItems.size();i++){
+                    filteredTrackingsUuids.add
+                            (allTrackingsId.get(selectedPositionItems.get(i)));
+                }
 
                 if (!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()) {
                     Locale locale = new Locale("ru");
@@ -384,30 +460,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
 
         if (strings.size() != 0) {
-            trackingsSpinner.setItems(strings, allText.substring(0, allText.length() - 2),
-                    new MultiSpinner.MultiSpinnerListener() {
-
-                        @Override
-                        public void onItemsSelected(boolean[] selected) {
-                            for (int i = 0; i < selected.length; i++) {
-
-                                Log.e("FILTER", selected[i] + "");
-                                if (selected[i]) {
-                                    filteredTrackingsTitles.add(strings.get(i));
-                                    if (flags.get(i)) {
-                                        filteredTrackingsUuids.add(idCollection.get(i));
-                                    }
-                                }
-                                if (!selected[i]) {
-                                    filteredTrackingsUuids.remove(idCollection.get(i));
-                                    flags.set(i, true);
-                                }
-                            }
-                        }
-                    });
+            trackingsPickerText.setText(allText);
+            filteredTrackingsUuids.clear();
+            selectedPositionItems.clear();
             filtersHintText.setVisibility(View.GONE);
         } else {
-            trackingsSpinner.setVisibility(View.INVISIBLE);
             hintForSpinner.setVisibility(View.VISIBLE);
             filtersHintText.setVisibility(View.GONE);
         }

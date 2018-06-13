@@ -1,7 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,10 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
@@ -36,7 +38,6 @@ import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
@@ -47,7 +48,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class AddNewEventActivity extends AppCompatActivity {
+public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     TrackingService trackingService;
     InMemoryFactRepository factRepository;
@@ -58,9 +59,21 @@ public class AddNewEventActivity extends AppCompatActivity {
     int ratingState;
     UUID trackingId;
 
-    int year = 0;
-    int month = 0;
-    int dayOfMonth = 0;
+    DatePickerDialog datePickerDialog;
+    TimePickerDialog timePickerDialog;
+
+    //Date time attrs
+    int eventYear;
+    int eventMonth;
+    int eventDay;
+    int eventHour;
+    int eventMinuets;
+    int eventSeconds;
+
+    boolean timeSetFlag = false;
+
+
+    Date eventDate;
 
     LinearLayout commentContainer;
     LinearLayout scaleContainer;
@@ -99,7 +112,7 @@ public class AddNewEventActivity extends AppCompatActivity {
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
         factRepository = StaticFactRepository.getInstance();
-
+        eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
 
 
@@ -151,22 +164,33 @@ public class AddNewEventActivity extends AppCompatActivity {
                 scaleType.setText(newTracking.getScaleName());
         }
 
-        final Date thisDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
-
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
 
-        dateControl.setText(format.format(thisDate).toString());
+        dateControl.setText(format.format(eventDate).toString());
 
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+
+        datePickerDialog = new DatePickerDialog(
+                this,
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        timePickerDialog = new TimePickerDialog(
+                this,
+                this,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true);
 
         dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
-                DialogFragment picker = new DatePickerFragment(dateControl);
-                picker.show(fragmentManager, "from");
-
+                datePickerDialog.create();
+                datePickerDialog.show();
             }
         });
 
@@ -202,18 +226,14 @@ public class AddNewEventActivity extends AppCompatActivity {
                         rating = new Rating((int) (ratingControl.getRating()*2));
                     }
                     if(!scaleControl.getText().toString().isEmpty()){
-                        try {
-                            scale = Double.parseDouble(scaleControl.getText().toString());
-                            Date eventDate = null;
-                            Locale locale = new Locale("ru");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
                             try {
-                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            trackingService.AddEvent(trackingId,new NewEvent(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
+                            trackingService.AddEvent(trackingId,
+                                    new Event(UUID.randomUUID(),
+                                            trackingId,
+                                            eventDate,
+                                            scale,
+                                            rating,
+                                            comment));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -239,14 +259,15 @@ public class AddNewEventActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
                         }
                     }else {
-                        Date eventDate = null;
-                        Locale locale = new Locale("ru");
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                        try {
-                            eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        if(timeSetFlag) {
+                            Locale locale = new Locale("ru");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                            try {
+                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                         trackingService.AddEvent(trackingId, new NewEvent(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
@@ -300,6 +321,27 @@ public class AddNewEventActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        eventYear = year-1900;
+        eventMonth = month;
+        eventDay = day;
+        timePickerDialog.show();
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minuets) {
+        eventHour = hour;
+        eventMinuets = minuets;
+        eventDate = new Date(eventYear, eventMonth, eventDay, hour, minuets);
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getDefault());
+        timeSetFlag = true;
+        dateControl.setText(format.format(eventDate).toString());
+
     }
 
     private int calculateState(TrackingCustomization customization){
