@@ -58,7 +58,10 @@ public class FrequencyTrendChangingFact extends Fact {
             else
                 priority = Double.MAX_VALUE;
         else
-            priority = (double)days / LastPeriodEventCount;
+            if (LastPeriodEventCount != 0)
+                priority = (double)days / LastPeriodEventCount;
+            else
+                priority = Double.MAX_VALUE;
     }
 
     @Override
