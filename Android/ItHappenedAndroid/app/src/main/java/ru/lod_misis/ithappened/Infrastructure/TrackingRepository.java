@@ -198,7 +198,7 @@ public class TrackingRepository implements ITrackingRepository{
         List<String> idList = getEventsForFilter();
 
         RealmResults<NewEvent> events = realm.where(NewEvent.class)
-                .in("eventId", (String[])(idList.toArray()))
+                .in("eventId", idList.toArray(new String[idList.size()]))
                 .equalTo("isDeleted", false).findAll();
 
         if (trackingId == null) return new ArrayList<>();
@@ -206,7 +206,7 @@ public class TrackingRepository implements ITrackingRepository{
         List<String> trackings = new ArrayList<>();
         for (UUID id: trackingId) trackings.add(trackingId.toString());
 
-        events = events.where().in("trackingId", (String[])trackings.toArray()).findAll();
+        events = events.where().in("trackingId", trackings.toArray(new String[trackings.size()])).findAll();
 
         if (dateFrom != null) {
             events = events.where()
