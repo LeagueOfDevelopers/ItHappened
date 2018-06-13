@@ -44,8 +44,7 @@ import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Gui.MultiSpinner;
+import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
@@ -60,7 +59,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
 
-    List<Event> eventsForAdapter = new ArrayList<>();
+    List<NewEvent> eventsForAdapter = new ArrayList<>();
     List<Boolean> selectedItems;
     ArrayList<Integer> selectedPositionItems = new ArrayList<>();
 
@@ -117,7 +116,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
             collection = StaticInMemoryRepository.getInstance();
         }
-
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
         eventsHistoryPresenter = new EventsHistoryPresenterImpl(collection, trackingService, getActivity(), this);
         trackingsPickerText = getActivity().findViewById(R.id.trackingsPickerText);
@@ -153,7 +151,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             }
         });
 
-        hintForSpinner = (TextView) getActivity().findViewById(R.id.hintsForSpinner);
         filtersHintText = getActivity().findViewById(R.id.hintForEventsHistoryFragmentFilters);
 
         filtersHintText.setVisibility(View.GONE);
@@ -165,14 +162,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         strings = new ArrayList<String>();
         selectedItems = new ArrayList<>();
 
-        List<NewTracking> newTrackings = new ArrayList<>();
-        newTrackings = trackingService.GetTrackingCollection();
+        List<NewTracking> trackings = new ArrayList<>();
+        trackings = trackingService.GetTrackingCollection();
 
         for(int i=0;i<trackings.size();i++){
             if(!trackings.get(i).GetStatus()) {
                 strings.add(trackings.get(i).GetTrackingName());
                 idCollection.add(trackings.get(i).GetTrackingID());
-                flags.add(false);
+                selectedItems.add(true);
             }
         }
 
@@ -235,7 +232,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             }
                         }
                     });
-                    trackingsPicker.setNegativeButton("Снять все",  null);
+                    trackingsPicker.setNegativeButton("Снять все", null);
                     trackingsPicker.setNeutralButton("Выбрать все", null);
 
                     trackingsPickerDiaolg = trackingsPicker.show();
@@ -323,7 +320,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             @Override
             public void onClick(View view) {
 
-                final List<NewEvent> allNewEvents = new ArrayList<>();
+                final List<NewEvent> allEvents = new ArrayList<>();
                 YandexMetrica.reportEvent("Пользователь отменил фильтры");
                 eventsHistoryPresenter.loadEvents();
             }
@@ -348,7 +345,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
                 if (!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()) {
                     Locale locale = new Locale("ru");
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                    SimpleDateFormat simpleDateFormat = new
+                            SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
                     try {
                         dateF = simpleDateFormat.parse(dateFrom.getText().toString());
                     } catch (ParseException e) {
@@ -387,28 +385,28 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void showEvents(List<NewEvent> newEvents) {
-        if(newEvents.size()==0){
+    public void showEvents(List<NewEvent> events) {
+        if(events.size()==0){
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(newEvents, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
         }else{
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(newEvents, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
         }
         if(eventsAdpt!=null) {
-            List<NewEvent> adapterNewEvents = eventsAdpt.getNewEvents();
-            ArrayList<NewEvent> refreshedNewEvents = new ArrayList<>();
-            if (adapterNewEvents != null)
-                for (NewEvent newEvent : adapterNewEvents) {
-                    collection.GetTracking(newEvent.GetTrackingId());
-                    NewEvent addAbleNewEvent = collection.GetTracking(newEvent.GetTrackingId()).GetEvent(newEvent.GetEventId());
-                    if (!addAbleNewEvent.GetStatus())
-                        refreshedNewEvents.add(addAbleNewEvent);
+            List<NewEvent> adapterEvents = eventsAdpt.getNewEvents();
+            ArrayList<NewEvent> refreshedEvents = new ArrayList<>();
+            if (adapterEvents != null)
+                for (NewEvent event : adapterEvents) {
+                    collection.GetTracking(event.GetTrackingId());
+                    NewEvent addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
+                    if (!addAbleEvent.GetStatus())
+                        refreshedEvents.add(addAbleEvent);
                 }
-            if (refreshedNewEvents.size() == 0) {
+            if (refreshedEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedNewEvents, getActivity().getApplicationContext(), 1));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
         }
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -418,19 +416,19 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     public void onResume() {
         super.onResume();
         if(eventsAdpt!=null) {
-            List<NewEvent> adapterNewEvents = eventsAdpt.getNewEvents();
-            ArrayList<NewEvent> refreshedNewEvents = new ArrayList<>();
-            if (adapterNewEvents != null)
-                for (NewEvent newEvent : adapterNewEvents) {
-                    collection.GetTracking(newEvent.GetTrackingId());
-                    NewEvent addAbleNewEvent = collection.GetTracking(newEvent.GetTrackingId()).GetEvent(newEvent.GetEventId());
-                    if (!addAbleNewEvent.GetStatus())
-                        refreshedNewEvents.add(addAbleNewEvent);
+            List<NewEvent> adapterEvents = eventsAdpt.getNewEvents();
+            ArrayList<NewEvent> refreshedEvents = new ArrayList<>();
+            if (adapterEvents != null)
+                for (NewEvent event : adapterEvents) {
+                    collection.GetTracking(event.GetTrackingId());
+                    NewEvent addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
+                    if (!addAbleEvent.GetStatus())
+                        refreshedEvents.add(addAbleEvent);
                 }
-            if (refreshedNewEvents.size() == 0) {
+            if (refreshedEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedNewEvents, getActivity().getApplicationContext(), 1));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
         }
     }
 
@@ -477,6 +475,4 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             }
         }
     }
-    }
-
-
+}

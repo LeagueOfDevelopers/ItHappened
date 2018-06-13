@@ -226,9 +226,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                         rating = new Rating((int) (ratingControl.getRating()*2));
                     }
                     if(!scaleControl.getText().toString().isEmpty()){
-                            try {
+                        try {
+                            scale = Double.parseDouble(scaleControl.getText().toString().trim());
                             trackingService.AddEvent(trackingId,
-                                    new Event(UUID.randomUUID(),
+                                    new NewEvent(UUID.randomUUID(),
                                             trackingId,
                                             eventDate,
                                             scale,
