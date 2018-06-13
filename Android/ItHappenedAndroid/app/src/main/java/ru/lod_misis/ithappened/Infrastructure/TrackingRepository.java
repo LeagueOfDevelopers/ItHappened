@@ -195,74 +195,124 @@ public class TrackingRepository implements ITrackingRepository{
                                        Comparison scaleComparison, Double scale,
                                        Comparison ratingComparison, Rating rating) {
 
-        List<NewEvent> notFilteredNewEvents = getEventsForFilter();
-        List<NewEvent> filteredNewEvents = new ArrayList<>();
+        List<String> idList = getEventsForFilter();
 
-        filteredNewEvents.addAll(notFilteredNewEvents);
+        RealmResults<NewEvent> events = realm.where(NewEvent.class)
+                .in("eventId", (String[])(idList.toArray()))
+                .equalTo("isDeleted", false).findAll();
 
-        if (trackingId != null) {
-            filteredNewEvents = new ArrayList<>();
-            for (NewEvent newEvent : notFilteredNewEvents) {
-                if (trackingId.contains(newEvent.GetTrackingId()))
-                    filteredNewEvents.add(newEvent);
-            }
+        if (trackingId == null) return new ArrayList<>();
+
+        List<String> trackings = new ArrayList<>();
+        for (UUID id: trackingId) trackings.add(trackingId.toString());
+
+        events = events.where().in("trackingId", (String[])trackings.toArray()).findAll();
+
+        if (dateFrom != null) {
+            events = events.where()
+                    .greaterThan("eventDate", dateFrom).findAll();
         }
-
-        if (dateFrom != null && dateTo != null) {
-            notFilteredNewEvents = new ArrayList<>();
-            notFilteredNewEvents.addAll(filteredNewEvents);
-            filteredNewEvents = new ArrayList<>();
-            for (NewEvent newEvent : notFilteredNewEvents) {
-                if (newEvent.GetEventDate().compareTo(dateFrom) >= 0 && newEvent.GetEventDate().compareTo(dateTo) <= 0)
-                    filteredNewEvents.add(newEvent);
-            }
-        }else{
-            if(dateFrom!=null){
-                notFilteredNewEvents = new ArrayList<>();
-                notFilteredNewEvents.addAll(filteredNewEvents);
-                filteredNewEvents = new ArrayList<>();
-                for (NewEvent newEvent : notFilteredNewEvents) {
-                    if (newEvent.GetEventDate().compareTo(dateFrom) >= 0)
-                        filteredNewEvents.add(newEvent);
-                }
-            }
-            if(dateTo!=null){
-                notFilteredNewEvents = new ArrayList<>();
-                notFilteredNewEvents.addAll(filteredNewEvents);
-                filteredNewEvents = new ArrayList<>();
-                for (NewEvent newEvent : notFilteredNewEvents) {
-                    if (newEvent.GetEventDate().compareTo(dateTo) <= 0)
-                        filteredNewEvents.add(newEvent);
-                }
-            }
+        if(dateTo!=null){
+            events = events.where()
+                    .lessThan("eventDate", dateTo).findAll();
         }
 
         if (scaleComparison != null && scale != null) {
-            notFilteredNewEvents = new ArrayList<>();
-            notFilteredNewEvents.addAll(filteredNewEvents);
-            filteredNewEvents = new ArrayList<>();
-            for (NewEvent newEvent : notFilteredNewEvents) {
-                if(newEvent.GetScale()!=null)
-                if (CompareValues(scaleComparison, newEvent.GetScale(), scale))
-                    filteredNewEvents.add(newEvent);
-            }
+            if (scaleComparison == Comparison.Equal)
+                events = events.where().equalTo("scale", scale).findAll();
+            if (scaleComparison == Comparison.Less)
+                events = events.where().lessThan("scale", scale).findAll();
+            if (scaleComparison == Comparison.More)
+                events = events.where().greaterThan("scale", scale).findAll();
         }
 
+        List<NewEvent> eventsToReturn = events.where().findAllSorted("eventDate");
+
         if (ratingComparison != null && rating != null) {
-            notFilteredNewEvents = new ArrayList<>();
-            notFilteredNewEvents.addAll(filteredNewEvents);
-            filteredNewEvents = new ArrayList<>();
-            for (NewEvent newEvent : notFilteredNewEvents) {
+            List<NewEvent> filteredNewEvents = new ArrayList<>();
+            for (NewEvent newEvent : eventsToReturn) {
                 if (newEvent.GetRating() != null)
                     if (CompareValues(ratingComparison,
                             newEvent.GetRating().GetRatingValue().doubleValue(),
                             rating.GetRatingValue().doubleValue()))
                         filteredNewEvents.add(newEvent);
             }
+
+            eventsToReturn = filteredNewEvents;
         }
 
-        return RemoveDeletedEventsAndTrackingsFromCollection(
-                filteredNewEvents);
+        return eventsToReturn;
+
+//        List<String> notFilteredNewEvents = getEventsForFilter();
+//        List<NewEvent> filteredNewEvents = new ArrayList<>();
+//
+//        return realm.where(NewDbModel.class).equalTo("userId", userId).findAll().findFirst()
+//
+//        filteredNewEvents.addAll(notFilteredNewEvents);
+//
+//        if (trackingId != null) {
+//            filteredNewEvents = new ArrayList<>();
+//            for (NewEvent newEvent : notFilteredNewEvents) {
+//                if (trackingId.contains(newEvent.GetTrackingId()))
+//                    filteredNewEvents.add(newEvent);
+//            }
+//        }
+//
+//        if (dateFrom != null && dateTo != null) {
+//            notFilteredNewEvents = new ArrayList<>();
+//            notFilteredNewEvents.addAll(filteredNewEvents);
+//            filteredNewEvents = new ArrayList<>();
+//            for (NewEvent newEvent : notFilteredNewEvents) {
+//                if (newEvent.GetEventDate().compareTo(dateFrom) >= 0 && newEvent.GetEventDate().compareTo(dateTo) <= 0)
+//                    filteredNewEvents.add(newEvent);
+//            }
+//        }else{
+//            if(dateFrom!=null){
+//                notFilteredNewEvents = new ArrayList<>();
+//                notFilteredNewEvents.addAll(filteredNewEvents);
+//                filteredNewEvents = new ArrayList<>();
+//                for (NewEvent newEvent : notFilteredNewEvents) {
+//                    if (newEvent.GetEventDate().compareTo(dateFrom) >= 0)
+//                        filteredNewEvents.add(newEvent);
+//                }
+//            }
+//            if(dateTo!=null){
+//                notFilteredNewEvents = new ArrayList<>();
+//                notFilteredNewEvents.addAll(filteredNewEvents);
+//                filteredNewEvents = new ArrayList<>();
+//                for (NewEvent newEvent : notFilteredNewEvents) {
+//                    if (newEvent.GetEventDate().compareTo(dateTo) <= 0)
+//                        filteredNewEvents.add(newEvent);
+//                }
+//            }
+//        }
+//
+//        if (scaleComparison != null && scale != null) {
+//            notFilteredNewEvents = new ArrayList<>();
+//            notFilteredNewEvents.addAll(filteredNewEvents);
+//            filteredNewEvents = new ArrayList<>();
+//            for (NewEvent newEvent : notFilteredNewEvents) {
+//                if(newEvent.GetScale()!=null)
+//                if (CompareValues(scaleComparison, newEvent.GetScale(), scale))
+//                    filteredNewEvents.add(newEvent);
+//            }
+//        }
+//
+//        if (ratingComparison != null && rating != null) {
+//            notFilteredNewEvents = new ArrayList<>();
+//            notFilteredNewEvents.addAll(filteredNewEvents);
+//            filteredNewEvents = new ArrayList<>();
+//            for (NewEvent newEvent : notFilteredNewEvents) {
+//                if (newEvent.GetRating() != null)
+//                    if (CompareValues(ratingComparison,
+//                            newEvent.GetRating().GetRatingValue().doubleValue(),
+//                            rating.GetRatingValue().doubleValue()))
+//                        filteredNewEvents.add(newEvent);
+//            }
+//        }
+//
+//        return RemoveDeletedEventsAndTrackingsFromCollection(
+//                filteredNewEvents);
     }
 
     public void ChangeTracking(NewTracking newTracking) {
@@ -419,8 +469,16 @@ public class TrackingRepository implements ITrackingRepository{
         return newEventCollection;
     }
 
-    private List<NewEvent> getEventsForFilter(){
-        return realm.where(NewDbModel.class).equalTo("userId", userId).findFirst().getNewEventCollection();
+    private List<String> getEventsForFilter(){
+        List<NewEvent> eventCollection = realm.copyFromRealm
+                (realm.where(NewDbModel.class)
+                        .equalTo("userId", userId)
+                        .findFirst().getNewEventCollection());
+        List<String> ids = new ArrayList<>();
+
+        for (NewEvent event: eventCollection) ids.add(event.getEventId());
+
+        return ids;
     }
 
     private List<NewEvent> RemoveDeletedEventsAndTrackingsFromCollection(List<NewEvent> collection)
