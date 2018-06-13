@@ -88,7 +88,8 @@ public class TrackingRepository implements ITrackingRepository{
                 .equalTo("userId", userId).findFirst();
 
         if (model == null) {
-            throw new IllegalArgumentException("User with such ID doesn't exists");
+            model = new NewDbModel(new ArrayList<NewTracking>(), userId);
+            realm.insert(model);
         }
 
         if (!contains) {
