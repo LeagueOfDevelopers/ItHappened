@@ -196,17 +196,23 @@ public class TrackingRepository implements ITrackingRepository{
                                        Comparison ratingComparison, Rating rating) {
 
         List<String> idList = getEventsForFilter();
+        String[] idArray = new String[idList.size()];
+
+        for(int i = 0; i < idArray.length; i++)
+            idArray[i] = idList.get(i);
 
         RealmResults<NewEvent> events = realm.where(NewEvent.class)
-                .in("eventId", idList.toArray(new String[idList.size()]))
+                .in("eventId", idArray)
                 .equalTo("isDeleted", false).findAll();
 
-        if (trackingId == null) return new ArrayList<>();
+        if (trackingId != null) {
+            String[] trackings = new String[trackingId.size()];
 
-        List<String> trackings = new ArrayList<>();
-        for (UUID id: trackingId) trackings.add(trackingId.toString());
+            for (int i = 0; i < trackings.length; i++)
+                trackings[i] = trackingId.get(i).toString();
 
-        events = events.where().in("trackingId", trackings.toArray(new String[trackings.size()])).findAll();
+            events = events.where().in("trackingId", trackings).findAll();
+        }
 
         if (dateFrom != null) {
             events = events.where()
