@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
@@ -59,7 +59,7 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                         }
                         TrackingService trackingSercvice = new TrackingService("testUser", collection);
 
-                        trackingSercvice.RemoveEvent(trackingId, eventId);
+                        trackingSercvice.RemoveEvent(eventId);
                         factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -79,17 +79,17 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                                     }
                                 });
                         EventsFragment eventsFragment = (EventsFragment) getActivity().getFragmentManager().findFragmentByTag("EVENTS_HISTORY");
-                        List<Event> events = eventsFragment.eventsAdpt.getEvents();
-                        for(int i=0;i<events.size();i++){
-                            if(events.get(i).GetEventId().equals(eventId)){
-                                events.remove(i);
+                        List<NewEvent> newEvents = eventsFragment.eventsAdpt.getNewEvents();
+                        for(int i = 0; i< newEvents.size(); i++){
+                            if(newEvents.get(i).GetEventId().equals(eventId)){
+                                newEvents.remove(i);
                                 break;
                             }
                         }
-                        if(events.size()==0){
+                        if(newEvents.size()==0){
                             eventsFragment.hintForEventsHistory.setVisibility(View.VISIBLE);
                         }
-                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(events, getActivity(), 1));
+                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(newEvents, getActivity(), 1));
                         Toast.makeText(getActivity().getApplicationContext(), "Событие удалено", Toast.LENGTH_SHORT).show();
                     }
                 })

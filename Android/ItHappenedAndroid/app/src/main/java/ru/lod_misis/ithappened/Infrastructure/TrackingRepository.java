@@ -1,9 +1,6 @@
 package ru.lod_misis.ithappened.Infrastructure;
 
 import android.content.Context;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +11,6 @@ import java.util.UUID;
 
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
-import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -22,27 +18,28 @@ import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmResults;
 import io.realm.RealmSchema;
-import io.realm.annotations.PrimaryKey;
+import io.realm.internal.Table;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Models.DbModel;
+import ru.lod_misis.ithappened.Models.NewDbModel;
 
 public class TrackingRepository implements ITrackingRepository{
 
-    public TrackingRepository(Context cntxt, String userId)
-    {
+    public TrackingRepository(Context cntxt, String userId){
         context = cntxt;
         Realm.init(context);
         this.userId = userId;
     }
 
-    public void SaveTrackingCollection(List<Tracking> trackingCollection)
-    {
+    public void SaveTrackingCollection(List<NewTracking> newTrackingCollection){
         realm.beginTransaction();
-        DbModel model = new DbModel(trackingCollection, userId);
-        model.setEventCollection(addEventsToEventCollection(trackingCollection, userId));
+        NewDbModel model = new NewDbModel(newTrackingCollection, userId);
+        model.setNewEventCollection(addEventsToEventCollection(newTrackingCollection, userId));
 
         realm.copyToRealmOrUpdate(model);
 
@@ -51,149 +48,310 @@ public class TrackingRepository implements ITrackingRepository{
 
     public void setUserId(String userId) { this.userId = userId; }
 
-    public Tracking GetTracking(UUID trackingId)
-    {
-        List<Tracking> trackingCollection = GetTrackingCollection();
+    public NewTracking GetTracking(UUID trackingId){
+        NewTracking newTracking =  realm.where(NewTracking.class)
+                .equalTo("trackingId", trackingId.toString())
+                .findFirst();
 
-        for (Tracking item: trackingCollection)
-        {
-            if (item.GetTrackingID().equals(trackingId))
-            {
-                return item;
-            }
-        }
-        throw new IllegalArgumentException("Tracking with such ID doesn't exists");
+        if (newTracking == null)
+            throw new IllegalArgumentException("NewTracking with such ID doesn't exists");
+        return newTracking;
     }
 
-    public List<Tracking> GetTrackingCollection()
-    {
-        RealmResults<DbModel> results = realm.where(DbModel.class)
+    public List<NewTracking> GetTrackingCollection(){
+        RealmResults<NewDbModel> results = realm.where(NewDbModel.class)
                 .equalTo("userId", userId).findAll();
-        List<DbModel> modelCollection = realm.copyFromRealm(results);
-        List<Tracking> trackingCollectionToReturn = new ArrayList<>();
+        List<NewDbModel> modelCollection = realm.copyFromRealm(results);
+        List<NewTracking> newTrackingCollectionToReturn = new ArrayList<>();
         if (modelCollection.size() == 0)
-            return new ArrayList<Tracking>();
-        trackingCollectionToReturn.addAll(modelCollection.get(0).getTrackingCollection());
-        Collections.sort(trackingCollectionToReturn, new Comparator<Tracking>() {
+            return new ArrayList<NewTracking>();
+        newTrackingCollectionToReturn.addAll(modelCollection.get(0).getNewTrackingCollection());
+        Collections.sort(newTrackingCollectionToReturn, new Comparator<NewTracking>() {
             @Override
-            public int compare(Tracking tracking, Tracking t1) {
-                return t1.GetDateOfChange().compareTo(tracking.GetDateOfChange());
+            public int compare(NewTracking newTracking, NewTracking t1) {
+                return t1.GetDateOfChange().compareTo(newTracking.GetDateOfChange());
             }
         });
-        return trackingCollectionToReturn;
+        return newTrackingCollectionToReturn;
     }
 
-    public void AddNewTracking(Tracking tracking)
-    {
+    public void AddNewTracking(NewTracking newTracking){
        realm.beginTransaction();
-        RealmResults<DbModel> results = realm.where(DbModel.class)
-                .equalTo("userId", userId).findAll();
-        List<DbModel> model = realm.copyFromRealm(results);
 
-        if (model.size() == 0) {
-            List<Tracking> trackingList = new ArrayList<>();
-            trackingList.add(tracking);
-            DbModel newModel = new DbModel(trackingList, userId);
-            realm.copyToRealm(newModel);
-        }
-        else {
-            List<Tracking> trackingCollection = model.get(0).getTrackingCollection();
-            boolean contains = false;
+        boolean contains = false;
 
-            for (Tracking item : trackingCollection) {
-                if (item.GetTrackingID().equals(tracking.GetTrackingID())) {
-                    contains = true;
-                    break;
-                }
-            }
-            if (!contains) {
-                List<Tracking> newList = new ArrayList<>();
-                RealmResults<DbModel> resultsWithSize = realm.where(DbModel.class)
-                        .equalTo("userId", userId).findAll();
-                List<DbModel> modelWithSize = realm.copyFromRealm(results);
-                for (Tracking item : modelWithSize.get(0).getTrackingCollection()) {
-                    newList.add(item);
-                    }
-                    newList.add(tracking);
-                realm.copyToRealmOrUpdate(new DbModel(newList, userId));
-            }
-            else throw new IllegalArgumentException("Tracking with such ID already exists");
+        if (realm.where(NewTracking.class)
+                .equalTo("trackingId", newTracking.getTrackingId()).findFirst() != null)
+            contains = true;
+
+       NewDbModel model = realm.where(NewDbModel.class)
+                .equalTo("userId", userId).findFirst();
+
+        if (model == null) {
+            model = new NewDbModel(new ArrayList<NewTracking>(), userId);
+            realm.insert(model);
         }
+
+        if (!contains) {
+            model.getNewTrackingCollection().add(newTracking);
+            realm.copyToRealmOrUpdate(model);
+        }
+        else throw new IllegalArgumentException("NewTracking with such ID already exists");
+
         realm.commitTransaction();
     }
 
-    public List<Event> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
-                                    Comparison scaleComparison, Double scale,
-                                    Comparison ratingComparison, Rating rating) {
+    public void addEvent(UUID trackingId, NewEvent newNewEvent){
+        NewTracking newTracking = realm.where(NewTracking.class)
+                .equalTo("trackingId", trackingId.toString()).findFirst();
 
-        List<Event> notFilteredEvents = getEventCollection();
-        List<Event> filteredEvents = new ArrayList<>();
+        if(newTracking == null)
+            throw new IllegalArgumentException("NewTracking with such ID doesn't exists");
 
-        filteredEvents.addAll(notFilteredEvents);
+        realm.beginTransaction();
+        newTracking.AddEvent(newNewEvent);
+        NewDbModel model = realm.where(NewDbModel.class)
+                .equalTo("userId", userId).findFirst();
+
+        if (model == null)
+            throw new IllegalArgumentException ("User with such ID doesn't exists");
+
+        model.getNewEventCollection().add(newNewEvent);
+        realm.commitTransaction();
+    }
+
+    public NewEvent getEvent(UUID eventId){
+        return realm.where(NewEvent.class).
+                equalTo("eventId", eventId.toString())
+                .findFirst();
+    }
+
+    public void editEvent(UUID trackingId, UUID eventId,
+                          Double newScale,
+                          Rating newRating,
+                          String newComment,
+                          Date newDate){
+        NewTracking newTracking = realm.where(NewTracking.class)
+                .equalTo("trackingId", trackingId.toString()).findFirst();
+        if(newTracking == null)
+            throw new IllegalArgumentException("NewTracking with such ID doesn't exists");
+
+        realm.beginTransaction();
+        newTracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
+        realm.commitTransaction();
+    }
+
+    public void editTracking(UUID trackingId,
+                             TrackingCustomization editedCounter,
+                             TrackingCustomization editedScale,
+                             TrackingCustomization editedComment,
+                             String editedTrackingName,
+                             String scaleName,
+                             String color)
+    {
+        NewTracking newTracking = realm.where(NewTracking.class)
+                .equalTo("trackingId", trackingId.toString()).findFirst();
+
+        if(newTracking == null)
+            throw new IllegalArgumentException("NewTracking with such ID doesn't exists");
+
+        realm.beginTransaction();
+        newTracking.EditTracking(editedCounter, editedScale, editedComment,
+                editedTrackingName, scaleName, color);
+        realm.commitTransaction();
+    }
+
+    public void deleteTracking(UUID trackingId){
+        NewTracking newTracking = realm.where(NewTracking.class)
+                .equalTo("trackingId", trackingId.toString()).findFirst();
+
+        if (newTracking == null)
+            throw new IllegalArgumentException("NewTracking with such ID doesn't exists");
+
+        realm.beginTransaction();
+
+        newTracking.setDeleted(true);
+        realm.copyToRealmOrUpdate(newTracking);
+
+        realm.commitTransaction();
+    }
+
+    public void deleteEvent(UUID eventId){
+        NewEvent newEvent = realm.where(NewEvent.class)
+                .equalTo("eventId", eventId.toString()).findFirst();
+
+        if (newEvent == null)
+            throw new IllegalArgumentException("NewTracking with such ID doesn't exists");
+
+        realm.beginTransaction();
+
+        newEvent.setDeleted(true);
+        realm.copyToRealmOrUpdate(newEvent);
+
+        realm.commitTransaction();
+    }
+
+    public List<NewEvent> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
+                                       Comparison scaleComparison, Double scale,
+                                       Comparison ratingComparison, Rating rating) {
+
+        List<String> idList = getEventsForFilter();
+        String[] idArray = new String[idList.size()];
+
+        for(int i = 0; i < idArray.length; i++)
+            idArray[i] = idList.get(i);
+
+        RealmResults<NewEvent> events = realm.where(NewEvent.class)
+                .in("eventId", idArray)
+                .equalTo("isDeleted", false).findAll();
 
         if (trackingId != null) {
-            filteredEvents.clear();
-            for (Event event : notFilteredEvents) {
-                if (trackingId.contains(event.GetTrackingId()))
-                    filteredEvents.add(event);
-            }
+            String[] trackings = new String[trackingId.size()];
+
+            for (int i = 0; i < trackings.length; i++)
+                trackings[i] = trackingId.get(i).toString();
+
+            events = events.where().in("trackingId", trackings).findAll();
         }
 
-        if (dateFrom != null && dateTo != null) {
-            notFilteredEvents.clear();
-            notFilteredEvents.addAll(filteredEvents);
-            filteredEvents.clear();
-            for (Event event : notFilteredEvents) {
-                if (event.GetEventDate().compareTo(dateFrom) >= 0 && event.GetEventDate().compareTo(dateTo) <= 0)
-                    filteredEvents.add(event);
-            }
-        }else{
-            if(dateFrom!=null){
-                notFilteredEvents.clear();
-                notFilteredEvents.addAll(filteredEvents);
-                filteredEvents.clear();
-                for (Event event : notFilteredEvents) {
-                    if (event.GetEventDate().compareTo(dateFrom) >= 0)
-                        filteredEvents.add(event);
-                }
-            }
-            if(dateTo!=null){
-                notFilteredEvents.clear();
-                notFilteredEvents.addAll(filteredEvents);
-                filteredEvents.clear();
-                for (Event event : notFilteredEvents) {
-                    if (event.GetEventDate().compareTo(dateTo) <= 0)
-                        filteredEvents.add(event);
-                }
-            }
+        if (dateFrom != null) {
+            events = events.where()
+                    .greaterThan("eventDate", dateFrom).findAll();
+        }
+        if(dateTo!=null){
+            events = events.where()
+                    .lessThan("eventDate", dateTo).findAll();
         }
 
         if (scaleComparison != null && scale != null) {
-            notFilteredEvents.clear();
-            notFilteredEvents.addAll(filteredEvents);
-            filteredEvents.clear();
-            for (Event event : notFilteredEvents) {
-                if(event.GetScale()!=null)
-                if (CompareValues(scaleComparison, event.GetScale(), scale))
-                    filteredEvents.add(event);
-            }
+            if (scaleComparison == Comparison.Equal)
+                events = events.where().equalTo("scale", scale).findAll();
+            if (scaleComparison == Comparison.Less)
+                events = events.where().lessThan("scale", scale).findAll();
+            if (scaleComparison == Comparison.More)
+                events = events.where().greaterThan("scale", scale).findAll();
         }
+
+        List<NewEvent> eventsToReturn = events.where().findAllSorted("eventDate");
 
         if (ratingComparison != null && rating != null) {
-            notFilteredEvents.clear();
-            notFilteredEvents.addAll(filteredEvents);
-            filteredEvents.clear();
-            for (Event event : notFilteredEvents) {
-                if (event.GetRating() != null)
+            List<NewEvent> filteredNewEvents = new ArrayList<>();
+            for (NewEvent newEvent : eventsToReturn) {
+                if (newEvent.GetRating() != null)
                     if (CompareValues(ratingComparison,
-                            event.GetRating().GetRatingValue().doubleValue(),
+                            newEvent.GetRating().GetRatingValue().doubleValue(),
                             rating.GetRatingValue().doubleValue()))
-                        filteredEvents.add(event);
+                        filteredNewEvents.add(newEvent);
             }
+
+            eventsToReturn = filteredNewEvents;
         }
 
-        return RemoveDeletedEventsAndTrackingsFromCollection(
-                filteredEvents);
+        return eventsToReturn;
+    }
+
+    public void ChangeTracking(NewTracking newTracking) {
+        realm.beginTransaction();
+
+        realm.copyToRealmOrUpdate(newTracking);
+
+        realm.commitTransaction();
+    }
+
+    public List<NewEvent> getEventCollection(UUID trackingId){
+        realm.beginTransaction();
+        List<NewEvent> collection = realm.where(NewTracking.class)
+                .equalTo("trackingId", trackingId.toString()).findFirst()
+                .GetEventCollection();
+        realm.commitTransaction();
+        return collection;
+    }
+
+    public void configureRealm()
+    {
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("ItHappened.realm").schemaVersion(1).migration(new RealmMigration() {
+                    @Override
+                    public void migrate(DynamicRealm dynamicRealm, long oldVersion, long newVersion) {
+                        if (oldVersion == 0) {
+                            RealmSchema schema = dynamicRealm.getSchema();
+
+                            RealmObjectSchema newEventSchema = schema.create("NewEvent");
+                            RealmObjectSchema newTrackingSchema = schema.create("NewTracking");
+                            RealmObjectSchema newDbModelSchema = schema.create("NewDbModel");
+                            RealmObjectSchema ratingSchema = schema.get("Rating");
+
+                            newEventSchema.addField("eventId", String.class).addPrimaryKey("eventId");
+                            newEventSchema.addField("trackingId", String.class);
+                            newEventSchema.addField("eventDate", Date.class).addIndex("eventDate");
+                            newEventSchema.addField("dateOfChange", Date.class);
+                            newEventSchema.addField("scale", Double.class);
+                            newEventSchema.addRealmObjectField("rating", ratingSchema);
+                            newEventSchema.addField("comment", String.class);
+                            newEventSchema.addField("isDeleted", boolean.class);
+
+                            newTrackingSchema.addField("trackingId", String.class).addPrimaryKey("trackingId");
+                            newTrackingSchema.addField("scaleName", String.class);
+                            newTrackingSchema.addField("trackingName", String.class);
+                            newTrackingSchema.addField("scale", String.class);
+                            newTrackingSchema.addField("rating", String.class);
+                            newTrackingSchema.addField("comment", String.class);
+                            newTrackingSchema.addField("color", String.class);
+                            newTrackingSchema.addField("dateOfChange", Date.class);
+                            newTrackingSchema.addField("trackingDate", Date.class);
+                            newTrackingSchema.addField("isDeleted", boolean.class);
+                            newTrackingSchema.addRealmListField("newEventCollection", newEventSchema);
+
+                            newDbModelSchema.addField("userId", String.class).addPrimaryKey("userId");
+                            newDbModelSchema.addRealmListField("newEventCollection", newEventSchema);
+                            newDbModelSchema.addRealmListField("newTrackingCollection", newTrackingSchema);
+
+                            RealmObjectSchema eventSchema = schema.get("Event");
+
+                            RealmObjectSchema dbModelSchema = schema.get("DbModel");
+                            dbModelSchema.addRealmListField("eventCollection", schema.get(Event.class.getSimpleName()));
+
+                            RealmObjectSchema trackingSchema = schema.get("Tracking");
+                            trackingSchema.addField("color", String.class);
+
+                            trackingSchema.transform(new RealmObjectSchema.Function() {
+                                @Override
+                                public void apply(DynamicRealmObject dynamicRealmObject) {
+                                    dynamicRealmObject.setString("color", "11119017");
+                                    final String id = dynamicRealmObject.getString("trackingId");
+                                }
+                            });
+                        }
+                    }
+                }).build();
+
+        Realm oldRealm = Realm.getInstance(config);
+
+        RealmConfiguration newConfig = new RealmConfiguration.Builder()
+                .name("ItHappened.realmV2").schemaVersion(1).build();
+
+
+        realm = Realm.getInstance(newConfig);
+
+        if(realm.isEmpty()) {
+            RealmResults<DbModel> modelsToSave = oldRealm.where(DbModel.class).findAll();
+
+            realm.beginTransaction();
+            oldRealm.beginTransaction();
+
+            for (DbModel dbModel : modelsToSave )
+                realm.insert(new NewDbModel(dbModel));
+            oldRealm.deleteAll();
+
+            List<NewDbModel> models = realm.where(NewDbModel.class).isEmpty("newEventCollection")
+                    .isNotEmpty("newTrackingCollection").findAll();
+            for (NewDbModel model : models) {
+                model.setNewEventCollection(addEventsToEventCollection(model.getNewTrackingCollection(), model.getUserId()));
+                realm.copyToRealmOrUpdate(model);
+            }
+            oldRealm.commitTransaction();
+            realm.commitTransaction();
+        }
     }
 
     private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)
@@ -218,19 +376,53 @@ public class TrackingRepository implements ITrackingRepository{
         return false;
     }
 
-    public void ChangeTracking(final Tracking tracking) {
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(tracking);
-        realm.commitTransaction();
+    private RealmList<NewEvent> addEventsToEventCollection(List<NewTracking> newTrackingCollection, String userId){
+
+        NewDbModel newDbModel = realm.where(NewDbModel.class).
+                equalTo("userId", userId).findFirst();
+        RealmList<NewEvent> newEventCollection = newDbModel.getNewEventCollection();
+
+        if (newEventCollection.size() == 0){
+            for (NewTracking newTracking : newTrackingCollection) {
+                newEventCollection.addAll(newTracking.GetEventCollection());
+            }
+        }
+        else
+        for (NewTracking newTracking : newTrackingCollection) {
+            List<NewEvent> newEventList = newTracking.getNewEventCollection();
+            for (NewEvent newEvent : newEventList){
+                boolean contains = false;
+
+                for (NewEvent newEventInCollection : newEventCollection) {
+                    if(newEventInCollection.GetEventId().equals(newEvent.GetEventId()))
+                        contains = true;
+                }
+                if (!contains)
+                    newEventCollection.add(newEvent);
+            }
+        }
+        return newEventCollection;
     }
 
-    private List<Event> RemoveDeletedEventsAndTrackingsFromCollection(List<Event> collection)
+    private List<String> getEventsForFilter(){
+        List<NewEvent> eventCollection = realm.copyFromRealm
+                (realm.where(NewDbModel.class)
+                        .equalTo("userId", userId)
+                        .findFirst().getNewEventCollection());
+        List<String> ids = new ArrayList<>();
+
+        for (NewEvent event: eventCollection) ids.add(event.getEventId());
+
+        return ids;
+    }
+
+    private List<NewEvent> RemoveDeletedEventsAndTrackingsFromCollection(List<NewEvent> collection)
     {
-        List<Event> collectionToReturn = new ArrayList<>();
-        for (Event event : collection )
+        List<NewEvent> collectionToReturn = new ArrayList<>();
+        for (NewEvent newEvent : collection )
         {
-            if (!event.isDeleted())
-                collectionToReturn.add(event);
+            if (!newEvent.isDeleted())
+                collectionToReturn.add(newEvent);
         }
         return collectionToReturn;
     }

@@ -2,7 +2,6 @@ package ru.lod_misis.ithappened.Recyclers;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.DayTimeFactModel;
@@ -39,15 +38,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
     private List<Fact> factCollection;
     private Context context;
 
-    public static final int[] PASTEL_COLORS = {
-            Color.rgb(64, 89, 128),
-            Color.rgb(149, 165, 124),
-            Color.rgb(217, 184, 162),
-            Color.rgb(191, 134, 134),
-            Color.rgb(179, 48, 80),
-            Color.rgb(245,124,0),
-            Color.rgb(84, 110, 122)
-    };
+    public List<Integer> PASTEL_COLORS = new ArrayList<>();
 
 
     public StatisticsAdapter(List<Fact> factCollection, Context context) {
@@ -91,8 +82,9 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         ArrayList<BarEntry> entires = new ArrayList<>();
                         for (int i = 0; i < barData.size(); i++) {
                             entires.add(new BarEntry(barData.get(i).floatValue(), i));
-                        }
 
+                        }
+                        PASTEL_COLORS = fact.getIllustration().getColors();
                         BarDataSet dataSet = new BarDataSet(entires, "Факт");
                         dataSet.setColors(ColorTemplate.PASTEL_COLORS);
                        BarData data = new BarData(new ArrayList<String>(),dataSet);
@@ -101,10 +93,12 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                     }
                     List<FrequentEventsFactModel> dataList = fact.getIllustration().getFrequentEventsList();
                     if(dataList!=null){
+                        PASTEL_COLORS = new ArrayList<>();
                         List<Double> frequentData = new ArrayList<>();
                         List<String> frequentTrackings = new ArrayList<>();
                         for(int i=0;i<dataList.size();i++){
                             frequentData.add(dataList.get(i).getPeriod());
+                            PASTEL_COLORS.add(dataList.get(i).getColor());
 
                             switch (dataList.size()){
                                 case 1:
@@ -154,7 +148,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         }
 
                         BarDataSet dataSet = new BarDataSet(entries, "Отслеживания");
-                        dataSet.setColors(ColorTemplate.PASTEL_COLORS);
+                        dataSet.setColors(PASTEL_COLORS);
                         BarData data = new BarData(frequentTrackings, dataSet);
                         barChart.setData(data);
                         barChart.setPinchZoom(false);
@@ -171,10 +165,10 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         @Override
                         public void onClick(View view) {
                             IllustartionModel illustration = fact.getIllustration();
-                            Event event = illustration.getEventRef();
+                            NewEvent newEvent = illustration.getNewEventRef();
                             Intent intent = new Intent(context, EventDetailsActivity.class);
-                            intent.putExtra("trackingId", event.GetTrackingId().toString());
-                            intent.putExtra("eventId", event.GetEventId().toString());
+                            intent.putExtra("trackingId", newEvent.GetTrackingId().toString());
+                            intent.putExtra("eventId", newEvent.GetEventId().toString());
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         }

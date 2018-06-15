@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Recyclers;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
-import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.NewEvent;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
@@ -29,20 +30,20 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    private List<Event> events;
-    private List<Event> deletedEvent;
+    private List<NewEvent> newEvents;
+    private List<NewEvent> deletedNewEvent;
     private Context context;
     private int state = 0;
 
-    public EventsAdapter(List<Event> events, Context context, int state) {
-        this.events = events;
-        deletedEvent = new ArrayList<>();
-        for(Event event : deletedEvent){
-            if(event.GetStatus())
-                deletedEvent.add(event);
+    public EventsAdapter(List<NewEvent> newEvents, Context context, int state) {
+        this.newEvents = newEvents;
+        deletedNewEvent = new ArrayList<>();
+        for(NewEvent newEvent : deletedNewEvent){
+            if(newEvent.GetStatus())
+                deletedNewEvent.add(newEvent);
         }
-        if(events!=null)
-        events.removeAll(deletedEvent);
+        if(newEvents !=null)
+        newEvents.removeAll(deletedNewEvent);
         this.context = context;
         this.state = state;
     }
@@ -56,12 +57,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     }
 
-    public void refreshData(List<Event> events){
+    public void refreshData(List<NewEvent> newEvents){
 
-        this.events.clear();
-        for(Event event : events){
-            if(!event.GetStatus()){
-                this.events.add(event);
+        this.newEvents.clear();
+        for(NewEvent newEvent : newEvents){
+            if(!newEvent.GetStatus()){
+                this.newEvents.add(newEvent);
             }
         }
         notifyDataSetChanged();
@@ -75,7 +76,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        final Event event = events.get(position);
+        final NewEvent newEvent = newEvents.get(position);
 
         ITrackingRepository trackingRepository;
 
@@ -90,31 +91,33 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
 
 
-        UUID trackingId = event.GetTrackingId();
+        UUID trackingId = newEvent.GetTrackingId();
 
-        if(event.GetComment()!=null && state==0){
-            holder.trackingTitle.setText(event.GetComment());
+        holder.trackingColor.setCardBackgroundColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()));
+
+        if(newEvent.GetComment()!=null && state==0){
+            holder.trackingTitle.setText(newEvent.GetComment());
         }else {
             holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
         }
 
-        if(event.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null ){
+        if(newEvent.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null ){
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
             if(type!=null) {
                 holder.scaleValue.setVisibility(View.VISIBLE);
-                if (type.length() >= 10 && event.GetScale()>1000000 && event.GetRating()!=null) {
-                    holder.scaleValue.setText(StringParse.parseDouble(event.GetScale().doubleValue())+" "+type.substring(0, 3) + ".");
+                if (type.length() >= 10 && newEvent.GetScale()>1000000 && newEvent.GetRating()!=null) {
+                    holder.scaleValue.setText(StringParse.parseDouble(newEvent.GetScale().doubleValue())+" "+type.substring(0, 3) + ".");
                 } else {
-                    holder.scaleValue.setText(StringParse.parseDouble(event.GetScale().doubleValue())+" "+type);
+                    holder.scaleValue.setText(StringParse.parseDouble(newEvent.GetScale().doubleValue())+" "+type);
                 }
             }
         }else{
             holder.scaleValue.setVisibility(View.GONE);
         }
 
-        if(event.GetRating()!=null ){
+        if(newEvent.GetRating()!=null ){
             DecimalFormat format = new DecimalFormat("#.#");
-            holder.ratingValue.setText(format.format(event.GetRating().getRating()/2.0f)+"");
+            holder.ratingValue.setText(format.format(newEvent.GetRating().getRating()/2.0f)+"");
             holder.starIcon.setVisibility(View.VISIBLE);
             holder.ratingValue.setVisibility(View.VISIBLE);
         }else{
@@ -128,9 +131,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
-                intent.putExtra("trackingId", event.GetTrackingId().toString());
-                String eventId = event.GetEventId().toString();
-                intent.putExtra("eventId", event.GetEventId().toString());
+                intent.putExtra("trackingId", newEvent.GetTrackingId().toString());
+                String eventId = newEvent.GetEventId().toString();
+                intent.putExtra("eventId", newEvent.GetEventId().toString());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
@@ -140,9 +143,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditEventActivity.class);
-                intent.putExtra("trackingId", event.GetTrackingId().toString());
-                String eventId = event.GetEventId().toString();
-                intent.putExtra("eventId", event.GetEventId().toString());
+                intent.putExtra("trackingId", newEvent.GetTrackingId().toString());
+                String eventId = newEvent.GetEventId().toString();
+                intent.putExtra("eventId", newEvent.GetEventId().toString());
                 context.startActivity(intent);
             }
         });*/
@@ -152,14 +155,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             public void onClick(View view) {
                 DeleteEventFromFragmentDiaolog delete = new DeleteEventFromFragmentDiaolog();
                 Bundle bundle = new Bundle();
-                bundle.putString("trackingId", event.GetTrackingId().toString());
-                bundle.putString("eventId" , event.GetEventId().toString());
+                bundle.putString("trackingId", newEvent.GetTrackingId().toString());
+                bundle.putString("eventId" , newEvent.GetEventId().toString());
                 delete.setArguments(bundle);
                 delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
             }
         });*/
 
-        Date eventDate = event.GetEventDate();
+        Date eventDate = newEvent.GetEventDate();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
@@ -168,13 +171,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     }
 
-    public List<Event> getEvents() {
-        return events;
+    public List<NewEvent> getNewEvents() {
+        return newEvents;
     }
 
     @Override
     public int getItemCount() {
-        return events.size();
+        return newEvents.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -187,6 +190,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         TextView ratingValue;
         ImageView starIcon;
 
+        CardView trackingColor;
+
         ImageView deleteEvent;
         ImageView editEvent;
 
@@ -197,6 +202,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             scaleValue = (TextView) itemView.findViewById(R.id.scaleValue);
             ratingValue = (TextView) itemView.findViewById(R.id.ratingValue);
             starIcon = (ImageView) itemView.findViewById(R.id.starIcon);
+            trackingColor = itemView.findViewById(R.id.trackingColorEvent);
             eventDate = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventDate);
             trackingTitle = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.TrackingTitle);
             itemLL = (RelativeLayout) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventRL);

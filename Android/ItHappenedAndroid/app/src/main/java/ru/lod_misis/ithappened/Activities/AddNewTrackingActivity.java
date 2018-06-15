@@ -18,11 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
@@ -44,6 +45,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     TextView ratingEnabled;
     TextView commentEnabled;
     TextView scaleEnabled;
+
+    CardView colorPickerButton;
+    TextView colorPickerText;
 
     LinearLayout ratingDont;
     LinearLayout ratingOptional;
@@ -68,6 +72,8 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     ImageView scaleDontImage;
     ImageView scaleOptionalImage;
     ImageView scaleRequiredImage;
+
+    String trackingColor;
 
 
     CardView visibilityScaleType;
@@ -118,6 +124,8 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
         ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheck);
 
+        colorPickerButton = findViewById(R.id.colorPicker);
+
         commentDont = (LinearLayout) findViewById(R.id.commentBackColorDont);
         commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheck);
         commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheck);
@@ -137,6 +145,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
         scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
         scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
+        colorPickerText = findViewById(R.id.colorText);
 
         visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
         visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
@@ -237,8 +246,6 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
 
 
-
-
         scaleDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -294,14 +301,39 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             }
         });
 
+        final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
+        colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
+                .setColors(getApplicationContext().getResources().getIntArray(R.array.second_palette))
+                .setDismissOnColorSelected(false)
+                .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(boolean b, int i) {
+                        if(b){
+                            Toast.makeText(getApplicationContext(), Integer.toHexString(i)+"", Toast.LENGTH_SHORT).show();
+                            colorPickerDialogBuilder.setSelectedColor(i);
+                            colorPickerText.setTextColor(i  );
+                        }
+                    }
+                });
+
+        colorPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SpectrumDialog dialog = colorPickerDialogBuilder.build();
+                dialog.show(getSupportFragmentManager(), "Tag");
+            }
+        });
+
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(trackingName.getText().toString().isEmpty()){
+                if(trackingName.getText().toString().isEmpty()||trackingName.getText().toString().trim().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
                 }else{
 
-                    String trackingTitle = trackingName.getText().toString();
+                    trackingColor = String.valueOf(colorPickerText.getCurrentTextColor());
+                    String trackingTitle = trackingName.getText().toString().trim();
 
                     TrackingCustomization rating = TrackingCustomization.None;
                     TrackingCustomization comment = TrackingCustomization.None;
@@ -352,17 +384,19 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                             break;
                     }
 
-                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&scaleType.getText().toString().isEmpty()){
+                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
+                            (scaleType.getText().toString().isEmpty()
+                            ||scaleType.getText().toString().trim().isEmpty())){
                         Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
                     }else{
                         if(scale != TrackingCustomization.None){
-                            scaleNumb = scaleType.getText().toString();
+                            scaleNumb = scaleType.getText().toString().trim();
                         }
-                        Tracking newTracking = new Tracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, "111111");
-                        trackingRepository.AddNewTracking(newTracking);
+                        NewTracking newNewTracking = new NewTracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, trackingColor);
+                        trackingRepository.AddNewTracking(newNewTracking);
                         YandexMetrica.reportEvent("Пользователь добавил отслеживание");
                         Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTracking.GetTrackingID())
+                        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newNewTracking.GetTrackingID())
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {

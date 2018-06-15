@@ -25,8 +25,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Fragments.DeleteEventDialog;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -90,6 +90,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         factRepository = StaticFactRepository.getInstance();
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
         if(sharedPreferences.getString("LastId","").isEmpty()) {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
             collection = StaticInMemoryRepository.getInstance();
@@ -122,22 +123,22 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
 
-        Tracking thisTracking = collection.GetTracking(trackingId);
-        Event thisEvent = thisTracking.GetEvent(eventId);
+        NewTracking thisNewTracking = collection.GetTracking(trackingId);
+        NewEvent thisNewEvent = thisNewTracking.GetEvent(eventId);
 
 
-        if ((thisTracking.GetCommentCustomization()==TrackingCustomization.None
-                && thisTracking.GetScaleCustomization()==TrackingCustomization.None
-                && thisTracking.GetRatingCustomization()==TrackingCustomization.None)
+        if ((thisNewTracking.GetCommentCustomization()==TrackingCustomization.None
+                && thisNewTracking.GetScaleCustomization()==TrackingCustomization.None
+                && thisNewTracking.GetRatingCustomization()==TrackingCustomization.None)
                 ||
-                ((thisTracking.GetCommentCustomization()==TrackingCustomization.Optional&&thisEvent.GetComment()==null)
-                &&(thisTracking.GetScaleCustomization()==TrackingCustomization.Optional&&thisEvent.GetScale()==null)
-                &&(thisTracking.GetRatingCustomization()==TrackingCustomization.Optional&&thisEvent.GetRating()==null)
+                ((thisNewTracking.GetCommentCustomization()==TrackingCustomization.Optional&& thisNewEvent.GetComment()==null)
+                &&(thisNewTracking.GetScaleCustomization()==TrackingCustomization.Optional&& thisNewEvent.GetScale()==null)
+                &&(thisNewTracking.GetRatingCustomization()==TrackingCustomization.Optional&& thisNewEvent.GetRating()==null)
                 )
                 ){
             valuesCard.setVisibility(View.GONE);
             nullsCard.setVisibility(View.VISIBLE);
-            Date thisDate = thisEvent.GetEventDate();
+            Date thisDate = thisNewEvent.GetEventDate();
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
@@ -147,7 +148,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         }
 
-            Date thisDate = thisEvent.GetEventDate();
+            Date thisDate = thisNewEvent.GetEventDate();
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
@@ -155,42 +156,42 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             dateValue.setText(format.format(thisDate));
 
-            if(thisEvent.GetRating()!=null) {
+            if(thisNewEvent.GetRating()!=null) {
                 ratingValue.setVisibility(View.VISIBLE);
                 nullsCard.setVisibility(View.GONE);
                 valuesCard.setVisibility(View.VISIBLE);
-                ratingValue.setRating(thisEvent.GetRating().getRating()/2.0f);
+                ratingValue.setRating(thisNewEvent.GetRating().getRating()/2.0f);
             }else {
                 ratingValue.setVisibility(View.GONE);
             }
 
-            if(thisEvent.GetComment()!=null) {
+            if(thisNewEvent.GetComment()!=null) {
                 nullsCard.setVisibility(View.GONE);
                 valuesCard.setVisibility(View.VISIBLE);
                 commentValue.setVisibility(View.VISIBLE);
-                commentValue.setText(thisEvent.GetComment());
+                commentValue.setText(thisNewEvent.GetComment());
             }else {
                 commentValue.setVisibility(View.GONE);
                 commentHint.setVisibility(View.GONE);
             }
 
-            if(thisEvent.GetScale()!=null) {
+            if(thisNewEvent.GetScale()!=null) {
                 nullsCard.setVisibility(View.GONE);
                 valuesCard.setVisibility(View.VISIBLE);
                 scaleValue.setVisibility(View.VISIBLE);
-                scaleValue.setText(StringParse.parseDouble(thisEvent.GetScale().doubleValue())+" "+thisTracking.getScaleName());
+                scaleValue.setText(StringParse.parseDouble(thisNewEvent.GetScale().doubleValue())+" "+ thisNewTracking.getScaleName());
             }else {
                 scaleValue.setVisibility(View.GONE);
                 scaleHint.setVisibility(View.GONE);
             }
-        TrackingCustomization commentCustomization = thisTracking.GetCommentCustomization();
-        TrackingCustomization scaleCustomization = thisTracking.GetScaleCustomization();
-        TrackingCustomization ratingCustomization = thisTracking.GetRatingCustomization();
+        TrackingCustomization commentCustomization = thisNewTracking.GetCommentCustomization();
+        TrackingCustomization scaleCustomization = thisNewTracking.GetScaleCustomization();
+        TrackingCustomization ratingCustomization = thisNewTracking.GetRatingCustomization();
     }
 
     public void okClicked() {
 
-        trackingSercvice.RemoveEvent(trackingId, eventId);
+        trackingSercvice.RemoveEvent(eventId);
         factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -222,12 +223,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle(collection.GetTracking(trackingId).GetTrackingName());
-        Event thisEvent = collection.GetTracking(trackingId).GetEvent(eventId);
-        if(thisEvent.GetRating()!=null) {
+        NewEvent thisNewEvent = collection.GetTracking(trackingId).GetEvent(eventId);
+        if(thisNewEvent.GetRating()!=null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEvent.GetRating().getRating()/2.0f);
+            ratingValue.setRating(thisNewEvent.GetRating().getRating()/2.0f);
         }else {
             ratingValue.setVisibility(View.GONE);
         }

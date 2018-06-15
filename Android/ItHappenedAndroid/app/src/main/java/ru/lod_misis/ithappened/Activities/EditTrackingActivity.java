@@ -18,12 +18,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.NewTracking;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
@@ -47,6 +48,11 @@ public class EditTrackingActivity extends AppCompatActivity {
     TextView commentEnabled;
     TextView scaleEnabled;
 
+    CardView colorTrackingEdit;
+    TextView colorTrackingTextEdit;
+
+    String trackingColor;
+
     LinearLayout ratingDont;
     LinearLayout ratingOptional;
     LinearLayout ratingRequired;
@@ -63,7 +69,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     ImageView ratingOptionalImage;
     ImageView ratingRequiredImage;
 
-    Tracking editableTracking;
+    NewTracking editableNewTracking;
 
     ImageView commentDontImage;
     ImageView commentOptionalImage;
@@ -139,6 +145,9 @@ public class EditTrackingActivity extends AppCompatActivity {
         ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheckEdit);
         ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheckEdit);
 
+        colorTrackingEdit = findViewById(R.id.colorPickerEdit);
+        colorTrackingTextEdit = findViewById(R.id.colorTextEdit);
+
         commentDontImage = (ImageView) findViewById(R.id.commentBackImageDontEdit);
         commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheckEdit);
         commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheckEdit);
@@ -152,11 +161,37 @@ public class EditTrackingActivity extends AppCompatActivity {
         scaleType = (EditText) findViewById(R.id.editTypeOfScaleEdit);
 
 
-        editableTracking = trackingRepository.GetTracking(trackingId);
+        editableNewTracking = trackingRepository.GetTracking(trackingId);
 
-        trackingName.setText(editableTracking.GetTrackingName());
+        trackingName.setText(editableNewTracking.GetTrackingName());
 
-        if(editableTracking.GetScaleCustomization() == TrackingCustomization.None) {
+        final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
+        colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
+                .setColors(getApplicationContext().getResources().getIntArray(R.array.second_palette))
+                .setSelectedColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()))
+                .setDismissOnColorSelected(false)
+                .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(boolean b, int i) {
+                        if(b){
+                            Toast.makeText(getApplicationContext(), Integer.toHexString(i)+"", Toast.LENGTH_SHORT).show();
+                            colorPickerDialogBuilder.setSelectedColor(i);
+                            colorTrackingTextEdit.setTextColor(i  );
+                        }
+                    }
+                });
+
+        colorTrackingTextEdit.setTextColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()));
+
+        colorTrackingEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SpectrumDialog dialog = colorPickerDialogBuilder.build();
+                dialog.show(getSupportFragmentManager(), "Tag");
+            }
+        });
+
+        if(editableNewTracking.GetScaleCustomization() == TrackingCustomization.None) {
             visbilityScaleTypeHint.setVisibility(View.GONE);
             visibilityScaleType.setVisibility(View.GONE);
             scaleType.setVisibility(View.GONE);
@@ -164,10 +199,10 @@ public class EditTrackingActivity extends AppCompatActivity {
             visbilityScaleTypeHint.setVisibility(View.VISIBLE);
             visibilityScaleType.setVisibility(View.VISIBLE);
             scaleType.setVisibility(View.VISIBLE);
-            scaleType.setText(editableTracking.getScaleName());
+            scaleType.setText(editableNewTracking.getScaleName());
         }
 
-        stateForRating = calculateState(editableTracking.GetRatingCustomization(),
+        stateForRating = calculateState(editableNewTracking.GetRatingCustomization(),
                 ratingDontImage,
                 ratingOptionalImage,
                 ratingRequiredImage,
@@ -175,7 +210,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                 ratingOptional,
                 ratingRequired,
                 ratingEnabled);
-        stateForText = calculateState(editableTracking.GetCommentCustomization(),
+        stateForText = calculateState(editableNewTracking.GetCommentCustomization(),
                 commentDontImage,
                 commentOptionalImage,
                 commentRequiredImage,
@@ -183,7 +218,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                 commentOptional,
                 commentRequired,
                 commentEnabled);
-        stateForScale = calculateState(editableTracking.GetScaleCustomization(),
+        stateForScale = calculateState(editableNewTracking.GetScaleCustomization(),
                 scaleDontImage,
                 scaleOptionalImage,
                 scaleRequiredImage,
@@ -344,11 +379,12 @@ public class EditTrackingActivity extends AppCompatActivity {
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(trackingName.getText().toString().isEmpty()){
+                if(trackingName.getText().toString().isEmpty()||trackingName.getText().toString().trim().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
                 }else{
 
-                    String trackingTitle = trackingName.getText().toString();
+                    trackingColor = ""+colorTrackingTextEdit.getCurrentTextColor();
+                    String trackingTitle = trackingName.getText().toString().trim();
 
                     TrackingCustomization rating = TrackingCustomization.None;
                     TrackingCustomization comment = TrackingCustomization.None;
@@ -399,13 +435,15 @@ public class EditTrackingActivity extends AppCompatActivity {
                             break;
                     }
 
-                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&scaleType.getText().toString().isEmpty()){
+                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
+                            (scaleType.getText().toString().isEmpty()
+                            ||scaleType.getText().toString().trim().isEmpty())){
                         Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
                     }else{
                         if(scale != TrackingCustomization.None){
-                            scaleNumb = scaleType.getText().toString();
+                            scaleNumb = scaleType.getText().toString().trim();
                         }
-                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb, null);
+                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb, trackingColor);
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())

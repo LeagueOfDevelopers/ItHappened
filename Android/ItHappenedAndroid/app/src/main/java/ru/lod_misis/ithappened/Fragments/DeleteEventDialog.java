@@ -8,11 +8,9 @@ import android.os.Bundle;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 
-/**
- * Created by Пользователь on 16.01.2018.
- */
-
 public class DeleteEventDialog extends DialogFragment {
+
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -34,4 +32,6 @@ public class DeleteEventDialog extends DialogFragment {
         return builder.create();
 
     }
+
+
 }

@@ -38,19 +38,19 @@ public class EditNicknameDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         EditText nicname = getDialog().findViewById(R.id.username);
-                        if(nicname.getText().toString().isEmpty()){
+                        if(nicname.getText().toString().isEmpty()||nicname.getText().toString().trim().isEmpty()){
                             Toast.makeText(getActivity(), "Имя не может быть пустым!", Toast.LENGTH_SHORT).show();
                         }else {
                             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("Nick", nicname.getText().toString());
+                            editor.putString("Nick", nicname.getText().toString().trim());
                             editor.putLong("NickDate", Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime().getTime());
                             editor.commit();
 
                             NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
                             View hView =  navigationView.getHeaderView(0);
                             TextView user = (TextView) hView.findViewById(R.id.userNickname);
-                            user.setText(nicname.getText().toString());
+                            user.setText(nicname.getText().toString().trim());
 
                             RelativeLayout rl = (RelativeLayout) getActivity().findViewById(R.id.rl);
 

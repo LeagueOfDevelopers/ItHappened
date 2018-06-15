@@ -7,9 +7,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import ru.lod_misis.ithappened.Activities.UserActionsActivity;
-
 import java.util.UUID;
+
+import ru.lod_misis.ithappened.Presenters.TrackingsContract;
 
 /**
  * Created by Пользователь on 30.01.2018.
@@ -19,26 +19,22 @@ import java.util.UUID;
 public class DeleteTrackingFragment extends DialogFragment {
 
     UUID trackingId;
-
-    @SuppressLint("ValidFragment")
-    public DeleteTrackingFragment(UUID trackingId){
-        this.trackingId = trackingId;
-    }
+    TrackingsContract.TrackingsPresenter trackingsPresenter;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Вы болше не сможете восстановить это отслеживание!")
+        builder.setMessage("Вы больше не сможете восстановить это отслеживание!")
                 .setTitle("Вы действительно хотите удалить это отслеживание?")
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ((UserActionsActivity) getActivity()).okClicked(trackingId);
+                        trackingsPresenter.deleteTracking(trackingId);
                     }
                 })
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ((UserActionsActivity) getActivity()).cancelClicked();
+                        trackingsPresenter.cancelDeleting();
                     }
                 });
 
@@ -46,4 +42,11 @@ public class DeleteTrackingFragment extends DialogFragment {
 
     }
 
+    public void setTrackingsPresenter(TrackingsContract.TrackingsPresenter trackingsPresenter){
+        this.trackingsPresenter = trackingsPresenter;
+    }
+
+    public void setTrackingId(UUID trackingId) {
+        this.trackingId = trackingId;
+    }
 }
