@@ -28,7 +28,7 @@ namespace ItHappenedDomain.Domain
       this.dateOfChange = dateOfChange;
       this.isDeleted = isDeleted;
       this.EventCollection = eventCollection;
-      this.Color = color ?? "111111";
+      this.color = color ?? "11119017";
     }
 
     public string trackingName { set; get; }

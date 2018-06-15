@@ -33,15 +33,12 @@ public class Event extends RealmObject {
     public Event(){}
 
     @Expose
-    @PrimaryKey
-    @Required
     @SerializedName("eventId")
     public String eventId;
     @Expose
     @SerializedName("trackingId")
     public String trackingId;
     @Expose
-    @Index
     @SerializedName("eventDate")
     public Date eventDate;
     @Expose
