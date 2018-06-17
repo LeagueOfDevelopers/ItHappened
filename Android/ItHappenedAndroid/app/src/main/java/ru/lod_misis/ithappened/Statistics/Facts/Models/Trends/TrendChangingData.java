@@ -2,11 +2,11 @@ package ru.lod_misis.ithappened.Statistics.Facts.Models.Trends;
 
 public class TrendChangingData {
 
-    private int EventInCollectionId;
+    private int ItemInCollectionId;
     private double AlphaCoefficient;
 
-    public TrendChangingData(int eventInCollectionId, double alphaCoefficient) {
-        EventInCollectionId = eventInCollectionId;
+    public TrendChangingData(int itemInCollectionId, double alphaCoefficient) {
+        ItemInCollectionId = itemInCollectionId;
         AlphaCoefficient = alphaCoefficient;
     }
 
@@ -14,7 +14,11 @@ public class TrendChangingData {
         return AlphaCoefficient;
     }
 
-    public int getEventInCollectionId() {
-        return EventInCollectionId;
+    public int getItemInCollectionId() {
+        return ItemInCollectionId;
     }
+
+    // Полезность этого класса в том, что он позволяет классу
+    // SequenceAnalyzer абстрагироваться от работы с эвентами
+    // и работать просто с последовательностями чисел.
 }

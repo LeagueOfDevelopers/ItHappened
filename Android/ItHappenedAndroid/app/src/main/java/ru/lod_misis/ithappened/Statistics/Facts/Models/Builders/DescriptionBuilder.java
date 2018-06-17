@@ -4,19 +4,13 @@ import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Interval;
 import org.joda.time.Minutes;
-import org.joda.time.format.PeriodFormat;
-import org.joda.time.format.PeriodFormatter;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
-import ru.lod_misis.ithappened.Statistics.Facts.Models.CorrelationModels.CorrelationData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.DayEventData;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendDelta;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
 
 public class DescriptionBuilder {
 
@@ -174,28 +168,22 @@ public class DescriptionBuilder {
     }
     // Рамки для текстового описания корреляции (сильная слабая и тд) взяты по шкале Чеддока.
 
-    public static String BuildScaleTrendReport(TrendDelta delta, String trackingName, String scaleName) {
-        String deltaDescription = delta.getAverangeDelta() > 0 ? "увеличилось" : "уменьшилось";
+    public static String BuildScaleTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, String scaleName) {
+        String deltaDescription = newAverange - delta.getAverangeValue() > 0 ? "увеличилось" : "уменьшилось";
         return String.format(ScaleTrendReportFormat,
-                DateFormatter.format(delta.getPoint().getPointEventDate()), scaleName, trackingName,
-                deltaDescription, Math.abs(delta.getAverangeDelta()));
+                DateFormatter.format(delta.getPointEventDate()), scaleName, trackingName,
+                deltaDescription, Math.abs(delta.getAverangeValue() - newAverange));
     }
 
-    public static String BuildRatingTrendReport(TrendDelta delta, String trackingName) {
-        String deltaDescription = delta.getAverangeDelta() > 0 ? "увеличилось" : "уменьшилось";
+    public static String BuildRatingTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName) {
+        String deltaDescription = newAverange - delta.getAverangeValue() > 0 ? "увеличилось" : "уменьшилось";
         return String.format(RatingTrendReportFormat,
-                DateFormatter.format(delta.getPoint().getPointEventDate()), trackingName,
-                deltaDescription, Math.abs(delta.getAverangeDelta()));
+                DateFormatter.format(delta.getPointEventDate()), trackingName,
+                deltaDescription, Math.abs(delta.getAverangeValue() - newAverange));
     }
 
-    public static String BuildFrequencyTrendReport(TrendDelta delta, String trackingName, Interval period, int count) {
-        String orientation = "";
-        if (delta.getPoint().getAlphaCoefficient() > 0) {
-            orientation = "чаще";
-        }
-        if (delta.getPoint().getAlphaCoefficient() < 0) {
-            orientation = "реже";
-        }
+    public static String BuildFrequencyTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, Interval period, int count) {
+        String orientation = newAverange - delta.getAverangeValue() > 0 ? "чаще" : "реже";
         String duration = IntervalDescription(period);
         return String.format(FreqTrendReportFormat, trackingName, orientation, duration, count);
     }

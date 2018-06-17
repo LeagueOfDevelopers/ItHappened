@@ -34,4 +34,7 @@ public class TrendChangingPoint {
     public Date getPointEventDate() {
         return PointEventDate;
     }
+
+    // Этот класс также содержит информацию о точке перегиба графика,
+    // но эта информация уже привязана к эвенту и к дате
 }

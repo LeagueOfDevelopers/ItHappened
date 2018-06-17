@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.Tracking;
@@ -20,14 +19,13 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendDelta;
 
 public class ScaleTrendChangingFact extends Fact {
 
     private String TrackingName;
     private String ScaleName;
     private List<Event> Events;
-    private TrendDelta TrendDelta;
+    private TrendChangingPoint PointOfChange;
     private Double NewAverange;
 
     public ScaleTrendChangingFact(Tracking tracking) {
@@ -56,13 +54,13 @@ public class ScaleTrendChangingFact extends Fact {
 
     @Override
     protected void calculatePriority() {
-        Integer days = new Interval(TrendDelta.getPoint().getPointEventDate().getTime(),
+        Integer days = new Interval(PointOfChange.getPointEventDate().getTime(),
                 DateTime.now().toDate().getTime())
                 .toDuration() // Преобразование в класс длительности
                 .toStandardDays() // Достаем дни
                 .getDays();
         if (days != 0)
-            priority = Math.abs(NewAverange - TrendDelta.getPoint().getAverangeValue()) * 10 / days;
+            priority = Math.abs(NewAverange - PointOfChange.getAverangeValue()) * 10 / days;
         // Достает целочисленное значение из обьекта Days
         else
             priority = Double.MAX_VALUE;
@@ -75,22 +73,21 @@ public class ScaleTrendChangingFact extends Fact {
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.BuildScaleTrendReport(TrendDelta, TrackingName, ScaleName);
+        return DescriptionBuilder.BuildScaleTrendReport(PointOfChange, NewAverange, TrackingName, ScaleName);
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return TrendDelta.getAverangeDelta() != 0;
+        return PointOfChange.getAverangeValue() - NewAverange != 0;
     }
 
     private void CalculateTrendDelta() {
         Sequence data = DataSetBuilder.BuildScaleSequence(SortEventsByDate(Events));
         TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
-        TrendChangingPoint point = new TrendChangingPoint(
-                Events.get(trendData.getEventInCollectionId()).GetEventId(),
-                data.Slice(0, trendData.getEventInCollectionId()).Mean(),
+        PointOfChange = new TrendChangingPoint(
+                Events.get(trendData.getItemInCollectionId()).GetEventId(),
+                data.Slice(0, trendData.getItemInCollectionId()).Mean(),
                 trendData.getAlphaCoefficient(),
-                Events.get(trendData.getEventInCollectionId()).GetEventDate());
-        TrendDelta = new TrendDelta(point, NewAverange);
+                Events.get(trendData.getItemInCollectionId()).GetEventDate());
     }
     // Сначала преобразовываем массив эвентов в массив скаляров. Затем вычисляем
     // точку изменения тренда. И наконец создаем обьект класса TrendChangingPoint,

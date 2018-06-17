@@ -8,7 +8,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 
 public class SequenceAnalyzer {
 
-    private static final double DELTA = 0.05; // В интервале [0 - DELTA, 0 + DELTA] тренд незначим
+    private static final double DELTA = 0.000005; // В интервале [0 - DELTA, 0 + DELTA] тренд незначим
 
     public static TrendChangingData DetectTrendChangingPoint(Sequence data) {
         Integer cpointInd = 0;
@@ -28,6 +28,10 @@ public class SequenceAnalyzer {
         }
         return new TrendChangingData(cpointInd, pointCoef);
     }
+    // Метод поиска последней точки, в которой тренд изменился. На каждой
+    // итерации мы просто проверяем, текущий коэффициент и если он значим
+    // и находится в другой зоне от прошлого коэффициента (по другую сторону от 0),
+    // то говорим, что этот коэффициент и есть последний перегиб графика.
 
     private static double CalculateACoefficient(Sequence Y) {
         int n = Y.Length();

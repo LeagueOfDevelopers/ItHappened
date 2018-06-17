@@ -17,13 +17,12 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendDelta;
 
 public class FrequencyTrendChangingFact extends Fact {
 
     private String TrackingName;
     private List<Event> Events;
-    private TrendDelta TrendDelta;
+    private TrendChangingPoint PointOfChange;
     private Double NewAverange;
     private int LastPeriodEventCount;
     private Interval LastInterval;
@@ -52,7 +51,7 @@ public class FrequencyTrendChangingFact extends Fact {
     @Override
     protected void calculatePriority() {
         Integer days = LastInterval.toDuration().toStandardDays().getDays();
-        if (TrendDelta.getAverangeDelta() > 0)
+        if (NewAverange - PointOfChange.getAverangeValue() > 0)
             if (days != 0)
                 priority = (double)LastPeriodEventCount / days;
             else
@@ -66,29 +65,28 @@ public class FrequencyTrendChangingFact extends Fact {
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.BuildFrequencyTrendReport(TrendDelta, TrackingName,
+        return DescriptionBuilder.BuildFrequencyTrendReport(PointOfChange, NewAverange, TrackingName,
                 new Interval(DateTime.now().toDate().getTime()
-                        - TrendDelta.getPoint().getPointEventDate().getTime()), LastPeriodEventCount);
+                        - PointOfChange.getPointEventDate().getTime()), LastPeriodEventCount);
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return TrendDelta.getAverangeDelta() != 0;
+        return NewAverange - PointOfChange.getAverangeValue() != 0;
     }
 
     private void CalculateTrendData() {
         Sequence data = DataSetBuilder.BuildFrequencySequence(Events);
         TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
 
-        LastPeriodEventCount = (int)(double)data.Slice(trendData.getEventInCollectionId(),
+        LastPeriodEventCount = (int)(double)data.Slice(trendData.getItemInCollectionId(),
                 data.Length() - 1).Sum();
         LastInterval = new Interval(Events.get(Events.size() - 1).GetEventDate().getTime() -
-                Events.get(trendData.getEventInCollectionId()).GetEventDate().getTime());
+                Events.get(trendData.getItemInCollectionId()).GetEventDate().getTime());
 
-        TrendChangingPoint point = new TrendChangingPoint(
-                Events.get(trendData.getEventInCollectionId()).GetEventId(),
-                data.Slice(0, trendData.getEventInCollectionId()).Mean(),
+        PointOfChange = new TrendChangingPoint(
+                Events.get(trendData.getItemInCollectionId()).GetEventId(),
+                data.Slice(0, trendData.getItemInCollectionId()).Mean(),
                 trendData.getAlphaCoefficient(),
-                Events.get(trendData.getEventInCollectionId()).GetEventDate());
-        TrendDelta = new TrendDelta(point, NewAverange);
+                Events.get(trendData.getItemInCollectionId()).GetEventDate());
     }
 }

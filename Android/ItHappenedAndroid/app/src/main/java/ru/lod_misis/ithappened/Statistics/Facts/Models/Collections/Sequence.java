@@ -6,17 +6,17 @@ import java.util.List;
 public class Sequence {
 
     private List<Double> Data;
+    private double Sum;
 
     public Sequence(List<Double> data) {
         Data = data;
+        for (Double d: data) {
+            Sum += d;
+        }
     }
 
     public double Sum() {
-        double res = 0;
-        for (Double d: Data) {
-            res += d;
-        }
-        return res;
+        return Sum;
     }
 
     public double Mean() {

@@ -19,13 +19,12 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendDelta;
 
 public class RatingTrendChangingFact extends Fact {
 
     private String TrackingName;
     private List<Event> Events;
-    private TrendDelta TrendDelta;
+    private TrendChangingPoint PointOfChange;
     private Double NewAverange;
 
     public RatingTrendChangingFact(Tracking tracking) {
@@ -45,7 +44,7 @@ public class RatingTrendChangingFact extends Fact {
 
     @Override
     public void calculateData() {
-        TrendDelta = CalculateTrendDelta();
+        CalculateTrendDelta();
         illustartion = new IllustartionModel(IllustrationType.GRAPH);
         illustartion.setGraphData(DataSetBuilder.BuildRatingSequence(Events).ToList());
         calculatePriority();
@@ -53,13 +52,13 @@ public class RatingTrendChangingFact extends Fact {
 
     @Override
     protected void calculatePriority() {
-        Integer days = new Interval(TrendDelta.getPoint().getPointEventDate().getTime(),
+        Integer days = new Interval(PointOfChange.getPointEventDate().getTime(),
                 DateTime.now().toDate().getTime())
                 .toDuration() // Преобразование в класс длительности
                 .toStandardDays() // Достаем дни
                 .getDays();
         if (days != 0)
-            priority = Math.abs(NewAverange - TrendDelta.getPoint().getAverangeValue()) * 10 / days;
+            priority = Math.abs(NewAverange - PointOfChange.getAverangeValue()) * 10 / days;
         else
             priority = Double.MAX_VALUE;
     }
@@ -71,22 +70,21 @@ public class RatingTrendChangingFact extends Fact {
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.BuildRatingTrendReport(TrendDelta, TrackingName);
+        return DescriptionBuilder.BuildRatingTrendReport(PointOfChange, NewAverange, TrackingName);
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return TrendDelta.getAverangeDelta() != 0;
+        return NewAverange - PointOfChange.getAverangeValue() != 0;
     }
 
-    private TrendDelta CalculateTrendDelta() {
+    private void CalculateTrendDelta() {
         Sequence data = DataSetBuilder.BuildRatingSequence(SortEventsByDate(Events));
         TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
-        TrendChangingPoint point = new TrendChangingPoint(
-                Events.get(trendData.getEventInCollectionId()).GetEventId(),
-                data.Slice(0, trendData.getEventInCollectionId()).Mean(),
+        PointOfChange = new TrendChangingPoint(
+                Events.get(trendData.getItemInCollectionId()).GetEventId(),
+                data.Slice(0, trendData.getItemInCollectionId()).Mean(),
                 trendData.getAlphaCoefficient(),
-                Events.get(trendData.getEventInCollectionId()).GetEventDate());
-        return new TrendDelta(point, NewAverange);
+                Events.get(trendData.getItemInCollectionId()).GetEventDate());
     }
 
     private List<Event> SortEventsByDate(List<Event> events) {
