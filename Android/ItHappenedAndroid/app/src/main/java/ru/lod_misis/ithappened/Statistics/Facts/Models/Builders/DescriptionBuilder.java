@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models.Builders;
 
+import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Interval;
@@ -7,9 +8,10 @@ import org.joda.time.Minutes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-import ru.lod_misis.ithappened.Statistics.Facts.Models.DayEventData;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.TimeSpanEventData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
 
 public class DescriptionBuilder {
@@ -41,6 +43,9 @@ public class DescriptionBuilder {
 
     private static final String LargestEventCountReportFormat =
             "Самый насыщенный событиями день был %s. Тогда произошло %s ";
+
+    private static final String LargestEventCountWeekReportFormat =
+            "Самая насыщенная событиями неделя была с %s до %s. В течении этой недели произошло %s ";
 
     public static String BuildBinaryCorrelationReport(Double corr,
                                                       String firstTrackingName,
@@ -196,7 +201,7 @@ public class DescriptionBuilder {
                 (secondEventDate.getTime() - firstEventDate.getTime()) / (1000 * 60 * 60 * 24));
     }
 
-    public static String LargestEventCountDescription(DayEventData data) {
+    public static String LargestEventCountDayDescription(TimeSpanEventData data) {
         String eventCountDescr = "";
         if (data.getEventCount() % 10 == 1) {
             eventCountDescr = "событие.";
@@ -210,6 +215,28 @@ public class DescriptionBuilder {
         String pattern = LargestEventCountReportFormat + eventCountDescr;
         return String.format(pattern, DateDescription(data.getYear(),
                 data.getMonth(), data.getDay()), data.getEventCount()).trim();
+    }
+
+    public static String LargestEventCountWeekDescription(TimeSpanEventData data) {
+        String eventCountDescr = "";
+        if (data.getEventCount() % 10 == 1) {
+            eventCountDescr = "событие.";
+        }
+        if (data.getEventCount() % 10 > 1 && data.getEventCount() < 5) {
+            eventCountDescr = "события.";
+        }
+        if (data.getEventCount() % 10 > 4) {
+            eventCountDescr = "событий.";
+        }
+        String pattern = LargestEventCountWeekReportFormat + eventCountDescr;
+        List<DateTime> borders = data.getWeekBorders();
+        int month = borders.get(0).getMonthOfYear();
+        String leftBorderDescription = DateDescription(borders.get(0).getYear(),
+                borders.get(0).getMonthOfYear(), borders.get(0).getDayOfMonth());
+        String rightBorderDescription = DateDescription(borders.get(1).getYear(),
+                borders.get(1).getMonthOfYear(), borders.get(1).getDayOfMonth());
+        return String.format(pattern, leftBorderDescription,
+                rightBorderDescription, data.getEventCount()).trim();
     }
 
     private static String IntervalDescription(Interval interval) {
@@ -259,18 +286,41 @@ public class DescriptionBuilder {
     private static String DateDescription(int year, int month, int day) {
         String monthDescr = "";
         switch (month) {
-            case 1: monthDescr = "января";
-            case 2: monthDescr = "февраля";
-            case 3: monthDescr = "марта";
-            case 4: monthDescr = "апреля";
-            case 5: monthDescr = "мая";
-            case 6: monthDescr = "июня";
-            case 7: monthDescr = "июля";
-            case 8: monthDescr = "августа";
-            case 9: monthDescr = "сентября";
-            case 10: monthDescr = "октября";
-            case 11: monthDescr = "ноября";
-            case 12: monthDescr = "декабря";
+            case 1:
+                monthDescr = "января";
+                break;
+            case 2:
+                monthDescr = "февраля";
+                break;
+            case 3:
+                monthDescr = "марта";
+                break;
+            case 4:
+                monthDescr = "апреля";
+                break;
+            case 5:
+                monthDescr = "мая";
+                break;
+            case 6:
+                monthDescr = "июня";
+                break;
+            case 7:
+                monthDescr = "июля";
+                break;
+            case 8:
+                monthDescr = "августа";
+                break;
+            case 9:
+                monthDescr = "сентября";
+                break;
+            case 10:
+                monthDescr = "октября";
+                break;
+            case 11:
+                monthDescr = "ноября";
+                break;
+            case 12:
+                monthDescr = "декабря";
         }
         return String.format("%s %s %s года", day, monthDescr, year);
     }

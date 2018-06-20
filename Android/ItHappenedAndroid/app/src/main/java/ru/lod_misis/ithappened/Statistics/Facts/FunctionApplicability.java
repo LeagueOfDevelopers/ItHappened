@@ -30,6 +30,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.DayWithLarg
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongTimeAgoFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WeekWithLargestEventCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WorstEvent;
 
 public final class FunctionApplicability  {
@@ -408,6 +409,13 @@ public final class FunctionApplicability  {
 
     public static Fact DayWithLargestEventCountApplicability(List<Tracking> trackings) {
         DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
+        fact.calculateData();
+        if (!fact.IsFactSignificant()) return null;
+        return fact;
+    }
+
+    public static Fact WeekWithLargestEventCountApplicability(List<Tracking> trackings) {
+        WeekWithLargestEventCountFact fact = new WeekWithLargestEventCountFact(trackings);
         fact.calculateData();
         if (!fact.IsFactSignificant()) return null;
         return fact;

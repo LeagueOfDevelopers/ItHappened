@@ -13,12 +13,12 @@ import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.TimeSpanEventData;
 
-public class DayWithLargestEventCount extends Fact {
+public class WeekWithLargestEventCountFact extends Fact {
 
     private List<Event> Events;
-    private TimeSpanEventData LargestEventCountDay;
+    private TimeSpanEventData Data;
 
-    public DayWithLargestEventCount(List<Tracking> trackings) {
+    public WeekWithLargestEventCountFact(List<Tracking> trackings) {
         Events = new ArrayList<>();
         for (Tracking t: trackings) {
             if (t.isDeleted()) continue;
@@ -32,38 +32,38 @@ public class DayWithLargestEventCount extends Fact {
 
     @Override
     public void calculateData() {
-        CalculateLargestByEventCountDay();
-        if (LargestEventCountDay == null) return;
+        FindWeekWithLargestEventCount();
+        if (Data == null) return;
         calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
-        priority = 1.5 * LargestEventCountDay.getEventCount();
+        priority = 0.75 * Data.getEventCount();
     }
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.LargestEventCountDayDescription(LargestEventCountDay);
+        return DescriptionBuilder.LargestEventCountWeekDescription(Data);
     }
 
     public boolean IsFactSignificant() {
-        return LargestEventCountDay != null && LargestEventCountDay.getEventCount() > 1;
+        return Data != null && Data.getEventCount() > 1;
     }
 
-    private void CalculateLargestByEventCountDay() {
+    private void FindWeekWithLargestEventCount() {
         List<TimeSpanEventData> counts = new ArrayList<>();
         for (Event e: Events) {
             DateTime date = new DateTime(e.GetEventDate());
-            boolean dayFound = false;
+            boolean weekFound = false;
             for (TimeSpanEventData d: counts) {
-                if (d.IsItThisDay(date)) {
+                if (d.IsItThisWeek(date)) {
+                    weekFound = true;
                     d.CountIncrement();
-                    dayFound = true;
                     break;
                 }
             }
-            if (!dayFound) {
+            if (!weekFound) {
                 TimeSpanEventData data = new TimeSpanEventData(date);
                 data.CountIncrement();
                 counts.add(data);
@@ -73,7 +73,7 @@ public class DayWithLargestEventCount extends Fact {
         for (TimeSpanEventData d: counts) {
             if (d.getEventCount() > maxCount) {
                 maxCount = d.getEventCount();
-                LargestEventCountDay = d;
+                Data = d;
             }
         }
     }

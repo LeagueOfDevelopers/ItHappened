@@ -21,6 +21,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBr
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.DayWithLargestEventCount;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WeekWithLargestEventCountFact;
 
 public class DescriptionBuilderUnitTest {
 
@@ -66,14 +67,25 @@ public class DescriptionBuilderUnitTest {
     }
 
     @Test
-    public void BuildDayWithMostEventCountDescriptionTest_BuilderBuildsCorrectReport() {
+    public void BuildDayWithLargestEventCountDescriptionTest_BuilderBuildsCorrectReport() {
         Tracking tracking = GenerateTrackingWithDateBreak();
         List<Tracking> trackings = new ArrayList<>();
         trackings.add(tracking);
         DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertEquals(descr, "Самый насыщенный событиями день был 5 декабря 3900 года. Тогда произошло 2 события.");
+        Assert.assertEquals(descr, "Самый насыщенный событиями день был 5 января 2018 года. Тогда произошло 2 события.");
+    }
+
+    @Test
+    public void BuildWeekWithLargestEventCountDescription_BuilderBuildsCorrectDescription() {
+        Tracking tracking = GenerateTrackingWithDateBreak();
+        List<Tracking> trackings = new ArrayList<>();
+        trackings.add(tracking);
+        WeekWithLargestEventCountFact fact = new WeekWithLargestEventCountFact(trackings);
+        fact.calculateData();
+        String descr = fact.textDescription();
+        Assert.assertEquals(descr, "Самая насыщенная событиями неделя была с 1 января 2018 года до 7 января 2018 года. В течении этой недели произошло 7 событий.");
     }
 
     private Tracking GenerateTrackingWithDateBreak() {
@@ -90,8 +102,8 @@ public class DescriptionBuilderUnitTest {
         }
         for (Integer i: dateArr) {
             Event event = new Event();
-            Date date = new Date(2000, 3, i);
-            event.SetEventDate(date);
+            DateTime date = new DateTime(2018, 1, i, 10, 0);
+            event.SetEventDate(date.toDate());
             event.SetEventId(UUID.randomUUID());
             tracking.AddEvent(event);
         }
