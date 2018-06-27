@@ -19,7 +19,7 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.AddNewTrackingActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.TrackingsContract;
 import ru.lod_misis.ithappened.Presenters.TrackingsPresenterImpl;
@@ -88,12 +88,12 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
     }
 
     @Override
-    public void showTrackings(List<NewTracking> visibleNewTrackings) {
+    public void showTrackings(List<TrackingV1> visibleTrackingV1s) {
 
-        if(visibleNewTrackings.size()!=0){
+        if(visibleTrackingV1s.size()!=0){
             hintForTrackings.setVisibility(View.INVISIBLE);
         }
-        trackAdpt = new TrackingsAdapter(visibleNewTrackings,getActivity(), trackingsPresenter);
+        trackAdpt = new TrackingsAdapter(visibleTrackingV1s,getActivity(), trackingsPresenter);
         trackingsRecycler.setAdapter(trackAdpt);
 
     }

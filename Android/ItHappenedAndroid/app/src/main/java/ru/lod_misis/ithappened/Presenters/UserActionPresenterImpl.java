@@ -12,7 +12,7 @@ import java.sql.Date;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Models.RegistrationResponse;
@@ -90,12 +90,12 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                 .subscribe(new Action1<SynchronizationRequest>() {
                                     @Override
                                     public void call(SynchronizationRequest sync) {
-                                        List<NewTracking> newTrackings = sync.getNewTrackingCollection();
-                                        for (NewTracking newTracking : newTrackings) {
-                                            if (newTracking.getColor() == null)
-                                                newTracking.setColor("11119017");
+                                        List<TrackingV1> trackingV1s = sync.getTrackingV1Collection();
+                                        for (TrackingV1 trackingV1 : trackingV1s) {
+                                            if (trackingV1.getColor() == null)
+                                                trackingV1.setColor("11119017");
                                         }
-                                        saveDataToDb(newTrackings);
+                                        saveDataToDb(trackingV1s);
 
                                         SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -158,12 +158,12 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                            .subscribe(new Action1<SynchronizationRequest>() {
                                                @Override
                                                public void call(SynchronizationRequest request) {
-                                                   List<NewTracking> newTrackings = request.getNewTrackingCollection();
-                                                   for(NewTracking newTracking : newTrackings){
-                                                       if(newTracking.getColor()==null)
-                                                           newTracking.setColor("11119017");
+                                                   List<TrackingV1> trackingV1s = request.getTrackingV1Collection();
+                                                   for(TrackingV1 trackingV1 : trackingV1s){
+                                                       if(trackingV1.getColor()==null)
+                                                           trackingV1.setColor("11119017");
                                                    }
-                                                   saveDataToDb(newTrackings);
+                                                   saveDataToDb(trackingV1s);
                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
                                                    editor.putString("Nick", synchronizationRequest.getUserNickname());
                                                    editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
@@ -216,8 +216,8 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
         return isTokenFailed;
     }
 
-    private void saveDataToDb(List<NewTracking> newTrackings){
-        repository.SaveTrackingCollection(newTrackings);
+    private void saveDataToDb(List<TrackingV1> trackingV1s){
+        repository.SaveTrackingCollection(trackingV1s);
     }
 
 

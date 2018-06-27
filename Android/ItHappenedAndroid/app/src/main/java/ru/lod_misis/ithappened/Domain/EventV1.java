@@ -12,9 +12,9 @@ import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
-public class NewEvent extends RealmObject
+public class EventV1 extends RealmObject
 {
-    public NewEvent(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment)
+    public EventV1(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment)
     {
         this.eventId = eventId.toString();
         this.dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
@@ -25,7 +25,7 @@ public class NewEvent extends RealmObject
         this.eventDate = date;
     }
 
-    public NewEvent(Event event){
+    public EventV1(Event event){
         this.eventId = event.eventId;
         this.eventDate = event.eventDate;
         this.scale = event.scale;
@@ -36,14 +36,13 @@ public class NewEvent extends RealmObject
         isDeleted = event.isDeleted;
     }
 
-    public NewEvent(){}
+    public EventV1(){}
 
-    public NewEvent(UUID eventId, UUID trackingID, Date eventDate,
-                    Double scale, Rating rating, String comment,
-                    boolean status, Date changeDate)
+    public EventV1(UUID eventId, UUID trackingID, Date eventDate,
+                   Double scale, Rating rating, String comment,
+                   boolean status, Date changeDate)
     {
         this.eventId = eventId.toString();
-//        eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         this.eventDate = eventDate;
         this.scale = scale;
         this.rating = rating;

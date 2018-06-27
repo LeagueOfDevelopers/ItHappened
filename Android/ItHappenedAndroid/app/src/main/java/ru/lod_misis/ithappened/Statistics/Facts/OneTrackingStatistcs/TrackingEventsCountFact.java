@@ -1,7 +1,7 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
@@ -11,13 +11,13 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class TrackingEventsCountFact extends Fact {
 
-    NewTracking newTracking;
+    TrackingV1 trackingV1;
     int eventCount;
 
-    public TrackingEventsCountFact(NewTracking newTracking)
+    public TrackingEventsCountFact(TrackingV1 trackingV1)
     {
-        trackingId = newTracking.GetTrackingID();
-        this.newTracking = newTracking;
+        trackingId = trackingV1.GetTrackingID();
+        this.trackingV1 = trackingV1;
         eventCount = 0;
     }
 
@@ -25,8 +25,8 @@ public class TrackingEventsCountFact extends Fact {
     @Override
     public void calculateData() {
 
-        for (NewEvent newEvent : newTracking.getNewEventCollection()) {
-            if (!newEvent.isDeleted()) eventCount++;
+        for (EventV1 eventV1 : trackingV1.getEventV1Collection()) {
+            if (!eventV1.isDeleted()) eventCount++;
         }
         calculatePriority();
     }
@@ -43,7 +43,7 @@ public class TrackingEventsCountFact extends Fact {
 
     @Override
     public String textDescription() {
-        return String.format("Событие <b>%s</b> произошло <b>%s</b> %s", newTracking.getTrackingName(),
+        return String.format("Событие <b>%s</b> произошло <b>%s</b> %s", trackingV1.getTrackingName(),
                 eventCount, StringParse.time(eventCount));
     }
 }

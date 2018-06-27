@@ -23,7 +23,7 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
@@ -392,11 +392,11 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString().trim();
                         }
-                        NewTracking newNewTracking = new NewTracking(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, trackingColor);
-                        trackingRepository.AddNewTracking(newNewTracking);
+                        TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, trackingColor);
+                        trackingRepository.AddNewTracking(newTrackingV1);
                         YandexMetrica.reportEvent("Пользователь добавил отслеживание");
                         Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newNewTracking.GetTrackingID())
+                        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTrackingV1.GetTrackingID())
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {

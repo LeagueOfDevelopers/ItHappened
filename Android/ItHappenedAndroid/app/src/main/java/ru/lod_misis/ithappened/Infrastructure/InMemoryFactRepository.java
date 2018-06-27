@@ -6,31 +6,31 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
 public class InMemoryFactRepository {
 
-    List<NewTracking> newTrackingCollection;
+    List<TrackingV1> trackingV1Collection;
 
     public InMemoryFactRepository(){
         functionApplicability = new FunctionApplicability();
     }
 
-    public rx.Observable calculateOneTrackingFacts(List<NewTracking> newTrackingCollection)
+    public rx.Observable calculateOneTrackingFacts(List<TrackingV1> trackingV1Collection)
     {
         oneTrackingFactCollection = new ArrayList<>();
-        for (NewTracking newTracking : newTrackingCollection) {
-            functionApplicabilityCheck(newTracking);
+        for (TrackingV1 trackingV1 : trackingV1Collection) {
+            functionApplicabilityCheck(trackingV1);
         }
 
         return rx.Observable.from(oneTrackingFactCollection);
     }
 
-    public rx.Observable<Fact> onChangeCalculateOneTrackingFacts(List<NewTracking> newTrackingCollection, UUID trackingId)
+    public rx.Observable<Fact> onChangeCalculateOneTrackingFacts(List<TrackingV1> trackingV1Collection, UUID trackingId)
     {
-        NewTracking changedNewTracking = null;
+        TrackingV1 changedTrackingV1 = null;
         List<Fact> factCollectionCheck = new ArrayList<>();
 
         for (Fact fact: oneTrackingFactCollection) {
@@ -40,15 +40,15 @@ public class InMemoryFactRepository {
 
         oneTrackingFactCollection.removeAll(factCollectionCheck);
 
-        for (NewTracking newTracking : newTrackingCollection) {
-            if (newTracking.GetTrackingID().equals(trackingId))
-                changedNewTracking = newTracking;
+        for (TrackingV1 trackingV1 : trackingV1Collection) {
+            if (trackingV1.GetTrackingID().equals(trackingId))
+                changedTrackingV1 = trackingV1;
         }
 
-        if (changedNewTracking == null)
+        if (changedTrackingV1 == null)
             throw new IllegalArgumentException("tracking not exists");
 
-        functionApplicabilityCheck(changedNewTracking);
+        functionApplicabilityCheck(changedTrackingV1);
 
 
         if(allTrackingsFactCollection.size() > 1)
@@ -57,17 +57,17 @@ public class InMemoryFactRepository {
         return rx.Observable.from(oneTrackingFactCollection);
     }
 
-    public rx.Observable<Fact> calculateAllTrackingsFacts(List<NewTracking> newTrackingCollection) {
+    public rx.Observable<Fact> calculateAllTrackingsFacts(List<TrackingV1> trackingV1Collection) {
         Fact factToAdd;
         allTrackingsFactCollection = new ArrayList<>();
 
-        factToAdd = FunctionApplicability.allEventsCountFactApplicability(newTrackingCollection);
+        factToAdd = FunctionApplicability.allEventsCountFactApplicability(trackingV1Collection);
         if (factToAdd != null) {
             factToAdd.calculateData();
             allTrackingsFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.mostFrequentEventApplicability(newTrackingCollection);
+        factToAdd = FunctionApplicability.mostFrequentEventApplicability(trackingV1Collection);
         if (factToAdd != null) {
             factToAdd.calculateData();
             allTrackingsFactCollection.add(factToAdd);
@@ -78,57 +78,57 @@ public class InMemoryFactRepository {
         return rx.Observable.from(allTrackingsFactCollection);
     }
 
-    private void functionApplicabilityCheck(NewTracking newTracking)
+    private void functionApplicabilityCheck(TrackingV1 trackingV1)
     {
         Fact factToAdd;
 
-        factToAdd = FunctionApplicability.avrgRatingApplicability(newTracking);
+        factToAdd = FunctionApplicability.avrgRatingApplicability(trackingV1);
         if (factToAdd != null) {
             factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.avrgScaleApplicability(newTracking);
+        factToAdd = FunctionApplicability.avrgScaleApplicability(trackingV1);
         if (factToAdd != null) {
             factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.sumScaleApplicability(newTracking);
+        factToAdd = FunctionApplicability.sumScaleApplicability(trackingV1);
         if (factToAdd != null) {
             factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.trackingEventsCountApplicability(newTracking);
+        factToAdd = FunctionApplicability.trackingEventsCountApplicability(trackingV1);
         if (factToAdd != null) {
             factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.worstEventApplicability(newTracking);
+        factToAdd = FunctionApplicability.worstEventApplicability(trackingV1);
         if (factToAdd != null) {
             factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.bestEventApplicability(newTracking);
+        factToAdd = FunctionApplicability.bestEventApplicability(trackingV1);
         if (factToAdd != null) {
             factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.certainWeekDaysApplicability(newTracking);
+        factToAdd = FunctionApplicability.certainWeekDaysApplicability(trackingV1);
         if (factToAdd != null){
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.certainDayTimeApplicability(newTracking);
+        factToAdd = FunctionApplicability.certainDayTimeApplicability(trackingV1);
         if (factToAdd != null) {
             oneTrackingFactCollection.add(factToAdd);
         }
 
-        factToAdd = FunctionApplicability.longTimeAgoApplicability(newTracking);
+        factToAdd = FunctionApplicability.longTimeAgoApplicability(trackingV1);
         if (factToAdd != null) {
             oneTrackingFactCollection.add(factToAdd);
         }

@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.DayTimeFactModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
@@ -18,23 +18,23 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
  */
 
 public class CertainDayTimeFact extends Fact{
-    NewTracking newTracking;
+    TrackingV1 trackingV1;
     List<DayTimeFactModel> modelList;
 
 
-    public CertainDayTimeFact(NewTracking newTracking) {
-            this.newTracking = newTracking;
-            trackingId = newTracking.GetTrackingID();
+    public CertainDayTimeFact(TrackingV1 trackingV1) {
+            this.trackingV1 = trackingV1;
+            trackingId = trackingV1.GetTrackingID();
     }
 
     @Override
     public void calculateData() {
         illustartion = new IllustartionModel(IllustrationType.PIE);
-        List<NewEvent> newEventCollection = new ArrayList<>();
+        List<EventV1> eventV1Collection = new ArrayList<>();
 
-        for(NewEvent newEvent : newTracking.GetEventCollection()){
-            if (!newEvent.isDeleted())
-                newEventCollection.add(newEvent);
+        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+            if (!eventV1.isDeleted())
+                eventV1Collection.add(eventV1);
         }
 
         int[] eventCount = new int[4];
@@ -42,8 +42,8 @@ public class CertainDayTimeFact extends Fact{
 
         modelList = new ArrayList<>();
 
-        for(NewEvent newEvent : newEventCollection){
-            c.setTime(newEvent.GetEventDate());
+        for(EventV1 eventV1 : eventV1Collection){
+            c.setTime(eventV1.GetEventDate());
             int hour = c.get(Calendar.HOUR_OF_DAY);
             if (hour < 6) eventCount[0]++;
             else if (hour<12) eventCount[1]++;
@@ -54,7 +54,7 @@ public class CertainDayTimeFact extends Fact{
         for (int i = 0; i<4; i++) {
             if (eventCount[i] > 0) {
                 DayTimeFactModel model = new DayTimeFactModel();
-                double percentage = (double)eventCount[i] / newEventCollection.size() * 100;
+                double percentage = (double)eventCount[i] / eventV1Collection.size() * 100;
                 model.calculateDate(i, percentage);
                 modelList.add(model);
             }
@@ -90,6 +90,6 @@ public class CertainDayTimeFact extends Fact{
         NumberFormat format = new DecimalFormat("#.##");
 
         return String.format("В <b>%s%s</b> случаев событие <b>%s</b> происходит <b>%s</b>",
-                format.format(model.getPercetage()), "%", newTracking.getTrackingName(), dayTime);
+                format.format(model.getPercetage()), "%", trackingV1.getTrackingName(), dayTime);
     }
 }

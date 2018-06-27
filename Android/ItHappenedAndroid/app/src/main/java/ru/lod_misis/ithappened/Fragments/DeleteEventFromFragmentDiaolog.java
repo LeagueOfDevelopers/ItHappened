@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
@@ -79,17 +79,17 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                                     }
                                 });
                         EventsFragment eventsFragment = (EventsFragment) getActivity().getFragmentManager().findFragmentByTag("EVENTS_HISTORY");
-                        List<NewEvent> newEvents = eventsFragment.eventsAdpt.getNewEvents();
-                        for(int i = 0; i< newEvents.size(); i++){
-                            if(newEvents.get(i).GetEventId().equals(eventId)){
-                                newEvents.remove(i);
+                        List<EventV1> eventV1s = eventsFragment.eventsAdpt.getEventV1s();
+                        for(int i = 0; i< eventV1s.size(); i++){
+                            if(eventV1s.get(i).GetEventId().equals(eventId)){
+                                eventV1s.remove(i);
                                 break;
                             }
                         }
-                        if(newEvents.size()==0){
+                        if(eventV1s.size()==0){
                             eventsFragment.hintForEventsHistory.setVisibility(View.VISIBLE);
                         }
-                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(newEvents, getActivity(), 1));
+                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(eventV1s, getActivity(), 1));
                         Toast.makeText(getActivity().getApplicationContext(), "Событие удалено", Toast.LENGTH_SHORT).show();
                     }
                 })

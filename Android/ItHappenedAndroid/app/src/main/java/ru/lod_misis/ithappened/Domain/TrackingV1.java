@@ -15,15 +15,15 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class NewTracking extends RealmObject {
+public class TrackingV1 extends RealmObject {
 
-    public NewTracking(String trackingName,
-                       UUID trackingId,
-                       TrackingCustomization scale,
-                       TrackingCustomization rating,
-                       TrackingCustomization comment,
-                       String scaleName,
-                       String color)
+    public TrackingV1(String trackingName,
+                      UUID trackingId,
+                      TrackingCustomization scale,
+                      TrackingCustomization rating,
+                      TrackingCustomization comment,
+                      String scaleName,
+                      String color)
     {
         this.color = color;
         this.trackingName = trackingName;
@@ -33,19 +33,19 @@ public class NewTracking extends RealmObject {
         this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         dateOfChange = trackingDate;
-        newEventCollection = new RealmList<>();
+        eventV1Collection = new RealmList<>();
         this.scaleName = scaleName;
     }
 
-    public NewTracking(String trackingName,
-                       UUID trackingId,
-                       TrackingCustomization scale,
-                       TrackingCustomization rating,
-                       TrackingCustomization comment,
-                       Date trackingDate,
-                       List<NewEvent> newEventCollection,
-                       boolean status, Date changeDate,
-                       String scaleName, String color)
+    public TrackingV1(String trackingName,
+                      UUID trackingId,
+                      TrackingCustomization scale,
+                      TrackingCustomization rating,
+                      TrackingCustomization comment,
+                      Date trackingDate,
+                      List<EventV1> eventV1Collection,
+                      boolean status, Date changeDate,
+                      String scaleName, String color)
     {
         this.color = color;
         this.trackingName = trackingName;
@@ -54,17 +54,17 @@ public class NewTracking extends RealmObject {
         SetCommentCustomization(comment);
         this.trackingId = trackingId.toString();
         this.trackingDate = trackingDate;
-        this.newEventCollection = new RealmList<>();
-        this.newEventCollection.addAll(newEventCollection);
+        this.eventV1Collection = new RealmList<>();
+        this.eventV1Collection.addAll(eventV1Collection);
         dateOfChange = changeDate;
         isDeleted = status;
         this.scaleName = scaleName;
     }
 
-    public NewTracking(){
+    public TrackingV1(){
     }
 
-    public NewTracking(Tracking tracking){
+    public TrackingV1(Tracking tracking){
         this.color = tracking.color;
         this.trackingName = tracking.trackingName;
         SetScaleCustomization(TrackingCustomization.valueOf(tracking.scale));
@@ -72,9 +72,9 @@ public class NewTracking extends RealmObject {
         SetCommentCustomization(TrackingCustomization.valueOf(tracking.comment));
         this.trackingId = tracking.trackingId;
         this.trackingDate = tracking.trackingDate;
-        newEventCollection = new RealmList<>();
+        eventV1Collection = new RealmList<>();
         for (Event ev: tracking.eventCollection) {
-            newEventCollection.add(new NewEvent(ev));
+            eventV1Collection.add(new EventV1(ev));
         }
         dateOfChange = tracking.dateOfChange;
         isDeleted = tracking.isDeleted;
@@ -89,12 +89,12 @@ public class NewTracking extends RealmObject {
         this.color = color;
     }
 
-    public void AddEvent (NewEvent newNewEvent)
+    public void AddEvent (EventV1 newEventV1)
     {
-        CustomizationCheck(newNewEvent.getScale(), GetScaleCustomization());
-        CustomizationCheck(newNewEvent.getRating(), GetRatingCustomization());
-        CustomizationCheck(newNewEvent.getComment(), GetCommentCustomization());
-        newEventCollection.add(newNewEvent);
+        CustomizationCheck(newEventV1.getScale(), GetScaleCustomization());
+        CustomizationCheck(newEventV1.getRating(), GetRatingCustomization());
+        CustomizationCheck(newEventV1.getComment(), GetCommentCustomization());
+        eventV1Collection.add(newEventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
@@ -102,16 +102,16 @@ public class NewTracking extends RealmObject {
     {
         Integer deletionEvent = null;
         Integer i=0;
-        for (NewEvent newEvent : newEventCollection) {
-            if (newEvent.GetEventId().equals(eventID))
+        for (EventV1 eventV1 : eventV1Collection) {
+            if (eventV1.GetEventId().equals(eventID))
                 deletionEvent =i;
             i++;
         }
         if (deletionEvent == null)
-            throw new IllegalArgumentException ("NewEvent with such id dosn't exist");
-        NewEvent newEvent = newEventCollection.get(deletionEvent);
-        newEvent.RemoveEvent();
-        newEventCollection.set(deletionEvent, newEvent);
+            throw new IllegalArgumentException ("EventV1 with such id dosn't exist");
+        EventV1 eventV1 = eventV1Collection.get(deletionEvent);
+        eventV1.RemoveEvent();
+        eventV1Collection.set(deletionEvent, eventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
@@ -121,30 +121,30 @@ public class NewTracking extends RealmObject {
                           String newComment,
                           Date newDate)
     {
-        NewEvent editedNewEvent = null;
+        EventV1 editedEventV1 = null;
         int index = 0;
         boolean contains = false;
-        for (NewEvent newEvent : newEventCollection)
+        for (EventV1 eventV1 : eventV1Collection)
         {
-            if (newEvent.GetEventId().equals(eventId))
+            if (eventV1.GetEventId().equals(eventId))
             {
                 contains = true;
-                editedNewEvent = newEvent;
+                editedEventV1 = eventV1;
                 break;
             }
             index++;
         }
         if (!contains)
-            throw new IllegalArgumentException("NewEvent with such id doesn't exist");
+            throw new IllegalArgumentException("EventV1 with such id doesn't exist");
         if (ChangesCheck(newScale, GetScaleCustomization()))
-            editedNewEvent.EditScale(newScale);
+            editedEventV1.EditScale(newScale);
         if (ChangesCheck(newRating, GetRatingCustomization()))
-            editedNewEvent.EditValueOfRating(newRating);
+            editedEventV1.EditValueOfRating(newRating);
         if (ChangesCheck(newComment, GetCommentCustomization()))
-            editedNewEvent.EditComment(newComment);
+            editedEventV1.EditComment(newComment);
         if (newDate!=null)
-            editedNewEvent.EditDate(newDate);
-        newEventCollection.set(index, editedNewEvent);
+            editedEventV1.EditDate(newDate);
+        eventV1Collection.set(index, editedEventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
@@ -236,12 +236,12 @@ public class NewTracking extends RealmObject {
         this.comment = comment;
     }
 
-    public RealmList<NewEvent> getNewEventCollection() {
-        return newEventCollection;
+    public RealmList<EventV1> getEventV1Collection() {
+        return eventV1Collection;
     }
 
-    public void setNewEventCollection(RealmList<NewEvent> newEventCollection) {
-        this.newEventCollection = newEventCollection;
+    public void setEventV1Collection(RealmList<EventV1> eventV1Collection) {
+        this.eventV1Collection = eventV1Collection;
     }
 
     public Date getDateOfChange() {
@@ -260,35 +260,35 @@ public class NewTracking extends RealmObject {
         isDeleted = deleted;
     }
 
-    public NewEvent GetEvent(UUID eventId)
+    public EventV1 GetEvent(UUID eventId)
     {
-        for (NewEvent item: newEventCollection) {
+        for (EventV1 item: eventV1Collection) {
             if (item.GetEventId().equals(eventId))
                 return item;
         }
-        throw new IllegalArgumentException("NewEvent with such ID doesn't exist");
+        throw new IllegalArgumentException("EventV1 with such ID doesn't exist");
     }
 
     public void DeleteTracking()
     {
         isDeleted = true;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        for (NewEvent newEvent : newEventCollection) {
-            newEvent.RemoveEvent();
+        for (EventV1 eventV1 : eventV1Collection) {
+            eventV1.RemoveEvent();
         }
     }
 
     public String GetTrackingName() {return trackingName;}
     public UUID GetTrackingID() {return UUID.fromString(trackingId);}
     public Date GetTrackingDate () {return trackingDate;}
-    public List<NewEvent> GetEventCollection() {
-        Collections.sort(newEventCollection, new Comparator<NewEvent>() {
+    public List<EventV1> GetEventCollection() {
+        Collections.sort(eventV1Collection, new Comparator<EventV1>() {
             @Override
-            public int compare(NewEvent newEvent, NewEvent t1) {
-               return t1.GetEventDate().compareTo(newEvent.GetEventDate());
+            public int compare(EventV1 eventV1, EventV1 t1) {
+               return t1.GetEventDate().compareTo(eventV1.GetEventDate());
             }
         });
-        return newEventCollection;
+        return eventV1Collection;
     }
     public TrackingCustomization GetScaleCustomization(){ return TrackingCustomization.valueOf(scale);}
     public TrackingCustomization GetCommentCustomization(){ return TrackingCustomization.valueOf(comment);}
@@ -300,9 +300,9 @@ public class NewTracking extends RealmObject {
     public void SetTrackingName(String name) { trackingName = name;}
     public void SetTrackingID(UUID id) { trackingId = id.toString();}
     public void SetTrackingDate (Date date) { trackingDate = date;}
-    public void SetEventCollection(List<NewEvent> newEventList) {
-        newEventCollection = new RealmList<>();
-        newEventCollection.addAll(newEventList);
+    public void SetEventCollection(List<EventV1> eventV1List) {
+        eventV1Collection = new RealmList<>();
+        eventV1Collection.addAll(eventV1List);
     }
     public void SetScaleCustomization(TrackingCustomization scl){  scale = scl.toString();}
     public void SetCommentCustomization(TrackingCustomization comm){ comment = comm.toString();}
@@ -332,7 +332,7 @@ public class NewTracking extends RealmObject {
     @SerializedName("comment")
     private String comment;
     @Expose
-    private RealmList<NewEvent> newEventCollection;
+    private RealmList<EventV1> eventV1Collection;
     @Expose
     private Date dateOfChange;
     @Expose

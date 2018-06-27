@@ -9,8 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.FrequentEventsFactModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
@@ -23,31 +23,31 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class MostFrequentEventFact extends Fact{
 
-    List<NewTracking> newTrackingCollection;
+    List<TrackingV1> trackingV1Collection;
     FrequentEventsFactModel minModel;
     List<FrequentEventsFactModel> periodList= new ArrayList<>();
     Double priority = 10.0;
     List<Integer> colors;
 
-    public MostFrequentEventFact(List<NewTracking> newTrackingCollection)
+    public MostFrequentEventFact(List<TrackingV1> trackingV1Collection)
     {
-        this.newTrackingCollection = newTrackingCollection;
+        this.trackingV1Collection = trackingV1Collection;
         colors = new ArrayList<>();
         trackingId = null;
     }
 
     public List<FrequentEventsFactModel> getFrequency()
     {
-        for(NewTracking newTracking : newTrackingCollection) {
+        for(TrackingV1 trackingV1 : trackingV1Collection) {
             double period;
             int eventCount = 0;
-            List<NewEvent> newEventCollection = newTracking.GetEventCollection();
+            List<EventV1> eventV1Collection = trackingV1.GetEventCollection();
             Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
-            for (NewEvent newEvent : newEventCollection) {
-                if (!newEvent.isDeleted()) {
+            for (EventV1 eventV1 : eventV1Collection) {
+                if (!eventV1.isDeleted()) {
                     eventCount++;
-                    if(newEvent.GetEventDate().before(dateOfFirstEvent))
-                        dateOfFirstEvent = newEvent.GetEventDate();
+                    if(eventV1.GetEventDate().before(dateOfFirstEvent))
+                        dateOfFirstEvent = eventV1.GetEventDate();
                 }
             }
             if (eventCount < 3) period = 0;
@@ -56,7 +56,7 @@ public class MostFrequentEventFact extends Fact{
                         - dateOfFirstEvent.getTime()) / 1000 / 60 / 60 / 24 / eventCount);
             }
             FrequentEventsFactModel model = new FrequentEventsFactModel
-                    (period, newTracking.GetTrackingName(), newTracking.getTrackingId(), Integer.parseInt(newTracking.getColor()));
+                    (period, trackingV1.GetTrackingName(), trackingV1.getTrackingId(), Integer.parseInt(trackingV1.getColor()));
             periodList.add(model);
         }
 

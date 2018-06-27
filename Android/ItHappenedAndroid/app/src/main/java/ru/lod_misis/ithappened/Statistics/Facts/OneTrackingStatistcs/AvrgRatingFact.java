@@ -4,38 +4,38 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 
 public class AvrgRatingFact extends Fact {
 
 
-    NewTracking newTracking;
-    List<NewEvent> newEventCollection = new ArrayList<>();
+    TrackingV1 trackingV1;
+    List<EventV1> eventV1Collection = new ArrayList<>();
     Double averageValue;
     Double priority;
 
-    public AvrgRatingFact(NewTracking newTracking){
-        trackingId = newTracking.GetTrackingID();
-        this.newTracking = newTracking;
+    public AvrgRatingFact(TrackingV1 trackingV1){
+        trackingId = trackingV1.GetTrackingID();
+        this.trackingV1 = trackingV1;
     }
 
     public Double getAvrgValue(){
 
-        for(NewEvent newEvent : newTracking.GetEventCollection()){
-            if(!newEvent.GetStatus()){
-                newEventCollection.add(newEvent);
+        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+            if(!eventV1.GetStatus()){
+                eventV1Collection.add(eventV1);
             }
         }
 
         Double sumValue = 0.0;
         int count = 0;
 
-        for(NewEvent newEvent : newEventCollection){
-            if(newEvent.GetRating() != null){
-                sumValue+= newEvent.GetRating().GetRatingValue();
+        for(EventV1 eventV1 : eventV1Collection){
+            if(eventV1.GetRating() != null){
+                sumValue+= eventV1.GetRating().GetRatingValue();
                 count++;
             }
         }
@@ -62,7 +62,7 @@ public class AvrgRatingFact extends Fact {
     public String textDescription() {
         DecimalFormat format = new DecimalFormat("#.##");
         return String.format("Среднее значение оценки для события <b>%s</b> равно <b>%s</b>",
-                newTracking.getTrackingName(), format.format(averageValue));
+                trackingV1.getTrackingName(), format.format(averageValue));
     }
 
 }

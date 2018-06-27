@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
@@ -15,20 +15,20 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.WeekDaysFactModel;
 
 public class CertainWeekDaysFact extends Fact {
 
-    private NewTracking newTracking;
+    private TrackingV1 trackingV1;
     private List<WeekDaysFactModel> modelList = new ArrayList<>();
 
-    public CertainWeekDaysFact(NewTracking newTracking) {
-        trackingId = newTracking.GetTrackingID();
-        this.newTracking = newTracking;
+    public CertainWeekDaysFact(TrackingV1 trackingV1) {
+        trackingId = trackingV1.GetTrackingID();
+        this.trackingV1 = trackingV1;
     }
 
     @Override
     public void calculateData() {
-        List<NewEvent> newEventCollection = new ArrayList<>();
+        List<EventV1> eventV1Collection = new ArrayList<>();
 
-        for(NewEvent newEvent : newTracking.GetEventCollection()){
-            if(!newEvent.isDeleted()) newEventCollection.add(newEvent);
+        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+            if(!eventV1.isDeleted()) eventV1Collection.add(eventV1);
         }
 
         for(int i = 1; i <= 7; i++)
@@ -37,13 +37,13 @@ public class CertainWeekDaysFact extends Fact {
             WeekDaysFactModel model = new WeekDaysFactModel();
             Calendar c = Calendar.getInstance();
             int eventCount = 0;
-            for (NewEvent newEvent : newEventCollection) {
-                c.setTime(newEvent.GetEventDate());
+            for (EventV1 eventV1 : eventV1Collection) {
+                c.setTime(eventV1.GetEventDate());
                 if(c.get(Calendar.DAY_OF_WEEK) == i)
                     eventCount++;
             }
             if (eventCount != 0) {
-                Double percentage = (double)eventCount / newEventCollection.size();
+                Double percentage = (double)eventCount / eventV1Collection.size();
                 percentage *= 100;
                 model.calculateData(percentage, i);
                 modelList.add(model);
@@ -79,6 +79,6 @@ public class CertainWeekDaysFact extends Fact {
         NumberFormat format = new DecimalFormat("#.##");
 
         return String.format("В <b>%s%s</b> случаев событие <b>%s</b> происходит <b>%s</b>",
-                format.format(model.getPercetage()), "%", newTracking.getTrackingName(), weekDay);
+                format.format(model.getPercetage()), "%", trackingV1.getTrackingName(), weekDay);
     }
 }

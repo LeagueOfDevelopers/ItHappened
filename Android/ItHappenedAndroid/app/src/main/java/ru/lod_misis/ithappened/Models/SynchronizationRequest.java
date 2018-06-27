@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Models;
 
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,13 +17,13 @@ public class SynchronizationRequest {
     @SerializedName("nicknameDateOfChange")
     public Date NicknameDateOfChange;
     @Expose
-    @SerializedName("newTrackingCollection")
-    public List<NewTracking> newTrackingCollection;
+    @SerializedName("trackingV1Collection")
+    public List<TrackingV1> trackingV1Collection;
 
-    public SynchronizationRequest(String userNickname, Date nicknameDateOfChange, List<NewTracking> newTrackingCollection) {
+    public SynchronizationRequest(String userNickname, Date nicknameDateOfChange, List<TrackingV1> trackingV1Collection) {
         UserNickname = userNickname;
         NicknameDateOfChange = nicknameDateOfChange;
-        this.newTrackingCollection = newTrackingCollection;
+        this.trackingV1Collection = trackingV1Collection;
     }
 
     public String getUserNickname() {
@@ -41,11 +42,11 @@ public class SynchronizationRequest {
         NicknameDateOfChange = nicknameDateOfChange;
     }
 
-    public List<NewTracking> getNewTrackingCollection() {
-        return newTrackingCollection;
+    public List<TrackingV1> getTrackingV1Collection() {
+        return trackingV1Collection;
     }
 
-    public void setNewTrackingCollection(List<NewTracking> newTrackingCollection) {
-        this.newTrackingCollection = newTrackingCollection;
+    public void setTrackingV1Collection(List<TrackingV1> trackingV1Collection) {
+        this.trackingV1Collection = trackingV1Collection;
     }
 }

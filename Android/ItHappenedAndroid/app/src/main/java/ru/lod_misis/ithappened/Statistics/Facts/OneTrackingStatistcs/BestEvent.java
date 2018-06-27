@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
@@ -20,48 +20,48 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 
 public class BestEvent extends Fact {
 
-    NewTracking newTracking;
-    List<NewEvent> newEventCollection;
-    NewEvent bestNewEvent;
+    TrackingV1 trackingV1;
+    List<EventV1> eventV1Collection;
+    EventV1 bestEventV1;
 
-    public BestEvent(NewTracking newTracking)
+    public BestEvent(TrackingV1 trackingV1)
     {
-        this.newTracking = newTracking;
-        this.trackingId = newTracking.GetTrackingID();
-        newEventCollection = new ArrayList<>();
+        this.trackingV1 = trackingV1;
+        this.trackingId = trackingV1.GetTrackingID();
+        eventV1Collection = new ArrayList<>();
     }
 
     @Override
     public void calculateData() {
 
-        for(NewEvent newEvent : newTracking.GetEventCollection()){
-            if(!newEvent.GetStatus() && newEvent.GetRating()!=null){
-                newEventCollection.add(newEvent);
+        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+            if(!eventV1.GetStatus() && eventV1.GetRating()!=null){
+                eventV1Collection.add(eventV1);
             }
         }
 
-        bestNewEvent = newEventCollection.get(0);
+        bestEventV1 = eventV1Collection.get(0);
 
         Date curDateTime = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
-        for(NewEvent newEvent : newEventCollection)
+        for(EventV1 eventV1 : eventV1Collection)
         {
-            Date bestTime = newEvent.GetEventDate();
-            if (bestNewEvent.GetRating().getRating() <= newEvent.GetRating().getRating()
+            Date bestTime = eventV1.GetEventDate();
+            if (bestEventV1.GetRating().getRating() <= eventV1.GetRating().getRating()
                     && 7.0 < ((double)(curDateTime.getTime() - bestTime.getTime())/1000/60/60/24)
-                    && bestNewEvent.GetEventDate().after(newEvent.GetEventDate()))
-                bestNewEvent = newEvent;
+                    && bestEventV1.GetEventDate().after(eventV1.GetEventDate()))
+                bestEventV1 = eventV1;
         }
 
         illustartion = new IllustartionModel(IllustrationType.EVENTREF);
-        illustartion.setNewEventRef(bestNewEvent);
+        illustartion.setEventV1Ref(bestEventV1);
 
         calculatePriority();
     }
 
     @Override
     public void calculatePriority() {
-        priority = (double) bestNewEvent.GetRating().getRating();
+        priority = (double) bestEventV1.GetRating().getRating();
     }
 
     @Override
@@ -70,13 +70,13 @@ public class BestEvent extends Fact {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
 
         String toReturn = String.format("Лучшее событие <b>%s</b> произошло <b>%s</b>, " +
-                        "вы поставили ему <b>%s</b>", newTracking.getTrackingName(),
-                format.format(bestNewEvent.GetEventDate()), bestNewEvent.GetRating().getRating()/2.0);
+                        "вы поставили ему <b>%s</b>", trackingV1.getTrackingName(),
+                format.format(bestEventV1.GetEventDate()), bestEventV1.GetRating().getRating()/2.0);
 
-        if (bestNewEvent.GetComment() == null) return toReturn;
+        if (bestEventV1.GetComment() == null) return toReturn;
 
-        return String.format(toReturn, " с комментарием <b>%s</b>", bestNewEvent.GetComment());
+        return String.format(toReturn, " с комментарием <b>%s</b>", bestEventV1.GetComment());
     }
 
-    public NewEvent getBestNewEvent() { return bestNewEvent; }
+    public EventV1 getBestEventV1() { return bestEventV1; }
 }

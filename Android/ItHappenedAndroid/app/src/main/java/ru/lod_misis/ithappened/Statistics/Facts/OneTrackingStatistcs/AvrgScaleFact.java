@@ -4,8 +4,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 /**
@@ -14,30 +14,30 @@ import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 public class AvrgScaleFact extends Fact {
 
-    NewTracking newTracking;
-    List<NewEvent> newEventCollection = new ArrayList<>();
+    TrackingV1 trackingV1;
+    List<EventV1> eventV1Collection = new ArrayList<>();
     Double priority;
     Double averageValue;
 
-    public AvrgScaleFact(NewTracking newTracking){
-        trackingId = newTracking.GetTrackingID();
-        this.newTracking = newTracking;
+    public AvrgScaleFact(TrackingV1 trackingV1){
+        trackingId = trackingV1.GetTrackingID();
+        this.trackingV1 = trackingV1;
     }
 
     public Double getAvrgValue(){
 
-        for(NewEvent newEvent : newTracking.GetEventCollection()){
-            if(!newEvent.GetStatus()){
-                newEventCollection.add(newEvent);
+        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+            if(!eventV1.GetStatus()){
+                eventV1Collection.add(eventV1);
             }
         }
 
         Double sumValue = 0.0;
         int count = 0;
 
-        for(NewEvent newEvent : newEventCollection){
-            if(newEvent.GetScale() != null){
-                sumValue+= newEvent.GetScale();
+        for(EventV1 eventV1 : eventV1Collection){
+            if(eventV1.GetScale() != null){
+                sumValue+= eventV1.GetScale();
                 count++;
             }
         }
@@ -68,7 +68,7 @@ public class AvrgScaleFact extends Fact {
     public String textDescription() {
         DecimalFormat format = new DecimalFormat("#.##");
         return String.format("Среднее значение <b>%s</b> для события <b>%s</b> равно <b>%s</b>",
-                newTracking.getScaleName(), newTracking.getTrackingName(), format.format(averageValue));
+                trackingV1.getScaleName(), trackingV1.getTrackingName(), format.format(averageValue));
     }
 
 }

@@ -24,7 +24,7 @@ import com.yandex.metrica.YandexMetrica;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
@@ -69,7 +69,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     ImageView ratingOptionalImage;
     ImageView ratingRequiredImage;
 
-    NewTracking editableNewTracking;
+    TrackingV1 editableTrackingV1;
 
     ImageView commentDontImage;
     ImageView commentOptionalImage;
@@ -161,9 +161,9 @@ public class EditTrackingActivity extends AppCompatActivity {
         scaleType = (EditText) findViewById(R.id.editTypeOfScaleEdit);
 
 
-        editableNewTracking = trackingRepository.GetTracking(trackingId);
+        editableTrackingV1 = trackingRepository.GetTracking(trackingId);
 
-        trackingName.setText(editableNewTracking.GetTrackingName());
+        trackingName.setText(editableTrackingV1.GetTrackingName());
 
         final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
         colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
@@ -191,7 +191,7 @@ public class EditTrackingActivity extends AppCompatActivity {
             }
         });
 
-        if(editableNewTracking.GetScaleCustomization() == TrackingCustomization.None) {
+        if(editableTrackingV1.GetScaleCustomization() == TrackingCustomization.None) {
             visbilityScaleTypeHint.setVisibility(View.GONE);
             visibilityScaleType.setVisibility(View.GONE);
             scaleType.setVisibility(View.GONE);
@@ -199,10 +199,10 @@ public class EditTrackingActivity extends AppCompatActivity {
             visbilityScaleTypeHint.setVisibility(View.VISIBLE);
             visibilityScaleType.setVisibility(View.VISIBLE);
             scaleType.setVisibility(View.VISIBLE);
-            scaleType.setText(editableNewTracking.getScaleName());
+            scaleType.setText(editableTrackingV1.getScaleName());
         }
 
-        stateForRating = calculateState(editableNewTracking.GetRatingCustomization(),
+        stateForRating = calculateState(editableTrackingV1.GetRatingCustomization(),
                 ratingDontImage,
                 ratingOptionalImage,
                 ratingRequiredImage,
@@ -210,7 +210,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                 ratingOptional,
                 ratingRequired,
                 ratingEnabled);
-        stateForText = calculateState(editableNewTracking.GetCommentCustomization(),
+        stateForText = calculateState(editableTrackingV1.GetCommentCustomization(),
                 commentDontImage,
                 commentOptionalImage,
                 commentRequiredImage,
@@ -218,7 +218,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                 commentOptional,
                 commentRequired,
                 commentEnabled);
-        stateForScale = calculateState(editableNewTracking.GetScaleCustomization(),
+        stateForScale = calculateState(editableTrackingV1.GetScaleCustomization(),
                 scaleDontImage,
                 scaleOptionalImage,
                 scaleRequiredImage,

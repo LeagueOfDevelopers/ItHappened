@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
@@ -18,44 +18,44 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 
 public class WorstEvent extends Fact {
 
-    NewTracking newTracking;
-    List<NewEvent> newEventCollection;
-    NewEvent worstNewEvent;
+    TrackingV1 trackingV1;
+    List<EventV1> eventV1Collection;
+    EventV1 worstEventV1;
 
-    public WorstEvent(NewTracking newTracking)
+    public WorstEvent(TrackingV1 trackingV1)
     {
-        this.newTracking = newTracking;
-        this.trackingId = newTracking.GetTrackingID();
-        newEventCollection = new ArrayList<>();
+        this.trackingV1 = trackingV1;
+        this.trackingId = trackingV1.GetTrackingID();
+        eventV1Collection = new ArrayList<>();
     }
 
     @Override
     public void calculateData() {
 
-        for(NewEvent newEvent : newTracking.GetEventCollection()){
-            if(!newEvent.GetStatus() && newEvent.GetRating()!=null){
-                newEventCollection.add(newEvent);
+        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+            if(!eventV1.GetStatus() && eventV1.GetRating()!=null){
+                eventV1Collection.add(eventV1);
             }
         }
 
-        worstNewEvent = newEventCollection.get(0);
+        worstEventV1 = eventV1Collection.get(0);
 
-        for(NewEvent newEvent : newEventCollection)
+        for(EventV1 eventV1 : eventV1Collection)
         {
-            if (worstNewEvent.GetRating().getRating() > newEvent.GetRating().getRating()
-                    && worstNewEvent.GetEventDate().after(newEvent.GetEventDate()))
-                worstNewEvent = newEvent;
+            if (worstEventV1.GetRating().getRating() > eventV1.GetRating().getRating()
+                    && worstEventV1.GetEventDate().after(eventV1.GetEventDate()))
+                worstEventV1 = eventV1;
         }
 
         illustartion = new IllustartionModel(IllustrationType.EVENTREF);
-        illustartion.setNewEventRef(worstNewEvent);
+        illustartion.setEventV1Ref(worstEventV1);
 
         calculatePriority();
     }
 
     @Override
     public void calculatePriority() {
-        priority = 10.0 - worstNewEvent.GetRating().getRating();
+        priority = 10.0 - worstEventV1.GetRating().getRating();
     }
 
     @Override
@@ -65,15 +65,15 @@ public class WorstEvent extends Fact {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
         String toReturn = String.format("Худшее событие <b>%s</b> произошло <b>%s</b>, " +
-                "вы поставили ему <b>%s</b>", newTracking.getTrackingName(),
-                format.format(worstNewEvent.GetEventDate()),
-                decimalFormat.format(worstNewEvent.GetRating().getRating()/2.0));
+                "вы поставили ему <b>%s</b>", trackingV1.getTrackingName(),
+                format.format(worstEventV1.GetEventDate()),
+                decimalFormat.format(worstEventV1.GetRating().getRating()/2.0));
 
-        if (worstNewEvent.GetComment() == null) return toReturn;
+        if (worstEventV1.GetComment() == null) return toReturn;
 
-        return String.format(toReturn, " с комментарием <b>%s</b>", worstNewEvent.GetComment());
+        return String.format(toReturn, " с комментарием <b>%s</b>", worstEventV1.GetComment());
     }
 
-    public NewEvent getWorstNewEvent() { return worstNewEvent; }
+    public EventV1 getWorstEventV1() { return worstEventV1; }
 
 }

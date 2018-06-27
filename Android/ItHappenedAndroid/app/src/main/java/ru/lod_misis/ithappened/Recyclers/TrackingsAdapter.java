@@ -21,23 +21,23 @@ import jp.shts.android.library.TriangleLabelView;
 import ru.lod_misis.ithappened.Activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.Activities.EditTrackingActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Fragments.DeleteTrackingFragment;
 import ru.lod_misis.ithappened.Presenters.TrackingsContract;
 import ru.lod_misis.ithappened.R;
 
 public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.ViewHolder> implements View.OnCreateContextMenuListener{
 
-    private List<NewTracking> newTrackings;
+    private List<TrackingV1> trackingV1s;
     private Context context;
     FragmentManager fManage;
     FragmentTransaction fTrans;
     TrackingsContract.TrackingsPresenter trackingsPresenter;
 
-    public TrackingsAdapter(List<NewTracking> newTrackings,
+    public TrackingsAdapter(List<TrackingV1> trackingV1s,
                             Context context,
                             TrackingsContract.TrackingsPresenter trackingsPresenter) {
-        this.newTrackings = newTrackings;
+        this.trackingV1s = trackingV1s;
         this.context = context;
         this.trackingsPresenter = trackingsPresenter;
     }
@@ -52,20 +52,20 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        final NewTracking newTracking = newTrackings.get(position);
-        holder.trackingTitle.setText(newTracking.GetTrackingName());
-        if(newTracking.getColor()!=null)
-            holder.trackingColor.setTriangleBackgroundColor(Integer.parseInt(newTracking.getColor()));
+        final TrackingV1 trackingV1 = trackingV1s.get(position);
+        holder.trackingTitle.setText(trackingV1.GetTrackingName());
+        if(trackingV1.getColor()!=null)
+            holder.trackingColor.setTriangleBackgroundColor(Integer.parseInt(trackingV1.getColor()));
 
         holder.itemLL.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
 
-                final NewTracking newTracking = newTrackings.get(position);
-                String id = newTracking.GetTrackingID().toString();
+                final TrackingV1 trackingV1 = trackingV1s.get(position);
+                String id = trackingV1.GetTrackingID().toString();
                 Intent intent = new Intent(context, AddNewEventActivity.class);
-                String trackId = newTracking.GetTrackingID().toString();
+                String trackId = trackingV1.GetTrackingID().toString();
                 intent.putExtra("trackingId", trackId);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
@@ -90,13 +90,13 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                         switch (id){
                             case R.id.history_for_tracking:
                                 Intent intent = new Intent(context, EventsForTrackingActivity.class);
-                                String trackId = newTracking.GetTrackingID().toString();
+                                String trackId = trackingV1.GetTrackingID().toString();
                                 intent.putExtra("id", trackId);
                                 context.startActivity(intent);
                                 return true;
 
                             case R.id.edit_tracking:
-                                String trackIdForEdit = newTracking.GetTrackingID().toString();
+                                String trackIdForEdit = trackingV1.GetTrackingID().toString();
                                 Intent intent1 = new Intent((Activity) context, EditTrackingActivity.class);
                                 intent1.putExtra("trackingId", trackIdForEdit);
                                 context.startActivity(intent1);
@@ -104,7 +104,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
                             case R.id.delete_tracking:
                                 DeleteTrackingFragment delete = new DeleteTrackingFragment();
-                                delete.setTrackingId(newTracking.GetTrackingID());
+                                delete.setTrackingId(trackingV1.GetTrackingID());
                                 delete.setTrackingsPresenter(trackingsPresenter);
                                 delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
                                 return true;
@@ -120,7 +120,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
     @Override
     public int getItemCount() {
-        return newTrackings.size();
+        return trackingV1s.size();
     }
 
     @Override

@@ -25,8 +25,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Fragments.DeleteEventDialog;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -123,22 +123,22 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
 
-        NewTracking thisNewTracking = collection.GetTracking(trackingId);
-        NewEvent thisNewEvent = thisNewTracking.GetEvent(eventId);
+        TrackingV1 thisTrackingV1 = collection.GetTracking(trackingId);
+        EventV1 thisEventV1 = thisTrackingV1.GetEvent(eventId);
 
 
-        if ((thisNewTracking.GetCommentCustomization()==TrackingCustomization.None
-                && thisNewTracking.GetScaleCustomization()==TrackingCustomization.None
-                && thisNewTracking.GetRatingCustomization()==TrackingCustomization.None)
+        if ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.None
+                && thisTrackingV1.GetScaleCustomization()==TrackingCustomization.None
+                && thisTrackingV1.GetRatingCustomization()==TrackingCustomization.None)
                 ||
-                ((thisNewTracking.GetCommentCustomization()==TrackingCustomization.Optional&& thisNewEvent.GetComment()==null)
-                &&(thisNewTracking.GetScaleCustomization()==TrackingCustomization.Optional&& thisNewEvent.GetScale()==null)
-                &&(thisNewTracking.GetRatingCustomization()==TrackingCustomization.Optional&& thisNewEvent.GetRating()==null)
+                ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.Optional&& thisEventV1.GetComment()==null)
+                &&(thisTrackingV1.GetScaleCustomization()==TrackingCustomization.Optional&& thisEventV1.GetScale()==null)
+                &&(thisTrackingV1.GetRatingCustomization()==TrackingCustomization.Optional&& thisEventV1.GetRating()==null)
                 )
                 ){
             valuesCard.setVisibility(View.GONE);
             nullsCard.setVisibility(View.VISIBLE);
-            Date thisDate = thisNewEvent.GetEventDate();
+            Date thisDate = thisEventV1.GetEventDate();
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
@@ -148,7 +148,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         }
 
-            Date thisDate = thisNewEvent.GetEventDate();
+            Date thisDate = thisEventV1.GetEventDate();
 
             Locale loc = new Locale("ru");
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
@@ -156,37 +156,37 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             dateValue.setText(format.format(thisDate));
 
-            if(thisNewEvent.GetRating()!=null) {
+            if(thisEventV1.GetRating()!=null) {
                 ratingValue.setVisibility(View.VISIBLE);
                 nullsCard.setVisibility(View.GONE);
                 valuesCard.setVisibility(View.VISIBLE);
-                ratingValue.setRating(thisNewEvent.GetRating().getRating()/2.0f);
+                ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
             }else {
                 ratingValue.setVisibility(View.GONE);
             }
 
-            if(thisNewEvent.GetComment()!=null) {
+            if(thisEventV1.GetComment()!=null) {
                 nullsCard.setVisibility(View.GONE);
                 valuesCard.setVisibility(View.VISIBLE);
                 commentValue.setVisibility(View.VISIBLE);
-                commentValue.setText(thisNewEvent.GetComment());
+                commentValue.setText(thisEventV1.GetComment());
             }else {
                 commentValue.setVisibility(View.GONE);
                 commentHint.setVisibility(View.GONE);
             }
 
-            if(thisNewEvent.GetScale()!=null) {
+            if(thisEventV1.GetScale()!=null) {
                 nullsCard.setVisibility(View.GONE);
                 valuesCard.setVisibility(View.VISIBLE);
                 scaleValue.setVisibility(View.VISIBLE);
-                scaleValue.setText(StringParse.parseDouble(thisNewEvent.GetScale().doubleValue())+" "+ thisNewTracking.getScaleName());
+                scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue())+" "+ thisTrackingV1.getScaleName());
             }else {
                 scaleValue.setVisibility(View.GONE);
                 scaleHint.setVisibility(View.GONE);
             }
-        TrackingCustomization commentCustomization = thisNewTracking.GetCommentCustomization();
-        TrackingCustomization scaleCustomization = thisNewTracking.GetScaleCustomization();
-        TrackingCustomization ratingCustomization = thisNewTracking.GetRatingCustomization();
+        TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
+        TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();
+        TrackingCustomization ratingCustomization = thisTrackingV1.GetRatingCustomization();
     }
 
     public void okClicked() {
@@ -223,12 +223,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle(collection.GetTracking(trackingId).GetTrackingName());
-        NewEvent thisNewEvent = collection.GetTracking(trackingId).GetEvent(eventId);
-        if(thisNewEvent.GetRating()!=null) {
+        EventV1 thisEventV1 = collection.GetTracking(trackingId).GetEvent(eventId);
+        if(thisEventV1.GetRating()!=null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisNewEvent.GetRating().getRating()/2.0f);
+            ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
         }else {
             ratingValue.setVisibility(View.GONE);
         }

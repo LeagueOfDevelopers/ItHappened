@@ -4,34 +4,34 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 public class SumScaleFact extends Fact{
 
-    NewTracking newTracking;
+    TrackingV1 trackingV1;
     Double scaleSum;
-    List<NewEvent> newEventCollection = new ArrayList<>();
+    List<EventV1> eventV1Collection = new ArrayList<>();
 
-    public SumScaleFact(NewTracking newTracking){
-        this.newTracking = newTracking;
-        trackingId = newTracking.GetTrackingID();
+    public SumScaleFact(TrackingV1 trackingV1){
+        this.trackingV1 = trackingV1;
+        trackingId = trackingV1.GetTrackingID();
     }
 
     @Override
     public void calculateData() {
-        for(NewEvent newEvent : newTracking.GetEventCollection()){
-            if(!newEvent.GetStatus()){
-                newEventCollection.add(newEvent);
+        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+            if(!eventV1.GetStatus()){
+                eventV1Collection.add(eventV1);
             }
         }
 
         scaleSum = 0.0;
 
-        for(NewEvent newEvent : newEventCollection){
-            if(newEvent.GetScale() != null){
-                scaleSum+= newEvent.GetScale();
+        for(EventV1 eventV1 : eventV1Collection){
+            if(eventV1.GetScale() != null){
+                scaleSum+= eventV1.GetScale();
             }
         }
 
@@ -51,6 +51,6 @@ public class SumScaleFact extends Fact{
     public String textDescription() {
         DecimalFormat format = new DecimalFormat("#.##");
         return String.format("Сумма значений <b>%s</b> для события <b>%s</b> равна <b>%s</b>",
-                newTracking.getScaleName(), newTracking.getTrackingName(), format.format(scaleSum));
+                trackingV1.getScaleName(), trackingV1.getTrackingName(), format.format(scaleSum));
     }
 }

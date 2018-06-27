@@ -41,10 +41,9 @@ import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
@@ -59,7 +58,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
 
-    List<NewEvent> eventsForAdapter = new ArrayList<>();
+    List<EventV1> eventsForAdapter = new ArrayList<>();
     List<Boolean> selectedItems;
     ArrayList<Integer> selectedPositionItems = new ArrayList<>();
 
@@ -162,7 +161,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         strings = new ArrayList<String>();
         selectedItems = new ArrayList<>();
 
-        List<NewTracking> trackings = new ArrayList<>();
+        List<TrackingV1> trackings = new ArrayList<>();
         trackings = trackingService.GetTrackingCollection();
 
         for(int i=0;i<trackings.size();i++){
@@ -320,7 +319,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             @Override
             public void onClick(View view) {
 
-                final List<NewEvent> allEvents = new ArrayList<>();
+                final List<EventV1> allEvents = new ArrayList<>();
                 YandexMetrica.reportEvent("Пользователь отменил фильтры");
                 eventsHistoryPresenter.loadEvents();
             }
@@ -385,7 +384,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void showEvents(List<NewEvent> events) {
+    public void showEvents(List<EventV1> events) {
         if(events.size()==0){
             hintForEventsHistory.setVisibility(View.VISIBLE);
             eventsAdpt = new EventsAdapter(events, getActivity(), 1);
@@ -394,12 +393,12 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             eventsAdpt = new EventsAdapter(events, getActivity(), 1);
         }
         if(eventsAdpt!=null) {
-            List<NewEvent> adapterEvents = eventsAdpt.getNewEvents();
-            ArrayList<NewEvent> refreshedEvents = new ArrayList<>();
+            List<EventV1> adapterEvents = eventsAdpt.getEventV1s();
+            ArrayList<EventV1> refreshedEvents = new ArrayList<>();
             if (adapterEvents != null)
-                for (NewEvent event : adapterEvents) {
+                for (EventV1 event : adapterEvents) {
                     collection.GetTracking(event.GetTrackingId());
-                    NewEvent addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
+                    EventV1 addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
                     if (!addAbleEvent.GetStatus())
                         refreshedEvents.add(addAbleEvent);
                 }
@@ -416,12 +415,12 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     public void onResume() {
         super.onResume();
         if(eventsAdpt!=null) {
-            List<NewEvent> adapterEvents = eventsAdpt.getNewEvents();
-            ArrayList<NewEvent> refreshedEvents = new ArrayList<>();
+            List<EventV1> adapterEvents = eventsAdpt.getEventV1s();
+            ArrayList<EventV1> refreshedEvents = new ArrayList<>();
             if (adapterEvents != null)
-                for (NewEvent event : adapterEvents) {
+                for (EventV1 event : adapterEvents) {
                     collection.GetTracking(event.GetTrackingId());
-                    NewEvent addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
+                    EventV1 addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
                     if (!addAbleEvent.GetStatus())
                         refreshedEvents.add(addAbleEvent);
                 }

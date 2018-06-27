@@ -29,8 +29,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
@@ -75,8 +75,8 @@ public class EditEventActivity extends AppCompatActivity {
 
     Button addEvent;
 
-    NewTracking newTracking;
-    NewEvent newEvent;
+    TrackingV1 trackingV1;
+    EventV1 eventV1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,53 +121,53 @@ public class EditEventActivity extends AppCompatActivity {
 
         addEvent = (Button) findViewById(R.id.editEvent);
 
-        newTracking = trackingCollection.GetTracking(trackingId);
+        trackingV1 = trackingCollection.GetTracking(trackingId);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(newTracking.GetTrackingName());
+        actionBar.setTitle(trackingV1.GetTrackingName());
 
-        newEvent = newTracking.GetEvent(eventId);
+        eventV1 = trackingV1.GetEvent(eventId);
 
-        commentState = calculateState(newTracking.GetCommentCustomization());
-        ratingState = calculateState(newTracking.GetRatingCustomization());
-        scaleState = calculateState(newTracking.GetScaleCustomization());
+        commentState = calculateState(trackingV1.GetCommentCustomization());
+        ratingState = calculateState(trackingV1.GetRatingCustomization());
+        scaleState = calculateState(trackingV1.GetScaleCustomization());
 
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
 
-        if(newTracking.GetScaleCustomization()!=TrackingCustomization.None && newTracking.getScaleName()!=null){
-                scaleType.setText(newTracking.getScaleName());
+        if(trackingV1.GetScaleCustomization()!=TrackingCustomization.None && trackingV1.getScaleName()!=null){
+                scaleType.setText(trackingV1.getScaleName());
         }
 
-        Date thisDate = newEvent.GetEventDate();
+        Date thisDate = eventV1.GetEventDate();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
 
-        if((newTracking.GetScaleCustomization()==TrackingCustomization.Optional
-                || newTracking.GetScaleCustomization()==TrackingCustomization.Required) && newEvent.GetScale()!=null){
-            scaleControl.setText(StringParse.parseDouble(newEvent.GetScale().doubleValue()));
-            if(newTracking.getScaleName()!=null){
-                if(newTracking.getScaleName().length()>=3){
-                    scaleType.setText(newTracking.getScaleName().substring(0,2));
+        if((trackingV1.GetScaleCustomization()==TrackingCustomization.Optional
+                || trackingV1.GetScaleCustomization()==TrackingCustomization.Required) && eventV1.GetScale()!=null){
+            scaleControl.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue()));
+            if(trackingV1.getScaleName()!=null){
+                if(trackingV1.getScaleName().length()>=3){
+                    scaleType.setText(trackingV1.getScaleName().substring(0,2));
                 }else{
-                    scaleType.setText(newTracking.getScaleName());
+                    scaleType.setText(trackingV1.getScaleName());
                 }
             }
         }
 
-        if((newTracking.GetRatingCustomization()==TrackingCustomization.Optional
-                || newTracking.GetRatingCustomization()==TrackingCustomization.Required) && newEvent.GetRating()!=null){
-            ratingControl.setRating(newEvent.GetRating().getRating()/2.0f);
+        if((trackingV1.GetRatingCustomization()==TrackingCustomization.Optional
+                || trackingV1.GetRatingCustomization()==TrackingCustomization.Required) && eventV1.GetRating()!=null){
+            ratingControl.setRating(eventV1.GetRating().getRating()/2.0f);
             }
 
-        if((newTracking.GetCommentCustomization()==TrackingCustomization.Optional
-                || newTracking.GetCommentCustomization()==TrackingCustomization.Required) && newEvent.GetComment()!=null){
-            commentControl.setText(newEvent.GetComment());
+        if((trackingV1.GetCommentCustomization()==TrackingCustomization.Optional
+                || trackingV1.GetCommentCustomization()==TrackingCustomization.Required) && eventV1.GetComment()!=null){
+            commentControl.setText(eventV1.GetComment());
         }
 
 

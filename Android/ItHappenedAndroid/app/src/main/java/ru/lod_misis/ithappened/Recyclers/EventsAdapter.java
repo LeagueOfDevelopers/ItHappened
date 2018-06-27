@@ -22,7 +22,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
-import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
@@ -30,20 +30,20 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    private List<NewEvent> newEvents;
-    private List<NewEvent> deletedNewEvent;
+    private List<EventV1> eventV1s;
+    private List<EventV1> deletedEventV1;
     private Context context;
     private int state = 0;
 
-    public EventsAdapter(List<NewEvent> newEvents, Context context, int state) {
-        this.newEvents = newEvents;
-        deletedNewEvent = new ArrayList<>();
-        for(NewEvent newEvent : deletedNewEvent){
-            if(newEvent.GetStatus())
-                deletedNewEvent.add(newEvent);
+    public EventsAdapter(List<EventV1> eventV1s, Context context, int state) {
+        this.eventV1s = eventV1s;
+        deletedEventV1 = new ArrayList<>();
+        for(EventV1 eventV1 : deletedEventV1){
+            if(eventV1.GetStatus())
+                deletedEventV1.add(eventV1);
         }
-        if(newEvents !=null)
-        newEvents.removeAll(deletedNewEvent);
+        if(eventV1s !=null)
+        eventV1s.removeAll(deletedEventV1);
         this.context = context;
         this.state = state;
     }
@@ -57,12 +57,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     }
 
-    public void refreshData(List<NewEvent> newEvents){
+    public void refreshData(List<EventV1> eventV1s){
 
-        this.newEvents.clear();
-        for(NewEvent newEvent : newEvents){
-            if(!newEvent.GetStatus()){
-                this.newEvents.add(newEvent);
+        this.eventV1s.clear();
+        for(EventV1 eventV1 : eventV1s){
+            if(!eventV1.GetStatus()){
+                this.eventV1s.add(eventV1);
             }
         }
         notifyDataSetChanged();
@@ -76,7 +76,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        final NewEvent newEvent = newEvents.get(position);
+        final EventV1 eventV1 = eventV1s.get(position);
 
         ITrackingRepository trackingRepository;
 
@@ -91,33 +91,33 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
 
 
-        UUID trackingId = newEvent.GetTrackingId();
+        UUID trackingId = eventV1.GetTrackingId();
 
         holder.trackingColor.setCardBackgroundColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()));
 
-        if(newEvent.GetComment()!=null && state==0){
-            holder.trackingTitle.setText(newEvent.GetComment());
+        if(eventV1.GetComment()!=null && state==0){
+            holder.trackingTitle.setText(eventV1.GetComment());
         }else {
             holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
         }
 
-        if(newEvent.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null ){
+        if(eventV1.GetScale()!=null && trackingRepository.GetTracking(trackingId).getScaleName()!=null ){
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
             if(type!=null) {
                 holder.scaleValue.setVisibility(View.VISIBLE);
-                if (type.length() >= 10 && newEvent.GetScale()>1000000 && newEvent.GetRating()!=null) {
-                    holder.scaleValue.setText(StringParse.parseDouble(newEvent.GetScale().doubleValue())+" "+type.substring(0, 3) + ".");
+                if (type.length() >= 10 && eventV1.GetScale()>1000000 && eventV1.GetRating()!=null) {
+                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue())+" "+type.substring(0, 3) + ".");
                 } else {
-                    holder.scaleValue.setText(StringParse.parseDouble(newEvent.GetScale().doubleValue())+" "+type);
+                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue())+" "+type);
                 }
             }
         }else{
             holder.scaleValue.setVisibility(View.GONE);
         }
 
-        if(newEvent.GetRating()!=null ){
+        if(eventV1.GetRating()!=null ){
             DecimalFormat format = new DecimalFormat("#.#");
-            holder.ratingValue.setText(format.format(newEvent.GetRating().getRating()/2.0f)+"");
+            holder.ratingValue.setText(format.format(eventV1.GetRating().getRating()/2.0f)+"");
             holder.starIcon.setVisibility(View.VISIBLE);
             holder.ratingValue.setVisibility(View.VISIBLE);
         }else{
@@ -131,9 +131,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
-                intent.putExtra("trackingId", newEvent.GetTrackingId().toString());
-                String eventId = newEvent.GetEventId().toString();
-                intent.putExtra("eventId", newEvent.GetEventId().toString());
+                intent.putExtra("trackingId", eventV1.GetTrackingId().toString());
+                String eventId = eventV1.GetEventId().toString();
+                intent.putExtra("eventId", eventV1.GetEventId().toString());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
@@ -143,9 +143,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditEventActivity.class);
-                intent.putExtra("trackingId", newEvent.GetTrackingId().toString());
-                String eventId = newEvent.GetEventId().toString();
-                intent.putExtra("eventId", newEvent.GetEventId().toString());
+                intent.putExtra("trackingId", eventV1.GetTrackingId().toString());
+                String eventId = eventV1.GetEventId().toString();
+                intent.putExtra("eventId", eventV1.GetEventId().toString());
                 context.startActivity(intent);
             }
         });*/
@@ -155,14 +155,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             public void onClick(View view) {
                 DeleteEventFromFragmentDiaolog delete = new DeleteEventFromFragmentDiaolog();
                 Bundle bundle = new Bundle();
-                bundle.putString("trackingId", newEvent.GetTrackingId().toString());
-                bundle.putString("eventId" , newEvent.GetEventId().toString());
+                bundle.putString("trackingId", eventV1.GetTrackingId().toString());
+                bundle.putString("eventId" , eventV1.GetEventId().toString());
                 delete.setArguments(bundle);
                 delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
             }
         });*/
 
-        Date eventDate = newEvent.GetEventDate();
+        Date eventDate = eventV1.GetEventDate();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
@@ -171,13 +171,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     }
 
-    public List<NewEvent> getNewEvents() {
-        return newEvents;
+    public List<EventV1> getEventV1s() {
+        return eventV1s;
     }
 
     @Override
     public int getItemCount() {
-        return newEvents.size();
+        return eventV1s.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

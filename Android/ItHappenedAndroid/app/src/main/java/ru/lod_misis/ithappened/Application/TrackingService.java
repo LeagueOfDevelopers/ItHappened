@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.Comparison;
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -22,14 +22,14 @@ public class TrackingService
         trackingCollection = trackingRepository;
     }
 
-    public void SaveTrackingCollection(List<NewTracking> newTrackingList)
+    public void SaveTrackingCollection(List<TrackingV1> trackingV1List)
     {
-        trackingCollection.SaveTrackingCollection(newTrackingList);
+        trackingCollection.SaveTrackingCollection(trackingV1List);
     }
 
-    public void AddTracking(NewTracking newNewTracking)
+    public void AddTracking(TrackingV1 newTrackingV1)
     {
-        trackingCollection.AddNewTracking(newNewTracking);
+        trackingCollection.AddNewTracking(newTrackingV1);
     }
 
     public void EditTracking(UUID trackingId,
@@ -45,9 +45,9 @@ public class TrackingService
                 editedTrackingName, scaleName, color);
     }
 
-    public void AddEvent(UUID trackingId, NewEvent newNewEvent)
+    public void AddEvent(UUID trackingId, EventV1 newEventV1)
     {
-        trackingCollection.addEvent(trackingId, newNewEvent);
+        trackingCollection.addEvent(trackingId, newEventV1);
     }
 
     public void EditEvent(UUID trackingId, UUID eventId,
@@ -57,20 +57,20 @@ public class TrackingService
         trackingCollection.editEvent(trackingId, eventId, newScale, newRating, newComment, newDate);
     }
 
-    public Observable<NewEvent> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
-                                                       Comparison scaleComparison, Double scale,
-                                                       Comparison ratingComparison, Rating rating)
+    public Observable<EventV1> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
+                                                      Comparison scaleComparison, Double scale,
+                                                      Comparison ratingComparison, Rating rating)
     {
-        List<NewEvent> newEvents = trackingCollection.FilterEvents(trackingId, dateFrom, dateTo,
+        List<EventV1> eventV1s = trackingCollection.FilterEvents(trackingId, dateFrom, dateTo,
                 scaleComparison, scale,
                 ratingComparison, rating);
 
-        if(newEvents == null) newEvents = new ArrayList<>();
+        if(eventV1s == null) eventV1s = new ArrayList<>();
 
-        return Observable.from(newEvents);
+        return Observable.from(eventV1s);
     }
 
-    public List<NewEvent> getEventCollection(UUID trackingId){
+    public List<EventV1> getEventCollection(UUID trackingId){
         return trackingCollection.getEventCollection(trackingId);
     }
 
@@ -84,12 +84,12 @@ public class TrackingService
         trackingCollection.deleteTracking(trackingId);
     }
 
-    public NewEvent GetEvent (UUID eventId)
+    public EventV1 GetEvent (UUID eventId)
     {
         return trackingCollection.getEvent(eventId);
     }
 
-    public List<NewTracking> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}
+    public List<TrackingV1> GetTrackingCollection() {return  trackingCollection.GetTrackingCollection();}
 
     private ITrackingRepository trackingCollection;
     private String userId;

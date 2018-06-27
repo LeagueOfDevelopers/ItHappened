@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
-import ru.lod_misis.ithappened.Domain.NewEvent;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,7 +23,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
     TrackingService service;
     Context context;
     EventsHistoryContract.EventsHistoryView eventsHistoryView;
-    List<NewEvent> newEvents = new ArrayList<>();
+    List<EventV1> eventV1s = new ArrayList<>();
 
     public EventsHistoryPresenterImpl(ITrackingRepository repository,
                                       TrackingService service,
@@ -48,10 +48,10 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 null,
                 null).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<NewEvent>() {
+                .subscribe(new Action1<EventV1>() {
                                @Override
-                               public void call(NewEvent newEvent) {
-                                   newEvents.add(newEvent);
+                               public void call(EventV1 eventV1) {
+                                   eventV1s.add(eventV1);
                                    //hintForEventsHistory.setVisibility(View.GONE);
                                }
                            }, new Action1<Throwable>() {
@@ -63,13 +63,13 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                         new Action0() {
                             @Override
                             public void call() {
-                                List<NewEvent> visibaleNewEvents = new ArrayList<>();
-                                for (int i = 0; i< newEvents.size(); i++){
-                                    if(!newEvents.get(i).GetStatus()){
-                                        visibaleNewEvents.add(newEvents.get(i));
+                                List<EventV1> visibaleEventV1s = new ArrayList<>();
+                                for (int i = 0; i< eventV1s.size(); i++){
+                                    if(!eventV1s.get(i).GetStatus()){
+                                        visibaleEventV1s.add(eventV1s.get(i));
                                     }
                                 }
-                                eventsHistoryView.showEvents(visibaleNewEvents);
+                                eventsHistoryView.showEvents(visibaleEventV1s);
                                 //eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
                             }
                         });
@@ -83,7 +83,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                              Double scale,
                              Comparison ratingComparison,
                              Rating rating) {
-        newEvents = new ArrayList<>();
+        eventV1s = new ArrayList<>();
         service.FilterEventCollection(trackingId,
                 dateFrom,
                 dateTo,
@@ -93,10 +93,10 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 rating)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
-                new Action1<NewEvent>() {
+                new Action1<EventV1>() {
                     @Override
-                    public void call(NewEvent newEvent) {
-                        newEvents.add(newEvent);
+                    public void call(EventV1 eventV1) {
+                        eventV1s.add(eventV1);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -116,24 +116,24 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                             filtersHintText.setVisibility(View.GONE);
                         }
                         */
-                        eventsHistoryView.showEvents(newEvents);
+                        eventsHistoryView.showEvents(eventV1s);
                     }
                 });
     }
 
     @Override
     public void cancleFilters() {
-        newEvents = new ArrayList<>();
+        eventV1s = new ArrayList<>();
         service.FilterEventCollection
                 (null,null,null,
                         null,null,null,
                         null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<NewEvent>() {
+                .subscribe(new Action1<EventV1>() {
                                @Override
-                               public void call(NewEvent newEvent) {
-                                   newEvents.add(newEvent);
+                               public void call(EventV1 eventV1) {
+                                   eventV1s.add(eventV1);
                                }
                            },
                         new Action1<Throwable>() {
@@ -147,7 +147,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                             public void call() {
 
 
-                                eventsHistoryView.showEvents(newEvents);
+                                eventsHistoryView.showEvents(eventV1s);
                                 /*eventsAdpt = new EventsAdapter(allEvents, getActivity(), 1);
 
                                 eventsRecycler.setAdapter(eventsAdpt);*/

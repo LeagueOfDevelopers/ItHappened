@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
@@ -19,31 +19,31 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class LongTimeAgoFact extends Fact{
 
-    NewTracking newTracking;
+    TrackingV1 trackingV1;
     private Double daysSinceLastEvent;
 
-    public LongTimeAgoFact(NewTracking newTracking) {
-        this.newTracking = newTracking;
-        trackingId = newTracking.GetTrackingID();
+    public LongTimeAgoFact(TrackingV1 trackingV1) {
+        this.trackingV1 = trackingV1;
+        trackingId = trackingV1.GetTrackingID();
     }
 
     @Override
     public void calculateData() {
 
-        List<NewEvent> newEventCollection = new ArrayList<>();
-        for(NewEvent newEvent : newTracking.GetEventCollection())
+        List<EventV1> eventV1Collection = new ArrayList<>();
+        for(EventV1 eventV1 : trackingV1.GetEventCollection())
         {
-            if (!newEvent.isDeleted())
-                newEventCollection.add(newEvent);
+            if (!eventV1.isDeleted())
+                eventV1Collection.add(eventV1);
         }
 
         Date curDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         Date lastEventDate = new Date(Long.MIN_VALUE);
 
-        for (NewEvent newEvent : newEventCollection)
+        for (EventV1 eventV1 : eventV1Collection)
         {
-            if (lastEventDate.before(newEvent.GetEventDate()))
-                lastEventDate = newEvent.GetEventDate();
+            if (lastEventDate.before(eventV1.GetEventDate()))
+                lastEventDate = eventV1.GetEventDate();
         }
 
         daysSinceLastEvent =
@@ -63,7 +63,7 @@ public class LongTimeAgoFact extends Fact{
         NumberFormat format = new DecimalFormat("#.##");
 
         return String.format("Событие <b>%s</b> не происходило уже <b>%s</b> %s",
-                newTracking.getTrackingName(), format.format(daysSinceLastEvent),
+                trackingV1.getTrackingName(), format.format(daysSinceLastEvent),
                 StringParse.days(daysSinceLastEvent.intValue()));
     }
 

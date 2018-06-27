@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.NewEvent;
-import ru.lod_misis.ithappened.Domain.NewTracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
@@ -22,264 +22,264 @@ public class FunctionApplicabilityUnitTests {
 
     @Test
     public void WeHaveTrackingCollection_MostFrequentEventFAShouldReurnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent newEventSecond = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent newEventThird = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-               newTracking.AddEvent(newEventFirst);
-        newTracking.AddEvent(newEventSecond);
-        newTracking.AddEvent(newEventThird);
+               trackingV1.AddEvent(eventV1First);
+        trackingV1.AddEvent(eventV1Second);
+        trackingV1.AddEvent(eventV1Third);
 
-        List<NewTracking> newTrackingList = new ArrayList<>();
-        newTrackingList.add(newTracking);
+        List<TrackingV1> trackingV1List = new ArrayList<>();
+        trackingV1List.add(trackingV1);
 
-        Assert.assertEquals(FunctionApplicability.mostFrequentEventApplicability(newTrackingList), null);
+        Assert.assertEquals(FunctionApplicability.mostFrequentEventApplicability(trackingV1List), null);
     }
 
     @Test
     public void WeHaveTrackingCollectionWithTwoTrackings_MostFrequentEventFAShouldReturnValidFact(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        NewTracking secondNewTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 secondTrackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent newEventSecond = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent newEventThird = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        NewEvent secondNewEventFirst = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent secondNewEventSecond = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent secondNewEventThird = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
-        newTracking.AddEvent(newEventSecond);
-        newTracking.AddEvent(newEventThird);
+        trackingV1.AddEvent(eventV1First);
+        trackingV1.AddEvent(eventV1Second);
+        trackingV1.AddEvent(eventV1Third);
 
-        secondNewTracking.AddEvent(secondNewEventFirst);
-        secondNewTracking.AddEvent(secondNewEventSecond);
-        secondNewTracking.AddEvent(secondNewEventThird);
+        secondTrackingV1.AddEvent(secondEventV1First);
+        secondTrackingV1.AddEvent(secondEventV1Second);
+        secondTrackingV1.AddEvent(secondEventV1Third);
 
-        List<NewTracking> newTrackingList = new ArrayList<>();
-        newTrackingList.add(newTracking);
-        newTrackingList.add(secondNewTracking);
+        List<TrackingV1> trackingV1List = new ArrayList<>();
+        trackingV1List.add(trackingV1);
+        trackingV1List.add(secondTrackingV1);
 
-        Assert.assertNotEquals(FunctionApplicability.mostFrequentEventApplicability(newTrackingList), null);
+        Assert.assertNotEquals(FunctionApplicability.mostFrequentEventApplicability(trackingV1List), null);
     }
 
     @Test
     public void WeHaveTrackingCollectionWithTwoTrackingsButWithoutEvents_MostFrequentEventFAShouldReurnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        NewTracking secondNewTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 secondTrackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        List<NewTracking> newTrackingList = new ArrayList<>();
-        newTrackingList.add(newTracking);
-        newTrackingList.add(secondNewTracking);
+        List<TrackingV1> trackingV1List = new ArrayList<>();
+        trackingV1List.add(trackingV1);
+        trackingV1List.add(secondTrackingV1);
 
-        Assert.assertEquals(FunctionApplicability.mostFrequentEventApplicability(newTrackingList), null);
+        Assert.assertEquals(FunctionApplicability.mostFrequentEventApplicability(trackingV1List), null);
     }
 
     @Test
     public void WeHaveTrackingCollectionWithTwoTrackings_AllEventsCountFAShouldReturnValidFact(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        NewTracking secondNewTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 secondTrackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent newEventSecond = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent newEventThird = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        NewEvent secondNewEventFirst = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent secondNewEventSecond = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent secondNewEventThird = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
-        newTracking.AddEvent(newEventSecond);
-        newTracking.AddEvent(newEventThird);
+        trackingV1.AddEvent(eventV1First);
+        trackingV1.AddEvent(eventV1Second);
+        trackingV1.AddEvent(eventV1Third);
 
-        secondNewTracking.AddEvent(secondNewEventFirst);
-        secondNewTracking.AddEvent(secondNewEventSecond);
-        secondNewTracking.AddEvent(secondNewEventThird);
+        secondTrackingV1.AddEvent(secondEventV1First);
+        secondTrackingV1.AddEvent(secondEventV1Second);
+        secondTrackingV1.AddEvent(secondEventV1Third);
 
-        List<NewTracking> newTrackingList = new ArrayList<>();
-        newTrackingList.add(newTracking);
-        newTrackingList.add(secondNewTracking);
+        List<TrackingV1> trackingV1List = new ArrayList<>();
+        trackingV1List.add(trackingV1);
+        trackingV1List.add(secondTrackingV1);
 
-        Assert.assertNotEquals(FunctionApplicability.allEventsCountFactApplicability(newTrackingList), null);
+        Assert.assertNotEquals(FunctionApplicability.allEventsCountFactApplicability(trackingV1List), null);
     }
 
     @Test
     public void WeHaveTrackingCollectionWithTwoTrackingsButWithThreeEvents_AllEventsCountFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
-        NewTracking secondNewTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 secondTrackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        NewEvent secondNewEventFirst = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
-        NewEvent secondNewEventSecond = new NewEvent(UUID.randomUUID(), secondNewTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        secondNewTracking.AddEvent(secondNewEventFirst);
-        secondNewTracking.AddEvent(secondNewEventSecond);
+        secondTrackingV1.AddEvent(secondEventV1First);
+        secondTrackingV1.AddEvent(secondEventV1Second);
 
-        List<NewTracking> newTrackingList = new ArrayList<>();
-        newTrackingList.add(newTracking);
-        newTrackingList.add(secondNewTracking);
+        List<TrackingV1> trackingV1List = new ArrayList<>();
+        trackingV1List.add(trackingV1);
+        trackingV1List.add(secondTrackingV1);
 
-        Assert.assertEquals(FunctionApplicability.allEventsCountFactApplicability(newTrackingList), null);
+        Assert.assertEquals(FunctionApplicability.allEventsCountFactApplicability(trackingV1List), null);
     }
 
     @Test
     public void WeHaveTrackingWithoutEvents_TrackingsEventCountFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("",
+        TrackingV1 trackingV1 = new TrackingV1("",
                 UUID.randomUUID(),
                 TrackingCustomization.Optional,
                 TrackingCustomization.None,
                 TrackingCustomization.Required, "");
 
-        Assert.assertEquals(FunctionApplicability.trackingEventsCountApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.trackingEventsCountApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithEvents_TrackingsEventsFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        Assert.assertNotEquals(FunctionApplicability.trackingEventsCountApplicability(newTracking), null);
+        Assert.assertNotEquals(FunctionApplicability.trackingEventsCountApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithoutRating_AvrgRatingFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithRatingButWithoutEvents_AvrgRatingFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithOptionalRatingButWithNullRatingInEvent_AvrgRatingFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
 
     @Test
     public void WeHaveValidTracking_AvrgRatingFAShouldntReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, new Rating(4),  "122");
-        NewEvent newEventSecond = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, new Rating(5),  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, new Rating(4),  "122");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, new Rating(5),  "122");
 
-        newTracking.AddEvent(newEventFirst);
-        newTracking.AddEvent(newEventSecond);
+        trackingV1.AddEvent(eventV1First);
+        trackingV1.AddEvent(eventV1Second);
 
-        Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
 
     @Test
     public void WeHaveTrackingWithoutScale_AvrgScaleFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithScaleButWithoutEvents_AvrgScaleFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Required, TrackingCustomization.Required, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Required, TrackingCustomization.Required, TrackingCustomization.Required, "");
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithOptionalScaleButWithNullRatingInEvent_AvrgScaleFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
 
     @Test
     public void WeHaveValidTracking_AvrgScaleFAShouldntReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, 10.0, new Rating(4),  "122");
-        NewEvent newEventSecond = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, -15.4, new Rating(5),  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, 10.0, new Rating(4),  "122");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, -15.4, new Rating(5),  "122");
 
-        newTracking.AddEvent(newEventFirst);
-        newTracking.AddEvent(newEventSecond);
+        trackingV1.AddEvent(eventV1First);
+        trackingV1.AddEvent(eventV1Second);
 
-        Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
 
 
     @Test
     public void WeHaveTrackingWithoutScale_SumScaleFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithScaleButWithoutEvents_SumScaleFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Required, TrackingCustomization.Required, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Required, TrackingCustomization.Required, TrackingCustomization.Required, "");
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
     @Test
     public void WeHaveTrackingWithOptionalScaleButWithNullRatingInEvent_SumScaleFAShouldReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Optional, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, null, null,  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
 
-        newTracking.AddEvent(newEventFirst);
+        trackingV1.AddEvent(eventV1First);
 
-        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
 
     @Test
     public void WeHaveValidTracking_SumScaleFAShouldntReturnNull(){
-        NewTracking newTracking = new NewTracking("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
+        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.Required, TrackingCustomization.Required, "");
 
-        NewEvent newEventFirst = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, 10.0, new Rating(4),  "122");
-        NewEvent newEventSecond = new NewEvent(UUID.randomUUID(), newTracking.GetTrackingID(), evDate, -15.4, new Rating(5),  "122");
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, 10.0, new Rating(4),  "122");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, -15.4, new Rating(5),  "122");
 
-        newTracking.AddEvent(newEventFirst);
-        newTracking.AddEvent(newEventSecond);
+        trackingV1.AddEvent(eventV1First);
+        trackingV1.AddEvent(eventV1Second);
 
-        Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(newTracking), null);
+        Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
 
 
