@@ -129,6 +129,11 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     }
 
     @Override
+    public void onDestroy() {
+        userActionView = null;
+    }
+
+    @Override
     public void syncronization() {
 
         userActionView.startMenuAnimation();

@@ -441,6 +441,12 @@ public class UserActionsActivity extends AppCompatActivity
             mainSync.unsubscribe();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        userActionPresenter.onDestroy();
+    }
+
     public void cancelLogout(){}
 
     @Override
