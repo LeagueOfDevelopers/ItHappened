@@ -65,7 +65,7 @@ public class TrackingV1 extends RealmObject {
     }
 
     public TrackingV1(Tracking tracking){
-        this.color = tracking.color;
+        this.color = "11119017";
         this.trackingName = tracking.trackingName;
         SetScaleCustomization(TrackingCustomization.valueOf(tracking.scale));
         SetRatingCustomization(TrackingCustomization.valueOf(tracking.rating));

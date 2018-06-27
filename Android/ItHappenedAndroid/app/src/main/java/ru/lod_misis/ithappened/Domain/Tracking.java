@@ -31,7 +31,6 @@ public class Tracking extends RealmObject{
         this.eventCollection = eventCollection;
         this.dateOfChange = dateOfChange;
         this.isDeleted = isDeleted;
-        this.color = color;
     }
 
     public Tracking(){
@@ -62,6 +61,4 @@ public class Tracking extends RealmObject{
     public Date dateOfChange;
     @Expose
     public boolean isDeleted = false;
-    @Expose
-    public String color;
 }
