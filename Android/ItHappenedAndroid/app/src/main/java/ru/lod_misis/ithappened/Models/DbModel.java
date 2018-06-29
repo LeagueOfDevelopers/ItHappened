@@ -24,7 +24,6 @@ public class DbModel extends RealmObject {
     }
 
     RealmList<Tracking> trackingCollection;
-    RealmList<Event> eventCollection;
     @PrimaryKey
     String userId;
 }

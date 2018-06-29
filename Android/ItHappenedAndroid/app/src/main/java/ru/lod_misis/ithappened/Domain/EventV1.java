@@ -29,7 +29,10 @@ public class EventV1 extends RealmObject
         this.eventId = event.eventId;
         this.eventDate = event.eventDate;
         this.scale = event.scale;
-        this.rating = event.rating;
+        if(event.rating != null)
+            this.rating = new Rating(event.rating.GetRatingValue());
+        else
+            this.rating = null;
         this.comment = event.comment;
         this.trackingId = event.trackingId;
         dateOfChange = event.dateOfChange;
