@@ -19,7 +19,8 @@ public interface ITrackingRepository
     void AddNewTracking(TrackingV1 trackingV1);
     List<EventV1> FilterEvents(List<UUID> trackingId, Date from, Date to,
                                Comparison scaleComparison, Double scale,
-                               Comparison ratingComparison, Rating rating);
+                               Comparison ratingComparison, Rating rating,
+                               int indexFrom, int indexTo);
     void SaveTrackingCollection(List<TrackingV1> trackingV1Collection);
     void configureRealm();
     void setUserId(String userId);

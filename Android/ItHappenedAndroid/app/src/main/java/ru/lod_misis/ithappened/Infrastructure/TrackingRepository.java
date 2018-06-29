@@ -196,7 +196,8 @@ public class TrackingRepository implements ITrackingRepository{
 
     public List<EventV1> FilterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
                                       Comparison scaleComparison, Double scale,
-                                      Comparison ratingComparison, Rating rating) {
+                                      Comparison ratingComparison, Rating rating,
+                                      int indexFrom, int indexTo) {
 
         List<String> idList = getEventsForFilter();
         String[] idArray = new String[idList.size()];
@@ -236,7 +237,6 @@ public class TrackingRepository implements ITrackingRepository{
         }
 
         List<EventV1> eventsToReturn = events.where().findAllSorted("eventDate");
-
         if (ratingComparison != null && rating != null) {
             List<EventV1> filteredEventV1s = new ArrayList<>();
             for (EventV1 eventV1 : eventsToReturn) {
@@ -250,7 +250,15 @@ public class TrackingRepository implements ITrackingRepository{
             eventsToReturn = filteredEventV1s;
         }
 
-        return eventsToReturn;
+        int size = eventsToReturn.size();
+
+        if (size == 0)
+            return eventsToReturn;
+        if (indexFrom >= size)
+            return new ArrayList<>();
+        if (indexTo >= size)
+            return eventsToReturn.subList(indexFrom, size);
+        return eventsToReturn.subList(indexFrom, indexTo + 1);
     }
 
     public void ChangeTracking(TrackingV1 trackingV1) {
