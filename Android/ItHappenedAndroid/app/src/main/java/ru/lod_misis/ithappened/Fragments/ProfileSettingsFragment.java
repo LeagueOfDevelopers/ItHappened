@@ -59,7 +59,7 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
         super.onCreate(savedInstanceState);
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        YandexMetrica.reportEvent("Пользователь зашел в настройки профиля");
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_profile_settings));
 
     }
 
@@ -89,7 +89,7 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
         content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
         logOut.setText(content);
 
-        mystring = new String("Политика конфиденциальности");
+        mystring = new String(getString(R.string.privacy_policy));
         content = new SpannableString(mystring);
         content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
         policy.setText(content);
@@ -114,7 +114,7 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
         policy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openWebURL("https://api.ithappened.ru/privacy/policy");
+                openWebURL(getString(R.string.privacy_policy_ref));
             }
         });
     }

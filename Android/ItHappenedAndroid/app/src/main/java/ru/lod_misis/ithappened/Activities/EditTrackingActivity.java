@@ -97,7 +97,7 @@ public class EditTrackingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_tracking);
 
-        YandexMetrica.reportEvent("Пользователь зашел в изменение отслеживания");
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_tracking));
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -462,7 +462,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                                         Log.d("Statistics", "calculate");
                                     }
                                 });
-                        YandexMetrica.reportEvent("Пользователь изменил отслеживание");
+                        YandexMetrica.reportEvent(getString(R.string.metrica_edit_tracking));
                         Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
                         startActivity(intent);
@@ -487,14 +487,12 @@ public class EditTrackingActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        YandexMetrica.reportEvent("Пользователь вышел из изменения отслеживания");
+        YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_tracking));
     }
 
     private int calculateState(TrackingCustomization customization,

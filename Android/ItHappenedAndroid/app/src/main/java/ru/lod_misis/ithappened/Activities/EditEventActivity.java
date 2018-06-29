@@ -83,7 +83,7 @@ public class EditEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
 
-        YandexMetrica.reportEvent("Пользователь зашел в изменение события");
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         if(sharedPreferences.getString("LastId","").isEmpty()) {
@@ -227,7 +227,7 @@ public class EditEventActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
-                            YandexMetrica.reportEvent("Пользователь изменил событие");
+                            YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -262,7 +262,7 @@ public class EditEventActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
-                        YandexMetrica.reportEvent("Пользователь изменил событие");
+                        YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -327,7 +327,7 @@ public class EditEventActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        YandexMetrica.reportEvent("Пользователь вышел из изменения события");
+        YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_event));
     }
 
     private void finishActivity(){

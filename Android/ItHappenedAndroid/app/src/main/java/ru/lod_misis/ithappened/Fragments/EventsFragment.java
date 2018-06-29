@@ -105,7 +105,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
 
-        YandexMetrica.reportEvent("Пользователь зашел в историю событий");
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         if(sharedPreferences.getString("LastId","").isEmpty()) {
@@ -320,7 +320,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             public void onClick(View view) {
 
                 final List<EventV1> allEvents = new ArrayList<>();
-                YandexMetrica.reportEvent("Пользователь отменил фильтры");
+                YandexMetrica.reportEvent(getString(R.string.metrica_cancel_filters));
                 eventsHistoryPresenter.loadEvents();
             }
         });
@@ -369,7 +369,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         double ratingVal = ratingFilter.getRating() * 2;
                         rating = new Rating((int) ratingVal);
                     }
-                    YandexMetrica.reportEvent("Пользователь добавил фильтры");
+                    YandexMetrica.reportEvent(getString(R.string.metrica_add_filters));
                     eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
                             dateF,
                             dateT,
@@ -435,7 +435,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     @Override
     public void onPause() {
         super.onPause();
-        YandexMetrica.reportEvent("Пользователь вышел из истории");
+        YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history));
     }
 
     @Override

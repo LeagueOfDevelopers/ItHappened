@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Presenters;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,18 +47,18 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 null,
                 null,
                 null,
-                null).subscribeOn(Schedulers.io())
+                null)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<EventV1>() {
                                @Override
                                public void call(EventV1 eventV1) {
                                    eventV1s.add(eventV1);
-                                   //hintForEventsHistory.setVisibility(View.GONE);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-
+                                   Log.e("History", "History is failure");
                                }
                            },
                         new Action0() {
@@ -70,7 +71,6 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                                     }
                                 }
                                 eventsHistoryView.showEvents(visibaleEventV1s);
-                                //eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
                             }
                         });
     }

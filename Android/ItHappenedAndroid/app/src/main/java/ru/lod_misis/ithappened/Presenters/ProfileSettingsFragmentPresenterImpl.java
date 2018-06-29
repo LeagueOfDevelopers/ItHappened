@@ -14,6 +14,7 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
@@ -89,7 +90,7 @@ public class ProfileSettingsFragmentPresenterImpl implements ProfileSettingsFrag
                                                    context.startActivity(intent);
                                                    view.showMessage("До скорой встречи!");
                                                    view.hideLoading();
-                                                   YandexMetrica.reportEvent("Пользователь вышел из профиля");
+                                                   YandexMetrica.reportEvent(context.getString(R.string.metrica_user_logout));
                                                }
                                            });
                                }
@@ -108,7 +109,7 @@ public class ProfileSettingsFragmentPresenterImpl implements ProfileSettingsFrag
                                 context.startActivity(intent);
                                 view.showMessage("До скорой встречи!");
 
-                                YandexMetrica.reportEvent("Пользователь вышел из профиля");
+                                YandexMetrica.reportEvent(context.getString(R.string.metrica_user_logout));
                                 Log.e("Токен упал", throwable+"");
                             }
                         });

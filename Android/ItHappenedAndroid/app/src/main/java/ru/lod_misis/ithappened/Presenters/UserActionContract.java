@@ -21,6 +21,7 @@ public interface UserActionContract {
         void registrate(String idToken);
         void syncronization();
         boolean updateToken();
+        void onDestroy();
     }
 
 }

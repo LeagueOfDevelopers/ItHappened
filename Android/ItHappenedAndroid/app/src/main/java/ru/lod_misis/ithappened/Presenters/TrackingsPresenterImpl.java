@@ -14,6 +14,7 @@ import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
 public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresenter {
@@ -57,7 +58,7 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
         service.RemoveTracking(trackingId);
         factCalculator.calculateFacts();
         trackingView.showMessage("Отслеживание удалено");
-        YandexMetrica.reportEvent("Пользователь удалил отслеживание");
+        YandexMetrica.reportEvent(context.getString(R.string.metrica_delete_tracking));
         Intent intent = new Intent(context, UserActionsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

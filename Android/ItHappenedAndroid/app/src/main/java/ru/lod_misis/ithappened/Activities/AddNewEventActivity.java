@@ -289,7 +289,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                                         Log.d("Statistics", "calculate");
                                     }
                                 });
-                        YandexMetrica.reportEvent("Пользователь добавил событие");
+                        YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
                         Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -305,7 +305,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     @Override
     protected void onPause() {
         super.onPause();
-        YandexMetrica.reportEvent("Пользователь вышел из создания события");
+        YandexMetrica.reportEvent(getString(R.string.metrica_exit_from_add_event));
     }
 
     @Override

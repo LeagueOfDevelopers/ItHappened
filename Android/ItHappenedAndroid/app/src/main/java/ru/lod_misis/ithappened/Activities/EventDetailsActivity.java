@@ -70,7 +70,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
-        YandexMetrica.reportEvent("Пользователь зашел в детали события");
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
 
         valuesCard = findViewById(R.id.valuesCard);
         nullsCard = findViewById(R.id.nullsCard);
@@ -240,7 +240,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        YandexMetrica.reportEvent("Пользователь вышел из деталей события");
+        YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_details));
     }
 
     @Override
