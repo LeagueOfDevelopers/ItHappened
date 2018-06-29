@@ -20,4 +20,33 @@
 </string-array>
 
     <string name="hint_for_addnewtracking_button">Your title</string>
+    <string name="metrica_add_event">Пользователь добавил событие</string>
+    <string name="metrica_exit_from_add_event">Пользователь вышел из создания события</string>
+    <string name="metrica_enter_add_tracking">Пользователь зашел в добавление отслеживания</string>
+    <string name="metrica_add_tracking">Пользователь добавил отслеживание</string>
+    <string name="metrica_exit_from_add_tracking">Пользователь вышел из добавления отслеживания</string>
+    <string name="metrica_enter_edit_event">Пользователь зашел в изменение события</string>
+    <string name="metrica_edit_event">Пользователь изменил событие</string>
+    <string name="metrica_exit_edit_event">Пользователь вышел из изменения события</string>
+    <string name="metrica_enter_edit_tracking">Пользователь зашел в изменение отслеживания</string>
+    <string name="metrica_edit_tracking">Пользователь изменил отслеживание</string>
+    <string name="metrica_exit_edit_tracking">Пользователь вышел из изменения отслеживания</string>
+    <string name="metrica_enter_event_details">Пользователь зашел в детали события</string>
+    <string name="metrica_exit_event_details">Пользователь вышел из деталей события</string>
+    <string name="metrica_enter_events_hitroy_for_tracking">Пользователь зашел в историю событий по отслеживанию</string>
+    <string name="metrica_user_press_button_add_event">Пользователь добавляет событие</string>
+    <string name="metrica_exit_event_history_for_tracking">Пользователь вышел из истории событий по отслеживанию</string>
+    <string name="metrica_enter_events_histroy">Пользователь зашел в историю событий</string>
+    <string name="metrica_cancel_filters">Пользователь отменил фильтры</string>
+    <string name="metrica_add_filters">Пользователь добавил фильтры</string>
+    <string name="metrica_exit_event_history">Пользователь вышел из истории</string>
+    <string name="metrica_enter_profile_settings">Пользователь зашел в настройки профиля</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="privacy_policy_ref">https://api.ithappened.ru/privacy/policy</string>
+    <string name="metrica_exit_statistics">Пользователь перестал смотреть статистику</string>
+    <string name="metrica_recount_statistics">Пользователь пересчитывает статистику</string>
+    <string name="metrica_enter_statistics">Пользователь вошел в статистику</string>
+    <string name="metrica_user_logout">Пользователь вышел из профиля</string>
+    <string name="metrica_delete_tracking">Пользователь удалил отслеживание</string>
+    <string name="metrica_user_login">Пользователь привязал аккаунт к google</string>
 </resources>

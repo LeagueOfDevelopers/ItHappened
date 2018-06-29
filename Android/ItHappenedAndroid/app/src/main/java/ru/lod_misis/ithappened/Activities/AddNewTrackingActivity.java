@@ -96,7 +96,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Отслеживать");
         factRepository = StaticFactRepository.getInstance();
-        YandexMetrica.reportEvent("Пользователь зашел в добавление отслеживания");
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_add_tracking));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         if(sharedPreferences.getString("LastId","").isEmpty()) {
@@ -394,7 +394,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                         }
                         TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, trackingColor);
                         trackingRepository.AddNewTracking(newTrackingV1);
-                        YandexMetrica.reportEvent("Пользователь добавил отслеживание");
+                        YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
                         Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTrackingV1.GetTrackingID())
                                 .subscribeOn(Schedulers.computation())
@@ -438,7 +438,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        YandexMetrica.reportEvent("Пользователь вышел из добавления отслеживания");
+        YandexMetrica.reportEvent(getString(R.string.metrica_exit_from_add_tracking));
     }
 
     @Override

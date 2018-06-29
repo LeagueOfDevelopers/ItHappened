@@ -17,6 +17,7 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Models.RegistrationResponse;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
@@ -112,7 +113,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                         userActionView.hideLoading();
                                         Log.e("RxSync", "" + throwable);
                                         userActionView.showMessage("Синхронизация не прошла!");
-                                        YandexMetrica.reportEvent("Пользователь привязал аккаунт к google");
+                                        YandexMetrica.reportEvent(context.getString(R.string.metrica_user_login));
                                     }
                                 });
 

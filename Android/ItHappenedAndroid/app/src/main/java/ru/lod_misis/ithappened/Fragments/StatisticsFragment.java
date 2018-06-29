@@ -72,7 +72,7 @@ public class StatisticsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        YandexMetrica.reportEvent("Пользователь вошел в статистику");
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_statistics));
         return inflater.inflate(ru.lod_misis.ithappened.R.layout.fragment_statistics, null);
 
     }
@@ -132,7 +132,7 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showLoading();
-                YandexMetrica.reportEvent("Пользователь пересчитывает статистику");
+                YandexMetrica.reportEvent(getString(R.string.metrica_recount_statistics));
                 factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -218,7 +218,7 @@ public class StatisticsFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        YandexMetrica.reportEvent("Пользователь перестал смотреть статистику");
+        YandexMetrica.reportEvent(getString(R.string.metrica_exit_statistics));
     }
 
     ViewListener viewListener = new ViewListener() {
