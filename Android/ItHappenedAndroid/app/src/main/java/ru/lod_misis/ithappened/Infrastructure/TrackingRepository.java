@@ -200,6 +200,9 @@ public class TrackingRepository implements ITrackingRepository{
                                       int indexFrom, int indexTo) {
 
         List<String> idList = getEventsForFilter();
+
+        if (idList.isEmpty()) return new ArrayList<>();
+
         String[] idArray = new String[idList.size()];
 
         for(int i = 0; i < idArray.length; i++)
