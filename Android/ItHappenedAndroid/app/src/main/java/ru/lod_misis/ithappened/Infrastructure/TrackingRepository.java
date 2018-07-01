@@ -409,10 +409,15 @@ public class TrackingRepository implements ITrackingRepository{
     }
 
     private List<String> getEventsForFilter(){
+        DbModelV1 dbModel = realm.where(DbModelV1.class)
+                .equalTo("userId", userId)
+                .findFirst();
+
+        if (dbModel == null || dbModel.getEventSourceCollection() == null)
+            return new ArrayList<>();
+
         List<EventSource> eventCollection = realm.copyFromRealm
-                (realm.where(DbModelV1.class)
-                        .equalTo("userId", userId)
-                        .findFirst().getEventSourceCollection());
+                (dbModel.getEventSourceCollection());
         List<String> ids = new ArrayList<>();
 
         for (EventSource event: eventCollection)
