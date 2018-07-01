@@ -337,7 +337,7 @@ public class TrackingRepository implements ITrackingRepository{
     private void migrateData(){
         if (realm.isEmpty())
             return;
-        if(realm.where(DbModel.class) != null){
+        if(!realm.where(DbModel.class).findAll().isEmpty()){
             migrationV0();
         }
     }
