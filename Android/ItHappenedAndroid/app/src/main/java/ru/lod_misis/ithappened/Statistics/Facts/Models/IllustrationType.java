@@ -10,5 +10,4 @@ public enum IllustrationType {
     PIE,
     BAR,
     EVENTREF
-
 }
