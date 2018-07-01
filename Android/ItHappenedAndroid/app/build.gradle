@@ -105,8 +105,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true
     }
-    implementation files('build/libs/colt-1.2.0/concurrent.jar')
-    implementation files('build/libs/colt-1.2.0/colt.jar')
+    compile group: 'colt', name: 'colt', version: '1.2.0'
 }
 crashlytics {
     androidNdkOut 'src/main/obj'

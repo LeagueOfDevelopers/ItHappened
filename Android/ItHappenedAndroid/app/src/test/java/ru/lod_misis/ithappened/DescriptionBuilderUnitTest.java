@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.Event;
-import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
@@ -30,9 +30,9 @@ public class DescriptionBuilderUnitTest {
     @Test
     public void CorrDescriptionTest_DescriptionBuilderBuildCorrectCorrelationDescription() {
         InitializeDoubleDataset();
-        Tracking tracking1 = InitializeDoubleTracking(TestDoubleData.GetColumn(0),
+        TrackingV1 tracking1 = InitializeDoubleTracking(TestDoubleData.GetColumn(0),
                 "килограммы", "я поел мороженного", 0);
-        Tracking tracking2 = InitializeDoubleTracking(TestDoubleData.GetColumn(1),
+        TrackingV1 tracking2 = InitializeDoubleTracking(TestDoubleData.GetColumn(1),
                 "килограммы", "я потолстел", 1);
 
         ScaleCorrelationFact fact1 = new ScaleCorrelationFact(tracking1, tracking2);
@@ -50,7 +50,7 @@ public class DescriptionBuilderUnitTest {
 
     @Test
     public void TrendDescriptionTest_DescriptionBuilderBuildsCorrectTrendDescription() {
-        Tracking tracking = GenerateScaleRaisingUpTracking();
+        TrackingV1 tracking = GenerateScaleRaisingUpTracking();
         ScaleTrendChangingFact fact = new ScaleTrendChangingFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
@@ -59,7 +59,7 @@ public class DescriptionBuilderUnitTest {
 
     @Test
     public void BuildLongestBreakDescriptionTest_DescriptionBuilderBuildsCorrectReport() {
-        Tracking tracking = GenerateTrackingWithDateBreak();
+        TrackingV1 tracking = GenerateTrackingWithDateBreak();
         LongestBreakFact fact = new LongestBreakFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
@@ -68,8 +68,8 @@ public class DescriptionBuilderUnitTest {
 
     @Test
     public void BuildDayWithLargestEventCountDescriptionTest_BuilderBuildsCorrectReport() {
-        Tracking tracking = GenerateTrackingWithDateBreak();
-        List<Tracking> trackings = new ArrayList<>();
+        TrackingV1 tracking = GenerateTrackingWithDateBreak();
+        List<TrackingV1> trackings = new ArrayList<>();
         trackings.add(tracking);
         DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
         fact.calculateData();
@@ -79,8 +79,8 @@ public class DescriptionBuilderUnitTest {
 
     @Test
     public void BuildWeekWithLargestEventCountDescription_BuilderBuildsCorrectDescription() {
-        Tracking tracking = GenerateTrackingWithDateBreak();
-        List<Tracking> trackings = new ArrayList<>();
+        TrackingV1 tracking = GenerateTrackingWithDateBreak();
+        List<TrackingV1> trackings = new ArrayList<>();
         trackings.add(tracking);
         WeekWithLargestEventCountFact fact = new WeekWithLargestEventCountFact(trackings);
         fact.calculateData();
@@ -88,20 +88,20 @@ public class DescriptionBuilderUnitTest {
         Assert.assertEquals(descr, "Самая насыщенная событиями неделя была с 1 января 2018 года до 7 января 2018 года. В течении этой недели произошло 7 событий.");
     }
 
-    private Tracking GenerateTrackingWithDateBreak() {
-        Tracking tracking = new Tracking("tracking",
+    private TrackingV1 GenerateTrackingWithDateBreak() {
+        TrackingV1 tracking = new TrackingV1("tracking",
                 UUID.randomUUID(),
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
-                "scale");
+                "scale", "");
         String dates = "1 2 3 4 5 5 7 10 11 12 14 16 25";
         List<Integer> dateArr = new ArrayList<>();
         for (String date: dates.split(" ")) {
             dateArr.add(Integer.parseInt(date));
         }
         for (Integer i: dateArr) {
-            Event event = new Event();
+            EventV1 event = new EventV1();
             DateTime date = new DateTime(2018, 1, i, 10, 0);
             event.SetEventDate(date.toDate());
             event.SetEventId(UUID.randomUUID());
@@ -110,16 +110,16 @@ public class DescriptionBuilderUnitTest {
         return tracking;
     }
 
-    private Tracking GenerateScaleRaisingUpTracking() {
-        Tracking tracking = new Tracking("tracking",
+    private TrackingV1 GenerateScaleRaisingUpTracking() {
+        TrackingV1 tracking = new TrackingV1("tracking",
                 UUID.randomUUID(),
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
-                "scale");
+                "scale", "");
         Random rand = new Random();
         for (int i = 0; i < 100; i++) {
-            Event event = new Event();
+            EventV1 event = new EventV1();
             event.SetScale((double)rand.nextInt(10 + i) + i);
             event.SetEventDate(new DateTime(2000, i / 30 + 3, i % 30 + 1, 0, 0).toDate());
             event.SetEventId(UUID.randomUUID());
@@ -128,16 +128,16 @@ public class DescriptionBuilderUnitTest {
         return tracking;
     }
 
-    private Tracking InitializeDoubleTracking(List<Double> data, String scaleName,
+    private TrackingV1 InitializeDoubleTracking(List<Double> data, String scaleName,
                                               String trackingName, int dayseed) {
-        Tracking tracking = new Tracking(trackingName,
+        TrackingV1 tracking = new TrackingV1(trackingName,
                 UUID.randomUUID(),
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
-                scaleName);
+                scaleName, "");
         for (int i = 0; i < data.size(); i++) {
-            Event event = new Event();
+            EventV1 event = new EventV1();
             event.SetScale(data.get(i));
             event.setEventDate(new Date(2000, i / 30 + 1, i % 30 + dayseed));
             tracking.AddEvent(event);

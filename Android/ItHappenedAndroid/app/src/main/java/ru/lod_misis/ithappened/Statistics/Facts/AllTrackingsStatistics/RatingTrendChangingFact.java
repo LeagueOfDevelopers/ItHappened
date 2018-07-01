@@ -9,7 +9,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
@@ -23,17 +25,17 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint
 public class RatingTrendChangingFact extends Fact {
 
     private String TrackingName;
-    private List<Event> Events;
+    private List<EventV1> Events;
     private TrendChangingPoint PointOfChange;
     private Double NewAverange;
 
-    public RatingTrendChangingFact(Tracking tracking) {
+    public RatingTrendChangingFact(TrackingV1 tracking) {
         TrackingName = tracking.GetTrackingName();
         trackingId = tracking.GetTrackingID();
         Events = new ArrayList<>();
         NewAverange = 0.0;
         double sum = 0.0;
-        for (Event e: tracking.GetEventCollection()) {
+        for (EventV1 e: tracking.GetEventCollection()) {
             if (!e.isDeleted() && e.GetRating() != null) {
                 Events.add(e);
                 sum += e.GetRating().getRating();
@@ -87,11 +89,11 @@ public class RatingTrendChangingFact extends Fact {
                 Events.get(trendData.getItemInCollectionId()).GetEventDate());
     }
 
-    private List<Event> SortEventsByDate(List<Event> events) {
-        List<Event> copy = new ArrayList<>(events);
-        Collections.sort(copy, new Comparator<Event>() {
+    private List<EventV1> SortEventsByDate(List<EventV1> events) {
+        List<EventV1> copy = new ArrayList<>(events);
+        Collections.sort(copy, new Comparator<EventV1>() {
             @Override
-            public int compare(Event event, Event t1) {
+            public int compare(EventV1 event, EventV1 t1) {
                 return event.GetEventDate().compareTo(t1.GetEventDate());
             }
         });

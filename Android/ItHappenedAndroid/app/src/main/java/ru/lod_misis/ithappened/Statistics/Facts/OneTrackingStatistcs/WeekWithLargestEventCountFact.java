@@ -8,21 +8,23 @@ import java.util.Comparator;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.TimeSpanEventData;
 
 public class WeekWithLargestEventCountFact extends Fact {
 
-    private List<Event> Events;
+    private List<EventV1> Events;
     private TimeSpanEventData Data;
 
-    public WeekWithLargestEventCountFact(List<Tracking> trackings) {
+    public WeekWithLargestEventCountFact(List<TrackingV1> trackings) {
         Events = new ArrayList<>();
-        for (Tracking t: trackings) {
+        for (TrackingV1 t: trackings) {
             if (t.isDeleted()) continue;
-            for (Event e: t.GetEventCollection()) {
+            for (EventV1 e: t.GetEventCollection()) {
                 if (e.isDeleted()) continue;
                 Events.add(e);
             }
@@ -53,7 +55,7 @@ public class WeekWithLargestEventCountFact extends Fact {
 
     private void FindWeekWithLargestEventCount() {
         List<TimeSpanEventData> counts = new ArrayList<>();
-        for (Event e: Events) {
+        for (EventV1 e: Events) {
             DateTime date = new DateTime(e.GetEventDate());
             boolean weekFound = false;
             for (TimeSpanEventData d: counts) {
@@ -78,11 +80,11 @@ public class WeekWithLargestEventCountFact extends Fact {
         }
     }
 
-    private List<Event> SortEventsByDate(List<Event> events) {
-        List<Event> copy = new ArrayList<>(events);
-        Collections.sort(copy, new Comparator<Event>() {
+    private List<EventV1> SortEventsByDate(List<EventV1> events) {
+        List<EventV1> copy = new ArrayList<>(events);
+        Collections.sort(copy, new Comparator<EventV1>() {
             @Override
-            public int compare(Event event, Event t1) {
+            public int compare(EventV1 event, EventV1 t1) {
                 return t1.GetEventDate().compareTo(event.GetEventDate());
             }
         });

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cern.jet.stat.Probability;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
@@ -22,7 +23,7 @@ public class ScaleCorrelationFact extends Fact {
     private Double Correlation;
     private static final int DaysToTrack = 1;
 
-    public ScaleCorrelationFact(Tracking tracking1, Tracking tracking2) {
+    public ScaleCorrelationFact(TrackingV1 tracking1, TrackingV1 tracking2) {
         FirstTrackingName = tracking1.GetTrackingName();
         FirstTrackingScaleName = tracking1.getScaleName();
         SecondTrackingName = tracking2.GetTrackingName();

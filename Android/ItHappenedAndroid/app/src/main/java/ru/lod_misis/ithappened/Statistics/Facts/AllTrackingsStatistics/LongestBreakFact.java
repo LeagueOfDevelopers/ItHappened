@@ -9,7 +9,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.BreakData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
@@ -17,14 +19,14 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuild
 public class LongestBreakFact extends Fact {
 
     private String TrackingName;
-    private List<Event> Events;
+    private List<EventV1> Events;
     private BreakData LongestBreak;
 
-    public LongestBreakFact(Tracking tracking) {
+    public LongestBreakFact(TrackingV1 tracking) {
         TrackingName = tracking.GetTrackingName();
         trackingId = tracking.GetTrackingID();
-        List<Event> events = new ArrayList<>();
-        for (Event e: tracking.GetEventCollection()) {
+        List<EventV1> events = new ArrayList<>();
+        for (EventV1 e: tracking.GetEventCollection()) {
             if (!e.isDeleted()) events.add(e);
         }
         Events = events;
@@ -55,7 +57,7 @@ public class LongestBreakFact extends Fact {
     }
 
     private BreakData FindLongestBreak () {
-        List<Event> copy = SortEventsByDate(Events);
+        List<EventV1> copy = SortEventsByDate(Events);
         long maxInterval = 0;
         BreakData data = null;
         for (int i = 1; i < copy.size() - 1; i++) {
@@ -76,7 +78,7 @@ public class LongestBreakFact extends Fact {
     }
 
     private boolean IsBreakSignificant(BreakData dataToCheck) {
-        List<Event> copy = SortEventsByDate(Events);
+        List<EventV1> copy = SortEventsByDate(Events);
         Duration tripleAverange = Duration.ZERO;
         boolean IsSignificant = true;
         for (int i = 0; i < copy.size() - 1; i++) {
@@ -95,11 +97,11 @@ public class LongestBreakFact extends Fact {
     // проверяется в функции применимости, а здесь проверяется все остальное,
     // чтобы в случае, если размер коллекции меньше 10, не пришлось считать)
 
-    private List<Event> SortEventsByDate(List<Event> events) {
-        List<Event> copy = new ArrayList<>(events);
-        Collections.sort(copy, new Comparator<Event>() {
+    private List<EventV1> SortEventsByDate(List<EventV1> events) {
+        List<EventV1> copy = new ArrayList<>(events);
+        Collections.sort(copy, new Comparator<EventV1>() {
             @Override
-            public int compare(Event event, Event t1) {
+            public int compare(EventV1 event, EventV1 t1) {
                 return event.GetEventDate().compareTo(t1.GetEventDate());
             }
         });

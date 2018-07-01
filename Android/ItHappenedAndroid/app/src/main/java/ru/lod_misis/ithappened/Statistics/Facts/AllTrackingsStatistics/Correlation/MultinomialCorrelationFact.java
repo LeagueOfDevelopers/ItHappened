@@ -5,6 +5,7 @@ import java.util.List;
 
 import cern.jet.stat.Probability;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
@@ -21,7 +22,7 @@ public class MultinomialCorrelationFact extends Fact {
     private static final int DaysToTrack = 1;
     private Double Correlation;
 
-    public MultinomialCorrelationFact(Tracking tracking1, Tracking tracking2) {
+    public MultinomialCorrelationFact(TrackingV1 tracking1, TrackingV1 tracking2) {
         FirstTrackingName = tracking1.GetTrackingName();
         SecondTrackingName = tracking2.GetTrackingName();
         MultinomialData = DataSetBuilder.BuildMultinomialDataset(tracking1.GetEventCollection(),

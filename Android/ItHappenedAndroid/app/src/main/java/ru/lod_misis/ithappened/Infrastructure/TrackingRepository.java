@@ -238,7 +238,7 @@ public class TrackingRepository implements ITrackingRepository{
                 events = events.where().greaterThan("scale", scale).findAll();
         }
 
-        List<EventV1> eventsToReturn = events.where().findAllSorted("eventDate");
+        List<EventV1> eventsToReturn = events.where().sort("eventDate").findAll();
         if (ratingComparison != null && rating != null) {
             List<EventV1> filteredEventV1s = new ArrayList<>();
             for (EventV1 eventV1 : eventsToReturn) {

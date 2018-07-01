@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
@@ -21,18 +23,18 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint
 public class FrequencyTrendChangingFact extends Fact {
 
     private String TrackingName;
-    private List<Event> Events;
+    private List<EventV1> Events;
     private TrendChangingPoint PointOfChange;
     private Double NewAverange;
     private int LastPeriodEventCount;
     private Interval LastInterval;
 
-    public FrequencyTrendChangingFact(Tracking tracking){
+    public FrequencyTrendChangingFact(TrackingV1 tracking){
         trackingId = tracking.GetTrackingID();
         TrackingName = tracking.GetTrackingName();
         Events = new ArrayList<>();
         NewAverange = 0.0;
-        for (Event e: tracking.GetEventCollection()) {
+        for (EventV1 e: tracking.GetEventCollection()) {
             if (!e.isDeleted() && e.GetScale() != null) {
                 Events.add(e);
                 NewAverange += e.GetScale();

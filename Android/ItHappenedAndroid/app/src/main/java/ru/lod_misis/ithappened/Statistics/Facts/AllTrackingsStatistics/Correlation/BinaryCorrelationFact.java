@@ -6,6 +6,7 @@ import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.jet.stat.Probability;
 import ru.lod_misis.ithappened.Domain.Tracking;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
@@ -22,7 +23,7 @@ public class BinaryCorrelationFact extends Fact {
     private Double Correlation;
     private static final int DaysToTrack = 1;
 
-    public BinaryCorrelationFact(Tracking tracking1, Tracking tracking2) {
+    public BinaryCorrelationFact(TrackingV1 tracking1, TrackingV1 tracking2) {
         FirstTrackingName = tracking1.GetTrackingName();
         SecondTrackingName = tracking2.GetTrackingName();
         BinaryData = DataSetBuilder.BuildBooleanDataset(tracking1.GetEventCollection(),

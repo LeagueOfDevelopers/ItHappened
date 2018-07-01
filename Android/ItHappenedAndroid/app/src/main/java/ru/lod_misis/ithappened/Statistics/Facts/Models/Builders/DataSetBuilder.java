@@ -11,21 +11,22 @@ import java.util.List;
 import java.util.Map;
 
 import ru.lod_misis.ithappened.Domain.Event;
+import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 
 public class DataSetBuilder {
 
-    public static DataSet<Double> BuildDoubleDataSet(List<Event> events1, List<Event> events2, int DaysToTrack) {
+    public static DataSet<Double> BuildDoubleDataSet(List<EventV1> events1, List<EventV1> events2, int DaysToTrack) {
         if (events1 == null || events2 == null) return new DataSet<>(false);
-        List<Event> copy1 = MakeEventListCopy(events1);
+        List<EventV1> copy1 = MakeEventListCopy(events1);
         SortCopyByTime(copy1);
-        List<Event> copy2 = MakeEventListCopy(events2);
+        List<EventV1> copy2 = MakeEventListCopy(events2);
         SortCopyByTime(copy2);
 
         DataSet<Double> data = new DataSet<>(true);
-        for (Event e1: copy1) {
-            for (Event e2: copy2) {
+        for (EventV1 e1: copy1) {
+            for (EventV1 e2: copy2) {
                 if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e1.getEventDate().before(e2.getEventDate())) {
                     Interval timedelta = new Interval(e1.GetEventDate().getTime(),
@@ -38,8 +39,8 @@ public class DataSetBuilder {
                 }
             }
         }
-        for (Event e2: copy2) {
-            for (Event e1: copy1) {
+        for (EventV1 e2: copy2) {
+            for (EventV1 e1: copy1) {
                 if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e2.getEventDate().before(e1.getEventDate())) {
                     Interval timedelta = new Interval(e2.GetEventDate().getTime(),
@@ -55,16 +56,16 @@ public class DataSetBuilder {
         return data;
     }
 
-    public static DataSet<Integer> BuildBooleanDataset(List<Event> events1, List<Event> events2, int DaysToTrack) {
+    public static DataSet<Integer> BuildBooleanDataset(List<EventV1> events1, List<EventV1> events2, int DaysToTrack) {
         if (events1 == null || events2 == null) return new DataSet<>(false);
-        List<Event> copy1 = MakeEventListCopy(events1);
+        List<EventV1> copy1 = MakeEventListCopy(events1);
         SortCopyByTime(copy1);
-        List<Event> copy2 = MakeEventListCopy(events2);
+        List<EventV1> copy2 = MakeEventListCopy(events2);
         SortCopyByTime(copy2);
 
         DataSet<Integer> data = new DataSet<>(true);
-        for (Event e1: copy1) {
-            for (Event e2: copy2) {
+        for (EventV1 e1: copy1) {
+            for (EventV1 e2: copy2) {
                 if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e1.getEventDate().before(e2.getEventDate())) {
                     Interval timedelta = new Interval(e1.GetEventDate().getTime(),
@@ -81,8 +82,8 @@ public class DataSetBuilder {
                 }
             }
         }
-        for (Event e2: copy2) {
-            for (Event e1: copy1) {
+        for (EventV1 e2: copy2) {
+            for (EventV1 e1: copy1) {
                 if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e2.getEventDate().before(e1.getEventDate())) {
                     Interval timedelta = new Interval(e2.GetEventDate().getTime(),
@@ -115,16 +116,16 @@ public class DataSetBuilder {
     // датасетов проще, так что описывать их смысла особо не вижу, так как принцип работы
     // один, а меняются только вытаскиваемые из эвентов поля.
 
-    public static DataSet<Integer> BuildMultinomialDataset(List<Event> events1, List<Event> events2, int DaysToTrack) {
+    public static DataSet<Integer> BuildMultinomialDataset(List<EventV1> events1, List<EventV1> events2, int DaysToTrack) {
         if (events1 == null || events2 == null) return new DataSet<>(false);
-        List<Event> copy1 = MakeEventListCopy(events1);
+        List<EventV1> copy1 = MakeEventListCopy(events1);
         SortCopyByTime(copy1);
-        List<Event> copy2 = MakeEventListCopy(events2);
+        List<EventV1> copy2 = MakeEventListCopy(events2);
         SortCopyByTime(copy2);
 
         DataSet<Integer> data = new DataSet<>(true);
-        for (Event e1: copy1) {
-            for (Event e2: copy2) {
+        for (EventV1 e1: copy1) {
+            for (EventV1 e2: copy2) {
                 if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e1.getEventDate().before(e2.getEventDate())) {
                     Interval timedelta = new Interval(e1.GetEventDate().getTime(),
@@ -137,8 +138,8 @@ public class DataSetBuilder {
                 }
             }
         }
-        for (Event e2: copy2) {
-            for (Event e1: copy1) {
+        for (EventV1 e2: copy2) {
+            for (EventV1 e1: copy1) {
                 if (e1.isDeleted() || e2.isDeleted()) continue;
                 if (e2.getEventDate().before(e1.getEventDate())) {
                     Interval timedelta = new Interval(e2.GetEventDate().getTime(),
@@ -199,39 +200,39 @@ public class DataSetBuilder {
     // Оба этих утверждения истины, так что никакой).
     // Таким образом операция сборки массива рангов из этих двух словарей не доставляет проблем.
 
-    private static void SortCopyByTime(List<Event> events) {
-        Collections.sort(events, new Comparator<Event>() {
+    private static void SortCopyByTime(List<EventV1> events) {
+        Collections.sort(events, new Comparator<EventV1>() {
             @Override
-            public int compare(Event event, Event t1) {
+            public int compare(EventV1 event, EventV1 t1) {
                 return event.getEventDate().compareTo(t1.getEventDate());
             }
         });
     }
 
-    private static List<Event> MakeEventListCopy(List<Event> events) {
+    private static List<EventV1> MakeEventListCopy(List<EventV1> events) {
         return new ArrayList<>(events);
     }
 
-    public static Sequence BuildScaleSequence(List<Event> events) {
+    public static Sequence BuildScaleSequence(List<EventV1> events) {
         List<Double> result = new ArrayList<>();
-        for (Event e: events) {
+        for (EventV1 e: events) {
             if (e.GetScale() != null && !e.isDeleted())
                 result.add(e.GetScale());
         }
         return new Sequence(result);
     }
 
-    public static Sequence BuildRatingSequence(List<Event> events) {
+    public static Sequence BuildRatingSequence(List<EventV1> events) {
         List<Double> result = new ArrayList<>();
-        for (Event e: events) {
+        for (EventV1 e: events) {
             if (e.GetRating() != null)
                 result.add((double)e.GetRating().GetRatingValue());
         }
         return new Sequence(result);
     }
 
-    public static Sequence BuildFrequencySequence(List<Event> events) {
-        List<Event> copy = MakeEventListCopy(events);
+    public static Sequence BuildFrequencySequence(List<EventV1> events) {
+        List<EventV1> copy = MakeEventListCopy(events);
         SortCopyByTime(copy);
         long leftBorder = copy.get(0).GetEventDate().getTime();
         long rightBorder = copy.get(copy.size() - 1).GetEventDate().getTime();
