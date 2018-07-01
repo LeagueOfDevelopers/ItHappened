@@ -184,7 +184,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 allText += strings.get(i) + ", ";
             }
         }
-        trackingsPickerText.setText(allText.substring(0, allText.length()-2));
+
+        if (allText.length() != 0)
+            trackingsPickerText.setText(allText.substring(0, allText.length()-2));
 
         final String[] trackingsTitles = new String[strings.size()];
         final boolean[] selectedArray = new boolean[strings.size()];
@@ -272,7 +274,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             });
         }else{
             trackingsPickerText.setText("Отслеживания отсутствуют");
-            hintForSpinner.setVisibility(View.VISIBLE);
+            //hintForSpinner.setVisibility(View.VISIBLE);
         }
 
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
