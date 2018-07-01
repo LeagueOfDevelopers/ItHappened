@@ -255,12 +255,12 @@ public class TrackingRepository implements ITrackingRepository{
         int size = eventsToReturn.size();
 
         if (size == 0)
-            return eventsToReturn;
+            return realm.copyFromRealm(eventsToReturn);
         if (indexFrom >= size)
             return new ArrayList<>();
         if (indexTo >= size)
-            return eventsToReturn.subList(indexFrom, size);
-        return eventsToReturn.subList(indexFrom, indexTo + 1);
+            return realm.copyFromRealm(eventsToReturn.subList(indexFrom, size));
+        return realm.copyFromRealm(eventsToReturn.subList(indexFrom, indexTo + 1));
     }
 
     public void ChangeTracking(TrackingV1 trackingV1) {
