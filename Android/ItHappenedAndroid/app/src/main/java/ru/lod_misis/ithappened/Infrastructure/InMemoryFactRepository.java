@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;

@@ -47,7 +47,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 null,
                 null,
                 null,
-                null)
+                null, 0,10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<EventV1>() {
@@ -90,7 +90,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 scaleComparison,
                 scale,
                 ratingComparison,
-                rating)
+                rating, 0,10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Action1<EventV1>() {
@@ -127,7 +127,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
         service.FilterEventCollection
                 (null,null,null,
                         null,null,null,
-                        null)
+                        null, 0, 10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<EventV1>() {

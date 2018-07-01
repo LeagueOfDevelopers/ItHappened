@@ -169,10 +169,8 @@ public class StatisticsFragment extends Fragment {
         });
 
         /*s.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(MaterialSpinner materialSpinner, int i, long l, Object o) {
-
             }
         });*/
 
@@ -247,8 +245,8 @@ public class StatisticsFragment extends Fragment {
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.one_tracking_statistics_layout, null);
                 StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences(
-                                "MAIN_KEYS",
-                                Context.MODE_PRIVATE).getString("UserId", ""));
+                        "MAIN_KEYS",
+                        Context.MODE_PRIVATE).getString("UserId", ""));
                 ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
 
                 facts = factRepository.getOneTrackingFactCollection(allTrackingV1s.get(position-1).GetTrackingID());
