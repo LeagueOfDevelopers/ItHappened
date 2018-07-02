@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ItHappenedAndroid.iml" filepath="$PROJECT_DIR$/ItHappenedAndroid.iml" />
-      <module fileurl="file://C:/AndroidProjets/itHAPPENED/ItHappened/Android/ItHappenedAndroid/.idea/ItHappenedAndroid.iml" filepath="C:/AndroidProjets/itHAPPENED/ItHappened/Android/ItHappenedAndroid/.idea/ItHappenedAndroid.iml" />
+      <module fileurl="file://C:\AndroidProjets\itHAPPENED\ItHappened\Android\ItHappenedAndroid\.idea\ItHappenedAndroid.iml" filepath="C:\AndroidProjets\itHAPPENED\ItHappened\Android\ItHappenedAndroid\.idea\ItHappenedAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

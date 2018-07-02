@@ -1,7 +1,6 @@
 package ru.lod_misis.ithappened.Presenters;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,38 +40,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
 
 
 
-        service.FilterEventCollection(null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null, 0, 100)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<EventV1>() {
-                               @Override
-                               public void call(EventV1 eventV1) {
-                                   eventV1s.add(eventV1);
-                               }
-                           }, new Action1<Throwable>() {
-                               @Override
-                               public void call(Throwable throwable) {
-                                   Log.e("History", "History is failure");
-                               }
-                           },
-                        new Action0() {
-                            @Override
-                            public void call() {
-                                List<EventV1> visibaleEventV1s = new ArrayList<>();
-                                for (int i = 0; i< eventV1s.size(); i++){
-                                    if(!eventV1s.get(i).GetStatus()){
-                                        visibaleEventV1s.add(eventV1s.get(i));
-                                    }
-                                }
-                                eventsHistoryView.showEvents(visibaleEventV1s);
-                            }
-                        });
+
     }
 
     @Override
@@ -82,7 +50,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                              Comparison scaleComparison,
                              Double scale,
                              Comparison ratingComparison,
-                             Rating rating) {
+                             Rating rating, int startPosition, int endPosition) {
         eventV1s = new ArrayList<>();
         service.FilterEventCollection(trackingId,
                 dateFrom,
@@ -90,7 +58,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 scaleComparison,
                 scale,
                 ratingComparison,
-                rating, 0, 100)
+                rating, startPosition, endPosition)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Action1<EventV1>() {
