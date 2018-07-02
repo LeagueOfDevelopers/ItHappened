@@ -3,18 +3,6 @@ apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
 android {
-
-    def getMyVersionCode = { ->
-        return project.hasProperty('myVersionCode') ?
-                project.getProperty('myVersionCode') : "1"
-    }
-
-//    def getMyVersionName = { ->
-//        print"test2345678"
-//        return project.hasProperty('myVersionName') ?
-//                myVersionName : "-1"
-//    }
-
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
 
@@ -22,7 +10,6 @@ android {
         applicationId "ru.lod_misis.ithappened"
         minSdkVersion 21
         targetSdkVersion 26
-        //versionCode getMyVersionCode() as Integer
         versionCode 18
         manifestPlaceholders = [manVersionCode: versionCode]
         versionName "1.1.0"
@@ -35,6 +22,7 @@ android {
 
     aaptOptions {
         cruncherEnabled = false
+
     }
 
     signingConfigs {
