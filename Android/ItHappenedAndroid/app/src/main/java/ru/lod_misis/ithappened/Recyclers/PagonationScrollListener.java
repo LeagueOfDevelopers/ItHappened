@@ -23,7 +23,7 @@ public abstract class PagonationScrollListener extends RecyclerView.OnScrollList
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-        if (!isLoading()) {
+        if (!isLoading() && !isLastPage()) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                     && firstVisibleItemPosition >= 0) {
                 loadMoreItems();
@@ -32,6 +32,8 @@ public abstract class PagonationScrollListener extends RecyclerView.OnScrollList
     }
 
     protected abstract void loadMoreItems();
+
+    public abstract boolean isLastPage();
 
     public abstract boolean isLoading();
 }

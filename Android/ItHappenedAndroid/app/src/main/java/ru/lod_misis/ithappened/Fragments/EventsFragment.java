@@ -72,6 +72,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     int endPosition = 10;
 
     boolean isScrolling = false;
+    boolean isLastPage = false;
     int currentItems = 0;
     int totalItems = 0;
     int scrollOutItems = 0;
@@ -370,6 +371,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             public boolean isLoading() {
                 return isScrolling;
             }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
         });
 
         addFilters.setOnClickListener(new View.OnClickListener() {
@@ -431,12 +437,17 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     @Override
     public void showEvents(List<EventV1> events) {
         isScrolling = false;
+        eventsForAdapter.addAll(events);
         if(events.size()==0){
+            isLastPage = true;
+        }
+        if(eventsForAdapter.size()==0){
             hintForEventsHistory.setVisibility(View.VISIBLE);
             eventsAdpt = new EventsAdapter(events, getActivity(), 1);
         }else{
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
+            eventsAdpt.notifyDataSetChanged();
         }
         if(eventsAdpt!=null) {
             List<EventV1> adapterEvents = eventsAdpt.getEventV1s();

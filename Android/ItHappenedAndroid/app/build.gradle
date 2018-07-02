@@ -27,7 +27,6 @@ android {
         manifestPlaceholders = [manVersionCode: versionCode]
         versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
         lintOptions {
             abortOnError false
         }
@@ -95,7 +94,6 @@ dependencies {
     compile 'com.nvanbenschoten.motion:library:1.1.2'
     compile 'com.yandex.android:mobmetricalib:2.80'
     compile 'joda-time:joda-time:2.9.9'
-    compile 'android.arch.paging:runtime:1.0.0'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
     compile('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
