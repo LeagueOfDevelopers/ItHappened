@@ -42,13 +42,14 @@ import java.util.UUID;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
+import ru.lod_misis.ithappened.Recyclers.PagonationScrollListener;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
@@ -67,6 +68,13 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     ArrayList<UUID> idCollection;
     List<String> strings;
     ArrayList<UUID> allTrackingsId;
+    int startPosition = 0;
+    int endPosition = 10;
+
+    boolean isScrolling = false;
+    int currentItems = 0;
+    int totalItems = 0;
+    int scrollOutItems = 0;
 
     int stateForHint;
 
@@ -88,6 +96,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     TextView trackingsPickerText;
 
     ITrackingRepository collection;
+    private LinearLayoutManager manager;
 
     @Nullable
     @Override
@@ -105,8 +114,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
 
+        startPosition = 0;
+        endPosition = 10;
+
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         if(sharedPreferences.getString("LastId","").isEmpty()) {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
@@ -121,7 +133,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         trackingsPickerBtn = getActivity().findViewById(R.id.trackingsFiltersCard);
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
-        eventsHistoryPresenter.loadEvents();
+        eventsHistoryPresenter.filterEvents(null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,startPosition, endPosition
+        );
 
         filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
@@ -155,7 +174,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         filtersHintText.setVisibility(View.GONE);
 
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
-        eventsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        manager = new LinearLayoutManager(getActivity().getApplicationContext());
+        eventsRecycler.setLayoutManager(manager);
 
         idCollection = new ArrayList<UUID>();
         strings = new ArrayList<String>();
@@ -329,6 +349,29 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
+
+        eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
+            @Override
+            protected void loadMoreItems() {
+                isScrolling = true;
+                startPosition=endPosition;
+                endPosition+=10;
+                eventsHistoryPresenter.filterEvents(null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        startPosition, endPosition);
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isScrolling;
+            }
+        });
+
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -378,7 +421,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             scaleComparison,
                             scale,
                             ratingComparison,
-                            rating);
+                            rating,startPosition,endPosition);
                 } catch (NumberFormatException e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
@@ -387,6 +430,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     @Override
     public void showEvents(List<EventV1> events) {
+        isScrolling = false;
         if(events.size()==0){
             hintForEventsHistory.setVisibility(View.VISIBLE);
             eventsAdpt = new EventsAdapter(events, getActivity(), 1);

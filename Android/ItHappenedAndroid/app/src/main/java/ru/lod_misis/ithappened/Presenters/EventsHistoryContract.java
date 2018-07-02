@@ -21,7 +21,7 @@ public interface EventsHistoryContract {
         void loadEvents();
         void filterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
                           Comparison scaleComparison, Double scale,
-                          Comparison ratingComparison, Rating rating);
+                          Comparison ratingComparison, Rating rating, int startPosition, int endPosition);
         void cancleFilters();
 
     }
