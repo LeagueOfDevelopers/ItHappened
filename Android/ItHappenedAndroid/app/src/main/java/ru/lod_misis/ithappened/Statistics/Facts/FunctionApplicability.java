@@ -13,15 +13,24 @@ import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.FrequencyTrendChangingFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequentEventFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.RatingTrendChangingFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgRatingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.BestEvent;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainDayTimeFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainWeekDaysFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.DayWithLargestEventCount;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongTimeAgoFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WeekWithLargestEventCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WorstEvent;
 
 public final class FunctionApplicability  {
@@ -284,5 +293,160 @@ public final class FunctionApplicability  {
         });
 
         return eventV1Collection;
+    }
+
+    public static List<Fact> BinaryCorrelationFactApplicability(List<TrackingV1> trackings) {
+        List<Fact> facts = new ArrayList<>();
+        for (int i = 0; i < trackings.size() - 1; i++) {
+            for (int j = i + 1; j < trackings.size(); j++) {
+                if (CheckTrackingForBinaryData(trackings.get(i))
+                        && CheckTrackingForBinaryData(trackings.get(j))) {
+                    BinaryCorrelationFact fact = new BinaryCorrelationFact(trackings.get(i), trackings.get(j));
+                    fact.calculateData();
+                    if (fact.IsBoolCorrSignificant()) facts.add(fact);
+                }
+            }
+        }
+        return facts;
+    }
+
+    private static boolean CheckTrackingForBinaryData(TrackingV1 tracking) {
+        return tracking.GetEventCollection().size() >= 40
+                && !tracking.isDeleted();
+    }
+
+    public static List<Fact> ScaleCorrelationFactApplicability(List<TrackingV1> trackings) {
+        List<Fact> facts = new ArrayList<>();
+        for (int i = 0; i < trackings.size() - 1; i++) {
+            for (int j = i + 1; j < trackings.size(); j++) {
+                if (CheckTrackingForScaleData(trackings.get(i))
+                        && CheckTrackingForScaleData(trackings.get(j))) {
+                    ScaleCorrelationFact fact = new ScaleCorrelationFact(trackings.get(i), trackings.get(j));
+                    fact.calculateData();
+                    if (fact.IsDoubleCorrSignificant()) facts.add(fact);
+                }
+            }
+        }
+        return facts;
+    }
+
+    private static boolean CheckTrackingForScaleData(TrackingV1 tracking) {
+        return tracking.GetEventCollection().size() >= 4
+                && !tracking.isDeleted()
+                && tracking.GetScaleCustomization() != TrackingCustomization.None;
+    }
+
+    public static List<Fact> MultinomialCorrelationApplicability(List<TrackingV1> trackings) {
+        List<Fact> facts = new ArrayList<>();
+        for (int i = 0; i < trackings.size() - 1; i++) {
+            for (int j = i + 1; j < trackings.size(); j++) {
+                if (CheckTrackingForMultinomialData(trackings.get(i))
+                        && CheckTrackingForMultinomialData(trackings.get(j))) {
+                    MultinomialCorrelationFact fact = new MultinomialCorrelationFact(trackings.get(i), trackings.get(j));
+                    fact.calculateData();
+                    if (fact.IsMultinomialCorrSignificant()) facts.add(fact);
+                }
+            }
+        }
+        return facts;
+    }
+
+    private static boolean CheckTrackingForMultinomialData(TrackingV1 tracking) {
+        return tracking.GetEventCollection().size() >= 4
+                && !tracking.isDeleted()
+                && tracking.GetRatingCustomization() != TrackingCustomization.None;
+    }
+
+    public static List<Fact> ScaleTrendChangingFactApplicability(List<TrackingV1> trackings) {
+        List<Fact> facts = new ArrayList<>();
+        for (TrackingV1 t: trackings) {
+            if (t.GetScaleCustomization() != TrackingCustomization.None &&
+                    CheckScaleEventCollection(t.GetEventCollection())) {
+                ScaleTrendChangingFact fact = new ScaleTrendChangingFact(t);
+                fact.calculateData();
+                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
+            }
+        }
+        return facts;
+    }
+
+    public static List<Fact> RatingTrendChangingFactApplicability(List<TrackingV1> trackings) {
+        List<Fact> facts = new ArrayList<>();
+        for (TrackingV1 t: trackings) {
+            if (t.GetRatingCustomization() != TrackingCustomization.None &&
+                    CheckRatingEventCollection(t.GetEventCollection())) {
+                RatingTrendChangingFact fact = new RatingTrendChangingFact(t);
+                fact.calculateData();
+                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
+            }
+        }
+        return facts;
+    }
+
+    public static List<Fact> FrequencyTrendChangingFactApplicability(List<TrackingV1> trackings) {
+        List<Fact> facts = new ArrayList<>();
+        for (TrackingV1 t: trackings) {
+            if (CheckFrequencyEventCollection(t.GetEventCollection())) {
+                FrequencyTrendChangingFact fact = new FrequencyTrendChangingFact(t);
+                fact.calculateData();
+                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
+            }
+        }
+        return facts;
+    }
+
+    public static List<Fact> LongestBreakFactApplicability(List<TrackingV1> tracking) {
+        List<Fact> facts = new ArrayList<>();
+        for (TrackingV1 t: tracking) {
+            if (t.GetEventCollection().size() >= 10) {
+                LongestBreakFact fact = new LongestBreakFact(t);
+                fact.calculateData();
+                if (fact.getLongestBreak() != null) facts.add(fact);
+            }
+        }
+        return facts;
+    }
+
+    public static Fact DayWithLargestEventCountApplicability(List<TrackingV1> trackings) {
+        DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
+        fact.calculateData();
+        if (!fact.IsFactSignificant()) return null;
+        return fact;
+    }
+
+    public static Fact WeekWithLargestEventCountApplicability(List<TrackingV1> trackings) {
+        WeekWithLargestEventCountFact fact = new WeekWithLargestEventCountFact(trackings);
+        fact.calculateData();
+        if (!fact.IsFactSignificant()) return null;
+        return fact;
+    }
+
+    private static boolean CheckScaleEventCollection(List<EventV1> events) {
+        int count = 0;
+        int limitEventCount = 5; //Менять в случае, если мы хотим допустить
+        // применимость вычисления тренда для меньшего размера коллекции
+        for (EventV1 e: events) {
+            if (!e.isDeleted() && e.GetScale() != null) count++;
+        }
+        return count >= limitEventCount;
+    }
+
+    private static boolean CheckRatingEventCollection(List<EventV1> events) {
+        int count = 0;
+        int limitEventCount = 5; //Менять в случае, если мы хотим допустить
+        // применимость вычисления тренда для меньшего размера коллекции
+        for (EventV1 e: events) {
+            if (!e.isDeleted() && e.GetRating() != null) count++;
+        }
+        return count >= limitEventCount;
+    }
+
+    private static boolean CheckFrequencyEventCollection(List<EventV1> events) {
+        int count = 0;
+        int limitEventCount = 5;
+        for (EventV1 e: events) {
+            if (!e.isDeleted()) count++;
+        }
+        return count >= limitEventCount;
     }
 }

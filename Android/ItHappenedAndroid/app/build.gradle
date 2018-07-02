@@ -99,8 +99,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
     compile('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
-        transitive = true;
+        transitive = true
     }
+    compile group: 'colt', name: 'colt', version: '1.2.0'
 }
 crashlytics {
     androidNdkOut 'src/main/obj'
