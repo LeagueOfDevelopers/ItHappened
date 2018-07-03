@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,10 +69,12 @@ public class BestEvent extends Fact {
     public String textDescription() {
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
-        String toReturn = String.format("Лучшее событие <b>%s</b> произошло <b>%s</b>, " +
-                        "вы поставили ему <b>%s</b>", trackingV1.getTrackingName(),
-                format.format(bestEventV1.GetEventDate()), bestEventV1.GetRating().getRating()/2.0);
+        String toReturn = String.format("Событие <b>%s</b> с самым высоким рейтингом <b>%s</b> произошло 0<b>%s</b>,",
+                        trackingV1.getTrackingName(),
+                decimalFormat.format(bestEventV1.GetRating().getRating()/2.0),
+                format.format(bestEventV1.GetEventDate()));
 
         if (bestEventV1.GetComment() == null) return toReturn;
 

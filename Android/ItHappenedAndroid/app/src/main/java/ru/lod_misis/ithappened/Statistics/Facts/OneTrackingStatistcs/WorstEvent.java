@@ -64,10 +64,10 @@ public class WorstEvent extends Fact {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
-        String toReturn = String.format("Худшее событие <b>%s</b> произошло <b>%s</b>, " +
-                "вы поставили ему <b>%s</b>", trackingV1.getTrackingName(),
-                format.format(worstEventV1.GetEventDate()),
-                decimalFormat.format(worstEventV1.GetRating().getRating()/2.0));
+        String toReturn = String.format("Событие <b>%s</b> с самым низким рейтингом <b>%s</b> произошло <b>%s</b>, ",
+                trackingV1.getTrackingName(),
+                decimalFormat.format(worstEventV1.GetRating().getRating()/2.0),
+                format.format(worstEventV1.GetEventDate()));
 
         if (worstEventV1.GetComment() == null) return toReturn;
 
