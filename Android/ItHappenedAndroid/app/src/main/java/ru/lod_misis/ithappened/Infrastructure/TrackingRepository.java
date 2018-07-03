@@ -204,7 +204,7 @@ public class TrackingRepository implements ITrackingRepository{
                                       Comparison scaleComparison, Double scale,
                                       Comparison ratingComparison, Rating rating,
                                       int indexFrom, int indexTo) {
-        if (trackingId.size() == 0)
+        if (trackingId!=null&&trackingId.size() == 0)
             return new ArrayList<>();
 
         List<String> idList = getEventsForFilter();

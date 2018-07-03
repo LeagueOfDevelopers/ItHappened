@@ -105,6 +105,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                             case R.id.delete_tracking:
                                 DeleteTrackingFragment delete = new DeleteTrackingFragment();
                                 delete.setTrackingId(trackingV1.GetTrackingID());
+                                delete.setTrackingsPresenter(trackingsPresenter);
                                 delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
                                 return true;
                         }
