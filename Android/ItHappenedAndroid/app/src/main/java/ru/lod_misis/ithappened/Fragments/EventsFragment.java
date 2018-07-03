@@ -64,7 +64,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     ArrayList<Integer> selectedPositionItems = new ArrayList<>();
 
     List<String> filteredTrackingsTitles;
-    List<UUID> filteredTrackingsUuids;
     ArrayList<UUID> idCollection;
     List<String> strings;
     ArrayList<UUID> allTrackingsId;
@@ -73,9 +72,15 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     boolean isScrolling = false;
     boolean isLastPage = false;
-    int currentItems = 0;
-    int totalItems = 0;
-    int scrollOutItems = 0;
+    boolean isFilteredAdded = false;
+
+    Date dateF = null;
+    Date dateT = null;
+    Comparison scaleComparison = null;
+    Double scale = null;
+    Comparison ratingComparison = null;
+    Rating rating = null;
+    List<UUID> filteredTrackingsUuids;
 
     int stateForHint;
 
@@ -355,16 +360,27 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             @Override
             protected void loadMoreItems() {
                 isScrolling = true;
-                startPosition=endPosition;
+                startPosition=endPosition+1;
                 endPosition+=10;
+                if(!isFilteredAdded)
                 eventsHistoryPresenter.filterEvents(null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
+                        dateF,
+                        dateT,
+                        scaleComparison,
+                        scale,
+                        ratingComparison,
+                        rating,
                         startPosition, endPosition);
+                else {
+                    eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
+                            dateF,
+                            dateT,
+                            scaleComparison,
+                            scale,
+                            ratingComparison,
+                            rating,
+                            startPosition, endPosition);
+                }
             }
 
             @Override
@@ -381,13 +397,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date dateF = null;
-                Date dateT = null;
-                Comparison scaleComparison = null;
-                Double scale = null;
-                Comparison ratingComparison = null;
-                Rating rating = null;
 
+                isFilteredAdded = true;
                 for(int i=0;i<selectedPositionItems.size();i++){
                     filteredTrackingsUuids.add
                             (allTrackingsId.get(selectedPositionItems.get(i)));
