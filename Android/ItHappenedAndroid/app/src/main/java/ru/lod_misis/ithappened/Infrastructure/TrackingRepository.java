@@ -17,6 +17,7 @@ import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmResults;
 import io.realm.RealmSchema;
+import io.realm.Sort;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -238,7 +239,7 @@ public class TrackingRepository implements ITrackingRepository{
                 events = events.where().greaterThan("scale", scale).findAll();
         }
 
-        List<EventV1> eventsToReturn = events.where().sort("eventDate").findAll();
+        List<EventV1> eventsToReturn = events.where().findAllSorted("eventDate", Sort.DESCENDING);
         if (ratingComparison != null && rating != null) {
             List<EventV1> filteredEventV1s = new ArrayList<>();
             for (EventV1 eventV1 : eventsToReturn) {
