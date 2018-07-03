@@ -169,8 +169,14 @@ public class TrackingRepository implements ITrackingRepository{
 
         realm.beginTransaction();
 
-        trackingV1.setDeleted(true);
+        trackingV1.DeleteTracking();
         realm.copyToRealmOrUpdate(trackingV1);
+
+        List<EventSource> eventSources = realm.where(EventSource.class)
+                .contains("trackingId", trackingId.toString()).findAll();
+
+        for (EventSource eventSource: eventSources)
+            eventSource.setOccuredOn(false);
 
         realm.commitTransaction();
     }
@@ -198,6 +204,8 @@ public class TrackingRepository implements ITrackingRepository{
                                       Comparison scaleComparison, Double scale,
                                       Comparison ratingComparison, Rating rating,
                                       int indexFrom, int indexTo) {
+        if (trackingId.size() == 0)
+            return new ArrayList<>();
 
         List<String> idList = getEventsForFilter();
 
@@ -217,6 +225,8 @@ public class TrackingRepository implements ITrackingRepository{
 
             for (int i = 0; i < trackings.length; i++)
                 trackings[i] = trackingId.get(i).toString();
+
+
 
             events = events.where().in("trackingId", trackings).findAll();
         }
