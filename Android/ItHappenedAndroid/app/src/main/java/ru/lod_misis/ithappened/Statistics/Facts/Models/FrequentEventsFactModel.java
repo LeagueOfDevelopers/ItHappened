@@ -5,12 +5,12 @@ package ru.lod_misis.ithappened.Statistics.Facts.Models;
  */
 
 public class FrequentEventsFactModel {
-    Double period;
-    String trackingName;
-    String trackingId;
-    int color;
+    private Double period;
+    private String trackingName;
+    private String trackingId;
+    private Integer color;
 
-    public FrequentEventsFactModel(Double period, String trackingName, String trackingId, int color) {
+    public FrequentEventsFactModel(Double period, String trackingName, String trackingId, Integer color) {
         this.period = period;
         this.trackingName = trackingName;
         this.trackingId = trackingId;
@@ -29,7 +29,7 @@ public class FrequentEventsFactModel {
         return trackingId;
     }
 
-    public int getColor() {
+    public Integer getColor() {
         return color;
     }
 }
