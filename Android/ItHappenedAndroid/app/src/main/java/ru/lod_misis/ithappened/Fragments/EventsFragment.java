@@ -101,9 +101,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     FloatingActionButton filtersCancel;
     TextView trackingsPickerText;
 
+
     ITrackingRepository collection;
     private LinearLayoutManager manager;
     private boolean isFilteredCancel = false;
+    List<TrackingV1> trackings;
 
     @Nullable
     @Override
@@ -140,13 +142,15 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         trackingsPickerBtn = getActivity().findViewById(R.id.trackingsFiltersCard);
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
-        eventsHistoryPresenter.filterEvents(null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null, startPosition, endPosition
+        eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
+                dateF,
+                dateT,
+                scaleComparison,
+                scale,
+                ratingComparison,
+                rating,
+                startPosition,
+                endPosition
         );
 
         filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
@@ -184,33 +188,20 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         manager = new LinearLayoutManager(getActivity().getApplicationContext());
         eventsRecycler.setLayoutManager(manager);
 
-        idCollection = new ArrayList<UUID>();
-        strings = new ArrayList<String>();
+        idCollection = new ArrayList<>();
+        strings = new ArrayList<>();
         selectedItems = new ArrayList<>();
 
-        List<TrackingV1> trackings = new ArrayList<>();
+        trackings = new ArrayList<>();
         trackings = trackingService.GetTrackingCollection();
 
-        for (int i = 0; i < trackings.size(); i++) {
-            if (!trackings.get(i).GetStatus()) {
-                strings.add(trackings.get(i).GetTrackingName());
-                idCollection.add(trackings.get(i).GetTrackingID());
-                selectedItems.add(true);
-            }
-        }
 
+        String allText = eventsHistoryPresenter.prepareDataForDialog(trackings, strings, idCollection, selectedItems);;
         filteredTrackingsTitles = new ArrayList<>();
         filteredTrackingsUuids = new ArrayList<>();
         allTrackingsId = new ArrayList<>();
 
         setUuidsCollection(allTrackingsId);
-
-        String allText = "";
-        for (int i = 0; i < strings.size(); i++) {
-            if (i != strings.size()) {
-                allText += strings.get(i) + ", ";
-            }
-        }
 
         if (allText.length() != 0)
             trackingsPickerText.setText(allText.substring(0, allText.length() - 2));
@@ -223,7 +214,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             selectedArray[i] = selectedItems.get(i);
             selectedPositionItems.add(i);
         }
-
 
         if (strings.size() != 0) {
             trackingsPickerText.setOnClickListener(new View.OnClickListener() {

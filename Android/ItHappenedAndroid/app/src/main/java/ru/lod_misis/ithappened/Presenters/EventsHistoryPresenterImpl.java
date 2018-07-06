@@ -11,6 +11,7 @@ import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -33,14 +34,6 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
         this.service = service;
         this.context = context;
         this.eventsHistoryView = eventsHistoryView;
-    }
-
-    @Override
-    public void loadEvents() {
-
-
-
-
     }
 
     @Override
@@ -121,5 +114,27 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                                 eventsRecycler.setAdapter(eventsAdpt);*/
                             }
                         });
+    }
+
+    @Override
+    public String prepareDataForDialog(List<TrackingV1> trackings, List<String> strings, List<UUID> idCollection, List<Boolean> selectedItems) {
+
+        String allText = "";
+
+        for (int i = 0; i < trackings.size(); i++) {
+            if (!trackings.get(i).GetStatus()) {
+                strings.add(trackings.get(i).GetTrackingName());
+                idCollection.add(trackings.get(i).GetTrackingID());
+                selectedItems.add(true);
+            }
+        }
+
+        for (int i = 0; i < strings.size(); i++) {
+            if (i != strings.size()) {
+                allText += strings.get(i) + ", ";
+            }
+        }
+
+        return allText;
     }
 }
