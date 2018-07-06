@@ -170,13 +170,6 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                                    YandexMetrica.reportEvent("Пользователь синхронизировался");
                                                    userActionView.showMessage("Синхронизировано");
                                                }
-                                           }, new Action1<Throwable>() {
-                                               @Override
-                                               public void call(Throwable throwable) {
-                                                   Log.e("RxSync", "" + throwable);
-                                                   userActionView.stopMenuAnimation();
-                                                   userActionView.showMessage(""+throwable);
-                                               }
                                            });
                                }
                            },
