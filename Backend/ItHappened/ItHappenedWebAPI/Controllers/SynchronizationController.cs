@@ -61,6 +61,18 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(response);
     }
 
+    [HttpPost]
+    [Route("{userId}")]
+    public IActionResult TestSync([FromRoute] string userId, [FromBody] SynchronisationRequest request)
+    {
+      if (!_users.UserIsExists(userId))
+        return BadRequest("User does not exist");
+
+      var response = _users.Synchronisation(userId, request.NicknameDateOfChange,
+        userId, request.trackingCollection);
+      return Ok(response);
+    }
+
     [Obsolete]
     [HttpPost]
     [ServiceFilter(typeof(AccessFilter))]
