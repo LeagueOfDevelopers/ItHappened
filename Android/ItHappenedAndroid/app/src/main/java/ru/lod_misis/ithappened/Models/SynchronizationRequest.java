@@ -1,12 +1,12 @@
 package ru.lod_misis.ithappened.Models;
 
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
+
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 
 public class SynchronizationRequest {
 
@@ -17,7 +17,7 @@ public class SynchronizationRequest {
     @SerializedName("nicknameDateOfChange")
     public Date NicknameDateOfChange;
     @Expose
-    @SerializedName("trackingV1Collection")
+    @SerializedName("trackingCollection")
     public List<TrackingV1> trackingV1Collection;
 
     public SynchronizationRequest(String userNickname, Date nicknameDateOfChange, List<TrackingV1> trackingV1Collection) {

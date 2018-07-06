@@ -7,6 +7,7 @@ import java.util.UUID;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 
 public interface EventsHistoryContract {
     interface EventsHistoryView{
@@ -14,15 +15,16 @@ public interface EventsHistoryContract {
         void showEvents(List<EventV1> eventV1s);
         void cancelFilters();
 
+
     }
 
     interface EventsHistoryPresenter{
 
-        void loadEvents();
         void filterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
                           Comparison scaleComparison, Double scale,
                           Comparison ratingComparison, Rating rating, int startPosition, int endPosition);
         void cancleFilters();
+        String prepareDataForDialog(List<TrackingV1> trackings, List<String> strings, List<UUID> uuids, List<Boolean> selectedItem);
 
     }
 }
