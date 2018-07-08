@@ -9,6 +9,7 @@ import com.google.android.gms.common.AccountPicker;
 import com.yandex.metrica.YandexMetrica;
 
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
@@ -131,7 +132,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
         userActionView.startMenuAnimation();
 
         ItHappenedApplication.getApi()
-                .Refresh(sharedPreferences.getString("refreshToken",""))
+                .Refresh(sharedPreferences.getString("refreshToken", ""))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RefreshModel>() {
@@ -156,8 +157,8 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                                @Override
                                                public void call(SynchronizationRequest request) {
                                                    List<TrackingV1> trackingV1s = request.getTrackingV1Collection();
-                                                   for(TrackingV1 trackingV1 : trackingV1s){
-                                                       if(trackingV1.getColor()==null)
+                                                   for (TrackingV1 trackingV1 : trackingV1s) {
+                                                       if (trackingV1.getColor() == null)
                                                            trackingV1.setColor("11119017");
                                                    }
                                                    saveDataToDb(trackingV1s);
@@ -176,15 +177,46 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                         new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
-                                Log.e("Токен упал", throwable+"");
+                                Log.e("Токен упал", throwable + "");
                             }
                         });
+    }
+
+    public void testSync(){
+        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("Кек",
+                Calendar.getInstance().getTime(),
+                StaticInMemoryRepository.getInstance().GetTrackingCollection());
+
+        ItHappenedApplication.
+                getApi().
+                TestSync("kennytmb.3run@gmail.com", synchronizationRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<SynchronizationRequest>() {
+                    @Override
+                    public void call(SynchronizationRequest request) {
+                        List<TrackingV1> trackingV1s = request.getTrackingV1Collection();
+                        /*for (TrackingV1 trackingV1 : trackingV1s) {
+                            if (trackingV1.getColor() == null)
+                                trackingV1.setColor("11119017");
+                        }*/
+                        saveDataToDb(trackingV1s);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("Nick", synchronizationRequest.getUserNickname());
+                        editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
+                        userActionView.finishActivity();
+                        userActionView.stopMenuAnimation();
+                        userActionView.startActivity();
+                        YandexMetrica.reportEvent("Пользователь синхронизировался");
+                        userActionView.showMessage("Синхронизировано");
+                    }
+                });
     }
 
     @Override
     public boolean updateToken() {
 
-        ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("refreshToken",""))
+        ItHappenedApplication.getApi().Refresh(sharedPreferences.getString("refreshToken", ""))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RefreshModel>() {
@@ -206,7 +238,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
         return isTokenFailed;
     }
 
-    private void saveDataToDb(List<TrackingV1> trackingV1s){
+    private void saveDataToDb(List<TrackingV1> trackingV1s) {
         repository.SaveTrackingCollection(trackingV1s);
     }
 

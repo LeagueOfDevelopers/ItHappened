@@ -142,8 +142,8 @@ public class UserActionsActivity extends AppCompatActivity
         if(!sharedPreferences.getString("UserId", "").equals("Offline")&&connectionToken){
             isTokenFailed = userActionPresenter.updateToken();
         }else{
-            navigationView.getMenu().getItem(3).setVisible(false);
-            navigationView.setNavigationItemSelectedListener(this);
+            /*navigationView.getMenu().getItem(3).setVisible(false);
+            navigationView.setNavigationItemSelectedListener(this);*/
         }
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -293,11 +293,11 @@ public class UserActionsActivity extends AppCompatActivity
         if(id == R.id.synchronisation){
             syncItem = item;
             item.setCheckable(false);
-            if(getApplicationContext().getSharedPreferences("MAIN_KEYS",Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")){
+            /*if(getApplicationContext().getSharedPreferences("MAIN_KEYS",Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")){
                 Toast.makeText(getApplicationContext(),"Привяжите аккаунт к GOOGLE для синхронизации", Toast.LENGTH_SHORT).show();
-            }else {
-                userActionPresenter.syncronization();
-            }
+            }else {*/
+                userActionPresenter.testSync();
+            //}
         }
 
            if(id == R.id.proile_settings){

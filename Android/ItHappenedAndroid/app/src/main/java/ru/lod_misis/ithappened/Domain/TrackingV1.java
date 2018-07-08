@@ -282,12 +282,14 @@ public class TrackingV1 extends RealmObject {
     public UUID GetTrackingID() {return UUID.fromString(trackingId);}
     public Date GetTrackingDate () {return trackingDate;}
     public List<EventV1> GetEventCollection() {
-        Collections.sort(eventV1Collection, new Comparator<EventV1>() {
-            @Override
-            public int compare(EventV1 eventV1, EventV1 t1) {
-               return t1.GetEventDate().compareTo(eventV1.GetEventDate());
-            }
-        });
+        if(eventV1Collection!=null) {
+            Collections.sort(eventV1Collection, new Comparator<EventV1>() {
+                @Override
+                public int compare(EventV1 eventV1, EventV1 t1) {
+                    return t1.GetEventDate().compareTo(eventV1.GetEventDate());
+                }
+            });
+        }
         return eventV1Collection;
     }
     public TrackingCustomization GetScaleCustomization(){ return TrackingCustomization.valueOf(scale);}
@@ -311,6 +313,7 @@ public class TrackingV1 extends RealmObject {
     public void SetStatus(boolean status) { isDeleted = status; }
     public void setScaleName(String name) {scaleName = name;}
 
+
     @Expose
     @SerializedName("scaleName")
     private String scaleName = "Шкала";
@@ -332,6 +335,7 @@ public class TrackingV1 extends RealmObject {
     @SerializedName("comment")
     private String comment;
     @Expose
+    @SerializedName("eventCollection")
     private RealmList<EventV1> eventV1Collection;
     @Expose
     private Date dateOfChange;
