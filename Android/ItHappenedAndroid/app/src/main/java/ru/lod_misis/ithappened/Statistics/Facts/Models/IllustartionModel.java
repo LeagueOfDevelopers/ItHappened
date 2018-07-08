@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -22,6 +23,7 @@ public class IllustartionModel {
         this.eventV1Ref = null;
         this.graphData = null;
         this.barData = null;
+        colors = new ArrayList<>();
     }
 
     public List<DayTimeFactModel> getDayTimeFactList() {

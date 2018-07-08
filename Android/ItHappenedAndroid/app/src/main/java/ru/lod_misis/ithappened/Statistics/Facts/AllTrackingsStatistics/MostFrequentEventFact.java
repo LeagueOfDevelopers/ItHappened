@@ -19,15 +19,13 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class MostFrequentEventFact extends Fact {
 
-    List<TrackingV1> trackingV1Collection;
-    FrequentEventsFactModel minModel;
-    List<FrequentEventsFactModel> periodList = new ArrayList<>();
-    Double priority = 10.0;
-    List<Integer> colors;
+    private List<TrackingV1> trackingV1Collection;
+    private FrequentEventsFactModel minModel;
+    private List<FrequentEventsFactModel> periodList= new ArrayList<>();
+    private Double priority = 10.0;
 
     public MostFrequentEventFact(List<TrackingV1> trackingV1Collection) {
         this.trackingV1Collection = trackingV1Collection;
-        colors = new ArrayList<>();
         trackingId = null;
     }
 
@@ -58,7 +56,7 @@ public class MostFrequentEventFact extends Fact {
         Collections.sort(periodList, new Comparator<FrequentEventsFactModel>() {
             @Override
             public int compare(FrequentEventsFactModel frequentEventsFactModel, FrequentEventsFactModel t1) {
-                return t1.getPeriod().compareTo(frequentEventsFactModel.getPeriod());
+                return frequentEventsFactModel.getPeriod().compareTo(t1.getPeriod());
             }
         });
 

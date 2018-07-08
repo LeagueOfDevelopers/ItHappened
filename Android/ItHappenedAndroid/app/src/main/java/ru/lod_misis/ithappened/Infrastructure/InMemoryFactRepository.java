@@ -16,7 +16,7 @@ public class InMemoryFactRepository {
     List<TrackingV1> trackingV1Collection;
 
     public InMemoryFactRepository(){
-        functionApplicability = new FunctionApplicability();
+
     }
 
     public rx.Observable calculateOneTrackingFacts(List<TrackingV1> trackingV1Collection)
@@ -177,6 +177,4 @@ public class InMemoryFactRepository {
 
     private List<Fact> oneTrackingFactCollection = new ArrayList<>();
     private List<Fact> allTrackingsFactCollection = new ArrayList<>();
-    private FunctionApplicability functionApplicability;
-
 }

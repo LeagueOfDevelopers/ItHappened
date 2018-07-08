@@ -64,13 +64,17 @@ public class TrackingRepository implements ITrackingRepository {
                 .equalTo("userId", userId).findAll();
         List<DbModelV1> modelCollection = realm.copyFromRealm(results);
         List<TrackingV1> trackingV1CollectionToReturn = new ArrayList<>();
+
         if (modelCollection.size() == 0)
-            return new ArrayList<TrackingV1>();
+            return new ArrayList<>();
+
         trackingV1CollectionToReturn.addAll(modelCollection.get(0).getTrackingV1Collection());
+
         Collections.sort(trackingV1CollectionToReturn, new Comparator<TrackingV1>() {
             @Override
             public int compare(TrackingV1 trackingV1, TrackingV1 t1) {
                 return t1.GetDateOfChange().compareTo(trackingV1.GetDateOfChange());
+
             }
         });
         return trackingV1CollectionToReturn;
@@ -130,7 +134,7 @@ public class TrackingRepository implements ITrackingRepository {
                           Double newScale,
                           Rating newRating,
                           String newComment,
-                          Date newDate) {
+                          Date newDate){
         TrackingV1 trackingV1 = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString()).findFirst();
         if (trackingV1 == null)
@@ -226,7 +230,10 @@ public class TrackingRepository implements ITrackingRepository {
             for (int i = 0; i < trackings.length; i++)
                 trackings[i] = trackingId.get(i).toString();
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b108341a2c685ef36d4610cd13086a635c4821dc
             events = events.where().in("trackingId", trackings).findAll();
         }
 
@@ -368,20 +375,19 @@ public class TrackingRepository implements ITrackingRepository {
         realm.commitTransaction();
     }
 
-    private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue) {
-        if (comparison == Comparison.Less) {
-            if (firstValue < secondValue)
-                return true;
-            return false;
+    private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)
+    {
+        if (comparison == Comparison.Less)
+        {
+            return (firstValue < secondValue);
         }
-        if (comparison == Comparison.Equal) {
-            if (firstValue.equals(secondValue))
-                return true;
-            return false;
+        if (comparison == Comparison.Equal)
+        {
+            return (firstValue.equals(secondValue));
         }
-        if (comparison == Comparison.More) {
-            if (firstValue > secondValue)
-                return true;
+        if (comparison == Comparison.More)
+        {
+            return (firstValue > secondValue);
         }
         return false;
     }
@@ -451,7 +457,7 @@ public class TrackingRepository implements ITrackingRepository {
         return collectionToReturn;
     }
 
-    Context context;
-    Realm realm;
+    private Context context;
+    private Realm realm;
     private String userId;
 }
