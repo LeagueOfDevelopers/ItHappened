@@ -143,11 +143,11 @@ namespace ItHappenedWebAPI
         .MinimumLevel.Information()
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .Enrich.FromLogContext()
-        .WriteTo.Loggly()
         .WriteTo.EventCollector(splunkUrl, splunkToken)
         .WriteTo.RollingFile("log-{Date}.log")
         .CreateLogger();
       Log.Information("Loggly started");
+      Log.Information("Splunk started");
     }
   }
 }
