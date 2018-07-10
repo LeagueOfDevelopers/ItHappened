@@ -36,6 +36,14 @@ namespace ItHappenedWebAPI.Controllers
       return BadRequest("Registration failed");
     }
 
+    [HttpPost]
+    [Route("reg/{userId}")]
+    public IActionResult Reg([FromRoute] string userId, [FromBody] RegistrationResponse model)
+    {
+      var userData = _userList.SignUp(userId);
+      return Ok(userData);
+    }
+
     
   }
 

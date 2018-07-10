@@ -230,10 +230,6 @@ public class TrackingRepository implements ITrackingRepository {
             for (int i = 0; i < trackings.length; i++)
                 trackings[i] = trackingId.get(i).toString();
 
-<<<<<<< HEAD
-
-=======
->>>>>>> b108341a2c685ef36d4610cd13086a635c4821dc
             events = events.where().in("trackingId", trackings).findAll();
         }
 
