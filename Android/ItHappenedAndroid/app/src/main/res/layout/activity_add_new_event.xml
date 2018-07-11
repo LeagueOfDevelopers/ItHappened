@@ -28,11 +28,11 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/commentAccess"
                     android:text = "Комментарий"
-                    android:textSize="20sp"
-                    android:paddingRight="@dimen/padding_left_and_right"
-                    android:paddingLeft="@dimen/padding_left_and_right"
-                    android:paddingTop="@dimen/padding_up_and_down"
-                    android:paddingBottom="@dimen/padding_up_and_down"/>
+                    android:textSize="16sp"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
@@ -49,10 +49,10 @@
                         android:minHeight="40dp"
                         android:background="@drawable/custom_edit_text"
                         android:hint="Ваш комментарий"
-                        android:paddingRight="@dimen/padding_left_and_right"
-                        android:paddingLeft="@dimen/padding_left_and_right"
-                        android:paddingTop="@dimen/padding_up_and_down"
-                        android:paddingBottom="@dimen/padding_up_and_down" />
+                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                        android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
                 </android.support.v7.widget.CardView>
             </LinearLayout>
 
@@ -71,11 +71,11 @@
                     android:layout_height="wrap_content"
                     android:text = "Количество"
                     android:id="@+id/scaleAccess"
-                    android:textSize="20sp"
-                    android:paddingRight="@dimen/padding_left_and_right"
-                    android:paddingLeft="@dimen/padding_left_and_right"
-                    android:paddingTop="@dimen/padding_up_and_down"
-                    android:paddingBottom="@dimen/padding_up_and_down"
+                    android:textSize="16sp"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     />
 
                 <android.support.v7.widget.CardView
@@ -97,10 +97,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:minHeight="40dp"
-                        android:paddingRight="@dimen/padding_left_and_right"
-                        android:paddingLeft="@dimen/padding_left_and_right"
-                        android:paddingTop="@dimen/padding_up_and_down"
-                        android:paddingBottom="@dimen/padding_up_and_down"
+                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                         android:background="@drawable/custom_edit_text"
                         android:hint="1000"
 
@@ -110,10 +110,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                            android:paddingRight="@dimen/padding_left_and_right"
-                            android:paddingLeft="@dimen/padding_left_and_right"
-                            android:paddingTop="@dimen/padding_up_and_down"
-                            android:paddingBottom="@dimen/padding_up_and_down"
+                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                            android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                            android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                            android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                             android:gravity="center_vertical"
                             android:id="@+id/scaleTypeAccess"
                             android:layout_toRightOf="@id/eventScaleControl"
@@ -140,11 +140,11 @@
                     android:layout_height="wrap_content"
                     android:text = "Рейтинг"
                     android:id="@+id/ratingAccess"
-                    android:textSize="20sp"
-                    android:paddingRight="@dimen/padding_left_and_right"
-                    android:paddingLeft="@dimen/padding_left_and_right"
-                    android:paddingTop="@dimen/padding_up_and_down"
-                    android:paddingBottom="@dimen/padding_up_and_down"/>
+                    android:textSize="16sp"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
@@ -184,11 +184,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text = "Дата"
-                    android:textSize="20sp"
-                    android:paddingRight="@dimen/padding_left_and_right"
-                    android:paddingLeft="@dimen/padding_left_and_right"
-                    android:paddingTop="@dimen/padding_up_and_down"
-                    android:paddingBottom="@dimen/padding_up_and_down"/>
+                    android:textSize="16sp"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
@@ -206,10 +206,10 @@
                         android:text="Дата"
                         android:textColor="#a9a9a9"
                         android:background="@drawable/custom_edit_text"
-                        android:paddingRight="@dimen/padding_left_and_right"
-                        android:paddingLeft="@dimen/padding_left_and_right"
-                        android:paddingTop="@dimen/padding_up_and_down"
-                        android:paddingBottom="@dimen/padding_up_and_down" />
+                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                        android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
                 </android.support.v7.widget.CardView>
             </LinearLayout>
 
