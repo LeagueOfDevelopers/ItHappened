@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
+package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -8,9 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;

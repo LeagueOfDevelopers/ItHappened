@@ -33,16 +33,15 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Presenters.StatisticsContract;
+import ru.lod_misis.ithappened.Presenters.StatisticsInteractorImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.StatisticsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 
-public class StatisticsFragment extends Fragment {
+public class StatisticsFragment extends Fragment implements StatisticsContract.StatisticsView {
 
     RecyclerView trackingsRecycler;
     StatisticsAdapter trackAdpt;
@@ -52,6 +51,7 @@ public class StatisticsFragment extends Fragment {
     RecyclerView allTrackingsRecycler;
 
     InMemoryFactRepository factRepository;
+    StatisticsContract.StatisticsInteractor statisticsInteractor;
 
     TextView hint;
     List<Fact> facts = new ArrayList<>();
@@ -84,20 +84,32 @@ public class StatisticsFragment extends Fragment {
 
         allTrackingV1s = new ArrayList<>();
         titles = new ArrayList<>();
-
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
+        if (sharedPreferences.getString("LastId", "").isEmpty()) {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
             trackingCollection = StaticInMemoryRepository.getInstance();
-        }else{
+        } else {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
             trackingCollection = StaticInMemoryRepository.getInstance();
         }
         service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
         titles.add("Общая статистика");
-        for(TrackingV1 trackingV1 : service.GetTrackingCollection()){
-            if(!trackingV1.GetStatus()){
+        for (TrackingV1 trackingV1 : service.GetTrackingCollection()) {
+            if (!trackingV1.GetStatus()) {
+                titles.add(trackingV1.GetTrackingName());
+                allTrackingV1s.add(trackingV1);
+            }
+        }
+
+        StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
+        trackingCollection = StaticInMemoryRepository.getInstance();
+        service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
+        titles = new ArrayList<>();
+        allTrackingV1s = new ArrayList<>();
+        titles.add("Общая статистика");
+        for (TrackingV1 trackingV1 : service.GetTrackingCollection()) {
+            if (!trackingV1.GetStatus()) {
                 titles.add(trackingV1.GetTrackingName());
                 allTrackingV1s.add(trackingV1);
             }
@@ -109,8 +121,8 @@ public class StatisticsFragment extends Fragment {
         loading = getActivity().findViewById(R.id.statisticsProgressBar);
         carousel.setIndicatorVisibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         getActivity().setTitle(titles.get(0));
-        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(true);
-        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((UserActionsActivity) getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(true);
+        ((UserActionsActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View vi = inflator.inflate(R.layout.statistics_action_bar_spinner, null);
@@ -119,60 +131,21 @@ public class StatisticsFragment extends Fragment {
 
         recountBtn = (FloatingActionButton) getActivity().findViewById(R.id.recountStatistics);
 
-        spinneradapter = new ArrayAdapter<String>(getActivity(),R.layout.statistics_spinner_item, titles);
+        spinneradapter = new ArrayAdapter<String>(getActivity(), R.layout.statistics_spinner_item, titles);
         spinneradapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
 
         s.setAdapter(spinneradapter);
 
-        ((UserActionsActivity)getActivity()).getSupportActionBar().setCustomView(vi);
+        ((UserActionsActivity) getActivity()).getSupportActionBar().setCustomView(vi);
 
         spinneradapter.notifyDataSetChanged();
 
         recountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showLoading();
-                YandexMetrica.reportEvent(getString(R.string.metrica_recount_statistics));
-                factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Fact>() {
-                            @Override
-                            public void call(Fact fact) {
-                                Log.d("Statistics", "calculate");
-                                factRepository.calculateOneTrackingFacts(trackingCollection.GetTrackingCollection())
-                                        .subscribeOn(Schedulers.computation())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Action1<Fact>() {
-                                            @Override
-                                            public void call(Fact fact) {
-                                                Log.d("Statistics", "calculateOneTrackingFact");
-                                                StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
-                                                trackingCollection = StaticInMemoryRepository.getInstance();
-                                                service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
-                                                titles = new ArrayList<>();
-                                                allTrackingV1s = new ArrayList<>();
-                                                titles.add("Общая статистика");
-                                                for(TrackingV1 trackingV1 : service.GetTrackingCollection()){
-                                                    if(!trackingV1.GetStatus()){
-                                                        titles.add(trackingV1.GetTrackingName());
-                                                        allTrackingV1s.add(trackingV1);
-                                                    }
-                                                }
-                                                fragmentRefresh();
-                                                hideLoading();
-                                            }
-                                        });
-                            }
-                        });
+                statisticsInteractor.loadingFacts(trackingCollection);
             }
         });
-
-        /*s.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner materialSpinner, int i, long l, Object o) {
-            }
-        });*/
 
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -194,7 +167,6 @@ public class StatisticsFragment extends Fragment {
 
             @Override
             public void onPageSelected(int i) {
-                //s.setSelectedIndex(i);
                 s.setSelection(i);
             }
 
@@ -209,8 +181,8 @@ public class StatisticsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(false);
-        ((UserActionsActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+        ((UserActionsActivity) getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(false);
+        ((UserActionsActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 
     @Override
@@ -224,15 +196,16 @@ public class StatisticsFragment extends Fragment {
         public View setViewForPosition(int position) {
             View customView = getActivity().getLayoutInflater().inflate(R.layout.view_statistics, null);
             factRepository = StaticFactRepository.getInstance();
-            if(position==0) {
+            if (position == 0) {
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.all_statistics_layout, null);
                 StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences(
                         "MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
                 ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
                 facts = factRepository.getAllTrackingsFactCollection();
+                statisticsInteractor = new StatisticsInteractorImpl(getActivity(), factRepository);
 
-                if(facts.size()!=0) {
+                if (facts.size() != 0) {
                     hint = (TextView) customView.findViewById(R.id.hintAllTrackingsFacts);
                     hint.setVisibility(View.INVISIBLE);
                     allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.allStatisticsRecycler);
@@ -240,7 +213,7 @@ public class StatisticsFragment extends Fragment {
                     allTrackingsRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
                     allTrackingsRecycler.setAdapter(adapter);
                 }
-            }else{
+            } else {
 
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.one_tracking_statistics_layout, null);
@@ -249,11 +222,11 @@ public class StatisticsFragment extends Fragment {
                         Context.MODE_PRIVATE).getString("UserId", ""));
                 ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
 
-                facts = factRepository.getOneTrackingFactCollection(allTrackingV1s.get(position-1).GetTrackingID());
+                facts = factRepository.getOneTrackingFactCollection(allTrackingV1s.get(position - 1).GetTrackingID());
 
 
-                Log.e("Size", facts.size()+"");
-                if(facts.size()!=0) {
+                Log.e("Size", facts.size() + "");
+                if (facts.size() != 0) {
                     hint = (TextView) customView.findViewById(R.id.hintOneTrackingFacts);
                     hint.setVisibility(View.INVISIBLE);
                     allTrackingsRecycler = (RecyclerView) customView.findViewById(R.id.oneTrackingStatisticsRecycler);
@@ -268,21 +241,20 @@ public class StatisticsFragment extends Fragment {
     };
 
 
-    private void showLoading(){
+    @Override
+    public void showLoading() {
         carousel.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
     }
 
-    private void hideLoading(){
+    @Override
+    public void hideLoading() {
         carousel.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
     }
 
-
-    public void fragmentRefresh(){
-
-
-
+    @Override
+    public void fragmentRefresh() {
         FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
         fragmentTransaction.detach(this).attach(this).commit();
     }

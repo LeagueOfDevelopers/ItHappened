@@ -18,7 +18,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlati
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.ScaleTrendChangingFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.DayWithLargestEventCount;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WeekWithLargestEventCountFact;

@@ -16,6 +16,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -271,6 +273,23 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                     }
                     break;
                 case GRAPH:
+                    IllustartionModel graphModel = fact.getIllustration();
+                    if (graphModel != null) {
+                        if(graphModel.getGraphData()!=null){
+                            List<Double> data = graphModel.getGraphData();
+                            lineChart.setVisibility(View.VISIBLE);
+                            List<Entry> entries = new ArrayList<>();
+                            List<String> strings = new ArrayList<>();
+                            for(int i=0;i<data.size();i++){
+                                entries.add(new Entry(data.get(i).floatValue(), i));
+                                strings.add(""+i);
+                            }
+                            LineDataSet dataSet = new LineDataSet(entries, "График");
+                            LineData lineData = new LineData(strings, dataSet);
+                            lineChart.setData(lineData);
+                        }
+                    }
+
                     break;
                 default:
                     break;
