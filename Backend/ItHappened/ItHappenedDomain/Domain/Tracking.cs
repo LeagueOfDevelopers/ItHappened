@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace ItHappenedDomain.Domain
 {
@@ -41,6 +42,12 @@ namespace ItHappenedDomain.Domain
     public bool isDeleted { set; get; }
     public string scaleName { set; get; }
     public List<Event> EventCollection {get; set;}
-    public string color { get; set; }
+    private string color;
+
+    public string Color
+    {
+      get => color ?? "-5658199";
+      set => color = value ?? "-5658199";
+    }
   }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ItHappenedDomain.AuthServices;
 using ItHappenedDomain.Models;
 using MongoDB.Driver;
@@ -28,18 +27,16 @@ namespace ItHappenedDomain.Domain
 
       var collection = db.GetCollection<User>("Users");
 
-      var iUser = collection.FindSync(us => us.UserId == response.email);
+      var user = collection.Find(us => us.UserId == response.email);
 
-      var result = iUser.FirstAsync();
-      if (!result.IsFaulted)
+      if (user.Count() != 0)
       {
-        User user = result.Result;
         return new RegistrationResponse
         {
-          PicUrl = user.PictureUrl,
-          NicknameDateOfChange = user.NicknameDateOfChange,
-          UserId = user.UserId,
-          UserNickname = user.UserNickname
+          PicUrl = user.First().PictureUrl,
+          NicknameDateOfChange = user.First().NicknameDateOfChange,
+          UserId = user.First().UserId,
+          UserNickname = user.First().UserNickname
         };
       }
       DateTimeOffset date = DateTimeOffset.UtcNow;
@@ -59,7 +56,7 @@ namespace ItHappenedDomain.Domain
       List<Tracking> trackingCollection)
     {
       var collection = db.GetCollection<User>("Users");
-      var user = collection.FindSync(us => us.UserId == userId).FirstAsync().Result;
+      var user = collection.Find(us => us.UserId == userId).First();
       if (user.NicknameDateOfChange < NicknameDateOfChange)
       {
         user.NicknameDateOfChange = NicknameDateOfChange;
@@ -69,7 +66,7 @@ namespace ItHappenedDomain.Domain
       List<Tracking> collectionToReturn = user.ChangeTrackingCollection(trackingCollection);
 
       var filter = Builders<User>.Filter.Eq(us => us.UserId, user.UserId);
-      collection.ReplaceOneAsync(filter, user);
+      collection.ReplaceOne(filter, user);
 
       SynchronisationRequest toReturn = new SynchronisationRequest()
       {
@@ -82,12 +79,10 @@ namespace ItHappenedDomain.Domain
 
     public bool UserIsExists(string userId)
     {
-      var collection = db.GetCollection<OldUserModel>("Users");
-      var iUser = collection.FindSync(us => us.UserId == userId);
-      var result = iUser.FirstAsync();
+      var collection = db.GetCollection<User>("Users");
+      var user = collection.Find(us => us.UserId == userId);
 
-      if (result.IsFaulted) return false;
-      return true;
+      return user.Count() != 0;
     }
 
     private IMongoDatabase db;

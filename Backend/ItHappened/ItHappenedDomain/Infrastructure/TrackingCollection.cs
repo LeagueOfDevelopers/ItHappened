@@ -18,6 +18,7 @@ namespace ItHappenedDomain.Infrastructure
 
     public List<Tracking> ChangeTrackingCollection(List<Tracking> trackingCollection)
     {
+      //ColorCheck();
       if (trackingCollection == null)
       {
         return TrackingList;
@@ -99,6 +100,15 @@ namespace ItHappenedDomain.Infrastructure
         }
       }
     }
+
+    //public void ColorCheck()
+    //{
+    //  TrackingList.ForEach(tracking =>
+    //  {
+    //    if (tracking.color == null)
+    //      tracking.color = "-5658199";
+    //  });
+    //}
 
     public List<Tracking> TrackingList { get; set; }
   }
