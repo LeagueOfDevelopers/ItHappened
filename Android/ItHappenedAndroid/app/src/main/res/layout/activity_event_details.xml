@@ -20,9 +20,9 @@
                 app:cardUseCompatPadding="true"
                 app:cardElevation="5dp"
                 app:cardBackgroundColor="#ffffff"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginTop="@dimen/outer_margin"
+                android:layout_marginLeft="@dimen/outer_margin"
+                android:layout_marginRight="@dimen/outer_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -107,7 +107,7 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/nullsCard"
                 app:cardElevation="5dp"
-                android:layout_margin="20dp"
+                android:layout_margin="@dimen/outer_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <RelativeLayout
@@ -116,8 +116,12 @@
                 <TextView
                     android:layout_marginTop="20dp"
                     android:textColor="#a9a9a9"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:id="@+id/nullHint"
+                    android:paddingRight="@dimen/padding_left_and_right"
+                    android:paddingLeft="@dimen/padding_left_and_right"
+                    android:paddingTop="@dimen/padding_up_and_down"
+                    android:paddingBottom="@dimen/padding_up_and_down"
                     android:layout_centerHorizontal="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -125,7 +129,7 @@
 
 
                     <LinearLayout
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/inner_margin_between_components"
                         android:layout_width="wrap_content"
                         android:layout_below="@id/nullHint"
                         android:layout_height="wrap_content"
@@ -133,7 +137,7 @@
                         android:orientation="horizontal">
                     <ImageView
                         android:id="@+id/dateHintNulls"
-                        android:padding="20dp"
+
                         android:layout_centerHorizontal="true"
                         android:src="@drawable/ic_schedule_black_24dp"
                         android:layout_width="wrap_content"
@@ -141,8 +145,10 @@
 
                     <TextView
                         android:id="@+id/dateValueNulls"
-                        android:paddingTop="22dp"
-                        android:paddingRight="20dp"
+                        android:paddingRight="@dimen/padding_left_and_right"
+                        android:paddingLeft="@dimen/padding_left_and_right"
+                        android:paddingTop="@dimen/padding_up_and_down"
+                        android:paddingBottom="@dimen/padding_up_and_down"
                         android:layout_centerHorizontal="true"
                         android:layout_width="match_parent"
                         android:text="26.10.2017 20:13"

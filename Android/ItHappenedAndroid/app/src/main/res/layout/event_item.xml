@@ -16,10 +16,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="@dimen/inner_margin_between_components"
+        android:layout_marginLeft="@dimen/outer_margin"
+        android:layout_marginRight="@dimen/outer_margin"
+        android:layout_marginBottom="@dimen/inner_margin_between_components"
         card_view:cardElevation="5dp">
 
 
@@ -47,10 +47,10 @@
                     android:layout_alignParentTop="true"
                     android:layout_gravity="left"
                     android:lines="1"
-                    android:layout_marginLeft="7dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="7dp"
+                    android:paddingRight="@dimen/padding_left_and_right"
+                    android:paddingLeft="@dimen/padding_left_and_right"
+                    android:paddingTop="@dimen/padding_up_and_down"
+                    android:paddingBottom="@dimen/padding_up_and_down"
                     android:text="Сахар в крови"
                     android:textSize="20sp"></TextView>
 
@@ -61,12 +61,13 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/TrackingTitle"
-                    android:paddingBottom="5dp"
-                    android:paddingRight="7dp"
-                    android:paddingTop="6dp"
+                    android:paddingRight="@dimen/padding_left_and_right"
+                    android:paddingLeft="@dimen/padding_left_and_right"
+                    android:paddingTop="@dimen/padding_up_and_down"
+                    android:paddingBottom="@dimen/padding_up_and_down"
                     android:text="14.12.2017 22:54"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="15sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/ratingValue"
@@ -76,11 +77,12 @@
                     android:layout_alignParentStart="true"
                     android:layout_toRightOf="@+id/trackingColorEvent"
                     android:layout_below="@+id/TrackingTitle"
-                    android:paddingRight="7dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="27dp"
-                    android:textSize="15sp"
+                    android:paddingRight="@dimen/padding_left_and_right"
+                    android:paddingLeft="@dimen/padding_left_and_right"
+                    android:paddingTop="@dimen/padding_up_and_down"
+                    android:paddingBottom="@dimen/padding_up_and_down"
+                    android:layout_marginLeft="28dp"
+                    android:textSize="16sp"
                     android:visibility="gone"
                     android:textColor="@color/colorPrimaryDark"
                     android:text="2" />
@@ -100,18 +102,19 @@
                 <TextView
                     android:id="@+id/scaleValue"
                     android:layout_toRightOf="@id/starIcon"
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:singleLine="true"
                     android:ellipsize="middle"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/TrackingTitle"
-                    android:layout_marginLeft="10dp"
-                    android:paddingLeft="40dp"
+                    android:layout_marginLeft="50dp"
+
                     android:visibility="gone"
-                    android:paddingBottom="5dp"
-                    android:paddingRight="80dp"
-                    android:layout_marginRight="40dp"
-                    android:paddingTop="6dp"
+                    android:paddingRight="@dimen/padding_left_and_right"
+                    android:paddingLeft="@dimen/padding_left_and_right"
+                    android:paddingTop="@dimen/padding_up_and_down"
+                    android:paddingBottom="@dimen/padding_up_and_down"
+                    android:layout_marginRight="120dp"
                     android:text="12 кг"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="15sp" />
