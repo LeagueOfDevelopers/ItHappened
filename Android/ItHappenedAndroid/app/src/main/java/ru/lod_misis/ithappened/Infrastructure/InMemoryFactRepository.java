@@ -13,8 +13,6 @@ import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
 public class InMemoryFactRepository {
 
-    List<TrackingV1> trackingV1Collection;
-
     public InMemoryFactRepository(){
 
     }
@@ -60,19 +58,38 @@ public class InMemoryFactRepository {
 
     public rx.Observable<Fact> calculateAllTrackingsFacts(List<TrackingV1> trackingV1Collection) {
         Fact factToAdd;
+        List<Fact> facts = new ArrayList<>();
         allTrackingsFactCollection = new ArrayList<>();
 
         factToAdd = FunctionApplicability.allEventsCountFactApplicability(trackingV1Collection);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            allTrackingsFactCollection.add(factToAdd);
-        }
+        addFactToAllFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.mostFrequentEventApplicability(trackingV1Collection);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            allTrackingsFactCollection.add(factToAdd);
+        addFactToAllFactCollection(factToAdd);
+
+        factToAdd = FunctionApplicability.DayWithLargestEventCountApplicability(trackingV1Collection);
+        addFactToAllFactCollection(factToAdd);
+
+        factToAdd = FunctionApplicability.WeekWithLargestEventCountApplicability(trackingV1Collection);
+        addFactToAllFactCollection(factToAdd);
+
+        facts = FunctionApplicability.BinaryCorrelationFactApplicability(trackingV1Collection);
+        for (Fact fact: facts) {
+            addFactToAllFactCollection(fact);
         }
+
+        facts = new ArrayList<>();
+        facts = FunctionApplicability.MultinomialCorrelationApplicability(trackingV1Collection);
+        for (Fact fact: facts) {
+            addFactToAllFactCollection(fact);
+        }
+
+        facts = new ArrayList<>();
+        facts = FunctionApplicability.ScaleCorrelationFactApplicability(trackingV1Collection);
+        for (Fact fact: facts) {
+            addFactToAllFactCollection(fact);
+        }
+
         if(allTrackingsFactCollection.size() > 1)
             sortAllTrackingsFacts();
 
@@ -84,58 +101,60 @@ public class InMemoryFactRepository {
         Fact factToAdd;
 
         factToAdd = FunctionApplicability.avrgRatingApplicability(trackingV1);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.avrgScaleApplicability(trackingV1);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.sumScaleApplicability(trackingV1);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.trackingEventsCountApplicability(trackingV1);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.worstEventApplicability(trackingV1);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.bestEventApplicability(trackingV1);
-        if (factToAdd != null) {
-            factToAdd.calculateData();
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.certainWeekDaysApplicability(trackingV1);
-        if (factToAdd != null){
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.certainDayTimeApplicability(trackingV1);
-        if (factToAdd != null) {
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.longTimeAgoApplicability(trackingV1);
-        if (factToAdd != null) {
-            oneTrackingFactCollection.add(factToAdd);
-        }
+        addFactToOneTrackingFactCollection(factToAdd);
+
+        factToAdd = FunctionApplicability.FrequencyTrendChangingFactApplicability(trackingV1);
+        addFactToOneTrackingFactCollection(factToAdd);
+
+        factToAdd = FunctionApplicability.LongestBreakFactApplicability(trackingV1);
+        addFactToOneTrackingFactCollection(factToAdd);
+
+        factToAdd = FunctionApplicability.RatingTrendChangingFactApplicability(trackingV1);
+        addFactToOneTrackingFactCollection(factToAdd);
+
+        factToAdd = FunctionApplicability.ScaleTrendChangingFactApplicability(trackingV1);
+        addFactToOneTrackingFactCollection(factToAdd);
 
         if (oneTrackingFactCollection.size() > 1)
             sortOneTrackingFacts();
+    }
+
+    private void addFactToOneTrackingFactCollection(Fact factToAdd){
+        if (factToAdd != null) {
+            factToAdd.calculateData();
+            oneTrackingFactCollection.add(factToAdd);
+        }
+    }
+
+    private void addFactToAllFactCollection(Fact factToAdd){
+        if (factToAdd != null) {
+            factToAdd.calculateData();
+            allTrackingsFactCollection.add(factToAdd);
+        }
     }
 
     public List<Fact> getAllTrackingsFactCollection()

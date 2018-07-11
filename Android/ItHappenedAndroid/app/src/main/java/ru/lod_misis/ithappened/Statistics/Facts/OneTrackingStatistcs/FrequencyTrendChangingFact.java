@@ -1,9 +1,10 @@
-package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
+package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
@@ -48,6 +49,7 @@ public class FrequencyTrendChangingFact extends Fact {
         CalculateTrendData();
         illustartion = new IllustartionModel(IllustrationType.GRAPH);
         illustartion.setGraphData(DataSetBuilder.BuildFrequencySequence(Events).ToList());
+        calculatePriority();
     }
 
     @Override
@@ -68,8 +70,8 @@ public class FrequencyTrendChangingFact extends Fact {
     @Override
     public String textDescription() {
         return DescriptionBuilder.BuildFrequencyTrendReport(PointOfChange, NewAverange, TrackingName,
-                new Interval(DateTime.now().toDate().getTime()
-                        - PointOfChange.getPointEventDate().getTime()), LastPeriodEventCount);
+                new Interval(PointOfChange.getPointEventDate().getTime(),
+                        DateTime.now().toDate().getTime()), LastPeriodEventCount);
     }
 
     public boolean IsTrendDeltaSignificant() {
@@ -82,7 +84,7 @@ public class FrequencyTrendChangingFact extends Fact {
 
         LastPeriodEventCount = (int)(double)data.Slice(trendData.getItemInCollectionId(),
                 data.Length() - 1).Sum();
-        LastInterval = new Interval(Events.get(Events.size() - 1).GetEventDate().getTime() -
+        LastInterval = new Interval(Events.get(Events.size() - 1).GetEventDate().getTime(),
                 Events.get(trendData.getItemInCollectionId()).GetEventDate().getTime());
 
         PointOfChange = new TrendChangingPoint(
