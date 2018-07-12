@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using ItHappenedDomain.AuthServices;
+using ItHappenedDomain.Domain.Exceptions;
 using ItHappenedDomain.Models;
 using MongoDB.Driver;
-
 
 namespace ItHappenedDomain.Domain
 {
@@ -56,22 +56,24 @@ namespace ItHappenedDomain.Domain
       List<Tracking> trackingCollection)
     {
       var collection = db.GetCollection<User>("Users");
-      var user = collection.Find(us => us.UserId == userId).First();
-      if (user.NicknameDateOfChange < NicknameDateOfChange)
+      var user = collection.Find(us => us.UserId == userId);
+      if (user.Count() == 0)
+        throw new UserNotFoundException();
+      if (user.First().NicknameDateOfChange < NicknameDateOfChange)
       {
-        user.NicknameDateOfChange = NicknameDateOfChange;
-        user.UserNickname = UserNickname;
+        user.First().NicknameDateOfChange = NicknameDateOfChange;
+        user.First().UserNickname = UserNickname;
       }
 
-      List<Tracking> collectionToReturn = user.ChangeTrackingCollection(trackingCollection);
+      List<Tracking> collectionToReturn = user.First().ChangeTrackingCollection(trackingCollection);
 
-      var filter = Builders<User>.Filter.Eq(us => us.UserId, user.UserId);
-      collection.ReplaceOne(filter, user);
+      var filter = Builders<User>.Filter.Eq(us => us.UserId, user.First().UserId);
+      collection.ReplaceOne(filter, user.First());
 
       SynchronisationRequest toReturn = new SynchronisationRequest()
       {
-        NicknameDateOfChange = user.NicknameDateOfChange,
-        UserNickname = user.UserNickname,
+        NicknameDateOfChange = user.First().NicknameDateOfChange,
+        UserNickname = user.First().UserNickname,
         trackingCollection = collectionToReturn
       };
       return toReturn;
