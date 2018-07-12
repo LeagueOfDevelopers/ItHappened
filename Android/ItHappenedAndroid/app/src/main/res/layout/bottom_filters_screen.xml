@@ -43,7 +43,8 @@
         android:scrollbars="vertical"
         android:isScrollContainer="true"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/outer_margin">
+        android:layout_margin="@dimen/outer_margin"
+        >
 
 
         <TextView
@@ -65,6 +66,7 @@
             android:layout_below="@id/trackingsFiltersHint"
             android:id="@+id/trackingsFiltersCard"
             android:layout_width="match_parent"
+            android:layout_margin="2dp"
             android:layout_height="40dp"
             app:cardBackgroundColor="#ffffff">
 
@@ -219,6 +221,7 @@
             android:layout_below="@id/textForRating"
             android:id="@+id/ratingFiltersHint"
             android:layout_marginTop="@dimen/inner_margin_between_components"
+            android:layout_margin="2dp"
             app:cardBackgroundColor="#ffffff"
             android:layout_height="40dp">
 
@@ -235,8 +238,10 @@
             android:layout_below="@id/ratingFiltersHint"
             app:cardBackgroundColor="#ffffff"
             android:layout_marginTop="@dimen/outer_margin"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="@dimen/outer_margin">
+            android:layout_marginBottom="32dp">
         <RatingBar
             android:layout_gravity="center_vertical|center_horizontal"
             android:id="@+id/ratingFilter"

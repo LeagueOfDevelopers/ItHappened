@@ -20,7 +20,7 @@
         android:layout_marginLeft="@dimen/outer_margin"
         android:layout_marginRight="@dimen/outer_margin"
         android:layout_marginBottom="@dimen/inner_margin_between_components"
-        card_view:cardElevation="5dp">
+        >
 
 
             <RelativeLayout
