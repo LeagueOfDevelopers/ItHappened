@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ItHappenedWebAPI.Filters.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ItHappenedDomain.Domain.Exceptions;
 using Serilog;
 
 namespace ItHappenedWebAPI.Filters
@@ -23,6 +24,9 @@ namespace ItHappenedWebAPI.Filters
       {
         case RefreshTokenValidationException exception:
           context.Result = new UnauthorizedResult();
+          break;
+        case UserNotFoundException exception:
+          context.Result = new BadRequestResult();
           break;
       }
     }

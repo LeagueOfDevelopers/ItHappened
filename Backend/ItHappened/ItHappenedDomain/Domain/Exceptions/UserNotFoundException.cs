@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ItHappenedDomain.Domain.Exceptions
 {
-  class UserNotFoundException : Exception
+  public class UserNotFoundException : Exception
   {
     public UserNotFoundException()
     {
