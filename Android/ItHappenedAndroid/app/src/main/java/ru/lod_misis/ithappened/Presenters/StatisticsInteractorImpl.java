@@ -30,7 +30,7 @@ public class StatisticsInteractorImpl implements StatisticsContract.StatisticsIn
 
     @Override
     public void loadingFacts(final ITrackingRepository trackingCollection) {
-        statisticsView.showLoading();
+//        statisticsView.showLoading();
         YandexMetrica.reportEvent(context.getString(R.string.metrica_recount_statistics));
         factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
@@ -47,8 +47,8 @@ public class StatisticsInteractorImpl implements StatisticsContract.StatisticsIn
                                     public void call(Fact fact) {
                                         Log.d("Statistics", "calculateOneTrackingFact");
 
-                                        statisticsView.fragmentRefresh();
-                                        statisticsView.hideLoading();
+//                                        statisticsView.fragmentRefresh();
+//                                        statisticsView.hideLoading();
                                     }
                                 });
                     }

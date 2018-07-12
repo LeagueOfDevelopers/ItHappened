@@ -16,8 +16,8 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEvents
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.FrequencyTrendChangingFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.LongestBreakFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.FrequencyTrendChangingFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.MostFrequentEventFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.RatingTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.ScaleTrendChangingFact;
@@ -26,11 +26,11 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFa
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.BestEvent;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainDayTimeFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainWeekDaysFact;
-import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.DayWithLargestEventCount;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCount;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongTimeAgoFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
-import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WeekWithLargestEventCountFact;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.WeekWithLargestEventCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.WorstEvent;
 
 public final class FunctionApplicability  {
@@ -357,54 +357,48 @@ public final class FunctionApplicability  {
                 && tracking.GetRatingCustomization() != TrackingCustomization.None;
     }
 
-    public static List<Fact> ScaleTrendChangingFactApplicability(List<TrackingV1> trackings) {
-        List<Fact> facts = new ArrayList<>();
-        for (TrackingV1 t: trackings) {
-            if (t.GetScaleCustomization() != TrackingCustomization.None &&
-                    CheckScaleEventCollection(t.GetEventCollection())) {
-                ScaleTrendChangingFact fact = new ScaleTrendChangingFact(t);
-                fact.calculateData();
-                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
-            }
+    public static Fact ScaleTrendChangingFactApplicability(TrackingV1 tracking) {
+        Fact factToReturn = null;
+        if (tracking.GetScaleCustomization() != TrackingCustomization.None &&
+                CheckScaleEventCollection(tracking.GetEventCollection())) {
+            ScaleTrendChangingFact fact = new ScaleTrendChangingFact(tracking);
+            fact.calculateData();
+            if (fact.IsTrendDeltaSignificant()) factToReturn = fact;
         }
-        return facts;
+        return factToReturn;
     }
 
-    public static List<Fact> RatingTrendChangingFactApplicability(List<TrackingV1> trackings) {
-        List<Fact> facts = new ArrayList<>();
-        for (TrackingV1 t: trackings) {
-            if (t.GetRatingCustomization() != TrackingCustomization.None &&
-                    CheckRatingEventCollection(t.GetEventCollection())) {
-                RatingTrendChangingFact fact = new RatingTrendChangingFact(t);
-                fact.calculateData();
-                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
-            }
+    public static Fact RatingTrendChangingFactApplicability(TrackingV1 tracking) {
+        Fact factToReturn = null;
+
+        if (tracking.GetRatingCustomization() != TrackingCustomization.None &&
+                CheckRatingEventCollection(tracking.GetEventCollection())) {
+            RatingTrendChangingFact fact = new RatingTrendChangingFact(tracking);
+            fact.calculateData();
+            if (fact.IsTrendDeltaSignificant()) factToReturn = fact;
         }
-        return facts;
+        return factToReturn;
     }
 
-    public static List<Fact> FrequencyTrendChangingFactApplicability(List<TrackingV1> trackings) {
-        List<Fact> facts = new ArrayList<>();
-        for (TrackingV1 t: trackings) {
-            if (CheckFrequencyEventCollection(t.GetEventCollection())) {
-                FrequencyTrendChangingFact fact = new FrequencyTrendChangingFact(t);
-                fact.calculateData();
-                if (fact.IsTrendDeltaSignificant()) facts.add(fact);
-            }
+    public static Fact FrequencyTrendChangingFactApplicability(TrackingV1 tracking) {
+        Fact factToReturn = null;
+        if (CheckFrequencyEventCollection(tracking.GetEventCollection())) {
+            FrequencyTrendChangingFact fact = new FrequencyTrendChangingFact(tracking);
+            fact.calculateData();
+            if (fact.IsTrendDeltaSignificant()) factToReturn = fact;
         }
-        return facts;
+        return factToReturn;
     }
 
-    public static List<Fact> LongestBreakFactApplicability(List<TrackingV1> tracking) {
-        List<Fact> facts = new ArrayList<>();
-        for (TrackingV1 t: tracking) {
-            if (t.GetEventCollection().size() >= 10) {
-                LongestBreakFact fact = new LongestBreakFact(t);
-                fact.calculateData();
-                if (fact.getLongestBreak() != null) facts.add(fact);
-            }
+    public static Fact LongestBreakFactApplicability(TrackingV1 tracking) {
+        Fact factToReturn = null;
+
+        if (tracking.GetEventCollection().size() >= 10) {
+            LongestBreakFact fact = new LongestBreakFact(tracking);
+            fact.calculateData();
+            if (fact.getLongestBreak() != null) factToReturn = fact;
         }
-        return facts;
+        return factToReturn;
     }
 
     public static Fact DayWithLargestEventCountApplicability(List<TrackingV1> trackings) {

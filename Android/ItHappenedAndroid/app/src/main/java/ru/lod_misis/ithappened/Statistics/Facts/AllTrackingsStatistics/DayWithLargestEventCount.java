@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs;
+package ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics;
 
 import org.joda.time.DateTime;
 
