@@ -116,7 +116,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 <TextView
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/padding_up_down_for_cards"
                     android:textColor="#a9a9a9"
                     android:textSize="16sp"
                     android:id="@+id/nullHint"

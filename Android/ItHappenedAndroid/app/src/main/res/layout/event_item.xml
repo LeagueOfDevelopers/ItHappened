@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/inner_margin_between_components"
+        android:layout_marginTop="@dimen/padding_up_down_for_cards"
         android:layout_marginLeft="@dimen/outer_margin"
         android:layout_marginRight="@dimen/outer_margin"
         android:layout_marginBottom="@dimen/inner_margin_between_components"
