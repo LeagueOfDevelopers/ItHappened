@@ -35,7 +35,7 @@
             android:layout_below="@+id/userAvatar"
             android:layout_marginTop="10dp"
             android:text="Здесь будет имя"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/mail"
