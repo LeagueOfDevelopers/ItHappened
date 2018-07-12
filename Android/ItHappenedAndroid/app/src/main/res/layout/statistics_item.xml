@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/outer_margin"
         card_view:cardBackgroundColor="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -19,28 +19,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Текстовое описание"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:padding="10dp"/>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:layout_below="@id/textFactForTracking"
                 android:id="@+id/graphFact"
                 android:layout_width="match_parent"
-                android:layout_margin="10dp"
-                android:layout_height="100dp"></com.github.mikephil.charting.charts.LineChart>
+                android:layout_height="300dp"></com.github.mikephil.charting.charts.LineChart>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:layout_below="@id/graphFact"
                 android:id="@+id/pieFact"
                 android:layout_width="match_parent"
-                android:layout_margin="10dp"
                 android:layout_height="300dp"></com.github.mikephil.charting.charts.PieChart>
 
             <com.github.mikephil.charting.charts.BarChart
                 android:layout_below="@id/pieFact"
                 android:id="@+id/barFact"
                 android:layout_width="match_parent"
-                android:layout_margin="10dp"
                 android:layout_height="500dp"></com.github.mikephil.charting.charts.BarChart>
 
             <TextView
@@ -48,9 +45,8 @@
                 android:layout_below="@id/barFact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:textColor="@color/colorAccent"
-                android:textSize="19sp"
+                android:textSize="16sp"
                 android:textAlignment="center"
                 android:text="Посмотреть событие"/>
 

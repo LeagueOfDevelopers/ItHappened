@@ -183,6 +183,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     }
 
     public void testSync(){
+        userActionView.startMenuAnimation();
         final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("Кек",
                 Calendar.getInstance().getTime(),
                 StaticInMemoryRepository.getInstance().GetTrackingCollection());
@@ -209,6 +210,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                         userActionView.startActivity();
                         YandexMetrica.reportEvent("Пользователь синхронизировался");
                         userActionView.showMessage("Синхронизировано");
+                        userActionView.stopMenuAnimation();
                     }
                 });
     }

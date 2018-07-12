@@ -284,9 +284,10 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 entries.add(new Entry(data.get(i).floatValue(), i));
                                 strings.add(""+i);
                             }
-                            LineDataSet dataSet = new LineDataSet(entries, "График");
+                            LineDataSet dataSet = new LineDataSet(entries, "");
                             LineData lineData = new LineData(strings, dataSet);
                             lineChart.setData(lineData);
+                            lineChart.setDescription("");
                         }
                     }
 

@@ -14,25 +14,26 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp">
+            android:paddingBottom="@dimen/padding_up_down_for_cards"
+            android:layout_margin="@dimen/outer_margin">
 
             <TextView
                 android:id="@+id/titleHintEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:paddingTop="20dp"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:text="Название:"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/trackingNameContainerEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/titleHintEdit"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="40dp">
 
@@ -43,7 +44,10 @@
                     android:minHeight="40dp"
                     android:background="@drawable/custom_edit_text"
                     android:hint="Введите название"
-                    android:paddingLeft="15dp" />
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
             </android.support.v7.widget.CardView>
 
 
@@ -52,10 +56,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/trackingNameContainerEdit"
-                android:paddingLeft="20dp"
-                android:paddingTop="15dp"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:text="Рейтинг:"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/ratingTextEnabledEdit"
@@ -63,10 +70,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/trackingNameContainerEdit"
                 android:layout_toRightOf="@id/addNewRatingHintEdit"
-                android:paddingLeft="7dp"
-                android:paddingTop="16dp"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:text="не надо"
-                android:textSize="17sp" />
+                android:textSize="16sp" />
 
 
             <android.support.v7.widget.CardView
@@ -74,9 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@id/addNewRatingHintEdit"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
@@ -143,30 +150,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewRatingEdit"
-                android:layout_marginTop="15dp"
-                android:paddingLeft="20dp"
+                android:layout_marginTop="@dimen/outer_margin"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:text="Комментарий:"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/commentTextEnabledEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewRatingEdit"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:layout_toRightOf="@id/addNewCommentHintEdit"
-                android:paddingLeft="7dp"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:text="не надо"
-                android:textSize="17sp" />
+                android:textSize="16sp" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/addNewCommentEdit"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@id/addNewCommentHintEdit"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
@@ -233,21 +243,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewCommentEdit"
-                android:layout_marginTop="15dp"
-                android:paddingLeft="20dp"
+                android:layout_marginTop="@dimen/outer_margin"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:text="Шкала:"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/scaleTextEnabledEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewCommentEdit"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:layout_toRightOf="@id/addNewScaleHintEdit"
-                android:paddingLeft="7dp"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:text="не надо"
-                android:textSize="17sp" />
+                android:textSize="16sp" />
 
 
             <android.support.v7.widget.CardView
@@ -255,9 +270,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@id/addNewScaleHintEdit"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
@@ -324,10 +337,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewScaleEdit"
-                android:paddingLeft="20dp"
-                android:paddingTop="15dp"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:text="Измерять в:"
-                android:textSize="18sp" />
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                android:textSize="16sp" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/scaleTypeContainerEdit"
@@ -336,9 +352,7 @@
                 android:minHeight="40dp"
                 app:cardUseCompatPadding="true"
                 android:layout_below="@+id/scaleTypeHintEdit"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
@@ -349,7 +363,10 @@
                     android:minHeight="40dp"
                     android:background="@drawable/custom_edit_text"
                     android:hint="Киллограмм, штук"
-                    android:paddingLeft="15dp" />
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
