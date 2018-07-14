@@ -110,14 +110,16 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                 });
 
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        userActionView.hideLoading();
-                        Log.e("Reg", "" + throwable);
-                        userActionView.showMessage("Разорвано подключение!");
-                    }
-                });
+                }
+//                , new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        userActionView.hideLoading();
+//                        Log.e("Reg", "" + throwable);
+//                        userActionView.showMessage("Разорвано подключение!");
+//                    }
+//                }
+                );
 
     }
 
