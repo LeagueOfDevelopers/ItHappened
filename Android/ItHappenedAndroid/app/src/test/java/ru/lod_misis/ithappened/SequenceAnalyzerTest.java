@@ -25,7 +25,7 @@ public class SequenceAnalyzerTest {
         Assert.assertTrue(data2.getItemInCollectionId() == 1);
     }
 
-    /*@Test
+    /*@Test // Stress test
     public void DetectTrendChangingPointStressTest() {
         Random rand = new Random();
         while (true) {

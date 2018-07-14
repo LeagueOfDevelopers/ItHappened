@@ -36,12 +36,10 @@ public class FrequencyTrendChangingFact extends Fact {
         Events = new ArrayList<>();
         NewAverange = 0.0;
         for (EventV1 e: tracking.GetEventCollection()) {
-            if (!e.isDeleted() && e.GetScale() != null) {
+            if (!e.isDeleted()) {
                 Events.add(e);
-                NewAverange += e.GetScale();
             }
         }
-        NewAverange = NewAverange / Events.size();
     }
 
     @Override
@@ -80,6 +78,7 @@ public class FrequencyTrendChangingFact extends Fact {
 
     private void CalculateTrendData() {
         Sequence data = DataSetBuilder.BuildFrequencySequence(Events);
+        NewAverange = data.Mean();
         TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
 
         LastPeriodEventCount = (int)(double)data.Slice(trendData.getItemInCollectionId(),

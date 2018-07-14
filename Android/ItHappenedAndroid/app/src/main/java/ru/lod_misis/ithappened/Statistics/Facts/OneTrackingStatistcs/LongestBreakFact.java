@@ -86,7 +86,7 @@ public class LongestBreakFact extends Fact {
                     copy.get(i).GetEventDate().getTime()) * 3 / (copy.size() - 1));
         }
         if (tripleAverange.isLongerThan(dataToCheck.getDuration())) IsSignificant = false;
-        if (new DateTime().minusDays(7).isAfter(dataToCheck.getSecondEventDate().getTime())) {
+        if (new DateTime().minusDays(7).isBefore(dataToCheck.getSecondEventDate().getTime())) {
             IsSignificant = false;
         }
         return IsSignificant;
