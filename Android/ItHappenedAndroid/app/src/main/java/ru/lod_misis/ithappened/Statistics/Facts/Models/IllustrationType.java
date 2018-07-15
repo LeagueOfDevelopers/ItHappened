@@ -9,5 +9,6 @@ public enum IllustrationType {
     GRAPH,
     PIE,
     BAR,
-    EVENTREF
+    EVENTREF,
+    EVENTSETREF
 }

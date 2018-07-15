@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.TimeSpanEventData;
 
 public class WeekWithLargestEventCountFact extends Fact {
@@ -37,6 +38,8 @@ public class WeekWithLargestEventCountFact extends Fact {
         FindWeekWithLargestEventCount();
         if (Data == null) return;
         calculatePriority();
+        illustartion = new IllustartionModel(IllustrationType.EVENTSETREF);
+        illustartion.setEventHistoryRef(Data.getEventIds());
     }
 
     @Override
@@ -61,13 +64,13 @@ public class WeekWithLargestEventCountFact extends Fact {
             for (TimeSpanEventData d: counts) {
                 if (d.IsItThisWeek(date)) {
                     weekFound = true;
-                    d.CountIncrement();
+                    d.CountIncrement(e.GetEventId());
                     break;
                 }
             }
             if (!weekFound) {
                 TimeSpanEventData data = new TimeSpanEventData(date);
-                data.CountIncrement();
+                data.CountIncrement(e.GetEventId());
                 counts.add(data);
             }
         }

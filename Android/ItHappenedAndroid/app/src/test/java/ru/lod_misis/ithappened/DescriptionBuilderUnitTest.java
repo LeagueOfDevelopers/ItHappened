@@ -20,7 +20,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlati
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCount;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.WeekWithLargestEventCountFact;
 
 public class DescriptionBuilderUnitTest {
@@ -71,7 +71,7 @@ public class DescriptionBuilderUnitTest {
         TrackingV1 tracking = GenerateTrackingWithDateBreak();
         List<TrackingV1> trackings = new ArrayList<>();
         trackings.add(tracking);
-        DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
+        DayWithLargestEventCountFact fact = new DayWithLargestEventCountFact(trackings);
         fact.calculateData();
         String descr = fact.textDescription();
         Assert.assertEquals(descr, "Самый насыщенный событиями день был 5 января 2018 года. Тогда произошло 2 события.");

@@ -13,14 +13,16 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.TimeSpanEventData;
 
-public class DayWithLargestEventCount extends Fact {
+public class DayWithLargestEventCountFact extends Fact {
 
     private List<EventV1> Events;
     private TimeSpanEventData LargestEventCountDay;
 
-    public DayWithLargestEventCount(List<TrackingV1> trackings) {
+    public DayWithLargestEventCountFact(List<TrackingV1> trackings) {
         Events = new ArrayList<>();
         for (TrackingV1 t: trackings) {
             if (t.isDeleted()) continue;
@@ -37,6 +39,8 @@ public class DayWithLargestEventCount extends Fact {
         CalculateLargestByEventCountDay();
         if (LargestEventCountDay == null) return;
         calculatePriority();
+        illustartion = new IllustartionModel(IllustrationType.EVENTSETREF);
+        illustartion.setEventHistoryRef(LargestEventCountDay.getEventIds());
     }
 
     @Override
@@ -60,14 +64,14 @@ public class DayWithLargestEventCount extends Fact {
             boolean dayFound = false;
             for (TimeSpanEventData d: counts) {
                 if (d.IsItThisDay(date)) {
-                    d.CountIncrement();
+                    d.CountIncrement(e.GetEventId());
                     dayFound = true;
                     break;
                 }
             }
             if (!dayFound) {
                 TimeSpanEventData data = new TimeSpanEventData(date);
-                data.CountIncrement();
+                data.CountIncrement(e.GetEventId());
                 counts.add(data);
             }
         }

@@ -4,15 +4,22 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TimeSpanEventData {
 
     private Integer EventCount;
     private DateTime Date;
+    private List<UUID> EventIds;
 
     public TimeSpanEventData(DateTime date) {
         Date = date;
         EventCount = 0;
+        EventIds = new ArrayList<>();
+    }
+
+    public List<UUID> getEventIds() {
+        return EventIds;
     }
 
     public boolean equals(TimeSpanEventData data) {
@@ -37,8 +44,9 @@ public class TimeSpanEventData {
         return borders;
     }
 
-    public void CountIncrement() {
+    public void CountIncrement(UUID EventId) {
         EventCount++;
+        EventIds.add(EventId);
     }
 
     public int getYear() {

@@ -26,7 +26,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.AvrgScaleFa
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.BestEvent;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainDayTimeFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.CertainWeekDaysFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCount;
+import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCountFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongTimeAgoFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.TrackingEventsCountFact;
@@ -402,7 +402,7 @@ public final class FunctionApplicability  {
     }
 
     public static Fact DayWithLargestEventCountApplicability(List<TrackingV1> trackings) {
-        DayWithLargestEventCount fact = new DayWithLargestEventCount(trackings);
+        DayWithLargestEventCountFact fact = new DayWithLargestEventCountFact(trackings);
         fact.calculateData();
         if (!fact.IsFactSignificant()) return null;
         return fact;
