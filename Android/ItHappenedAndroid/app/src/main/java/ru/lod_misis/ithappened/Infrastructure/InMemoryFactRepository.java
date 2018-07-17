@@ -119,10 +119,15 @@ public class InMemoryFactRepository {
         addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.certainWeekDaysApplicability(trackingV1);
-        addFactToOneTrackingFactCollection(factToAdd);
+        if (factToAdd != null) {
+            factToAdd.calculateData();
+            oneTrackingFactCollection.add(factToAdd);
+        }
 
         factToAdd = FunctionApplicability.certainDayTimeApplicability(trackingV1);
-        addFactToOneTrackingFactCollection(factToAdd);
+        if (factToAdd != null) {
+            oneTrackingFactCollection.add(factToAdd);
+        }
 
         factToAdd = FunctionApplicability.longTimeAgoApplicability(trackingV1);
         addFactToOneTrackingFactCollection(factToAdd);
