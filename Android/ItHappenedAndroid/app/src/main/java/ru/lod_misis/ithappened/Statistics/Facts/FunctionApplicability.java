@@ -221,23 +221,25 @@ public final class FunctionApplicability  {
         LongTimeAgoFact fact = new LongTimeAgoFact(trackingV1);
         fact.calculateData();
 
-        Double daysSinceLastEvent = fact.getDaysSinceLastEvent();
-        if(daysSinceLastEvent <= 7) return null;
-
         List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventCollection());
         if(eventV1Collection.size() <= 2) return null;
 
-        eventV1Collection = sortEventCollectionByDate(eventV1Collection);
+        Double daysSinceLastEvent = fact.getDaysSinceLastEvent();
+        if(daysSinceLastEvent <= 7) return null;
 
-        for(int i = 0; i < eventV1Collection.size() - 1; i++){
-            Date firstEventDate = eventV1Collection.get(i).GetEventDate();
-            Date secondEventDate = eventV1Collection.get(i+1).GetEventDate();
+        Date firstEventDate = eventV1Collection.get(0).GetEventDate();
+        Date lastEventDate = firstEventDate;
 
-            double interval = (double)(secondEventDate.getTime() - firstEventDate.getTime())/
-                    1000/60/60/24;
-
-            if(daysSinceLastEvent <= interval) return null;
+        for(EventV1 event : eventV1Collection){
+            if (firstEventDate.after(event.GetEventDate()))
+                firstEventDate = event.GetEventDate();
+            if (lastEventDate.before(event.GetEventDate()))
+                lastEventDate = event.GetEventDate();
         }
+
+        long interval = lastEventDate.getTime() - firstEventDate.getTime();
+        if (daysSinceLastEvent <= 3 * interval/1000/60/60/24)
+            return null;
 
         return fact;
     }
