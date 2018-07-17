@@ -28,12 +28,12 @@ public class RatingTrendChangingFact extends Fact {
     private Double NewAverange;
 
     public RatingTrendChangingFact(TrackingV1 tracking) {
-        TrackingName = tracking.GetTrackingName();
+        TrackingName = tracking.getTrackingName();
         trackingId = tracking.GetTrackingID();
         Events = new ArrayList<>();
         NewAverange = 0.0;
         double sum = 0.0;
-        for (EventV1 e: tracking.GetEventCollection()) {
+        for (EventV1 e: tracking.getEventV1Collection()) {
             if (!e.isDeleted() && e.GetRating() != null) {
                 Events.add(e);
                 sum += e.GetRating().getRating();

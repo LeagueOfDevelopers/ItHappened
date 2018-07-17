@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -25,7 +24,7 @@ public class WeekWithLargestEventCountFact extends Fact {
         Events = new ArrayList<>();
         for (TrackingV1 t: trackings) {
             if (t.isDeleted()) continue;
-            for (EventV1 e: t.GetEventCollection()) {
+            for (EventV1 e: t.getEventV1Collection()) {
                 if (e.isDeleted()) continue;
                 Events.add(e);
             }
@@ -88,7 +87,7 @@ public class WeekWithLargestEventCountFact extends Fact {
         Collections.sort(copy, new Comparator<EventV1>() {
             @Override
             public int compare(EventV1 event, EventV1 t1) {
-                return t1.GetEventDate().compareTo(event.GetEventDate());
+                return event.GetEventDate().compareTo(t1.GetEventDate());
             }
         });
         return copy;

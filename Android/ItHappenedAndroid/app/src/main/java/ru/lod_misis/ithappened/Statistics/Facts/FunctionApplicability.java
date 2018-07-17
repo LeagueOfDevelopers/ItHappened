@@ -382,7 +382,7 @@ public final class FunctionApplicability  {
 
     public static Fact FrequencyTrendChangingFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
-        if (CheckFrequencyEventCollection(tracking.GetEventCollection())) {
+        if (CheckFrequencyEventCollection(tracking.getEventV1Collection())) {
             FrequencyTrendChangingFact fact = new FrequencyTrendChangingFact(tracking);
             fact.calculateData();
             if (fact.IsTrendDeltaSignificant()) factToReturn = fact;

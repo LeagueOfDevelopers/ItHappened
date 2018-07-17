@@ -23,10 +23,10 @@ public class LongestBreakFact extends Fact {
     private BreakData LongestBreak;
 
     public LongestBreakFact(TrackingV1 tracking) {
-        TrackingName = tracking.GetTrackingName();
+        TrackingName = tracking.getTrackingName();
         trackingId = tracking.GetTrackingID();
         List<EventV1> events = new ArrayList<>();
-        for (EventV1 e: tracking.GetEventCollection()) {
+        for (EventV1 e: tracking.getEventV1Collection()) {
             if (!e.isDeleted()) events.add(e);
         }
         Events = events;

@@ -29,8 +29,8 @@ public class WeekWithLargestEventCountUnitTest {
 
         Assert.assertTrue(uuids.size() == 9);
         int i = 0;
-        for (UUID uuid: uuids) {
-            Assert.assertTrue(uuid.toString().equals(t.getEventV1Collection().get(i).getEventId().toString()));
+        for (UUID uuid : uuids) {
+            Assert.assertEquals(uuid.toString(), t.getEventV1Collection().get(i).GetEventId().toString());
             i++;
         }
     }
