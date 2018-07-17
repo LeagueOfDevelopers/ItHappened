@@ -2,6 +2,7 @@ package ru.lod_misis.ithappened.Recyclers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -221,7 +222,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 entries.add(new Entry(percentage.get(i).floatValue(), i));
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
-                            pieDataSet.setColors(PASTEL_COLORS);
+                            pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
                             pieDataSet.setValueTextSize(10);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);
@@ -261,7 +262,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 entries.add(new Entry(percentage.get(i).floatValue(), i));
                             }
                             PieDataSet pieDataSet = new PieDataSet(entries, null);
-                            pieDataSet.setColors(PASTEL_COLORS);
+                            pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
                             pieDataSet.setValueTextSize(15);
                             PieData pieData = new PieData(weeksTitles, pieDataSet);
                             pieChart.setData(pieData);

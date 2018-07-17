@@ -111,14 +111,14 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
                     }
                 }
-//                , new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        userActionView.hideLoading();
-//                        Log.e("Reg", "" + throwable);
-//                        userActionView.showMessage("Разорвано подключение!");
-//                    }
-//                }
+                , new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        userActionView.hideLoading();
+                        Log.e("Reg", "" + throwable);
+                        userActionView.showMessage("Разорвано подключение!");
+                    }
+                }
                 );
 
     }
@@ -182,39 +182,6 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                 Log.e("Токен упал", throwable + "");
                             }
                         });
-    }
-
-    public void testSync(){
-        userActionView.startMenuAnimation();
-        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("Кек",
-                Calendar.getInstance().getTime(),
-                StaticInMemoryRepository.getInstance().GetTrackingCollection());
-
-        ItHappenedApplication.
-                getApi().
-                TestSync("kennytmb.3run@gmail.com", synchronizationRequest)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<SynchronizationRequest>() {
-                    @Override
-                    public void call(SynchronizationRequest request) {
-                        List<TrackingV1> trackingV1s = request.getTrackingV1Collection();
-                        /*for (TrackingV1 trackingV1 : trackingV1s) {
-                            if (trackingV1.getColor() == null)
-                                trackingV1.setColor("11119017");
-                        }*/
-                        saveDataToDb(trackingV1s);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("Nick", synchronizationRequest.getUserNickname());
-                        editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
-                        userActionView.finishActivity();
-                        userActionView.stopMenuAnimation();
-                        userActionView.startActivity();
-                        YandexMetrica.reportEvent("Пользователь синхронизировался");
-                        userActionView.showMessage("Синхронизировано");
-                        userActionView.stopMenuAnimation();
-                    }
-                });
     }
 
     @Override
