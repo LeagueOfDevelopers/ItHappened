@@ -123,7 +123,6 @@ public class InMemoryFactRepository {
 
         factToAdd = FunctionApplicability.certainWeekDaysApplicability(trackingV1);
         if (factToAdd != null) {
-            factToAdd.calculateData();
             oneTrackingFactCollection.add(factToAdd);
         }
 
