@@ -26,7 +26,7 @@ public class DayWithLargestEventCountFact extends Fact {
         Events = new ArrayList<>();
         for (TrackingV1 t: trackings) {
             if (t.isDeleted()) continue;
-            for (EventV1 e: t.GetEventCollection()) {
+            for (EventV1 e: t.getEventV1Collection()) {
                 if (e.isDeleted()) continue;
                 Events.add(e);
             }

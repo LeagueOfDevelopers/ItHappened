@@ -26,8 +26,8 @@ public class BinaryCorrelationFact extends Fact {
     public BinaryCorrelationFact(TrackingV1 tracking1, TrackingV1 tracking2) {
         FirstTrackingName = tracking1.GetTrackingName();
         SecondTrackingName = tracking2.GetTrackingName();
-        BinaryData = DataSetBuilder.BuildBooleanDataset(tracking1.GetEventCollection(),
-                tracking2.GetEventCollection(), DaysToTrack);
+        BinaryData = DataSetBuilder.BuildBooleanDataset(tracking1.getEventV1Collection(),
+                tracking2.getEventV1Collection(), DaysToTrack);
     }
 
     public BinaryCorrelationFact(DataSet<Integer> binaryData) {

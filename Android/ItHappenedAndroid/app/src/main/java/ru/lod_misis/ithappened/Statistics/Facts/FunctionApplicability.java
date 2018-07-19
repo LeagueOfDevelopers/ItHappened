@@ -301,6 +301,8 @@ public final class FunctionApplicability  {
         List<Fact> facts = new ArrayList<>();
         for (int i = 0; i < trackings.size() - 1; i++) {
             for (int j = i + 1; j < trackings.size(); j++) {
+                if (trackings.get(i).isDeleted()) break;
+                if (trackings.get(j).isDeleted()) continue;
                 if (CheckTrackingForBinaryData(trackings.get(i))
                         && CheckTrackingForBinaryData(trackings.get(j))) {
                     BinaryCorrelationFact fact = new BinaryCorrelationFact(trackings.get(i), trackings.get(j));
@@ -321,6 +323,8 @@ public final class FunctionApplicability  {
         List<Fact> facts = new ArrayList<>();
         for (int i = 0; i < trackings.size() - 1; i++) {
             for (int j = i + 1; j < trackings.size(); j++) {
+                if (trackings.get(i).isDeleted()) break;
+                if (trackings.get(j).isDeleted()) continue;
                 if (CheckTrackingForScaleData(trackings.get(i))
                         && CheckTrackingForScaleData(trackings.get(j))) {
                     ScaleCorrelationFact fact = new ScaleCorrelationFact(trackings.get(i), trackings.get(j));
@@ -342,6 +346,8 @@ public final class FunctionApplicability  {
         List<Fact> facts = new ArrayList<>();
         for (int i = 0; i < trackings.size() - 1; i++) {
             for (int j = i + 1; j < trackings.size(); j++) {
+                if (trackings.get(i).isDeleted()) break;
+                if (trackings.get(j).isDeleted()) continue;
                 if (CheckTrackingForMultinomialData(trackings.get(i))
                         && CheckTrackingForMultinomialData(trackings.get(j))) {
                     MultinomialCorrelationFact fact = new MultinomialCorrelationFact(trackings.get(i), trackings.get(j));
@@ -361,6 +367,7 @@ public final class FunctionApplicability  {
 
     public static Fact ScaleTrendChangingFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
+        if (tracking.isDeleted()) return null;
         if (tracking.GetScaleCustomization() != TrackingCustomization.None &&
                 CheckScaleEventCollection(tracking.GetEventCollection())) {
             ScaleTrendChangingFact fact = new ScaleTrendChangingFact(tracking);
@@ -372,7 +379,7 @@ public final class FunctionApplicability  {
 
     public static Fact RatingTrendChangingFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
-
+        if (tracking.isDeleted()) return null;
         if (tracking.GetRatingCustomization() != TrackingCustomization.None &&
                 CheckRatingEventCollection(tracking.GetEventCollection())) {
             RatingTrendChangingFact fact = new RatingTrendChangingFact(tracking);
@@ -384,7 +391,8 @@ public final class FunctionApplicability  {
 
     public static Fact FrequencyTrendChangingFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
-        if (CheckFrequencyEventCollection(tracking.GetEventCollection())) {
+        if (tracking.isDeleted()) return null;
+        if (CheckFrequencyEventCollection(tracking.getEventV1Collection())) {
             FrequencyTrendChangingFact fact = new FrequencyTrendChangingFact(tracking);
             fact.calculateData();
             if (fact.IsTrendDeltaSignificant()) factToReturn = fact;
@@ -394,7 +402,7 @@ public final class FunctionApplicability  {
 
     public static Fact LongestBreakFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
-
+        if (tracking.isDeleted()) return null;
         if (tracking.GetEventCollection().size() >= 10) {
             LongestBreakFact fact = new LongestBreakFact(tracking);
             fact.calculateData();

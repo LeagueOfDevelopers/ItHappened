@@ -31,10 +31,10 @@ public class ScaleTrendChangingFact extends Fact {
     public ScaleTrendChangingFact(TrackingV1 tracking) {
         ScaleName = tracking.getScaleName();
         trackingId = tracking.GetTrackingID();
-        TrackingName = tracking.GetTrackingName();
+        TrackingName = tracking.getTrackingName();
         Events = new ArrayList<>();
         NewAverange = 0.0;
-        for (EventV1 e: tracking.GetEventCollection()) {
+        for (EventV1 e: tracking.getEventV1Collection()) {
             if (!e.isDeleted() && e.GetScale() != null) {
                 Events.add(e);
                 NewAverange += e.GetScale();

@@ -25,8 +25,8 @@ public class MultinomialCorrelationFact extends Fact {
     public MultinomialCorrelationFact(TrackingV1 tracking1, TrackingV1 tracking2) {
         FirstTrackingName = tracking1.GetTrackingName();
         SecondTrackingName = tracking2.GetTrackingName();
-        MultinomialData = DataSetBuilder.BuildMultinomialDataset(tracking1.GetEventCollection(),
-                tracking2.GetEventCollection(), DaysToTrack);
+        MultinomialData = DataSetBuilder.BuildMultinomialDataset(tracking1.getEventV1Collection(),
+                tracking2.getEventV1Collection(), DaysToTrack);
     }
 
     public MultinomialCorrelationFact(DataSet<Integer> mult) {

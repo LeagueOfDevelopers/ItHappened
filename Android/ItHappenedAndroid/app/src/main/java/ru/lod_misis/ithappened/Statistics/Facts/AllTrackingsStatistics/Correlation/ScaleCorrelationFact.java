@@ -28,8 +28,8 @@ public class ScaleCorrelationFact extends Fact {
         FirstTrackingScaleName = tracking1.getScaleName();
         SecondTrackingName = tracking2.GetTrackingName();
         SecondTrackingScaleName = tracking2.getScaleName();
-        ScaleData = DataSetBuilder.BuildDoubleDataSet(tracking1.GetEventCollection(),
-                tracking2.GetEventCollection(), DaysToTrack);
+        ScaleData = DataSetBuilder.BuildDoubleDataSet(tracking1.getEventV1Collection(),
+                tracking2.getEventV1Collection(), DaysToTrack);
     }
 
     public ScaleCorrelationFact(DataSet<Double> scale) {

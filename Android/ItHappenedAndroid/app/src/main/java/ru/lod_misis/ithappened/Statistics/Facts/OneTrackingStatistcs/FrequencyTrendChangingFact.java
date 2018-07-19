@@ -32,10 +32,10 @@ public class FrequencyTrendChangingFact extends Fact {
 
     public FrequencyTrendChangingFact(TrackingV1 tracking){
         trackingId = tracking.GetTrackingID();
-        TrackingName = tracking.GetTrackingName();
+        TrackingName = tracking.getTrackingName();
         Events = new ArrayList<>();
         NewAverange = 0.0;
-        for (EventV1 e: tracking.GetEventCollection()) {
+        for (EventV1 e: tracking.getEventV1Collection()) {
             if (!e.isDeleted()) {
                 Events.add(e);
             }
