@@ -22,7 +22,6 @@ public interface ItHappenedApi {
     @GET("synchronization/refresh/{refreshToken}")
     Observable<RefreshModel> Refresh(@Path("refreshToken") String refreshToken);
 
-    @POST("synchronization/{UserId}")
-    Observable<SynchronizationRequest> TestSync(@Path("UserId") String userId, @Body SynchronizationRequest synchronizationRequest);
-
+    @POST("synchronization/statistics/test")
+    Observable<SynchronizationRequest> getTestData();
 }

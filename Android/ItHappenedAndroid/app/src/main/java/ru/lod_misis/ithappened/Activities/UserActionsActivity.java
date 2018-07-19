@@ -293,11 +293,7 @@ public class UserActionsActivity extends AppCompatActivity
         if(id == R.id.synchronisation){
             syncItem = item;
             item.setCheckable(false);
-            if(getApplicationContext().getSharedPreferences("MAIN_KEYS",Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")){
-                Toast.makeText(getApplicationContext(),"Привяжите аккаунт к GOOGLE для синхронизации", Toast.LENGTH_SHORT).show();
-            }else {
                 userActionPresenter.syncronization();
-            }
         }
 
            if(id == R.id.proile_settings){

@@ -134,47 +134,27 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
         userActionView.startMenuAnimation();
 
         ItHappenedApplication.getApi()
-                .Refresh(sharedPreferences.getString("refreshToken", ""))
+                .getTestData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RefreshModel>() {
+                .subscribe(new Action1<SynchronizationRequest>() {
                                @Override
-                               public void call(RefreshModel model) {
-                                   SharedPreferences.Editor editor = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).edit();
-                                   editor.putString("Token", model.getAccessToken());
-                                   editor.putString("refreshToken", model.getRefreshToken());
-                                   editor.commit();
-
-                                   final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
-                                           new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
-                                           StaticInMemoryRepository.getInstance().GetTrackingCollection());
-
-                                   ItHappenedApplication.
-                                           getApi().
-                                           SynchronizeData("Bearer " + sharedPreferences.getString("Token", ""),
-                                                   synchronizationRequest)
-                                           .subscribeOn(Schedulers.io())
-                                           .observeOn(AndroidSchedulers.mainThread())
-                                           .subscribe(new Action1<SynchronizationRequest>() {
-                                               @Override
-                                               public void call(SynchronizationRequest request) {
+                               public void call(SynchronizationRequest request) {
                                                    List<TrackingV1> trackingV1s = request.getTrackingV1Collection();
                                                    for (TrackingV1 trackingV1 : trackingV1s) {
-                                                       if (trackingV1.getColor() == null)
+                                                       if (trackingV1.getColor().isEmpty())
                                                            trackingV1.setColor("11119017");
                                                    }
                                                    saveDataToDb(trackingV1s);
                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                   editor.putString("Nick", synchronizationRequest.getUserNickname());
-                                                   editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
+                                                   editor.putString("Nick", request.getUserNickname());
+                                                   editor.putLong("NickDate", request.getNicknameDateOfChange().getTime());
                                                    userActionView.finishActivity();
                                                    userActionView.stopMenuAnimation();
                                                    userActionView.startActivity();
                                                    YandexMetrica.reportEvent("Пользователь синхронизировался");
                                                    userActionView.showMessage("Синхронизировано");
                                                }
-                                           });
-                               }
                            },
                         new Action1<Throwable>() {
                             @Override
