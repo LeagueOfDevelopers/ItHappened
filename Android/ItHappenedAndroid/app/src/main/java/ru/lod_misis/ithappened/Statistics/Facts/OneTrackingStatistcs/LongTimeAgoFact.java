@@ -31,7 +31,7 @@ public class LongTimeAgoFact extends Fact{
     public void calculateData() {
 
         List<EventV1> eventV1Collection = new ArrayList<>();
-        for(EventV1 eventV1 : trackingV1.GetEventCollection())
+        for(EventV1 eventV1 : trackingV1.GetEventHistory())
         {
             if (!eventV1.isDeleted())
                 eventV1Collection.add(eventV1);

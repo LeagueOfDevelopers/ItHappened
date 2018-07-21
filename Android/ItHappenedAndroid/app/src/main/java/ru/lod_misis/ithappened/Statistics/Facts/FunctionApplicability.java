@@ -84,7 +84,7 @@ public final class FunctionApplicability  {
     {
         if (trackingV1.GetRatingCustomization() == TrackingCustomization.None) return null;
 
-        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventCollection());
+        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventHistory());
 
         int eventsWithRating = 0;
         for (EventV1 eventV1 : eventV1Collection) {
@@ -99,7 +99,7 @@ public final class FunctionApplicability  {
     {
         if (trackingV1.GetScaleCustomization() == TrackingCustomization.None) return null;
 
-        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventCollection());
+        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventHistory());
 
         int eventsWithScale = 0;
         for (EventV1 eventV1 : eventV1Collection) {
@@ -114,7 +114,7 @@ public final class FunctionApplicability  {
     {
         if (trackingV1.GetScaleCustomization() == TrackingCustomization.None) return null;
 
-        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventCollection());
+        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventHistory());
 
         int eventsWithScale = 0;
         for (EventV1 eventV1 : eventV1Collection) {
@@ -192,7 +192,7 @@ public final class FunctionApplicability  {
 
     public static Fact certainWeekDaysApplicability(TrackingV1 trackingV1)
     {
-        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventCollection());
+        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventHistory());
         if(eventV1Collection.size() <= 7) return null;
 
         CertainWeekDaysFact fact = new CertainWeekDaysFact(trackingV1);
@@ -205,7 +205,7 @@ public final class FunctionApplicability  {
 
     public static Fact certainDayTimeApplicability(TrackingV1 trackingV1)
     {
-        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventCollection());
+        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventHistory());
         if(eventV1Collection.size() <= 7) return null;
 
         CertainDayTimeFact fact = new CertainDayTimeFact(trackingV1);
@@ -221,7 +221,7 @@ public final class FunctionApplicability  {
         LongTimeAgoFact fact = new LongTimeAgoFact(trackingV1);
         fact.calculateData();
 
-        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventCollection());
+        List<EventV1> eventV1Collection = removeDeletedEvents(trackingV1.GetEventHistory());
         if(eventV1Collection.size() <= 2) return null;
 
         Double daysSinceLastEvent = fact.getDaysSinceLastEvent();
@@ -297,14 +297,31 @@ public final class FunctionApplicability  {
         return eventV1Collection;
     }
 
+    private static DataValidator validator = new DataValidator();
+    // Минимальный размер валидного набора данных для расчета бинарной корреляции
+    private static final int minBinaryCorrelationDataSetSize = 40;
+    // Минимальный размер валидного набора данных для расчета корреляции между скалярными значениями
+    private static final int minScaleCorrelationDataSetSize = 4;
+    // Минимальный размер валидного набора данных для расчета корреляции между рейтингом
+    private static final int minRatingCorrelationDataSetSize = 4;
+    // Минимальный размер валидного набора данных для расчета факта изменения тренда шкалы
+    private static final int minScaleTrendAnalysisDataSetSize = 4;
+    // Минимальный размер валидного набора данных для расчета факта изменения тренда рейтинга
+    private static final int minRatingTrendAnalysisDataSetSize = 4;
+    // Минимальный размер валидного набора данных для расчета факта изменения тренда частоты
+    private static final int minFrequencyTrendAnalysisDataSetSize = 4;
+    // Минимальный размер валидного набора данных для расчета факта самого долгого перерыва
+    private static final int minLongestBreakApplicabilityFactCount = 10;
+
     public static List<Fact> BinaryCorrelationFactApplicability(List<TrackingV1> trackings) {
         List<Fact> facts = new ArrayList<>();
         for (int i = 0; i < trackings.size() - 1; i++) {
             for (int j = i + 1; j < trackings.size(); j++) {
-                if (trackings.get(i).isDeleted()) break;
-                if (trackings.get(j).isDeleted()) continue;
-                if (CheckTrackingForBinaryData(trackings.get(i))
-                        && CheckTrackingForBinaryData(trackings.get(j))) {
+                boolean firstCondition = validator.CheckTrackingForBinaryData(trackings.get(i),
+                        minBinaryCorrelationDataSetSize);
+                boolean secondCondition = validator.CheckTrackingForBinaryData(trackings.get(j),
+                        minBinaryCorrelationDataSetSize);
+                if (firstCondition && secondCondition) {
                     BinaryCorrelationFact fact = new BinaryCorrelationFact(trackings.get(i), trackings.get(j));
                     fact.calculateData();
                     if (fact.IsBoolCorrSignificant()) facts.add(fact);
@@ -314,19 +331,15 @@ public final class FunctionApplicability  {
         return facts;
     }
 
-    private static boolean CheckTrackingForBinaryData(TrackingV1 tracking) {
-        return tracking.GetEventCollection().size() >= 40
-                && !tracking.isDeleted();
-    }
-
     public static List<Fact> ScaleCorrelationFactApplicability(List<TrackingV1> trackings) {
         List<Fact> facts = new ArrayList<>();
         for (int i = 0; i < trackings.size() - 1; i++) {
             for (int j = i + 1; j < trackings.size(); j++) {
-                if (trackings.get(i).isDeleted()) break;
-                if (trackings.get(j).isDeleted()) continue;
-                if (CheckTrackingForScaleData(trackings.get(i))
-                        && CheckTrackingForScaleData(trackings.get(j))) {
+                boolean firstCondition = validator.CheckTrackingForScaleData(trackings.get(i),
+                        minScaleCorrelationDataSetSize);
+                boolean secondCondition = validator.CheckTrackingForScaleData(trackings.get(j),
+                        minScaleCorrelationDataSetSize);
+                if (firstCondition && secondCondition) {
                     ScaleCorrelationFact fact = new ScaleCorrelationFact(trackings.get(i), trackings.get(j));
                     fact.calculateData();
                     if (fact.IsDoubleCorrSignificant()) facts.add(fact);
@@ -336,20 +349,15 @@ public final class FunctionApplicability  {
         return facts;
     }
 
-    private static boolean CheckTrackingForScaleData(TrackingV1 tracking) {
-        return tracking.GetEventCollection().size() >= 4
-                && !tracking.isDeleted()
-                && tracking.GetScaleCustomization() != TrackingCustomization.None;
-    }
-
     public static List<Fact> MultinomialCorrelationApplicability(List<TrackingV1> trackings) {
         List<Fact> facts = new ArrayList<>();
         for (int i = 0; i < trackings.size() - 1; i++) {
             for (int j = i + 1; j < trackings.size(); j++) {
-                if (trackings.get(i).isDeleted()) break;
-                if (trackings.get(j).isDeleted()) continue;
-                if (CheckTrackingForMultinomialData(trackings.get(i))
-                        && CheckTrackingForMultinomialData(trackings.get(j))) {
+                boolean firstCondition = validator.CheckTrackingForRatingData(trackings.get(i),
+                        minRatingCorrelationDataSetSize);
+                boolean secondCondition = validator.CheckTrackingForRatingData(trackings.get(j),
+                        minRatingCorrelationDataSetSize);
+                if (firstCondition && secondCondition) {
                     MultinomialCorrelationFact fact = new MultinomialCorrelationFact(trackings.get(i), trackings.get(j));
                     fact.calculateData();
                     if (fact.IsMultinomialCorrSignificant()) facts.add(fact);
@@ -359,17 +367,13 @@ public final class FunctionApplicability  {
         return facts;
     }
 
-    private static boolean CheckTrackingForMultinomialData(TrackingV1 tracking) {
-        return tracking.GetEventCollection().size() >= 4
-                && !tracking.isDeleted()
-                && tracking.GetRatingCustomization() != TrackingCustomization.None;
-    }
-
     public static Fact ScaleTrendChangingFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
         if (tracking.isDeleted()) return null;
-        if (tracking.GetScaleCustomization() != TrackingCustomization.None &&
-                CheckScaleEventCollection(tracking.GetEventCollection())) {
+        boolean firstCondition = tracking.GetScaleCustomization() != TrackingCustomization.None;
+        boolean secondCondition = validator.CheckScaleEventCollection(tracking.GetEventHistory(),
+                minScaleTrendAnalysisDataSetSize);
+        if (firstCondition && secondCondition) {
             ScaleTrendChangingFact fact = new ScaleTrendChangingFact(tracking);
             fact.calculateData();
             if (fact.IsTrendDeltaSignificant()) factToReturn = fact;
@@ -380,8 +384,10 @@ public final class FunctionApplicability  {
     public static Fact RatingTrendChangingFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
         if (tracking.isDeleted()) return null;
-        if (tracking.GetRatingCustomization() != TrackingCustomization.None &&
-                CheckRatingEventCollection(tracking.GetEventCollection())) {
+        boolean firstCondition = tracking.GetRatingCustomization() != TrackingCustomization.None;
+        boolean secondCondition = validator.CheckRatingEventCollection(tracking.GetEventHistory(),
+                minRatingTrendAnalysisDataSetSize);
+        if (firstCondition && secondCondition) {
             RatingTrendChangingFact fact = new RatingTrendChangingFact(tracking);
             fact.calculateData();
             if (fact.IsTrendDeltaSignificant()) factToReturn = fact;
@@ -392,7 +398,9 @@ public final class FunctionApplicability  {
     public static Fact FrequencyTrendChangingFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
         if (tracking.isDeleted()) return null;
-        if (CheckFrequencyEventCollection(tracking.getEventV1Collection())) {
+        boolean condition = validator.CheckEventsForNotDeletedAndDate(tracking.GetEventHistory(),
+                minFrequencyTrendAnalysisDataSetSize);
+        if (condition) {
             FrequencyTrendChangingFact fact = new FrequencyTrendChangingFact(tracking);
             fact.calculateData();
             if (fact.IsTrendDeltaSignificant()) factToReturn = fact;
@@ -403,7 +411,9 @@ public final class FunctionApplicability  {
     public static Fact LongestBreakFactApplicability(TrackingV1 tracking) {
         Fact factToReturn = null;
         if (tracking.isDeleted()) return null;
-        if (tracking.GetEventCollection().size() >= 10) {
+        boolean condition = validator.CheckEventsForNotDeletedAndDate(tracking.GetEventHistory(),
+                minLongestBreakApplicabilityFactCount);
+        if (condition) {
             LongestBreakFact fact = new LongestBreakFact(tracking);
             fact.calculateData();
             if (fact.getLongestBreak() != null) factToReturn = fact;
@@ -423,34 +433,5 @@ public final class FunctionApplicability  {
         fact.calculateData();
         if (!fact.IsFactSignificant()) return null;
         return fact;
-    }
-
-    private static boolean CheckScaleEventCollection(List<EventV1> events) {
-        int count = 0;
-        int limitEventCount = 5; //Менять в случае, если мы хотим допустить
-        // применимость вычисления тренда для меньшего размера коллекции
-        for (EventV1 e: events) {
-            if (!e.isDeleted() && e.GetScale() != null) count++;
-        }
-        return count >= limitEventCount;
-    }
-
-    private static boolean CheckRatingEventCollection(List<EventV1> events) {
-        int count = 0;
-        int limitEventCount = 5; //Менять в случае, если мы хотим допустить
-        // применимость вычисления тренда для меньшего размера коллекции
-        for (EventV1 e: events) {
-            if (!e.isDeleted() && e.GetRating() != null) count++;
-        }
-        return count >= limitEventCount;
-    }
-
-    private static boolean CheckFrequencyEventCollection(List<EventV1> events) {
-        int count = 0;
-        int limitEventCount = 5;
-        for (EventV1 e: events) {
-            if (!e.isDeleted()) count++;
-        }
-        return count >= limitEventCount;
     }
 }

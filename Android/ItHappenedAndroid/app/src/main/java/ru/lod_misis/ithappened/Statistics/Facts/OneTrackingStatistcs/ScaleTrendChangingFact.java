@@ -26,23 +26,34 @@ public class ScaleTrendChangingFact extends Fact {
     private String ScaleName;
     private List<EventV1> Events;
     private TrendChangingPoint PointOfChange;
-    private Double NewAverange;
+    private Double NewAverage;
 
     public ScaleTrendChangingFact(TrackingV1 tracking) {
         ScaleName = tracking.getScaleName();
         trackingId = tracking.GetTrackingID();
         TrackingName = tracking.getTrackingName();
         Events = new ArrayList<>();
-        NewAverange = 0.0;
-        for (EventV1 e: tracking.getEventV1Collection()) {
-            if (!e.isDeleted() && e.GetScale() != null) {
-                Events.add(e);
-                NewAverange += e.GetScale();
-            }
+        NewAverage = 0.0;
+        Events = SelectNotDeletedEventsWithScaleInThePast(tracking.getEventV1Collection());
+        for (EventV1 e: Events) {
+            NewAverage += e.GetScale();
         }
-        NewAverange = NewAverange / Events.size();
+        NewAverage = NewAverage / Events.size(); // Размер коллекции проверяется в функции применимости
     }
     // Если событие не удалено и содержит значение шкалы, добавляем его
+
+    private static List<EventV1> SelectNotDeletedEventsWithScaleInThePast(List<EventV1> events) {
+        List<EventV1> validEvents = new ArrayList<>();
+        for (EventV1 e: events) {
+            if (e != null
+                    && !e.isDeleted()
+                    && new DateTime(e.getEventDate()).isBefore(DateTime.now())
+                    && e.getScale() != null) {
+                validEvents.add(e);
+            }
+        }
+        return validEvents;
+    }
 
     @Override
     public void calculateData() {
@@ -60,7 +71,7 @@ public class ScaleTrendChangingFact extends Fact {
                 .toStandardDays() // Достаем дни
                 .getDays();
         if (days != 0)
-            priority = Math.abs(NewAverange - PointOfChange.getAverangeValue()) * 10 / days;
+            priority = Math.abs(NewAverage - PointOfChange.getAverangeValue()) * 10 / days;
         // Достает целочисленное значение из обьекта Days
         else
             priority = Double.MAX_VALUE;
@@ -73,11 +84,11 @@ public class ScaleTrendChangingFact extends Fact {
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.BuildScaleTrendReport(PointOfChange, NewAverange, TrackingName, ScaleName);
+        return DescriptionBuilder.BuildScaleTrendReport(PointOfChange, NewAverage, TrackingName, ScaleName);
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return PointOfChange.getAverangeValue() - NewAverange != 0;
+        return PointOfChange.getAverangeValue() - NewAverage != 0;
     }
 
     private void CalculateTrendDelta() {
