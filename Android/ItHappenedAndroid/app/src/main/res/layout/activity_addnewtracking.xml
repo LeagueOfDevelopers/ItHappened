@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true">
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="48dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,6 +27,7 @@
                 android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                 android:paddingRight="@dimen/padding_left_and_right_for_texts"
                 android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:layout_marginLeft="4dp"
                 android:text="Название:"
                 android:textSize="16sp" />
 
@@ -34,10 +36,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/titleHint"
-
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:layout_marginTop="@dimen/inner_margin_between_components"
-                android:background="@drawable/custom_edit_text"
-                android:elevation="40dp">
+                android:background="@drawable/custom_edit_text">
 
                 <EditText
                     android:id="@+id/editTitleOfTracking"
@@ -65,6 +67,7 @@
                 android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                 android:paddingRight="@dimen/padding_left_and_right_for_texts"
                 android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:layout_marginLeft="4dp"
                 android:text="Рейтинг:"
                 android:textSize="16sp" />
 
@@ -89,6 +92,8 @@
                 android:layout_height="40dp"
                 android:layout_below="@id/addNewRatingHint"
                 android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
@@ -159,6 +164,7 @@
                 android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                 android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:layout_marginLeft="4dp"
                 android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="Комментарий:"
                 android:textSize="16sp" />
@@ -182,6 +188,8 @@
                 android:layout_height="40dp"
                 android:layout_below="@id/addNewCommentHint"
                 android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/custom_edit_text">
 
                 <LinearLayout
@@ -250,6 +258,7 @@
                 android:layout_marginTop="@dimen/outer_margin"
                 android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:layout_marginLeft="4dp"
                 android:paddingRight="@dimen/padding_left_and_right_for_texts"
                 android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="Шкала:"
@@ -275,6 +284,8 @@
                 android:layout_height="40dp"
                 android:layout_below="@id/addNewScaleHint"
                 android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
@@ -342,6 +353,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewScale"
                 android:layout_marginTop="@dimen/outer_margin"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:layout_marginLeft="4dp"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="Измерять в:"
                 android:textSize="16sp" />
 
@@ -351,6 +367,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/scaleTypeHint"
                 android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
@@ -374,6 +392,8 @@
                 android:layout_below="@+id/scaleTypeContainer"
                 android:layout_marginBottom="12dp"
                 android:layout_marginTop="@dimen/outer_margin"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 

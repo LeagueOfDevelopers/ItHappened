@@ -43,8 +43,11 @@ public class DescriptionBuilderUnitTest {
         fact2.calculateData();
         fact3.calculateData();
 
+        String descr1 = fact1.textDescription();
+        String descr2 = fact2.textDescription();
+        String descr3 = fact3.textDescription();
         Assert.assertTrue(fact1.textDescription().equals("C маленькой вероятностью при увеличении количества килограммы в событии я поел мороженного происходит увеличение количества килограммы в событии я потолстел."));
-        Assert.assertTrue(fact2.textDescription().equals("C большой вероятностью при увеличении числа событий я поел мороженного происходит увеличение числа событий я потолстел."));
+        Assert.assertTrue(fact2.textDescription().equals("C средней вероятностью при увеличении числа событий я поел мороженного происходит увеличение числа событий я потолстел."));
         Assert.assertTrue(fact3.textDescription().equals(""));
     }
 
@@ -139,7 +142,7 @@ public class DescriptionBuilderUnitTest {
         for (int i = 0; i < data.size(); i++) {
             EventV1 event = new EventV1();
             event.SetScale(data.get(i));
-            event.setEventDate(new Date(2000, i / 30 + 1, i % 30 + dayseed));
+            event.setEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1 + dayseed, 0, 0).toDate());
             tracking.AddEvent(event);
         }
         return tracking;

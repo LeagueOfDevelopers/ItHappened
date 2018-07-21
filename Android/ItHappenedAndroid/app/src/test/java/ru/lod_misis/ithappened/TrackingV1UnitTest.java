@@ -31,7 +31,7 @@ public class TrackingV1UnitTest {
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate,1.1, null , null);
         trackingV1.AddEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventCollection();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -48,7 +48,7 @@ public class TrackingV1UnitTest {
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, 1.1, null, null);
         trackingV1.AddEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventCollection();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -133,7 +133,7 @@ public class TrackingV1UnitTest {
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null);
         trackingV1.AddEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventCollection();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -152,7 +152,7 @@ public class TrackingV1UnitTest {
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null);
         trackingV1.AddEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventCollection();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -236,7 +236,7 @@ public class TrackingV1UnitTest {
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment);
         trackingV1.AddEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventCollection();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -254,7 +254,7 @@ public class TrackingV1UnitTest {
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment);
         trackingV1.AddEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventCollection();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -438,7 +438,7 @@ public class TrackingV1UnitTest {
         trackingV1.AddEvent(eventV1);
         trackingV1.EditEvent(eventId, 2.0, null, null, null);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventCollection();
+        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
         Assert.assertEquals(editedEventV1.GetScale(), newEventCount);
@@ -463,7 +463,7 @@ public class TrackingV1UnitTest {
         trackingV1.AddEvent(eventV1);
         trackingV1.EditEvent(eventId, null, newEventRating, null, null);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventCollection();
+        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
         Assert.assertEquals(editedEventV1.GetRating(), newEventRating);
@@ -488,7 +488,7 @@ public class TrackingV1UnitTest {
         trackingV1.AddEvent(eventV1);
         trackingV1.EditEvent(eventId, null, null, newEventComment, null);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventCollection();
+        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
         Assert.assertEquals(editedEventV1.GetComment(), newEventComment);
@@ -513,7 +513,7 @@ public class TrackingV1UnitTest {
         trackingV1.AddEvent(eventV1);
         trackingV1.EditEvent(eventId, null, null, null, newDate);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventCollection();
+        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
         Assert.assertEquals(editedEventV1.GetEventDate(), newDate);

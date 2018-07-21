@@ -5,7 +5,10 @@
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
-        android:layout_margin="@dimen/outer_margin"
+        android:layout_marginTop="@dimen/padding_up_down_for_cards"
+        android:layout_marginLeft="@dimen/outer_margin"
+        android:layout_marginRight="@dimen/outer_margin"
+        android:layout_marginBottom="@dimen/inner_margin_between_components"
         card_view:cardBackgroundColor="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

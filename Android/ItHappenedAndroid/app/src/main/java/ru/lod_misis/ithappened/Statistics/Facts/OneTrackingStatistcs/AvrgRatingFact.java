@@ -24,7 +24,7 @@ public class AvrgRatingFact extends Fact {
 
     public Double getAvrgValue(){
 
-        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
             if(!eventV1.GetStatus()){
                 eventV1Collection.add(eventV1);
             }

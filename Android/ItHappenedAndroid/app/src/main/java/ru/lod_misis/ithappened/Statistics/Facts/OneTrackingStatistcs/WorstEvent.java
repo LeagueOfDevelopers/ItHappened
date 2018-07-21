@@ -32,7 +32,7 @@ public class WorstEvent extends Fact {
     @Override
     public void calculateData() {
 
-        for(EventV1 eventV1 : trackingV1.GetEventCollection()){
+        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
             if(!eventV1.GetStatus() && eventV1.GetRating()!=null){
                 eventV1Collection.add(eventV1);
             }

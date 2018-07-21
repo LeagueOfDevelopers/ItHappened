@@ -291,7 +291,7 @@ public class TrackingRepository implements ITrackingRepository {
         realm.beginTransaction();
         List<EventV1> collection = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString()).findFirst()
-                .GetEventCollection();
+                .GetEventHistory();
         realm.commitTransaction();
 
         return realm.copyFromRealm(collection);
@@ -405,8 +405,8 @@ public class TrackingRepository implements ITrackingRepository {
 
         if (eventSourceCollection.size() == 0) {
             for (TrackingV1 trackingV1 : trackingV1Collection) {
-                if(trackingV1.GetEventCollection()!=null) {
-                    for (EventV1 event : trackingV1.GetEventCollection())
+                if(trackingV1.GetEventHistory()!=null) {
+                    for (EventV1 event : trackingV1.GetEventHistory())
                         eventSourceCollection.add(new EventSource(event));
                 }
             }

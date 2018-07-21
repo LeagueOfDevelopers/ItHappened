@@ -33,7 +33,7 @@ public class MostFrequentEventFact extends Fact {
         for (TrackingV1 trackingV1 : trackingV1Collection) {
             double period;
             int eventCount = 0;
-            List<EventV1> eventV1Collection = trackingV1.GetEventCollection();
+            List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
             Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
             for (EventV1 eventV1 : eventV1Collection) {
                 if (!eventV1.isDeleted()) {

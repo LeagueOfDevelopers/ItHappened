@@ -281,7 +281,7 @@ public class TrackingV1 extends RealmObject {
     public String GetTrackingName() {return trackingName;}
     public UUID GetTrackingID() {return UUID.fromString(trackingId);}
     public Date GetTrackingDate () {return trackingDate;}
-    public List<EventV1> GetEventCollection() {
+    public List<EventV1> GetEventHistory() {
         if(eventV1Collection!=null) {
             Collections.sort(eventV1Collection, new Comparator<EventV1>() {
                 @Override
