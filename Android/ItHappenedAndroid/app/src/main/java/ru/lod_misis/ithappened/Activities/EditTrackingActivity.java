@@ -95,7 +95,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_tracking);
+        setContentView(R.layout.activity_addnewtracking);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_tracking));
 
@@ -119,51 +119,53 @@ public class EditTrackingActivity extends AppCompatActivity {
 
         service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
 
-        addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.editTrack);
+        addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
 
-        trackingName = (EditText) findViewById(R.id.editTitleOfTrackingEdit);
-
-
-        ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabledEdit);
-        commentEnabled = (TextView) findViewById(R.id.commentTextEnabledEdit);
-        scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabledEdit);
+        trackingName = (EditText) findViewById(R.id.editTitleOfTracking);
 
 
-        ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDontEdit);
-        ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheckEdit);
-        ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheckEdit);
+        ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabled);
+        commentEnabled = (TextView) findViewById(R.id.commentTextEnabled);
+        scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabled);
 
-        commentDont = (LinearLayout) findViewById(R.id.commentBackColorDontEdit);
-        commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheckEdit);
-        commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheckEdit);
 
-        scaleDont = (LinearLayout) findViewById(R.id.scaleBackColorDontEdit);
-        scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheckEdit);
-        scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheckEdit);
+        ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDont);
+        ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
+        ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheck);
 
-        ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDontEdit);
-        ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheckEdit);
-        ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheckEdit);
+        commentDont = (LinearLayout) findViewById(R.id.commentBackColorDont);
+        commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheck);
+        commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheck);
 
-        colorTrackingEdit = findViewById(R.id.colorPickerEdit);
-        colorTrackingTextEdit = findViewById(R.id.colorTextEdit);
+        scaleDont = (LinearLayout) findViewById(R.id.scaleBackColorDont);
+        scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheck);
+        scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheck);
 
-        commentDontImage = (ImageView) findViewById(R.id.commentBackImageDontEdit);
-        commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheckEdit);
-        commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheckEdit);
+        ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDont);
+        ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheck);
+        ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheck);
 
-        scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDontEdit);
-        scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheckEdit);
-        scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheckEdit);
+        colorTrackingEdit = findViewById(R.id.colorPicker);
+        colorTrackingTextEdit = findViewById(R.id.colorText);
 
-        visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHintEdit);
-        visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainerEdit);
-        scaleType = (EditText) findViewById(R.id.editTypeOfScaleEdit);
+        commentDontImage = (ImageView) findViewById(R.id.commentBackImageDont);
+        commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheck);
+        commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheck);
+
+        scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
+        scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
+        scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
+
+        visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
+        visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
+        scaleType = (EditText) findViewById(R.id.editTypeOfScale);
 
 
         editableTrackingV1 = trackingRepository.GetTracking(trackingId);
 
         trackingName.setText(editableTrackingV1.GetTrackingName());
+
+        addTrackingBtn.setText("Изменить");
 
         final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
         colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")

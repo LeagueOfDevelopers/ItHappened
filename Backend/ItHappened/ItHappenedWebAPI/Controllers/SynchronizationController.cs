@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using ItHappenedDomain.Application;
 using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -87,7 +88,13 @@ namespace ItHappenedWebAPI.Controllers
 
       return Ok(response);
     }
+
+    [HttpPost]
+    [Route("statistics/test")]
+    public IActionResult StatisticsTest()
+    {
+      var manager = new TestManager();
+      return Ok(manager.CorellationTest());
+    }
   }
-
-
 }
