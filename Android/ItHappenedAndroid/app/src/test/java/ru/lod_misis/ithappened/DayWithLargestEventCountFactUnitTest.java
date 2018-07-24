@@ -18,7 +18,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 public class DayWithLargestEventCountFactUnitTest {
 
-    @Test
+    /*@Test
     public void DayWIthLargestEventCountTest_GotCorrectCountAndListOfIds() {
         TrackingV1 t = GenerateTracking();
         List<TrackingV1> trackings = new ArrayList<>();
@@ -33,7 +33,7 @@ public class DayWithLargestEventCountFactUnitTest {
             Assert.assertTrue(uuid.toString().equals(t.getEventV1Collection().get(i).getEventId().toString()));
             i++;
         }
-    }
+    }*/
 
     private TrackingV1 GenerateTracking() {
         int[] days = {1, 2, 3, 4, 5, 5, 5, 6, 7, 8, 9};

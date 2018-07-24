@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,6 +12,7 @@ import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribution;
 
 public class DataSetBuilderTest {
 
@@ -27,7 +29,8 @@ public class DataSetBuilderTest {
     @Test
     public void BuildFrequencySequenceTest_FrequencySequenceAreCorrect() {
         List<EventV1> events = GenerateEventCollection1ToFreqCalculation();
-        Sequence freqs = DataSetBuilder.BuildFrequencySequence(events);
+        EventsTimeDistribution distr = DataSetBuilder.BuildFrequencySequence(events);
+        Sequence freqs = new Sequence(distr.toCountsArray());
         for (int i = 0; i < freqs.Length(); i++) {
             Assert.assertTrue(freqs.get(i) >= 0 || freqs.get(i) <= 2);
         }
@@ -38,7 +41,7 @@ public class DataSetBuilderTest {
         List<EventV1> events = new ArrayList<>();
         for (int i = 1; i < 100; i++) {
             EventV1 e = new EventV1();
-            e.SetEventDate(new Date(2000, i / 30 + 1, i % 30));
+            e.SetEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1, 0, 0).toDate());
             events.add(e);
         }
         return events;
@@ -50,13 +53,13 @@ public class DataSetBuilderTest {
         List<EventV1> events2 = new ArrayList<>();
         for (int i = 1; i <= count; i += 2) {
             EventV1 event = new EventV1();
-            event.EditDate(new Date(2000, 1, i));
+            event.EditDate(new DateTime(2000, 1, i, 0, 0).toDate());
             event.EditScale((double)i * 100);
             events1.add(event);
         }
         for (int i = 2; i <= count; i += 2) {
             EventV1 event = new EventV1();
-            event.EditDate(new Date(2000, 1, i));
+            event.EditDate(new DateTime(2000, 1, i, 0, 0).toDate());
             event.EditScale((double)i * 100);
             events2.add(event);
         }
