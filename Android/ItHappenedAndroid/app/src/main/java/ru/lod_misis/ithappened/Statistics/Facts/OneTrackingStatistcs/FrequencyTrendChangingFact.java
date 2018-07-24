@@ -13,7 +13,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DescriptionBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribution;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
 
 public class FrequencyTrendChangingFact extends Fact {
@@ -53,16 +53,24 @@ public class FrequencyTrendChangingFact extends Fact {
 
     @Override
     protected void calculatePriority() {
+        // Вычисляем количество дней в периоде
         Integer days = LastInterval.toDuration().toStandardDays().getDays();
-        if (NewAverage - PointOfChange.getAverangeValue() > 0)
+        if (NewAverage - PointOfChange.getAverageValue() > 0)
+            // Если среднее возросло
             if (days != 0)
+                // Если количество дней больше 0
                 priority = (double)LastPeriodEventCount / days;
             else
+                // Если нет, то подставляем некоторую симуляцию
+                // бесконечности (в противном случае получаем деление на 0)
                 priority = Double.MAX_VALUE;
         else
+            // Если среднее уменьшилось
             if (LastPeriodEventCount != 0)
+                // Если в течении периода уменьшения происходили события
                 priority = (double)days / LastPeriodEventCount;
             else
+                // Если нет, то снова подставляем бесконечность
                 priority = Double.MAX_VALUE;
     }
 
@@ -70,34 +78,55 @@ public class FrequencyTrendChangingFact extends Fact {
     public String textDescription() {
         return DescriptionBuilder.BuildFrequencyTrendReport(PointOfChange, NewAverage, TrackingName,
                 new Interval(PointOfChange.getPointEventDate().getTime(),
-                        DateTime.now().toDate().getTime()), LastPeriodEventCount);
+                        Events.get(Events.size() - 1).getEventDate().getTime()), LastPeriodEventCount);
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return NewAverage - PointOfChange.getAverangeValue() != 0 && LastPeriodEventCount != 0;
+        return NewAverage - PointOfChange.getAverageValue() != 0 && LastPeriodEventCount != 0;
     }
 
     private void CalculateTrendData() {
         // Преобразовываем набор событий в набор значений, необходимых нам для анализа, то есть частоты
-        Sequence data = DataSetBuilder.BuildFrequencySequence(Events);
+        EventsTimeDistribution distr =  DataSetBuilder.BuildFrequencySequence(Events);
+        Sequence data = new Sequence(distr.toCountsArray());
+
         // На основе полученных данных считаем среднее
         NewAverage = data.Mean();
+
         // Вычисляем "точку перегиба" графика (точку, в которой тренд меняется на противоположный)
-        TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
+        // В данном случае точкой перегиба является целый период, но
+        // так как нужно откуда то взять точное значение даты, то это будет
+        // либо дата первого эвента в периоде, либо дата начала периода
+        int periodIndex = SequenceAnalyzer.DetectTrendChangingPoint(data);
+
         // Считаем количество событий за последний период путем суммирования
         // количества событий произошедших с того времени
-        LastPeriodEventCount = (int)data.Slice(trendData.getItemInCollectionId(),
-                data.Length()).Sum();
-        // Вычисляем интервал последнего события, как разность между датами последнего
-        // события из выборки и события, которое является точкой перегиба
-        LastInterval = new Interval(Events.get(Events.size() - 1).GetEventDate().getTime(),
-                Events.get(trendData.getItemInCollectionId()).GetEventDate().getTime());
+        LastPeriodEventCount = (int)data.Slice(periodIndex, data.Length()).Sum();
+
+        // Вычисляем интервал первого события
+        // Если в сегменте, отмеченном как переломный, событий нет,
+        // то дата начала последнего периода - это дата начала сегмента
+        DateTime leftIntervalBorder;
+        if (distr.isThisIntervalEmpty(periodIndex)) {
+            leftIntervalBorder = distr.getIntervalById(periodIndex).getStart();
+        }
+        // В противном случае - это дата первого события в сегменте
+        else {
+            leftIntervalBorder = new DateTime(distr.getFirstEventFromInterval(
+                    periodIndex).getEventDate());
+        }
+
+        // Дата конца последнего периода - это дата последнего события
+        DateTime rightIntervalBorder = new DateTime(Events.get(Events.size() - 1).GetEventDate().getTime());
+
+        // Собираем это в интервал
+        LastInterval = new Interval(leftIntervalBorder, rightIntervalBorder);
+
+        // Среднее значение за период от начала и до ключевого эвента (даты точки перелома)
+        Double mean = data.Slice(0, periodIndex).Mean();
+
         // Собираем все полученные данные в обьект, хранящий данные
         // о изменении тренда и сохраняем как переменную класса
-        PointOfChange = new TrendChangingPoint(
-                Events.get(trendData.getItemInCollectionId()).GetEventId(),
-                data.Slice(0, trendData.getItemInCollectionId()).Mean(),
-                trendData.getAlphaCoefficient(),
-                Events.get(trendData.getItemInCollectionId()).GetEventDate());
+        PointOfChange = new TrendChangingPoint(mean, leftIntervalBorder.toDate());
     }
 }

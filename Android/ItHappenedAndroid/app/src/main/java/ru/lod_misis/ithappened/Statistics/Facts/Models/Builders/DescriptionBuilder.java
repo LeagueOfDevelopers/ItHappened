@@ -1,17 +1,10 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models.Builders;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Hours;
 import org.joda.time.Interval;
-import org.joda.time.Minutes;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import ru.lod_misis.ithappened.Statistics.Facts.Models.TimeSpanEventData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
@@ -174,25 +167,25 @@ public class DescriptionBuilder {
     // Рамки для текстового описания корреляции (сильная слабая и тд) взяты по шкале Чеддока.
 
     public static String BuildScaleTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, String scaleName) {
-        String deltaDescription = newAverange - delta.getAverangeValue() > 0 ? "увеличилось" : "уменьшилось";
+        String deltaDescription = newAverange - delta.getAverageValue() > 0 ? "увеличилось" : "уменьшилось";
         DateTime date = new DateTime(delta.getPointEventDate());
         return String.format(ScaleTrendReportFormat,
                 DateDescription(date), scaleName, trackingName,
                 deltaDescription, String.format(DateFormatLocalization, "%.2f",
-                        Math.abs(delta.getAverangeValue() - newAverange)));
+                        Math.abs(delta.getAverageValue() - newAverange)));
     }
 
     public static String BuildRatingTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName) {
-        String deltaDescription = newAverange - delta.getAverangeValue() > 0 ? "увеличилось" : "уменьшилось";
+        String deltaDescription = newAverange - delta.getAverageValue() > 0 ? "увеличилось" : "уменьшилось";
         DateTime date = new DateTime(delta.getPointEventDate());
         return String.format(RatingTrendReportFormat,
                 DateDescription(date), trackingName,
                 deltaDescription, String.format(DateFormatLocalization, "%.2f",
-                        Math.abs(delta.getAverangeValue() - newAverange)));
+                        Math.abs(delta.getAverageValue() - newAverange)));
     }
 
-    public static String BuildFrequencyTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, Interval period, int count) {
-        String orientation = newAverange - delta.getAverangeValue() > 0 ? "чаще" : "реже";
+    public static String BuildFrequencyTrendReport(TrendChangingPoint delta, Double newAverage, String trackingName, Interval period, int count) {
+        String orientation = newAverage - delta.getAverageValue() > 0 ? "чаще" : "реже";
         String duration = IntervalDescription(period);
         return String.format(FreqTrendReportFormat, trackingName, orientation, duration, count);
     }
@@ -246,43 +239,43 @@ public class DescriptionBuilder {
 
     private static String IntervalDescription(Interval interval) {
         String duration = "";
-        Days days = interval.toDuration().toStandardDays();
-        Hours hours = interval.toDuration().toStandardHours();
-        Minutes minutes = interval.toDuration().toStandardMinutes();
-        if (days.getDays() > 0) {
-            int lastDigitD = days.getDays() % 10;
-            if (lastDigitD > 4) {
-                duration += String.format("%s дней ", days.getDays());
+        int days = interval.toDuration().toStandardDays().getDays();
+        int hours = interval.toDuration().toStandardHours().getHours() - days * 24;
+        int minutes = interval.toDuration().toStandardMinutes().getMinutes() - days * 24 * 60 - hours * 60;
+        if (days > 0) {
+            int lastDigitD = days % 10;
+            if (lastDigitD > 4 || lastDigitD == 0) {
+                duration += String.format("%s дней ", days);
             }
-            if (lastDigitD > 1 && lastDigitD <=4) {
-                duration += String.format("%s дня ", days.getDays());
+            if (lastDigitD > 1 && lastDigitD <= 4) {
+                duration += String.format("%s дня ", days);
             }
             if (lastDigitD == 1) {
-                duration += String.format("%s день ", days.getDays());
+                duration += String.format("%s день ", days);
             }
         }
-        if (hours.getHours() > 0) {
-            int lastDigitH = hours.getHours() % 10;
+        if (hours > 0) {
+            int lastDigitH = hours % 10;
             if (lastDigitH > 4 || lastDigitH == 0) {
-                duration += String.format("%s часов ", hours.getHours());
+                duration += String.format("%s часов ", hours);
             }
-            if (lastDigitH > 1 && lastDigitH <=4) {
-                duration += String.format("%s часа ", hours.getHours());
+            if (lastDigitH > 1 && lastDigitH <= 4) {
+                duration += String.format("%s часа ", hours);
             }
             if (lastDigitH == 1) {
-                duration += String.format("%s час ", hours.getHours());
+                duration += String.format("%s час ", hours);
             }
         }
-        if (minutes.getMinutes() > 0) {
-            int lastDigitM = minutes.getMinutes() % 10;
-            if (lastDigitM > 4) {
-                duration += String.format("%s минут ", minutes.getMinutes());
+        if (minutes > 0) {
+            int lastDigitM = minutes % 10;
+            if (lastDigitM > 4 || lastDigitM == 0) {
+                duration += String.format("%s минут ", minutes);
             }
-            if (lastDigitM > 1 && lastDigitM <=4) {
-                duration += String.format("%s минуты ", minutes.getMinutes());
+            if (lastDigitM > 1 && lastDigitM <= 4) {
+                duration += String.format("%s минуты ", minutes);
             }
             if (lastDigitM == 1) {
-                duration += String.format("%s минуту ", minutes.getMinutes());
+                duration += String.format("%s минуту ", minutes);
             }
         }
         return duration.trim();

@@ -4,37 +4,21 @@ import java.util.Date;
 import java.util.UUID;
 
 public class TrendChangingPoint {
-    private UUID EventId;
-    private Double AverangeValue;
-    private Double AlphaCoefficient;
+
+    private Double AverageValue;
     private Date PointEventDate;
 
-    public TrendChangingPoint(UUID eventId,
-                              Double averangeValue,
-                              Double alphaCoefficient,
+    public TrendChangingPoint(Double averageValue,
                               Date pointEventDate) {
-        EventId = eventId;
-        AverangeValue = averangeValue;
-        AlphaCoefficient = alphaCoefficient;
+        AverageValue = averageValue;
         PointEventDate = pointEventDate;
     }
 
-    public UUID getEventId() {
-        return EventId;
-    }
-
-    public Double getAverangeValue() {
-        return AverangeValue;
-    }
-
-    public Double getAlphaCoefficient() {
-        return AlphaCoefficient;
+    public Double getAverageValue() {
+        return AverageValue;
     }
 
     public Date getPointEventDate() {
         return PointEventDate;
     }
-
-    // Этот класс также содержит информацию о точке перегиба графика,
-    // но эта информация уже привязана к эвенту и к дате
 }

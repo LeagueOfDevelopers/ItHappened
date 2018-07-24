@@ -11,6 +11,7 @@ import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribution;
 
 public class DataSetBuilderTest {
 
@@ -27,7 +28,8 @@ public class DataSetBuilderTest {
     @Test
     public void BuildFrequencySequenceTest_FrequencySequenceAreCorrect() {
         List<EventV1> events = GenerateEventCollection1ToFreqCalculation();
-        Sequence freqs = DataSetBuilder.BuildFrequencySequence(events);
+        EventsTimeDistribution distr = DataSetBuilder.BuildFrequencySequence(events);
+        Sequence freqs = new Sequence(distr.toCountsArray());
         for (int i = 0; i < freqs.Length(); i++) {
             Assert.assertTrue(freqs.get(i) >= 0 || freqs.get(i) <= 2);
         }
