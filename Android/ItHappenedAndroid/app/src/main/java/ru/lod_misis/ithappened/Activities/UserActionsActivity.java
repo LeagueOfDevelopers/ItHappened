@@ -175,14 +175,16 @@ public class UserActionsActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            isTrackingHistory = true;
-            isEventsHistory = false;
-            isProfileSettings = false;
-            isStatistics = false;
+            if (!isTrackingHistory) {
+                isTrackingHistory = true;
+                isEventsHistory = false;
+                isProfileSettings = false;
+                isStatistics = false;
                 setTitle("Что произошло?");
                 fTrans = getFragmentManager().beginTransaction();
                 fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
                 fTrans.commit();
+            }
         }
     }
 

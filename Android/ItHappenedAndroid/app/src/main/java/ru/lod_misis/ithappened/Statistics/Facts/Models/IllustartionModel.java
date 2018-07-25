@@ -1,5 +1,7 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models;
 
+import java.util.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +19,7 @@ public class IllustartionModel {
     private List<WeekDaysFactModel> weekDaysFactList;
     private List<DayTimeFactModel> dayTimeFactList;
     private List<Integer> colors;
-    private List<UUID> eventHistoryRef;
+    private List<Date> eventHistoryRef;
 
     public IllustartionModel(IllustrationType type){
         this.type = type;
@@ -29,11 +31,11 @@ public class IllustartionModel {
         colors = new ArrayList<>();
     }
 
-    public List<UUID> getEventHistoryRef() {
+    public List<Date> getEventHistoryRef() {
         return eventHistoryRef;
     }
 
-    public void setEventHistoryRef(List<UUID> eventHistoryRef) {
+    public void setEventHistoryRef(List<Date> eventHistoryRef) {
         this.eventHistoryRef = eventHistoryRef;
     }
 

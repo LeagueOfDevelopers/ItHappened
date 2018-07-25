@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Statistics.Facts.Models;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ public class TimeSpanEventData {
     private Integer EventCount;
     private DateTime Date;
     private List<UUID> EventIds;
+    private List<Date> illustartionData;
 
     public TimeSpanEventData(DateTime date) {
         Date = date;
@@ -39,8 +41,11 @@ public class TimeSpanEventData {
     public List<DateTime> getWeekBorders() {
         int day = Date.getDayOfWeek();
         List<DateTime> borders = new ArrayList<>();
+        illustartionData = new ArrayList<>();
         borders.add(Date.minusDays(day - 1));
         borders.add(Date.plusDays(7 - day));
+        illustartionData.add(Date.minusDays(day - 1).toDate());
+        illustartionData.add(Date.plusDays(7 - day).toDate());
         return borders;
     }
 
@@ -55,6 +60,10 @@ public class TimeSpanEventData {
 
     public int getDay() {
         return Date.getDayOfMonth();
+    }
+
+    public List<java.util.Date> getIllustartionData() {
+        return illustartionData;
     }
 
     public int getEventCount() {

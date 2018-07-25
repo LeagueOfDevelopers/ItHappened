@@ -40,7 +40,7 @@ public class DayWithLargestEventCountFact extends Fact {
         if (LargestEventCountDay == null) return;
         calculatePriority();
         illustartion = new IllustartionModel(IllustrationType.EVENTSETREF);
-        illustartion.setEventHistoryRef(LargestEventCountDay.getEventIds());
+        illustartion.setEventHistoryRef(LargestEventCountDay.getIllustartionData());
     }
 
     @Override
