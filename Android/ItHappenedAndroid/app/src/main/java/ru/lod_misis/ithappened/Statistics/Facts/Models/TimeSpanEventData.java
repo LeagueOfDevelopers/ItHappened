@@ -25,8 +25,9 @@ public class TimeSpanEventData {
     }
 
     public boolean equals(TimeSpanEventData data) {
-        return data.getYear() == Date.getYear() && data.getDay() == Date.getDayOfMonth() &&
-                data.getMonth() == Date.getMonthOfYear();
+        return data.getDate().getYear() == Date.getYear()
+                && data.getDate().getDayOfMonth() == Date.getDayOfMonth()
+                && data.getDate().getMonthOfYear() == Date.getMonthOfYear();
     }
 
     public boolean IsItThisDay(DateTime date) {
@@ -38,15 +39,14 @@ public class TimeSpanEventData {
         return date.getYear() == Date.getYear() && date.getWeekOfWeekyear() == Date.getWeekOfWeekyear();
     }
 
-    public List<DateTime> getWeekBorders() {
+    public DateTime getLeftWeekBorder() {
         int day = Date.getDayOfWeek();
-        List<DateTime> borders = new ArrayList<>();
-        illustartionData = new ArrayList<>();
-        borders.add(Date.minusDays(day - 1));
-        borders.add(Date.plusDays(7 - day));
-        illustartionData.add(Date.minusDays(day - 1).toDate());
-        illustartionData.add(Date.plusDays(7 - day).toDate());
-        return borders;
+        return Date.minusDays(day - 1);
+    }
+
+    public DateTime getRightWeekBorder() {
+        int day = Date.getDayOfWeek();
+        return Date.plusDays(7 - day);
     }
 
     public void CountIncrement(UUID EventId) {
@@ -54,12 +54,8 @@ public class TimeSpanEventData {
         EventIds.add(EventId);
     }
 
-    public int getYear() {
-        return Date.getYear();
-    }
-
-    public int getDay() {
-        return Date.getDayOfMonth();
+    public DateTime getDate() {
+        return Date;
     }
 
     public List<java.util.Date> getIllustartionData() {
@@ -68,9 +64,5 @@ public class TimeSpanEventData {
 
     public int getEventCount() {
         return EventCount;
-    }
-
-    public Integer getMonth() {
-        return Date.getMonthOfYear();
     }
 }

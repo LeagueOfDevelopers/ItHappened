@@ -25,21 +25,31 @@ public class RatingTrendChangingFact extends Fact {
     private String TrackingName;
     private List<EventV1> Events;
     private TrendChangingPoint PointOfChange;
-    private Double NewAverange;
+    private Double NewAverage;
 
     public RatingTrendChangingFact(TrackingV1 tracking) {
         TrackingName = tracking.getTrackingName();
         trackingId = tracking.GetTrackingID();
         Events = new ArrayList<>();
-        NewAverange = 0.0;
-        double sum = 0.0;
-        for (EventV1 e: tracking.getEventV1Collection()) {
-            if (!e.isDeleted() && e.GetRating() != null) {
-                Events.add(e);
-                sum += e.GetRating().getRating();
+        NewAverage = 0.0;
+        Events = SelectNotDeletedEventsWithRatingInThePast(tracking.getEventV1Collection());
+        for (EventV1 e: Events) {
+            NewAverage += e.GetRating().getRating();
+        }
+        NewAverage = NewAverage / Events.size();
+    }
+
+    private static List<EventV1> SelectNotDeletedEventsWithRatingInThePast(List<EventV1> events) {
+        List<EventV1> validEvents = new ArrayList<>();
+        for (EventV1 e: events) {
+            if (e != null
+                    && !e.isDeleted()
+                    && new DateTime(e.getEventDate()).isBefore(DateTime.now())
+                    && e.getRating() != null) {
+                validEvents.add(e);
             }
         }
-        NewAverange = sum / Events.size();
+        return validEvents;
     }
 
     @Override
@@ -58,7 +68,7 @@ public class RatingTrendChangingFact extends Fact {
                 .toStandardDays() // Достаем дни
                 .getDays();
         if (days != 0)
-            priority = Math.abs(NewAverange - PointOfChange.getAverangeValue()) * 10 / days;
+            priority = Math.abs(NewAverage - PointOfChange.getAverangeValue()) * 10 / days;
         else
             priority = Double.MAX_VALUE;
     }
@@ -70,11 +80,11 @@ public class RatingTrendChangingFact extends Fact {
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.BuildRatingTrendReport(PointOfChange, NewAverange, TrackingName);
+        return DescriptionBuilder.BuildRatingTrendReport(PointOfChange, NewAverage, TrackingName);
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return NewAverange - PointOfChange.getAverangeValue() != 0;
+        return NewAverage - PointOfChange.getAverangeValue() != 0;
     }
 
     private void CalculateTrendDelta() {

@@ -8,17 +8,17 @@ import org.joda.time.Minutes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import ru.lod_misis.ithappened.Statistics.Facts.Models.TimeSpanEventData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
 
 public class DescriptionBuilder {
 
-    private static final String DateFormatPattern = "EEE, dd MMM yyyy HH:mm:ss";
     private static final Locale DateFormatLocalization = new Locale("ru");
-    private static final SimpleDateFormat DateFormatter = new SimpleDateFormat(DateFormatPattern, DateFormatLocalization);
 
     private static final String BoolCorrReportFormat =
             "C %s вероятностью при увеличении числа событий %s происходит %s числа событий %s. ";
@@ -175,16 +175,20 @@ public class DescriptionBuilder {
 
     public static String BuildScaleTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, String scaleName) {
         String deltaDescription = newAverange - delta.getAverangeValue() > 0 ? "увеличилось" : "уменьшилось";
+        DateTime date = new DateTime(delta.getPointEventDate());
         return String.format(ScaleTrendReportFormat,
-                DateFormatter.format(delta.getPointEventDate()), scaleName, trackingName,
-                deltaDescription, Math.abs(delta.getAverangeValue() - newAverange));
+                DateDescription(date), scaleName, trackingName,
+                deltaDescription, String.format(DateFormatLocalization, "%.2f",
+                        Math.abs(delta.getAverangeValue() - newAverange)));
     }
 
     public static String BuildRatingTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName) {
         String deltaDescription = newAverange - delta.getAverangeValue() > 0 ? "увеличилось" : "уменьшилось";
+        DateTime date = new DateTime(delta.getPointEventDate());
         return String.format(RatingTrendReportFormat,
-                DateFormatter.format(delta.getPointEventDate()), trackingName,
-                deltaDescription, Math.abs(delta.getAverangeValue() - newAverange));
+                DateDescription(date), trackingName,
+                deltaDescription, String.format(DateFormatLocalization, "%.2f",
+                        Math.abs(delta.getAverangeValue() - newAverange)));
     }
 
     public static String BuildFrequencyTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, Interval period, int count) {
@@ -193,11 +197,15 @@ public class DescriptionBuilder {
         return String.format(FreqTrendReportFormat, trackingName, orientation, duration, count);
     }
 
-    public static String BuildLongestBreakDEscription(String trackingName,
+    public static String BuildLongestBreakDescription(String trackingName,
                                                       Date firstEventDate,
                                                       Date secondEventDate) {
-        return String.format(new Locale("ru"), LongestBreakReportFormat,
-                trackingName, DateFormatter.format(firstEventDate), DateFormatter.format(secondEventDate),
+        DateTime begin = new DateTime(firstEventDate);
+        DateTime end = new DateTime(secondEventDate);
+        return String.format(DateFormatLocalization, LongestBreakReportFormat,
+                trackingName,
+                DateDescription(begin),
+                DateDescription(end),
                 (secondEventDate.getTime() - firstEventDate.getTime()) / (1000 * 60 * 60 * 24));
     }
 
@@ -213,8 +221,7 @@ public class DescriptionBuilder {
             eventCountDescr = "событий.";
         }
         String pattern = LargestEventCountReportFormat + eventCountDescr;
-        return String.format(pattern, DateDescription(data.getYear(),
-                data.getMonth(), data.getDay()), data.getEventCount()).trim();
+        return String.format(pattern, DateDescription(data.getDate()), data.getEventCount()).trim();
     }
 
     public static String LargestEventCountWeekDescription(TimeSpanEventData data) {
@@ -229,12 +236,10 @@ public class DescriptionBuilder {
             eventCountDescr = "событий.";
         }
         String pattern = LargestEventCountWeekReportFormat + eventCountDescr;
-        List<DateTime> borders = data.getWeekBorders();
-        int month = borders.get(0).getMonthOfYear();
-        String leftBorderDescription = DateDescription(borders.get(0).getYear(),
-                borders.get(0).getMonthOfYear(), borders.get(0).getDayOfMonth());
-        String rightBorderDescription = DateDescription(borders.get(1).getYear(),
-                borders.get(1).getMonthOfYear(), borders.get(1).getDayOfMonth());
+        DateTime leftWeekBorder = data.getLeftWeekBorder();
+        DateTime rightWeekBorder = data.getRightWeekBorder();
+        String leftBorderDescription = DateDescription(leftWeekBorder);
+        String rightBorderDescription = DateDescription(rightWeekBorder);
         return String.format(pattern, leftBorderDescription,
                 rightBorderDescription, data.getEventCount()).trim();
     }
@@ -259,31 +264,34 @@ public class DescriptionBuilder {
         if (hours.getHours() > 0) {
             int lastDigitH = hours.getHours() % 10;
             if (lastDigitH > 4 || lastDigitH == 0) {
-                duration += String.format("%s часов ", days.getDays());
+                duration += String.format("%s часов ", hours.getHours());
             }
             if (lastDigitH > 1 && lastDigitH <=4) {
-                duration += String.format("%s часа ", days.getDays());
+                duration += String.format("%s часа ", hours.getHours());
             }
             if (lastDigitH == 1) {
-                duration += String.format("%s час ", days.getDays());
+                duration += String.format("%s час ", hours.getHours());
             }
         }
         if (minutes.getMinutes() > 0) {
             int lastDigitM = minutes.getMinutes() % 10;
             if (lastDigitM > 4) {
-                duration += String.format("%s часов ", days.getDays());
+                duration += String.format("%s минут ", minutes.getMinutes());
             }
             if (lastDigitM > 1 && lastDigitM <=4) {
-                duration += String.format("%s часа ", days.getDays());
+                duration += String.format("%s минуты ", minutes.getMinutes());
             }
             if (lastDigitM == 1) {
-                duration += String.format("%s час ", days.getDays());
+                duration += String.format("%s минуту ", minutes.getMinutes());
             }
         }
         return duration.trim();
     }
 
-    private static String DateDescription(int year, int month, int day) {
+    private static String DateDescription(DateTime date) {
+        int year = date.getYear();
+        int month = date.getMonthOfYear();
+        int day = date.getDayOfMonth();
         String monthDescr = "";
         switch (month) {
             case 1:

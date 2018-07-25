@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,11 +26,17 @@ public class LongestBreakFactUnitTest {
         for (int i = 0; i < 9; i++) {
             EventV1 event = new EventV1();
             event.SetEventId(UUID.randomUUID());
-            event.SetEventDate(new Date(2000, 1, days[i]));
+            event.SetEventDate(new DateTime(2000, 1, days[i], 0, 0).toDate());
             tracking1.AddEvent(event);
         }
         LongestBreakFact fact = new LongestBreakFact(tracking1);
         fact.calculateData();
         Assert.assertTrue(fact.getLongestBreak() != null);
+        long duration = fact.getLongestBreak().getDuration().getStandardDays();
+        Assert.assertEquals(duration, 15);
+        Assert.assertEquals(fact.getLongestBreak().getFirstEventDate().getTime(),
+                new DateTime(2000, 1, 5, 0, 0).toDate().getTime());
+        Assert.assertEquals(fact.getLongestBreak().getSecondEventDate().getTime(),
+                new DateTime(2000, 1, 20, 0, 0).toDate().getTime());
     }
 }

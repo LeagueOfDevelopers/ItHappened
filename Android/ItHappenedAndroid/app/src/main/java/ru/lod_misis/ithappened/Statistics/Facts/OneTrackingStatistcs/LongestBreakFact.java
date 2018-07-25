@@ -8,9 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.BreakData;
@@ -25,15 +23,23 @@ public class LongestBreakFact extends Fact {
     public LongestBreakFact(TrackingV1 tracking) {
         TrackingName = tracking.getTrackingName();
         trackingId = tracking.GetTrackingID();
-        List<EventV1> events = new ArrayList<>();
-        for (EventV1 e: tracking.getEventV1Collection()) {
-            if (!e.isDeleted()) events.add(e);
-        }
-        Events = events;
+        Events = SelectNotDeletedEventsInThePast(tracking.getEventV1Collection());
     }
 
     public BreakData getLongestBreak() {
         return LongestBreak;
+    }
+
+    private static List<EventV1> SelectNotDeletedEventsInThePast(List<EventV1> events) {
+        List<EventV1> validEvents = new ArrayList<>();
+        for (EventV1 e: events) {
+            if (e != null
+                    && !e.isDeleted()
+                    && new DateTime(e.getEventDate()).isBefore(DateTime.now())) {
+                validEvents.add(e);
+            }
+        }
+        return validEvents;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class LongestBreakFact extends Fact {
 
     @Override
     public String textDescription() {
-        return DescriptionBuilder.BuildLongestBreakDEscription(TrackingName,
+        return DescriptionBuilder.BuildLongestBreakDescription(TrackingName,
                 LongestBreak.getFirstEventDate(), LongestBreak.getSecondEventDate());
     }
 

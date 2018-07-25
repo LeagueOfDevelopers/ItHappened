@@ -53,10 +53,9 @@ public class TrackingRepository implements ITrackingRepository {
         TrackingV1 trackingV1 = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString())
                 .findFirst();
-
         if (trackingV1 == null)
             throw new IllegalArgumentException("TrackingV1 with such ID doesn't exists");
-        return trackingV1;
+        return realm.copyFromRealm(trackingV1);
     }
 
     public List<TrackingV1> GetTrackingCollection() {
@@ -125,9 +124,13 @@ public class TrackingRepository implements ITrackingRepository {
     }
 
     public EventV1 getEvent(UUID eventId) {
-        return realm.where(EventV1.class).
+        EventV1 event = realm.where(EventV1.class).
                 equalTo("eventId", eventId.toString())
                 .findFirst();
+
+        if (event == null) return null;
+
+        return realm.copyFromRealm(event);
     }
 
     public void editEvent(UUID trackingId, UUID eventId,
@@ -288,9 +291,10 @@ public class TrackingRepository implements ITrackingRepository {
         realm.beginTransaction();
         List<EventV1> collection = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString()).findFirst()
-                .GetEventCollection();
+                .GetEventHistory();
         realm.commitTransaction();
-        return collection;
+
+        return realm.copyFromRealm(collection);
     }
 
     public void configureRealm() {
@@ -401,8 +405,8 @@ public class TrackingRepository implements ITrackingRepository {
 
         if (eventSourceCollection.size() == 0) {
             for (TrackingV1 trackingV1 : trackingV1Collection) {
-                if(trackingV1.GetEventCollection()!=null) {
-                    for (EventV1 event : trackingV1.GetEventCollection())
+                if(trackingV1.GetEventHistory()!=null) {
+                    for (EventV1 event : trackingV1.GetEventHistory())
                         eventSourceCollection.add(new EventSource(event));
                 }
             }
