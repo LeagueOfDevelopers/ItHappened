@@ -7,50 +7,50 @@ import java.util.List;
 
 public class DataSet<T> {
 
-    private List<List<T>> Rows = new ArrayList<>();
-    private boolean isMultinomial;
+    private List<T> firstColumn = new ArrayList<>();
+    private List<T> secondColumn = new ArrayList<>();
     private int length = 0;
+    private DataSetType Type;
 
-    public DataSet(boolean isMultinomial) {
-        this.isMultinomial = isMultinomial;
+    public DataSet(DataSetType type) {
+        Type = type;
     }
 
-    public DataSet(List<T> column1, List<T> column2, boolean isMultinomial) {
+    public DataSet(List<T> column1, List<T> column2, DataSetType type) {
         if (column1.size() != column2.size()) throw new IllegalArgumentException();
+        Type = type;
         for (int i = 0; i < column1.size(); i++) {
             AddRow(column1.get(i), column2.get(i));
         }
     }
 
     public List<T> GetRow(int i) {
-        return Rows.get(i);
+        List<T> row = new ArrayList<>();
+        row.add(firstColumn.get(i));
+        row.add(secondColumn.get(i));
+        return row;
     }
 
     public List<T> GetColumn(int j) {
-        ArrayList<T> col = new ArrayList<>();
-        for (List<T> list: Rows) {
-            col.add(list.get(j));
-        }
-        return col;
+        if (j > 1 || j < 0) throw new IndexOutOfBoundsException();
+        return j == 0 ? firstColumn : secondColumn;
     }
 
     public void AddRow(T first, T second){
-        List<T> l = new ArrayList<>();
-        l.add(first);
-        l.add(second);
-        Rows.add(l);
+        firstColumn.add(first);
+        secondColumn.add(second);
         length++;
     }
 
-    public void SortBy(Comparator<List<T>> comparator) {
-        Collections.sort(Rows, comparator);
-    }
-
     public boolean IsMultimonial() {
-        return isMultinomial;
+        return Type == DataSetType.Boolean || Type == DataSetType.Integer;
     }
 
     public int Length() {
         return length;
+    }
+
+    public DataSetType getType() {
+        return Type;
     }
 }

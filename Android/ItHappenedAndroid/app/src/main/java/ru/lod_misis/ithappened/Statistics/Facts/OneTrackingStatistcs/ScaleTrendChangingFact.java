@@ -98,9 +98,16 @@ public class ScaleTrendChangingFact extends Fact {
         int trendData = SequenceAnalyzer.DetectTrendChangingPoint(values);
         // Так как каждая точка соответствует одному событию, можно сказать,
         // что getItemInFrequencySequence возвращает нам номер эвента в коллекции эвентов
-        PointOfChange = new TrendChangingPoint(
-                values.Slice(0, trendData).Mean(),
-                Events.get(trendData).GetEventDate());
+        if (trendData == 0) {
+            PointOfChange = new TrendChangingPoint(
+                    0.,
+                    Events.get(trendData).GetEventDate());
+        }
+        else {
+            PointOfChange = new TrendChangingPoint(
+                    values.Slice(0, trendData).Mean(),
+                    Events.get(trendData).GetEventDate());
+        }
     }
     // Сначала преобразовываем массив эвентов в массив скаляров. Затем вычисляем
     // точку изменения тренда. И наконец создаем обьект класса TrendChangingPoint,

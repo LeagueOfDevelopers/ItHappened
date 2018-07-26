@@ -10,6 +10,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlati
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSetType;
 
 public class CorrelationFactUnitTest {
 
@@ -54,7 +55,7 @@ public class CorrelationFactUnitTest {
     }
 
     private void InitializeDoubleDataset() {
-        TestDoubleData = new DataSet<>(false);
+        TestDoubleData = new DataSet<>(DataSetType.Double);
         String firstDoubleCol = "20.5, 39.1, 15.0, 5.9, 73.5, 18.5, 17.6, 11.9, 11.5, 83.4, " +
                 "18.1, 54.8, 39.8, 30.9, 60.1, 60.7, 19.6, 7.5, 50.7, 44.9, " +
                 "21.6, 59.1, 41.6, 15.2, 9.1, 53.1, 22.3, 21.6, 52.4, 64.8, " +
@@ -85,7 +86,7 @@ public class CorrelationFactUnitTest {
     // я взял таковую, посчитанную в питоне.
 
     private void InitializeBooleanDataset() {
-        TestBooleanData = new DataSet<>(true);
+        TestBooleanData = new DataSet<>(DataSetType.Boolean);
         for (int i = 0; i < 25; i++) {
             TestBooleanData.AddRow(1, 1);
             TestBooleanData.AddRow(1, 1);
@@ -96,7 +97,7 @@ public class CorrelationFactUnitTest {
     // Просто датасет из 100 элементов, для которого можно вычислить корреляцию
 
     private void InitializeMultinomialDataset() {
-        TestMultinomialData = new DataSet<>(true);
+        TestMultinomialData = new DataSet<>(DataSetType.Integer);
         String firstMultinomCol = "10, 5, 8, 8, 4, 8, " +
                 "7, 10, 8, 4, 2, 1, 1, 1, 4, 1, 4, 8, " +
                 "4, 4, 8, 1, 9, 3, 2, 9, 9, 5, 10, 9, " +

@@ -123,7 +123,13 @@ public class FrequencyTrendChangingFact extends Fact {
         LastInterval = new Interval(leftIntervalBorder, rightIntervalBorder);
 
         // Среднее значение за период от начала и до ключевого эвента (даты точки перелома)
-        Double mean = data.Slice(0, periodIndex).Mean();
+        Double mean;
+        if (periodIndex == 0) {
+            mean = 0.;
+        }
+        else {
+            mean = data.Slice(0, periodIndex).Mean();
+        }
 
         // Собираем все полученные данные в обьект, хранящий данные
         // о изменении тренда и сохраняем как переменную класса

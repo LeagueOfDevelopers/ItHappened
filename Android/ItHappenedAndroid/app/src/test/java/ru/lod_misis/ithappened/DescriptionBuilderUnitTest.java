@@ -17,6 +17,7 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
 import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSetType;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongestBreakFact;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.ScaleTrendChangingFact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
@@ -46,8 +47,8 @@ public class DescriptionBuilderUnitTest {
         String descr1 = fact1.textDescription();
         String descr2 = fact2.textDescription();
         String descr3 = fact3.textDescription();
-        Assert.assertTrue(fact1.textDescription().equals("C маленькой вероятностью при увеличении количества килограммы в событии я поел мороженного происходит увеличение количества килограммы в событии я потолстел."));
-        Assert.assertTrue(fact2.textDescription().equals("C средней вероятностью при увеличении числа событий я поел мороженного происходит увеличение числа событий я потолстел."));
+        Assert.assertTrue(fact1.textDescription().equals("C <b>маленькой</b> вероятностью при увеличении количества <b>килограммы</b> в событии <b>я поел мороженного</b> происходит увеличение количества <b>килограммы</b> в событии <b>я потолстел</b>."));
+        Assert.assertTrue(fact2.textDescription().equals("C <b>очень большой</b> вероятностью при увеличении числа событий <b>я поел мороженного</b> происходит увеличение числа событий <b>я потолстел</b>."));
         Assert.assertTrue(fact3.textDescription().equals(""));
     }
 
@@ -57,7 +58,7 @@ public class DescriptionBuilderUnitTest {
         ScaleTrendChangingFact fact = new ScaleTrendChangingFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertTrue(descr.contains("среднее значение шкалы 'scale' cобытия 'tracking' увеличилось"));
+        Assert.assertTrue(descr.contains("среднее значение шкалы <b>scale</b> cобытия <b>tracking</b> увеличилось"));
     }
 
     @Test
@@ -66,7 +67,7 @@ public class DescriptionBuilderUnitTest {
         LongestBreakFact fact = new LongestBreakFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertTrue(descr.contains("Длина перерыва в днях: 9"));
+        Assert.assertTrue(descr.contains("Длина перерыва в днях: <b>9</b>"));
     }
 
     @Test
@@ -77,7 +78,7 @@ public class DescriptionBuilderUnitTest {
         DayWithLargestEventCountFact fact = new DayWithLargestEventCountFact(trackings);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertEquals(descr, "Самый насыщенный событиями день был 5 января 2018 года. Тогда произошло 2 события.");
+        Assert.assertEquals(descr, "Самый насыщенный событиями день был <b>5 января 2018 года</b>. Тогда произошло <b>2</b> события.");
     }
 
     @Test
@@ -88,7 +89,7 @@ public class DescriptionBuilderUnitTest {
         WeekWithLargestEventCountFact fact = new WeekWithLargestEventCountFact(trackings);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertEquals(descr, "Самая насыщенная событиями неделя была с 1 января 2018 года до 7 января 2018 года. В течении этой недели произошло 7 событий.");
+        Assert.assertEquals(descr, "Самая насыщенная событиями неделя была с <b>1 января 2018 года</b> до <b>7 января 2018 года</b>. В течении этой недели произошло <b>7</b> событий.");
     }
 
     private TrackingV1 GenerateTrackingWithDateBreak() {
@@ -149,7 +150,7 @@ public class DescriptionBuilderUnitTest {
     }
 
     private void InitializeDoubleDataset() {
-        TestDoubleData = new DataSet<>(false);
+        TestDoubleData = new DataSet<>(DataSetType.Double);
         String firstDoubleCol = "20.5, 39.1, 15.0, 5.9, 73.5, 18.5, 17.6, 11.9, 11.5, 83.4, " +
                 "18.1, 54.8, 39.8, 30.9, 60.1, 60.7, 19.6, 7.5, 50.7, 44.9, " +
                 "21.6, 59.1, 41.6, 15.2, 9.1, 53.1, 22.3, 21.6, 52.4, 64.8, " +

@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Statistics.Facts.Models.Builders;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
@@ -11,8 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSetType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribution;
 
@@ -22,16 +25,17 @@ public class DataSetBuilder {
                                                      List<EventV1> events2,
                                                      int DaysToTrack) {
         if (events1 == null || events2 == null)
-            return new DataSet<>(false);
+            return new DataSet<>(DataSetType.Double);
         List<EventV1> copy1 = MakeEventListCopy(SelectNotDeletedEventsInThePast(events1));
         SortCopyByTime(copy1);
         List<EventV1> copy2 = MakeEventListCopy(SelectNotDeletedEventsInThePast(events2));
         SortCopyByTime(copy2);
 
-        DataSet<Double> data = new DataSet<>(false);
+        DataSet<Double> data = new DataSet<>(DataSetType.Double);
         for (EventV1 e1: copy1) {
+            if (IsObjectNull(e1)) continue;
             for (EventV1 e2: copy2) {
-                if (IsObjectNull(e1.GetScale()) || IsObjectNull(e2.GetScale())) continue;
+                if (IsObjectNull(e2) || IsObjectNull(e1.GetScale()) || IsObjectNull(e2.GetScale())) continue;
                 if (e1.getEventDate().before(e2.getEventDate())) {
                     Interval timedelta = new Interval(e1.GetEventDate().getTime(),
                             e2.GetEventDate().getTime());
@@ -44,8 +48,9 @@ public class DataSetBuilder {
             }
         }
         for (EventV1 e2: copy2) {
+            if (IsObjectNull(e2)) continue;
             for (EventV1 e1: copy1) {
-                if (IsObjectNull(e1.GetScale()) || IsObjectNull(e2.GetScale())) continue;
+                if (IsObjectNull(e1) || IsObjectNull(e1.GetScale()) || IsObjectNull(e2.GetScale())) continue;
                 if (e2.getEventDate().before(e1.getEventDate())) {
                     Interval timedelta = new Interval(e2.GetEventDate().getTime(),
                             e1.GetEventDate().getTime());
@@ -60,52 +65,78 @@ public class DataSetBuilder {
         return data;
     }
 
-    public static DataSet<Integer> BuildBooleanDataset(List<EventV1> events1,
-                                                       List<EventV1> events2,
-                                                       int DaysToTrack) {
+    public static DataSet<Integer> BuildBooleanDataSet(List<EventV1> events1,
+                                                       List<EventV1> events2) {
         if (events1 == null || events2 == null)
-            return new DataSet<>(false);
+            return new DataSet<>(DataSetType.Integer);
         List<EventV1> copy1 = MakeEventListCopy(SelectNotDeletedEventsInThePast(events1));
         SortCopyByTime(copy1);
         List<EventV1> copy2 = MakeEventListCopy(SelectNotDeletedEventsInThePast(events2));
         SortCopyByTime(copy2);
 
-        DataSet<Integer> data = new DataSet<>(true);
-        for (EventV1 e1: copy1) {
-            for (EventV1 e2: copy2) {
-                if (e1.getEventDate().before(e2.getEventDate())) {
-                    Interval timedelta = new Interval(e1.GetEventDate().getTime(),
-                            e2.GetEventDate().getTime());
-                    if (timedelta.toDuration().getStandardDays() <= DaysToTrack) {
-                        data.AddRow(1, 1);
-                        break;
-                    }
-                    else {
-                        data.AddRow(1, 0);
-                        data.AddRow(0, 0);
-                        break;
-                    }
-                }
+        DateTime firstDateInFirstSet = new DateTime(copy1.get(0).getEventDate());
+        DateTime firstDateInSecondSet = new DateTime(copy2.get(0).getEventDate());
+        DateTime firstDate = firstDateInFirstSet.isAfter(firstDateInSecondSet)
+                ? firstDateInFirstSet : firstDateInSecondSet;
+
+        DateTime lastDateInFirstSet = new DateTime(copy1.get(copy1.size() - 1).getEventDate());
+        DateTime lastDateInSecondSet = new DateTime(copy2.get(copy2.size() - 1).getEventDate());
+        DateTime lastDate = lastDateInFirstSet.isAfter(lastDateInSecondSet)
+                ? lastDateInFirstSet : lastDateInSecondSet;
+
+        int eventCount = 0;
+        for (EventV1 e: copy1) {
+            if (IsObjectNull(e)) continue;
+            if (firstDate.minus(1).isBefore(e.getEventDate().getTime())
+                    && lastDate.plus(1).isAfter(e.getEventDate().getTime())) {
+                eventCount++;
             }
         }
-        for (EventV1 e2: copy2) {
-            for (EventV1 e1: copy1) {
-                if (e2.getEventDate().before(e1.getEventDate())) {
-                    Interval timedelta = new Interval(e2.GetEventDate().getTime(),
-                            e1.GetEventDate().getTime());
-                    if (timedelta.toDuration().getStandardDays() <= DaysToTrack) {
-                        data.AddRow(1, 1);
-                        break;
-                    }
-                    else {
-                        data.AddRow(0, 1);
-                        data.AddRow(0, 0); // Если между событиями больше 1 дня,
-                                           // то можно сказать, что в течении 1 дня
-                                           // ни одного из них не произошло.
-                        break;
-                    }
+        for (EventV1 e: copy2) {
+            if (IsObjectNull(e)) continue;
+            if (firstDate.minus(1).isBefore(e.getEventDate().getTime())
+                    && lastDate.plus(1).isAfter(e.getEventDate().getTime())) {
+                eventCount++;
+            }
+        }
+
+        Duration dateDelta = new Duration(
+                (lastDate.toDate().getTime() - firstDate.toDate().getTime()) / eventCount - 1);
+        int event1Index = 0;
+        int event2Index = 0;
+        DataSet<Integer> data = new DataSet<>(DataSetType.Boolean);
+        DateTime date = firstDate.minus(1);
+        while (date.isBefore(lastDate.plus(1))) {
+            int firstEventCount = 0;
+            int secondEventCount = 0;
+            for (int i = event1Index; i < copy1.size(); i++) {
+                if (date.isAfter(copy1.get(i).getEventDate().getTime()))
+                    continue;
+                if (date.isBefore(copy1.get(i).getEventDate().getTime())
+                        && date.plus(dateDelta).isAfter(copy1.get(i).getEventDate().getTime())) {
+                    firstEventCount++;
+                }
+                else {
+                    event1Index = i;
+                    break;
                 }
             }
+            for (int i = event2Index; i < copy2.size(); i++) {
+                if (date.isAfter(copy2.get(i).getEventDate().getTime()))
+                    continue;
+                if (date.isBefore(copy2.get(i).getEventDate().getTime())
+                        && date.plus(dateDelta).isAfter(copy2.get(i).getEventDate().getTime())) {
+                    secondEventCount++;
+                }
+                else {
+                    event2Index = i;
+                    break;
+                }
+            }
+            int first = firstEventCount > 0 ? 1 : 0;
+            int second = secondEventCount > 0 ? 1 : 0;
+            data.AddRow(first, second);
+            date = date.plus(dateDelta);
         }
         return data;
     }
@@ -121,17 +152,17 @@ public class DataSetBuilder {
     // датасетов проще, так что описывать их смысла особо не вижу, так как принцип работы
     // один, а меняются только вытаскиваемые из эвентов поля.
 
-    public static DataSet<Integer> BuildMultinomialDataset(List<EventV1> events1,
+    public static DataSet<Integer> BuildMultinomialDataSet(List<EventV1> events1,
                                                            List<EventV1> events2,
                                                            int DaysToTrack) {
         if (events1 == null || events2 == null)
-            return new DataSet<>(false);
+            return new DataSet<>(DataSetType.Integer);
         List<EventV1> copy1 = MakeEventListCopy(SelectNotDeletedEventsInThePast(events1));
         SortCopyByTime(copy1);
         List<EventV1> copy2 = MakeEventListCopy(SelectNotDeletedEventsInThePast(events2));
         SortCopyByTime(copy2);
 
-        DataSet<Integer> data = new DataSet<>(true);
+        DataSet<Integer> data = new DataSet<>(DataSetType.Integer);
         for (EventV1 e1: copy1) {
             for (EventV1 e2: copy2) {
                 if (IsObjectNull(e1.GetRating()) || IsObjectNull(e2.GetRating())) continue;
@@ -179,7 +210,7 @@ public class DataSetBuilder {
 
     public static DataSet<Double> ConvertToRanks(DataSet<Double> ds) {
         return new DataSet<>(ConvertListToRankArray(ds.GetColumn(0)),
-                ConvertListToRankArray(ds.GetColumn(1)), true);
+                ConvertListToRankArray(ds.GetColumn(1)), DataSetType.Double);
     }
 
     private static List<Double> ConvertListToRankArray(List<Double> list) {
@@ -271,7 +302,7 @@ public class DataSetBuilder {
         int eventInd = 0;
         // Идем от самой первой даты с шагом dateDelta
         DateTime date = leftBorderTime;
-        while (date.isBefore(rightBorder + dateDelta)) {
+        while (date.isBefore(rightBorder + 1)) {
 
             // Создаем новый интервал для промежутка
             // размером в dateDelta с началом в date

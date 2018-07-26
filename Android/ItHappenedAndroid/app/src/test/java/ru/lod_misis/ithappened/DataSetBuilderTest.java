@@ -16,9 +16,9 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribu
 public class DataSetBuilderTest {
 
     @Test
-    public void PrepareDoubleDatasetTest_PrepareDoubleDatasetFunctionWorksCorrect() {
+    public void PrepareDoubleDataSetTest_PrepareDoubleDataSetFunctionWorksCorrect() {
         List<List<EventV1>> eventSet = GenerateEventCollectionPair(10);
-        DataSet<Integer> intDS = DataSetBuilder.BuildBooleanDataset(eventSet.get(0), eventSet.get(1), 1);
+        DataSet<Integer> intDS = DataSetBuilder.BuildBooleanDataSet(eventSet.get(0), eventSet.get(1));
         DataSet<Double> doubleDS = DataSetBuilder.BuildDoubleDataSet(eventSet.get(0), eventSet.get(1), 1);
 
         Assert.assertEquals(intDS.Length(), 9);

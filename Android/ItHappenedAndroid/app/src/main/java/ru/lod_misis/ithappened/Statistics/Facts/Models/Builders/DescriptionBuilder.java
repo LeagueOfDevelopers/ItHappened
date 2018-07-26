@@ -14,31 +14,31 @@ public class DescriptionBuilder {
     private static final Locale DateFormatLocalization = new Locale("ru");
 
     private static final String BoolCorrReportFormat =
-            "C %s вероятностью при увеличении числа событий %s происходит %s числа событий %s. ";
+            "C <b>%s</b> вероятностью при увеличении числа событий <b>%s</b> происходит %s числа событий <b>%s</b>. ";
 
     private static final String ScaleCorrReportFormat =
-            "C %s вероятностью при увеличении количества %s в событии %s происходит %s количества %s в событии %s. ";
+            "C <b>%s</b> вероятностью при увеличении количества <b>%s</b> в событии <b>%s</b> происходит %s количества <b>%s</b> в событии <b>%s</b>. ";
 
     private static final String RatingCorrReportFormat =
-            "C %s вероятностью при увеличении рейтинга события %s происходит %s рейтинга события %s. ";
+            "C <b>%s</b> вероятностью при увеличении рейтинга события <b>%s</b> происходит %s рейтинга события <b>%s</b>. ";
 
     private static final String ScaleTrendReportFormat =
-            "С момента %s среднее значение шкалы '%s' cобытия '%s' %s на %s.";
+            "С <b>%s</b> среднее значение шкалы <b>%s</b> cобытия <b>%s</b> %s на <b>%s</b>.";
 
     private static final String RatingTrendReportFormat =
-            "С момента %s среднее значение рейтинга события '%s' %s на %s.";
+            "С <b>%s</b> среднее значение рейтинга события <b>%s</b> %s на <b>%s</b>.";
 
     private static final String FreqTrendReportFormat =
-            "Событие %s происходит %s: за последние %s - %s раз.";
+            "Событие <b>%s</b> происходит %s: за последние <b>%s</b> - <b>%s</b> раз.";
 
     private static final String LongestBreakReportFormat =
-            "Самый большой перерыв в %s произошёл с %s до %s. Длина перерыва в днях: %d.";
+            "Самый большой перерыв в <b>%s</b> произошёл с <b>%s</b> до <b>%s</b>. Длина перерыва в днях: <b>%d</b>.";
 
     private static final String LargestEventCountReportFormat =
-            "Самый насыщенный событиями день был %s. Тогда произошло %s ";
+            "Самый насыщенный событиями день был <b>%s</b>. Тогда произошло <b>%s</b> ";
 
     private static final String LargestEventCountWeekReportFormat =
-            "Самая насыщенная событиями неделя была с %s до %s. В течении этой недели произошло %s ";
+            "Самая насыщенная событиями неделя была с <b>%s</b> до <b>%s</b>. В течении этой недели произошло <b>%s</b> ";
 
     public static String BuildBinaryCorrelationReport(Double corr,
                                                       String firstTrackingName,

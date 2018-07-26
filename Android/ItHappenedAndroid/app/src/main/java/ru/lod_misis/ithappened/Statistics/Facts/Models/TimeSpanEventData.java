@@ -8,13 +8,11 @@ import java.util.UUID;
 
 public class TimeSpanEventData {
 
-    private Integer EventCount;
     private DateTime Date;
     private List<UUID> EventIds;
 
     public TimeSpanEventData(DateTime date) {
         Date = date;
-        EventCount = 0;
         EventIds = new ArrayList<>();
     }
 
@@ -48,7 +46,6 @@ public class TimeSpanEventData {
     }
 
     public void CountIncrement(UUID EventId) {
-        EventCount++;
         EventIds.add(EventId);
     }
 
@@ -57,6 +54,6 @@ public class TimeSpanEventData {
     }
 
     public int getEventCount() {
-        return EventCount;
+        return EventIds.size();
     }
 }
