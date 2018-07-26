@@ -62,6 +62,7 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="16sp"
                 android:padding="10dp"
+                android:visibility="gone"
                 android:textAlignment="center"
                 android:text="Посмотреть историю событий"/>
 
