@@ -57,7 +57,7 @@ public class DescriptionBuilderUnitTest {
         ScaleTrendChangingFact fact = new ScaleTrendChangingFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertTrue(descr.contains("среднее значение шкалы <b>scale</b> cобытия <b>tracking</b> увеличилось"));
+        Assert.assertTrue(descr.contains("среднее значение шкалы <b>scale</b> cобытия <b>tracking</b> <b>увеличилось</b>"));
     }
 
     @Test

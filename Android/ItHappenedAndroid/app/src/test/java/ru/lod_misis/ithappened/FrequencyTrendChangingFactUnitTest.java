@@ -21,7 +21,7 @@ public class FrequencyTrendChangingFactUnitTest {
         Fact fact = new FrequencyTrendChangingFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertEquals(descr, "Событие <b>null</b> происходит чаще: за последние <b>6</b> дней - <b>9</b> раз.");
+        Assert.assertEquals(descr, "Событие <b>null</b> происходит <b>чаще</b>: за последние <b>6 дней</b> - <b>9</b> раз.");
     }
 
     private TrackingV1 GenerateTracking() {
