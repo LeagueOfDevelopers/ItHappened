@@ -9,7 +9,6 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 
 public class SequenceAnalyzerTest {
 
@@ -18,11 +17,11 @@ public class SequenceAnalyzerTest {
     @Test
     public void DetectTrendChangingPointTest_GotCorrectTrendChangingPoint() {
         InitializeRatingSeq();
-        TrendChangingData data1 = SequenceAnalyzer.DetectTrendChangingPoint(sequence);
-        TrendChangingData data2 = SequenceAnalyzer.DetectTrendChangingPoint(sequence.Slice(0, 12));
+        int index1 = SequenceAnalyzer.DetectTrendChangingPoint(sequence);
+        int index2 = SequenceAnalyzer.DetectTrendChangingPoint(sequence.Slice(0, 12));
 
-        Assert.assertTrue(data1.getItemInCollectionId() == 14);
-        Assert.assertTrue(data2.getItemInCollectionId() == 1);
+        Assert.assertTrue(index1 == 14);
+        Assert.assertTrue(index2 == 1);
     }
 
     /*@Test // Stress test

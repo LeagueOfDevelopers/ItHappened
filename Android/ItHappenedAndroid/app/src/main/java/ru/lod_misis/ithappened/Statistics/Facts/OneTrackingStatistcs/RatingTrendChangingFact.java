@@ -17,7 +17,6 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
 
 public class RatingTrendChangingFact extends Fact {
@@ -36,6 +35,7 @@ public class RatingTrendChangingFact extends Fact {
         for (EventV1 e: Events) {
             NewAverage += e.GetRating().getRating();
         }
+        Events = SortEventsByDate(Events);
         NewAverage = NewAverage / Events.size();
     }
 
@@ -51,6 +51,9 @@ public class RatingTrendChangingFact extends Fact {
         }
         return validEvents;
     }
+    // Данный метод выбирает из коллекции эвентов только те, которые
+    // соответствуют предикату, а то есть не удаленные, произошедшие
+    // в прошедшем времени и имеющие рейтинг
 
     @Override
     public void calculateData() {
@@ -63,12 +66,12 @@ public class RatingTrendChangingFact extends Fact {
     @Override
     protected void calculatePriority() {
         Integer days = new Interval(PointOfChange.getPointEventDate().getTime(),
-                DateTime.now().toDate().getTime())
+                Events.get(Events.size() - 1).getEventDate().getTime())
                 .toDuration() // Преобразование в класс длительности
                 .toStandardDays() // Достаем дни
                 .getDays();
         if (days != 0)
-            priority = Math.abs(NewAverage - PointOfChange.getAverangeValue()) * 10 / days;
+            priority = Math.abs(NewAverage - PointOfChange.getAverageValue()) * 10 / days;
         else
             priority = Double.MAX_VALUE;
     }
@@ -84,17 +87,24 @@ public class RatingTrendChangingFact extends Fact {
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return NewAverage - PointOfChange.getAverangeValue() != 0;
+        return NewAverage - PointOfChange.getAverageValue() != 0;
     }
 
     private void CalculateTrendDelta() {
-        Sequence data = DataSetBuilder.BuildRatingSequence(SortEventsByDate(Events));
-        TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
-        PointOfChange = new TrendChangingPoint(
-                Events.get(trendData.getItemInCollectionId()).GetEventId(),
-                data.Slice(0, trendData.getItemInCollectionId()).Mean(),
-                trendData.getAlphaCoefficient(),
-                Events.get(trendData.getItemInCollectionId()).GetEventDate());
+        // Выбираем из эвентов только значения рейтинга и составляем последовательность
+        Sequence values = DataSetBuilder.BuildRatingSequence(Events);
+        // Вычисляем точку изменения тренда на последовательности
+        int trendData = SequenceAnalyzer.DetectTrendChangingPoint(values);
+        // Так как каждая точка соответствует одному событию, можно сказать,
+        // что getItemInFrequencySequence возвращает нам номер эвента в коллекции эвентов
+        Double mean;
+        if (trendData == 0) {
+            mean = 0.;
+        }
+        else {
+            mean = values.Slice(0, trendData).Mean();
+        }
+        PointOfChange = new TrendChangingPoint(mean, Events.get(trendData).GetEventDate());
     }
 
     private List<EventV1> SortEventsByDate(List<EventV1> events) {

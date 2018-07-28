@@ -38,7 +38,7 @@ public class WeekWithLargestEventCountFact extends Fact {
         if (Data == null) return;
         calculatePriority();
         illustartion = new IllustartionModel(IllustrationType.EVENTSETREF);
-        illustartion.setEventHistoryRef(Data.getEventIds());
+        illustartion.setEventHistoryRef(Data.getIllustartionData());
     }
 
     @Override

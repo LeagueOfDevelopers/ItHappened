@@ -50,8 +50,23 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorAccent"
                 android:textSize="16sp"
+                android:padding="10dp"
                 android:textAlignment="center"
                 android:text="Посмотреть событие"/>
+
+            <TextView
+                android:id="@+id/eventHistoryRefBtn"
+                android:layout_below="@id/eventRefBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:textAlignment="center"
+                android:text="Посмотреть историю событий"/>
+
+
 
         </RelativeLayout>
 

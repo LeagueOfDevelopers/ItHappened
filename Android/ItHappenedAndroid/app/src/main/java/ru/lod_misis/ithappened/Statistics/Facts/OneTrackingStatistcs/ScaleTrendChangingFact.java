@@ -17,7 +17,6 @@ import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustartionModel;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.IllustrationType;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingData;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.TrendChangingPoint;
 
 public class ScaleTrendChangingFact extends Fact {
@@ -38,6 +37,7 @@ public class ScaleTrendChangingFact extends Fact {
         for (EventV1 e: Events) {
             NewAverage += e.GetScale();
         }
+        Events = SortEventsByDate(Events);
         NewAverage = NewAverage / Events.size(); // Размер коллекции проверяется в функции применимости
     }
     // Если событие не удалено и содержит значение шкалы, добавляем его
@@ -66,12 +66,12 @@ public class ScaleTrendChangingFact extends Fact {
     @Override
     protected void calculatePriority() {
         Integer days = new Interval(PointOfChange.getPointEventDate().getTime(),
-                DateTime.now().toDate().getTime())
+                Events.get(Events.size() - 1).getEventDate().getTime())
                 .toDuration() // Преобразование в класс длительности
                 .toStandardDays() // Достаем дни
                 .getDays();
         if (days != 0)
-            priority = Math.abs(NewAverage - PointOfChange.getAverangeValue()) * 10 / days;
+            priority = Math.abs(NewAverage - PointOfChange.getAverageValue()) * 10 / days;
         // Достает целочисленное значение из обьекта Days
         else
             priority = Double.MAX_VALUE;
@@ -88,17 +88,24 @@ public class ScaleTrendChangingFact extends Fact {
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return PointOfChange.getAverangeValue() - NewAverage != 0;
+        return PointOfChange.getAverageValue() - NewAverage != 0;
     }
 
     private void CalculateTrendDelta() {
-        Sequence data = DataSetBuilder.BuildScaleSequence(SortEventsByDate(Events));
-        TrendChangingData trendData = SequenceAnalyzer.DetectTrendChangingPoint(data);
-        PointOfChange = new TrendChangingPoint(
-                Events.get(trendData.getItemInCollectionId()).GetEventId(),
-                data.Slice(0, trendData.getItemInCollectionId()).Mean(),
-                trendData.getAlphaCoefficient(),
-                Events.get(trendData.getItemInCollectionId()).GetEventDate());
+        // Вытаскиевам из эвентов значения scale и составляем из них последовательность
+        Sequence values = DataSetBuilder.BuildScaleSequence(Events);
+        // Вычисляем точку изменения тренда в последовательности скаляров
+        int trendData = SequenceAnalyzer.DetectTrendChangingPoint(values);
+        // Так как каждая точка соответствует одному событию, можно сказать,
+        // что getItemInFrequencySequence возвращает нам номер эвента в коллекции эвентов
+        Double mean;
+        if (trendData == 0) {
+            mean = 0.;
+        }
+        else {
+            mean = values.Slice(0, trendData).Mean();
+        }
+        PointOfChange = new TrendChangingPoint(mean, Events.get(trendData).GetEventDate());
     }
     // Сначала преобразовываем массив эвентов в массив скаляров. Затем вычисляем
     // точку изменения тренда. И наконец создаем обьект класса TrendChangingPoint,

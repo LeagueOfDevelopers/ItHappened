@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.lod_misis.ithappened.Domain.Event;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
+import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribution;
 
 public class DataSetBuilder {
 
@@ -253,29 +253,53 @@ public class DataSetBuilder {
         return new Sequence(result);
     }
 
-    public static Sequence BuildFrequencySequence(List<EventV1> events) {
+    public static EventsTimeDistribution BuildFrequencySequence(List<EventV1> events) {
         List<EventV1> copy = MakeEventListCopy(events);
         SortCopyByTime(copy);
+
+        // Находим правую и левую границы интервала,
+        // а так же шаг разбиения данного интервала (дельту)
         long leftBorder = copy.get(0).GetEventDate().getTime();
         long rightBorder = copy.get(copy.size() - 1).GetEventDate().getTime();
         long dateDelta = (rightBorder - leftBorder) / (events.size() - 1);
-        List<Double> frequencies = new ArrayList<>();
-        int eventInd = 0;
-        for (int i = 0; i < copy.size() - 1; i++) {
-            int count = 0;
-            for (int j = eventInd; j < copy.size(); j++) {
 
-                if (leftBorder + dateDelta * (i) <= copy.get(j).getEventDate().getTime() &&
-                        copy.get(j).getEventDate().getTime() < leftBorder + dateDelta * (i + 1)) {
-                    count++;
+        // Создаем новый обьект, который будет хранить данные
+        // о том, в какой период, какие события произошли
+        EventsTimeDistribution distr = new EventsTimeDistribution();
+
+        DateTime leftBorderTime = new DateTime(leftBorder - 1);
+        int eventInd = 0;
+        // Идем от самой первой даты с шагом dateDelta
+        DateTime date = leftBorderTime;
+        while (date.isBefore(rightBorder + dateDelta)) {
+
+            // Создаем новый интервал для промежутка
+            // размером в dateDelta с началом в date
+            int id = distr.addNewInterval(date, date.plus(dateDelta));
+
+            // Идем от первого эвента и смотрим,
+            // принадлежит ли он нашему текущему промежутку
+            for (int j = eventInd; j < copy.size(); j++) {
+                if (date.isBefore(copy.get(j).getEventDate().getTime()) &&
+                        date.plus(dateDelta).isAfter(copy.get(j).getEventDate().getTime())) {
+                    // Если да, то доавляем его в коллекцию
+                    distr.addEventToCollection(copy.get(j), id);
                 }
                 else {
+                    // В противном случае можно закончить рассмотрение,
+                    // так как если дата этого эвента вышла за пределы промежутка,
+                    // то следующие эвены произошли еще позднее и рассматривать
+                    // их в контексте этого интервала бессмысленно. Так же стоит
+                    // отметить, что эвент может быть только больше, чем правая
+                    // граница промежутка, так как они отсортированы по дате,
+                    // а благодаря этому индексу мы не рассматриваем один эвент больше одного раза
                     eventInd = j;
                     break;
                 }
             }
-            frequencies.add((double)count);
+            // Меняем дату начала текущего промежутка
+            date = date.plus(dateDelta);
         }
-        return new Sequence(frequencies);
+        return distr;
     }
 }

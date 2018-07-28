@@ -1,8 +1,12 @@
 package ru.lod_misis.ithappened.Recyclers;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -28,6 +32,7 @@ import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.Models.DayTimeFactModel;
@@ -49,7 +54,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             Color.rgb(217, 184, 162),
             Color.rgb(191, 134, 134),
             Color.rgb(179, 48, 80),
-            Color.rgb(245,124,0),
+            Color.rgb(245, 124, 0),
             Color.rgb(84, 110, 122)
     };
 
@@ -78,14 +83,24 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
         holder.barChart.setVisibility(View.GONE);
         holder.eventRef.setVisibility(View.GONE);
 
-        createIllustration(fact, holder.pieChart, holder.barChart,holder.lineChart, holder.eventRef);
+        createIllustration(fact,
+                holder.pieChart,
+                holder.barChart,
+                holder.lineChart,
+                holder.eventRef,
+                holder.eventHistoryRef);
 
     }
 
-    public void createIllustration(final Fact fact, PieChart pieChart, BarChart barChart, LineChart lineChart, TextView eventRef){
+    public void createIllustration(final Fact fact,
+                                   PieChart pieChart,
+                                   BarChart barChart,
+                                   LineChart lineChart,
+                                   TextView eventRef,
+                                   TextView eventsHistoryRef) {
 
 
-        if(fact.getIllustration()!=null) {
+        if (fact.getIllustration() != null) {
             IllustrationType type = fact.getIllustration().getType();
             switch (type) {
                 case BAR:
@@ -100,45 +115,45 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         PASTEL_COLORS = fact.getIllustration().getColors();
                         BarDataSet dataSet = new BarDataSet(entires, "Факт");
                         dataSet.setColors(ColorTemplate.PASTEL_COLORS);
-                       BarData data = new BarData(new ArrayList<String>(),dataSet);
-                       barChart.setData(data);
+                        BarData data = new BarData(new ArrayList<String>(), dataSet);
+                        barChart.setData(data);
 
                     }
                     List<FrequentEventsFactModel> dataList = fact.getIllustration().getFrequentEventsList();
-                    if(dataList!=null){
+                    if (dataList != null) {
                         PASTEL_COLORS = new ArrayList<>();
                         List<Double> frequentData = new ArrayList<>();
                         List<String> frequentTrackings = new ArrayList<>();
-                        for(int i=0;i<dataList.size();i++){
+                        for (int i = 0; i < dataList.size(); i++) {
                             frequentData.add(dataList.get(i).getPeriod());
                             PASTEL_COLORS.add(dataList.get(i).getColor());
 
-                            switch (dataList.size()){
+                            switch (dataList.size()) {
                                 case 1:
-                                    if(dataList.get(i).getTrackingName().length()>=10){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,10)+"...");
-                                    }else{
+                                    if (dataList.get(i).getTrackingName().length() >= 10) {
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 10) + "...");
+                                    } else {
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
                                     break;
                                 case 2:
-                                    if(dataList.get(i).getTrackingName().length()>=7){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,7)+"...");
-                                    }else{
+                                    if (dataList.get(i).getTrackingName().length() >= 7) {
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 7) + "...");
+                                    } else {
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
                                     break;
                                 case 3:
-                                    if(dataList.get(i).getTrackingName().length()>=5){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5)+"...");
-                                    }else{
+                                    if (dataList.get(i).getTrackingName().length() >= 5) {
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 5) + "...");
+                                    } else {
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
                                     break;
                                 case 4:
-                                    if(dataList.get(i).getTrackingName().length()>=5){
-                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0,5)+"...");
-                                    }else{
+                                    if (dataList.get(i).getTrackingName().length() >= 5) {
+                                        frequentTrackings.add(dataList.get(i).getTrackingName().substring(0, 5) + "...");
+                                    } else {
                                         frequentTrackings.add(dataList.get(i).getTrackingName());
                                     }
                                     break;
@@ -148,13 +163,13 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         barChart.setVisibility(View.VISIBLE);
                         ArrayList<BarEntry> entries = new ArrayList<>();
                         for (int i = 0; i < frequentData.size(); i++) {
-                            if(frequentData.get(i)==0.0){
-                                if(frequentData.size()==3)
-                                frequentTrackings.set(i,"Мало событий");
-                                if(frequentData.size()==5)
-                                    frequentTrackings.set(i,"Мало с...");
-                                if(frequentData.size()==2)
-                                    frequentTrackings.set(i,"Мало событий");
+                            if (frequentData.get(i) == 0.0) {
+                                if (frequentData.size() == 3)
+                                    frequentTrackings.set(i, "Мало событий");
+                                if (frequentData.size() == 5)
+                                    frequentTrackings.set(i, "Мало с...");
+                                if (frequentData.size() == 2)
+                                    frequentTrackings.set(i, "Мало событий");
 
                             }
                             entries.add(new BarEntry(frequentData.get(i).floatValue(), i));
@@ -171,6 +186,28 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
                     }
                     break;
+
+               /* case EVENTSETREF:
+                    final IllustartionModel illustartionSet = fact.getIllustration();
+                    if(illustartionSet!=null) {
+                        eventsHistoryRef.setVisibility(View.VISIBLE);
+                        eventsHistoryRef.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Bundle bundle = new Bundle();
+                                bundle.putLong("dateFrom", illustartionSet.getEventHistoryRef().get(0).getTime());
+                                bundle.putLong("dateTo", illustartionSet.getEventHistoryRef().get(1).getTime());
+                                FragmentManager manager = ((Activity) context).getFragmentManager();
+                                FragmentTransaction fragmentTransaction = manager.beginTransaction();
+                                EventsFragment eventsFragment = new EventsFragment();
+                                eventsFragment.setArguments(bundle);
+                                fragmentTransaction.replace(R.id.trackingsFrg, eventsFragment);
+                                fragmentTransaction.commit();
+                            }
+                        });
+                    }
+                    break;*/
+
 
                 case EVENTREF:
                     eventRef.setVisibility(View.VISIBLE);
@@ -189,7 +226,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                     break;
                 case PIE:
                     IllustartionModel illustartionModel = fact.getIllustration();
-                    if(illustartionModel!=null) {
+                    if (illustartionModel != null) {
                         if (illustartionModel.getWeekDaysFactList() != null) {
                             pieChart.setVisibility(View.VISIBLE);
                             List<WeekDaysFactModel> data = illustartionModel.getWeekDaysFactList();
@@ -286,14 +323,14 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                 case GRAPH:
                     IllustartionModel graphModel = fact.getIllustration();
                     if (graphModel != null) {
-                        if(graphModel.getGraphData()!=null){
+                        if (graphModel.getGraphData() != null) {
                             List<Double> data = graphModel.getGraphData();
                             lineChart.setVisibility(View.VISIBLE);
                             List<Entry> entries = new ArrayList<>();
                             List<String> strings = new ArrayList<>();
-                            for(int i=0;i<data.size();i++){
+                            for (int i = 0; i < data.size(); i++) {
                                 entries.add(new Entry(data.get(i).floatValue(), i));
-                                strings.add(""+i);
+                                strings.add("" + i);
                             }
                             LineDataSet dataSet = new LineDataSet(entries, "");
                             LineData lineData = new LineData(strings, dataSet);
@@ -322,6 +359,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
         LineChart lineChart;
         BarChart barChart;
         TextView eventRef;
+        TextView eventHistoryRef;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -330,6 +368,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
             pieChart = (PieChart) itemView.findViewById(R.id.pieFact);
             barChart = (BarChart) itemView.findViewById(R.id.barFact);
             eventRef = (TextView) itemView.findViewById(R.id.eventRefBtn);
+            eventHistoryRef = itemView.findViewById(R.id.eventHistoryRefBtn);
         }
     }
 

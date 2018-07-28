@@ -126,6 +126,17 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         startPosition = 0;
         endPosition = 10;
 
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            dateF = new Date(bundle.getLong("dateFrom"));
+            dateT = new Date(bundle.getLong("dateTo"));
+            Locale locale = new Locale("ru");
+            SimpleDateFormat simpleDateFormat = new
+                    SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+            dateFrom.setText(simpleDateFormat.format(dateF));
+            dateTo.setText(simpleDateFormat.format(dateT));
+        }
+
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
