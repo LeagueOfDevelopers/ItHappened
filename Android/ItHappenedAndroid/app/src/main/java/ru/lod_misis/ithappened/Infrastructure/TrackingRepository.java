@@ -146,6 +146,8 @@ public class TrackingRepository implements ITrackingRepository {
         realm.beginTransaction();
         TrackingV1 tracking = realm.copyFromRealm(trackingV1);
         tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
+
+        realm.copyToRealm(tracking);
         realm.commitTransaction();
     }
 
