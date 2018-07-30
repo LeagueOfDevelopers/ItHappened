@@ -75,7 +75,7 @@ public class WeekWithLargestEventCountFact extends Fact {
         }
         int maxCount = 0;
         for (TimeSpanEventData d: counts) {
-            if (d.getEventCount() > maxCount) {
+            if (d.getEventCount() >= maxCount && d.getRightWeekBorder().isBefore(DateTime.now())) {
                 maxCount = d.getEventCount();
                 Data = d;
             }

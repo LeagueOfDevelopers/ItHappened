@@ -69,29 +69,18 @@ public class InMemoryFactRepository {
 
         factToAdd = FunctionApplicability.DayWithLargestEventCountApplicability(trackingV1Collection);
         if (factToAdd != null) allTrackingsFactCollection.add(factToAdd);
-        //addFactToAllFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.WeekWithLargestEventCountApplicability(trackingV1Collection);
         if (factToAdd != null) allTrackingsFactCollection.add(factToAdd);
-        //addFactToAllFactCollection(factToAdd);
 
         facts = FunctionApplicability.BinaryCorrelationFactApplicability(trackingV1Collection);
         allTrackingsFactCollection.addAll(facts);
-        //for (Fact fact: facts) {
-        //    addFactToAllFactCollection(fact);
-        //}
 
-        //facts = new ArrayList<>();
         facts = FunctionApplicability.MultinomialCorrelationApplicability(trackingV1Collection);
-        //addFactToAllFactCollection(fact);
         allTrackingsFactCollection.addAll(facts);
 
-        //facts = new ArrayList<>();
         facts = FunctionApplicability.ScaleCorrelationFactApplicability(trackingV1Collection);
         allTrackingsFactCollection.addAll(facts);
-        //for (Fact fact: facts) {
-        //    addFactToAllFactCollection(fact);
-        //}
 
         if(allTrackingsFactCollection.size() > 1)
             sortAllTrackingsFacts();
@@ -136,19 +125,15 @@ public class InMemoryFactRepository {
 
         factToAdd = FunctionApplicability.FrequencyTrendChangingFactApplicability(trackingV1);
         if (factToAdd != null) oneTrackingFactCollection.add(factToAdd);
-        //addFactToOneTrackingFactCollection(factToAdd);
-
-        factToAdd = FunctionApplicability.LongestBreakFactApplicability(trackingV1);
-        if (factToAdd != null) oneTrackingFactCollection.add(factToAdd);
-        //addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.RatingTrendChangingFactApplicability(trackingV1);
         if (factToAdd != null) oneTrackingFactCollection.add(factToAdd);
-        //addFactToOneTrackingFactCollection(factToAdd);
 
         factToAdd = FunctionApplicability.ScaleTrendChangingFactApplicability(trackingV1);
         if (factToAdd != null) oneTrackingFactCollection.add(factToAdd);
-        //addFactToOneTrackingFactCollection(factToAdd);
+
+        factToAdd = FunctionApplicability.LongestBreakFactApplicability(trackingV1);
+        if (factToAdd != null) oneTrackingFactCollection.add(factToAdd);
 
         if (oneTrackingFactCollection.size() > 1)
             sortOneTrackingFacts();

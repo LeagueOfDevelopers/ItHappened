@@ -88,7 +88,7 @@ public class DescriptionBuilderUnitTest {
         WeekWithLargestEventCountFact fact = new WeekWithLargestEventCountFact(trackings);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertEquals(descr, "Самая насыщенная событиями неделя была с <b>1 января 2018 года</b> до <b>7 января 2018 года</b>. В течении этой недели произошло <b>7</b> событий.");
+        Assert.assertEquals(descr, "Самая насыщенная событиями неделя была с <b>1 января 2018 года</b> до <b>7 января 2018 года</b>. В течении этой недели произошло <b>12</b> событий.");
     }
 
     private TrackingV1 GenerateTrackingWithDateBreak() {
@@ -98,14 +98,18 @@ public class DescriptionBuilderUnitTest {
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 "scale", "");
-        String dates = "1 2 3 4 5 5 7 10 11 12 14 16 25";
-        List<Integer> dateArr = new ArrayList<>();
-        for (String date: dates.split(" ")) {
-            dateArr.add(Integer.parseInt(date));
-        }
-        for (Integer i: dateArr) {
+        Integer[] dates = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 7, 10, 11, 12, 14, 16, 25, 2, 2, 2, 2, 2, 2, 2, 2};
+        for (int i = 0; i < 12; i++) {
             EventV1 event = new EventV1();
-            DateTime date = new DateTime(2018, 1, i, 10, 0);
+            DateTime date = new DateTime(2018, 1, dates[i], 10, 0);
+            event.SetEventDate(date.toDate());
+            event.SetEventId(UUID.randomUUID());
+            tracking.AddEvent(event);
+        }
+        // Тест на то, что события из будующего будут проигнорированы
+        for (int i = 12; i < dates.length; i++) {
+            EventV1 event = new EventV1();
+            DateTime date = new DateTime(2019, 1, dates[i], 10, 0);
             event.SetEventDate(date.toDate());
             event.SetEventId(UUID.randomUUID());
             tracking.AddEvent(event);

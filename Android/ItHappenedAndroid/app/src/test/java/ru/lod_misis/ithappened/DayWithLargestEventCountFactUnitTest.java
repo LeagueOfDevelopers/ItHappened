@@ -25,27 +25,31 @@ public class DayWithLargestEventCountFactUnitTest {
         trackings.add(t);
         Fact fact = new DayWithLargestEventCountFact(trackings);
         fact.calculateData();
-        List<UUID> uuids = fact.getIllustration().getEventHistoryRef();
+        List<Date> borders = fact.getIllustration().getEventHistoryRef();
 
-        Assert.assertTrue(uuids.size() == 3);
-        int i = 4;
-        for (UUID uuid: uuids) {
-            Assert.assertTrue(uuid.toString().equals(t.getEventV1Collection().get(i).getEventId().toString()));
-            i++;
-        }
+        Assert.assertTrue(borders.size() == 2);
+        Assert.assertTrue(borders.get(0).equals(1));
     }*/
 
     private TrackingV1 GenerateTracking() {
-        int[] days = {1, 2, 3, 4, 5, 5, 5, 6, 7, 8, 9};
+        int[] days = {1, 2, 3, 4, 5, 5, 5, 6, 7, 8, 9, 1, 1, 1, 1, 1, 1, 1};
         TrackingV1 t = new TrackingV1();
         t.SetTrackingID(UUID.randomUUID());
         t.SetScaleCustomization(TrackingCustomization.None);
         t.SetRatingCustomization(TrackingCustomization.None);
         t.SetCommentCustomization(TrackingCustomization.None);
         t.setEventV1Collection(new RealmList<EventV1>());
-        for (int day : days) {
+        for (int day = 0; day < 11; day++) {
             UUID id = UUID.randomUUID();
-            Date date = new DateTime(2000, 1, day, 0, 0).toDate();
+            Date date = new DateTime(2000, 1, days[day], 0, 0).toDate();
+            EventV1 e = new EventV1();
+            e.setEventDate(date);
+            e.setEventId(id.toString());
+            t.AddEvent(e);
+        }
+        for (int day = 11; day < days.length; day++) {
+            UUID id = UUID.randomUUID();
+            Date date = new DateTime(2019, 1, days[day], 0, 0).toDate();
             EventV1 e = new EventV1();
             e.setEventDate(date);
             e.setEventId(id.toString());

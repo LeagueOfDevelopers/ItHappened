@@ -58,6 +58,7 @@ public class RatingTrendChangingFact extends Fact {
     @Override
     public void calculateData() {
         CalculateTrendDelta();
+        if (PointOfChange == null) return;
         illustartion = new IllustartionModel(IllustrationType.GRAPH);
         illustartion.setGraphData(DataSetBuilder.BuildRatingSequence(Events).ToList());
         calculatePriority();
@@ -87,7 +88,7 @@ public class RatingTrendChangingFact extends Fact {
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return NewAverage - PointOfChange.getAverageValue() != 0;
+        return PointOfChange != null && NewAverage - PointOfChange.getAverageValue() != 0;
     }
 
     private void CalculateTrendDelta() {
@@ -97,6 +98,7 @@ public class RatingTrendChangingFact extends Fact {
         int trendData = SequenceAnalyzer.DetectTrendChangingPoint(values);
         // Так как каждая точка соответствует одному событию, можно сказать,
         // что getItemInFrequencySequence возвращает нам номер эвента в коллекции эвентов
+        if (trendData == -1) return;
         Double mean;
         if (trendData == 0) {
             mean = 0.;

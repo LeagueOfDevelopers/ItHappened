@@ -203,31 +203,13 @@ public class DescriptionBuilder {
     }
 
     public static String LargestEventCountDayDescription(TimeSpanEventData data) {
-        String eventCountDescr = "";
-        if (data.getEventCount() % 10 == 1) {
-            eventCountDescr = "событие.";
-        }
-        if (data.getEventCount() % 10 > 1 && data.getEventCount() < 5) {
-            eventCountDescr = "события.";
-        }
-        if (data.getEventCount() % 10 > 4) {
-            eventCountDescr = "событий.";
-        }
+        String eventCountDescr = EventCountDescription(data.getEventCount());
         String pattern = LargestEventCountReportFormat + eventCountDescr;
         return String.format(pattern, DateDescription(data.getDate()), data.getEventCount()).trim();
     }
 
     public static String LargestEventCountWeekDescription(TimeSpanEventData data) {
-        String eventCountDescr = "";
-        if (data.getEventCount() % 10 == 1) {
-            eventCountDescr = "событие.";
-        }
-        if (data.getEventCount() % 10 > 1 && data.getEventCount() < 5) {
-            eventCountDescr = "события.";
-        }
-        if (data.getEventCount() % 10 > 4) {
-            eventCountDescr = "событий.";
-        }
+        String eventCountDescr = EventCountDescription(data.getEventCount());
         String pattern = LargestEventCountWeekReportFormat + eventCountDescr;
         DateTime leftWeekBorder = data.getLeftWeekBorder();
         DateTime rightWeekBorder = data.getRightWeekBorder();
@@ -237,6 +219,22 @@ public class DescriptionBuilder {
                 rightBorderDescription, data.getEventCount()).trim();
     }
 
+    private static String EventCountDescription(int eventCount) {
+        String eventCountDescr = "";
+        int lastEventCountDigit = eventCount % 10;
+        if (lastEventCountDigit == 1) {
+            eventCountDescr = "событие.";
+        }
+        if (lastEventCountDigit > 1 && lastEventCountDigit < 5) {
+            eventCountDescr = "события.";
+        }
+        boolean additionalCondition = eventCount % 100 > 10 && eventCount % 100 < 20;
+        if (lastEventCountDigit > 4 || lastEventCountDigit == 0 || additionalCondition) {
+            eventCountDescr = "событий.";
+        }
+        return eventCountDescr;
+    }
+
     private static String IntervalDescription(Interval interval) {
         String duration = "";
         int days = interval.toDuration().toStandardDays().getDays();
@@ -244,7 +242,9 @@ public class DescriptionBuilder {
         int minutes = interval.toDuration().toStandardMinutes().getMinutes() - days * 24 * 60 - hours * 60;
         if (days > 0) {
             int lastDigitD = days % 10;
-            if (lastDigitD > 4 || lastDigitD == 0) {
+            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
+            boolean condition = days % 100 > 10 && days % 100 < 20;
+            if (lastDigitD > 4 || lastDigitD == 0 || condition) {
                 duration += String.format("%s дней ", days);
             }
             if (lastDigitD > 1 && lastDigitD <= 4) {
@@ -256,7 +256,9 @@ public class DescriptionBuilder {
         }
         if (hours > 0) {
             int lastDigitH = hours % 10;
-            if (lastDigitH > 4 || lastDigitH == 0) {
+            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
+            boolean condition = hours % 100 > 10 && hours % 100 < 20;
+            if (lastDigitH > 4 || lastDigitH == 0 || condition) {
                 duration += String.format("%s часов ", hours);
             }
             if (lastDigitH > 1 && lastDigitH <= 4) {
@@ -268,7 +270,9 @@ public class DescriptionBuilder {
         }
         if (minutes > 0) {
             int lastDigitM = minutes % 10;
-            if (lastDigitM > 4 || lastDigitM == 0) {
+            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
+            boolean condition = minutes % 100 > 10 && minutes % 100 < 20;
+            if (lastDigitM > 4 || lastDigitM == 0 || condition) {
                 duration += String.format("%s минут ", minutes);
             }
             if (lastDigitM > 1 && lastDigitM <= 4) {
