@@ -4,6 +4,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -31,6 +33,7 @@ public class FrequencyTrendChangingFact extends Fact {
         Events = new ArrayList<>();
         NewAverage = 0.0;
         Events = SelectNotDeletedEventsInThePast(tracking.getEventV1Collection());
+        SortEventCollectionByTime(Events);
     }
 
     private static List<EventV1> SelectNotDeletedEventsInThePast(List<EventV1> events) {
@@ -54,6 +57,10 @@ public class FrequencyTrendChangingFact extends Fact {
     @Override
     protected void calculatePriority() {
         // Вычисляем количество дней в периоде
+        if (LastInterval == null || PointOfChange == null) {
+            priority = 0.;
+            return;
+        }
         Integer days = LastInterval.toDuration().toStandardDays().getDays();
         if (NewAverage - PointOfChange.getAverageValue() > 0)
             // Если среднее возросло
@@ -74,15 +81,25 @@ public class FrequencyTrendChangingFact extends Fact {
                 priority = Double.MAX_VALUE;
     }
 
+    private static void SortEventCollectionByTime(List<EventV1> events) {
+        Collections.sort(events, new Comparator<EventV1>() {
+            @Override
+            public int compare(EventV1 event, EventV1 t1) {
+                return event.getEventDate().compareTo(t1.getEventDate());
+            }
+        });
+    }
+
     @Override
     public String textDescription() {
         return DescriptionBuilder.BuildFrequencyTrendReport(PointOfChange, NewAverage, TrackingName,
-                new Interval(PointOfChange.getPointEventDate().getTime(),
-                        Events.get(Events.size() - 1).getEventDate().getTime()), LastPeriodEventCount);
+                LastInterval, LastPeriodEventCount);
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return NewAverage - PointOfChange.getAverageValue() != 0 && LastPeriodEventCount != 0;
+        return PointOfChange != null
+                && NewAverage - PointOfChange.getAverageValue() != 0
+                && LastPeriodEventCount != 0;
     }
 
     private void CalculateTrendData() {
@@ -119,8 +136,13 @@ public class FrequencyTrendChangingFact extends Fact {
         // Дата конца последнего периода - это дата последнего события
         DateTime rightIntervalBorder = new DateTime(Events.get(Events.size() - 1).GetEventDate().getTime());
 
-        // Собираем это в интервал
-        LastInterval = new Interval(leftIntervalBorder, rightIntervalBorder);
+        // Если новый эвент в коллекции и есть точка перелома,
+        // значит надо вернуть заглушки и обработать их позднее
+        if (leftIntervalBorder.isEqual(rightIntervalBorder.toDate().getTime())) {
+            PointOfChange = null;
+            LastInterval = null;
+            return;
+        }
 
         // Среднее значение за период от начала и до ключевого эвента (даты точки перелома)
         Double mean;
@@ -134,5 +156,8 @@ public class FrequencyTrendChangingFact extends Fact {
         // Собираем все полученные данные в обьект, хранящий данные
         // о изменении тренда и сохраняем как переменную класса
         PointOfChange = new TrendChangingPoint(mean, leftIntervalBorder.toDate());
+
+        // Собираем даты в интервал
+        LastInterval = new Interval(leftIntervalBorder, rightIntervalBorder);
     }
 }

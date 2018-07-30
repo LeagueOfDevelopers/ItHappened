@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Random;
 import java.util.UUID;
 
 import io.realm.RealmList;
@@ -11,6 +12,7 @@ import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.FrequencyTrendChangingFact;
 
 public class FrequencyTrendChangingFactUnitTest {
@@ -23,6 +25,19 @@ public class FrequencyTrendChangingFactUnitTest {
         String descr = fact.textDescription();
         Assert.assertEquals(descr, "Событие <b>null</b> происходит <b>чаще</b>: за последние <b>6 дней</b> - <b>9</b> раз.");
     }
+
+    // STRESS TEST
+    /*@Test
+    public void FrequencyTrendChangingFactStressTest_FactDoesnotRaiseExceptions() {
+        Random gen = new Random();
+        while (true) {
+            TrackingV1 tracking = GenerateRandomTracking(gen);
+            Fact fact = FunctionApplicability.FrequencyTrendChangingFactApplicability(tracking);
+            if (fact != null) {
+                String descr = fact.textDescription();
+            }
+        }
+    }*/
 
     private TrackingV1 GenerateTracking() {
         int[] dates = {1, 3, 5, 6, 8, 9, 12, 13, 14, 15, 16, 17, 18, 18, 18};
@@ -37,6 +52,23 @@ public class FrequencyTrendChangingFactUnitTest {
             event.setEventId(UUID.randomUUID().toString());
             event.setEventDate(new DateTime(2000, 1, day, 0, 0).toDate());
             tracking.AddEvent(event);
+        }
+        return tracking;
+    }
+
+    private TrackingV1 GenerateRandomTracking(Random r) {
+        int eventCount = r.nextInt(1000);
+        TrackingV1 tracking = new TrackingV1();
+        tracking.setEventV1Collection(new RealmList<EventV1>());
+        tracking.SetTrackingID(UUID.randomUUID());
+        tracking.SetScaleCustomization(TrackingCustomization.None);
+        tracking.SetCommentCustomization(TrackingCustomization.None);
+        tracking.SetRatingCustomization(TrackingCustomization.None);
+        for (int i = 0; i < eventCount; i++) {
+            EventV1 e = new EventV1();
+            e.setEventId(UUID.randomUUID().toString());
+            e.setEventDate(new DateTime(2017 + r.nextInt(1000) / 365, r.nextInt(12) + 1, r.nextInt(27) + 1, 0, 0).toDate());
+            tracking.AddEvent(e);
         }
         return tracking;
     }

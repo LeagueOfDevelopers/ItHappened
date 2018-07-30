@@ -271,7 +271,7 @@ public class DataSetBuilder {
         int eventInd = 0;
         // Идем от самой первой даты с шагом dateDelta
         DateTime date = leftBorderTime;
-        while (date.isBefore(rightBorder + dateDelta)) {
+        while (date.isBefore(rightBorder)) {
 
             // Создаем новый интервал для промежутка
             // размером в dateDelta с началом в date

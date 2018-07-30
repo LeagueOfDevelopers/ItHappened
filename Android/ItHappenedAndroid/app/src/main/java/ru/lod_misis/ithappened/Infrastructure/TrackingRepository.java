@@ -144,7 +144,10 @@ public class TrackingRepository implements ITrackingRepository {
             throw new IllegalArgumentException("TrackingV1 with such ID doesn't exists");
 
         realm.beginTransaction();
-        trackingV1.EditEvent(eventId, newScale, newRating, newComment, newDate);
+        TrackingV1 tracking = realm.copyFromRealm(trackingV1);
+        tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
+
+        realm.copyToRealmOrUpdate(tracking);
         realm.commitTransaction();
     }
 
