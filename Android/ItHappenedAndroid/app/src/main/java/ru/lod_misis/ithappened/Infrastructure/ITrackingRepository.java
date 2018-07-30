@@ -31,11 +31,13 @@ public interface ITrackingRepository
                    Double newScale,
                    Rating newRating,
                    String newComment,
+                   String newGeoposition,
                    Date newDate);
     void editTracking(UUID trackingId,
                       TrackingCustomization editedCounter,
                       TrackingCustomization editedScale,
                       TrackingCustomization editedComment,
+                      TrackingCustomization editedGeoposition,
                       String editedTrackingName,
                       String scaleName,
                       String color);

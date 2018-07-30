@@ -47,6 +47,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     TextView ratingEnabled;
     TextView commentEnabled;
     TextView scaleEnabled;
+    TextView geopositionEnabled;
 
     CardView colorTrackingEdit;
     TextView colorTrackingTextEdit;
@@ -65,6 +66,10 @@ public class EditTrackingActivity extends AppCompatActivity {
     LinearLayout scaleOptional;
     LinearLayout scaleRequired;
 
+    LinearLayout geopositionDont;
+    LinearLayout geopositionOptional;
+    LinearLayout geopositionRequired;
+
     ImageView ratingDontImage;
     ImageView ratingOptionalImage;
     ImageView ratingRequiredImage;
@@ -79,6 +84,9 @@ public class EditTrackingActivity extends AppCompatActivity {
     ImageView scaleOptionalImage;
     ImageView scaleRequiredImage;
 
+    ImageView geopositionDontImage;
+    ImageView geopositionOptionalImage;
+    ImageView geopositionRequiredImage;
 
     CardView visibilityScaleType;
     TextView visbilityScaleTypeHint;
@@ -91,6 +99,9 @@ public class EditTrackingActivity extends AppCompatActivity {
     int stateForScale;
     int stateForText;
     int stateForRating;
+    int stateForGeoposition;
+
+    TrackingCustomization geoposition ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,6 +138,7 @@ public class EditTrackingActivity extends AppCompatActivity {
         ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabled);
         commentEnabled = (TextView) findViewById(R.id.commentTextEnabled);
         scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabled);
+        geopositionEnabled = (TextView) findViewById(R.id.geopositionTextEnabled);
 
 
         ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDont);
@@ -140,6 +152,10 @@ public class EditTrackingActivity extends AppCompatActivity {
         scaleDont = (LinearLayout) findViewById(R.id.scaleBackColorDont);
         scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheck);
         scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheck);
+
+        geopositionDont = (LinearLayout) findViewById(R.id.geopositionBackColorDont);
+        geopositionOptional = (LinearLayout) findViewById(R.id.geopositionBackColorCheck);
+        geopositionRequired= (LinearLayout) findViewById(R.id.geopositionBackColorDoubleCheck);
 
         ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDont);
         ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheck);
@@ -155,6 +171,10 @@ public class EditTrackingActivity extends AppCompatActivity {
         scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
         scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
         scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
+
+        geopositionDontImage = (ImageView) findViewById(R.id.geopositionBackImageDont);
+        geopositionOptionalImage = (ImageView) findViewById(R.id.geopositionBackImageCheck);
+        geopositionRequiredImage = (ImageView) findViewById(R.id.geopositionBackImageDoubleCheck);
 
         visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
         visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
@@ -228,6 +248,15 @@ public class EditTrackingActivity extends AppCompatActivity {
                 scaleOptional,
                 scaleRequired,
                 scaleEnabled);
+        stateForGeoposition=calculateState(editableTrackingV1.GetGeopositionCustomization(),
+                geopositionDontImage,
+                geopositionOptionalImage,
+                geopositionRequiredImage,
+                geopositionDont,
+                geopositionOptional,
+                geopositionRequired,
+                geopositionEnabled );
+
 
 
 
@@ -377,6 +406,48 @@ public class EditTrackingActivity extends AppCompatActivity {
                 scaleType.setVisibility(View.VISIBLE);
             }
         });
+        geopositionDont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                geopositionDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                geopositionEnabled.setText("не надо");
+                geopositionDontImage.setImageResource(R.drawable.active_dont);
+                geopositionOptionalImage.setImageResource(R.drawable.not_active_check);
+                geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                geoposition=TrackingCustomization.None;
+            }
+        });
+
+        geopositionOptional.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionEnabled.setText("не обязательно");
+                geopositionDontImage.setImageResource(R.drawable.not_active_dont);
+                geopositionOptionalImage.setImageResource(R.drawable.active_check);
+                geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                geopositionOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                geoposition=TrackingCustomization.Optional;
+            }
+        });
+
+
+        geopositionRequired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionEnabled.setText("обязательно");
+                geopositionDontImage.setImageResource(R.drawable.not_active_dont);
+                geopositionOptionalImage.setImageResource(R.drawable.not_active_check);
+                geopositionRequiredImage.setImageResource(R.drawable.active_double_check);
+                geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                geoposition=TrackingCustomization.Required;
+            }
+        });
 
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -445,7 +516,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString().trim();
                         }
-                        service.EditTracking(trackingId, scale, rating, comment, trackingTitle, scaleNumb, trackingColor);
+                        service.EditTracking(trackingId, scale, rating, comment,geoposition,trackingTitle, scaleNumb, trackingColor);
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())

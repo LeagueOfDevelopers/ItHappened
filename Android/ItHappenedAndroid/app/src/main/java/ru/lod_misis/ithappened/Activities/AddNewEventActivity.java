@@ -57,6 +57,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     int commentState;
     int scaleState;
     int ratingState;
+    int geopositionState;
     UUID trackingId;
 
     DatePickerDialog datePickerDialog;
@@ -78,10 +79,12 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     LinearLayout commentContainer;
     LinearLayout scaleContainer;
     LinearLayout ratingContainer;
+    LinearLayout geopositionContainer;
 
     TextView commentAccess;
     TextView scaleAccess;
     TextView ratingAccess;
+    TextView geopositionAccess;
 
     EditText commentControl;
     EditText scaleControl;
@@ -217,6 +220,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 String comment = null;
                 Double scale = null;
                 Rating rating = null;
+                String geoposition="123";
 
                 if(commentFlag&&ratingFlag&&scaleFlag){
                     if(!commentControl.getText().toString().isEmpty()&&!commentControl.getText().toString().trim().isEmpty()){
@@ -234,7 +238,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                                             eventDate,
                                             scale,
                                             rating,
-                                            comment));
+                                            comment,
+                                            geoposition
+                                            ));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -270,7 +276,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                                 e.printStackTrace();
                             }
                         }
-                        trackingService.AddEvent(trackingId, new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment));
+                        trackingService.AddEvent(trackingId, new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment,geoposition));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
