@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -48,6 +49,10 @@ public class WeekWithLargestEventCountFact extends Fact {
 
     @Override
     public String textDescription() {
+        List<Date> borders = new ArrayList<>();
+        borders.add(Data.getLeftWeekBorder().toDate());
+        borders.add(Data.getRightWeekBorder().toDate());
+        illustartion.setEventHistoryRef(borders);
         return DescriptionBuilder.LargestEventCountWeekDescription(Data);
     }
 

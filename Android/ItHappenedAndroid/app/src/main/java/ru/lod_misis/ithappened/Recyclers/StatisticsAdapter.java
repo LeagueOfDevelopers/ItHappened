@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
+import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.R;
@@ -187,7 +188,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                     }
                     break;
 
-               /* case EVENTSETREF:
+                case EVENTSETREF:
                     final IllustartionModel illustartionSet = fact.getIllustration();
                     if(illustartionSet!=null) {
                         eventsHistoryRef.setVisibility(View.VISIBLE);
@@ -197,7 +198,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 Bundle bundle = new Bundle();
                                 bundle.putLong("dateFrom", illustartionSet.getEventHistoryRef().get(0).getTime());
                                 bundle.putLong("dateTo", illustartionSet.getEventHistoryRef().get(1).getTime());
-                                FragmentManager manager = ((Activity) context).getFragmentManager();
+                                FragmentManager manager = ((UserActionsActivity) view.getContext()).getFragmentManager();
                                 FragmentTransaction fragmentTransaction = manager.beginTransaction();
                                 EventsFragment eventsFragment = new EventsFragment();
                                 eventsFragment.setArguments(bundle);
@@ -205,8 +206,10 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 fragmentTransaction.commit();
                             }
                         });
+                    }else{
+                        eventsHistoryRef.setVisibility(View.GONE);
                     }
-                    break;*/
+                    break;
 
 
                 case EVENTREF:
