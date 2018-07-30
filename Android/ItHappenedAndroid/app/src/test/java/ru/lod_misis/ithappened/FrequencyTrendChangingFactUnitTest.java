@@ -30,7 +30,7 @@ public class FrequencyTrendChangingFactUnitTest {
     }
 
     // STRESS TEST
-    @Test
+    /*@Test
     public void FrequencyTrendChangingFactStressTest_FactDoesnotRaiseExceptions() {
         Random gen = new Random();
         int i = 1;
@@ -50,7 +50,7 @@ public class FrequencyTrendChangingFactUnitTest {
             time = DateTime.now();
             i++;
         }
-    }
+    }*/
 
     private TrackingV1 GenerateTracking() {
         int[] dates = {1, 3, 5, 6, 8, 9, 12, 13, 14, 15, 16, 17, 18, 18, 18};
