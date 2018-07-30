@@ -54,6 +54,8 @@ public class EditEventActivity extends AppCompatActivity {
     int commentState;
     int scaleState;
     int ratingState;
+    int geopositionState;
+
     UUID trackingId;
     UUID eventId;
 
@@ -61,10 +63,12 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout commentContainer;
     LinearLayout scaleContainer;
     LinearLayout ratingContainer;
+    LinearLayout geopositionContainer;
 
     TextView commentAccess;
     TextView scaleAccess;
     TextView ratingAccess;
+    TextView geopositionAccess;
 
     EditText commentControl;
     EditText scaleControl;
@@ -206,6 +210,7 @@ public class EditEventActivity extends AppCompatActivity {
                 String comment = null;
                 Double scale = null;
                 Rating rating = null;
+                String geoposition="123";
 
                 if(commentFlag&&ratingFlag&&scaleFlag){
                     if(!commentControl.getText().toString().isEmpty()&&!commentControl.getText().toString().trim().isEmpty()){
@@ -226,7 +231,7 @@ public class EditEventActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                            trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,geoposition,eventDate);
                             YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
@@ -261,7 +266,7 @@ public class EditEventActivity extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                        trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,geoposition,eventDate);
                         YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())

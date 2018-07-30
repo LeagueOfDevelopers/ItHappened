@@ -45,6 +45,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     TextView ratingEnabled;
     TextView commentEnabled;
     TextView scaleEnabled;
+    TextView geopositionEnabled;
 
     CardView colorPickerButton;
     TextView colorPickerText;
@@ -61,6 +62,10 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     LinearLayout scaleOptional;
     LinearLayout scaleRequired;
 
+    LinearLayout geopositionDont;
+    LinearLayout geopositionOptional;
+    LinearLayout geopositionRequired;
+
     ImageView ratingDontImage;
     ImageView ratingOptionalImage;
     ImageView ratingRequiredImage;
@@ -72,6 +77,10 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     ImageView scaleDontImage;
     ImageView scaleOptionalImage;
     ImageView scaleRequiredImage;
+
+    ImageView geopositionDontImage;
+    ImageView geopositionOptionalImage;
+    ImageView geopositionRequiredImage;
 
     String trackingColor;
 
@@ -85,6 +94,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     int stateForScale;
     int stateForText;
     int stateForRating;
+    int stateForGeoposition;
+
+    TrackingCustomization geoposition ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,11 +126,12 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         stateForScale = 0;
         stateForText = 0;
         stateForRating = 0;
+        stateForGeoposition=0;
 
         ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabled);
         commentEnabled = (TextView) findViewById(R.id.commentTextEnabled);
         scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabled);
-
+        geopositionEnabled = (TextView) findViewById(R.id.geopositionTextEnabled);
 
         ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDont);
         ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
@@ -134,6 +147,10 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheck);
         scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheck);
 
+        geopositionDont = (LinearLayout) findViewById(R.id.geopositionBackColorDont);
+        geopositionOptional = (LinearLayout) findViewById(R.id.geopositionBackColorCheck);
+        geopositionRequired= (LinearLayout) findViewById(R.id.geopositionBackColorDoubleCheck);
+
         ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDont);
         ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheck);
         ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheck);
@@ -145,6 +162,11 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
         scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
         scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
+
+        geopositionDontImage = (ImageView) findViewById(R.id.geopositionBackImageDont);
+        geopositionOptionalImage = (ImageView) findViewById(R.id.geopositionBackImageCheck);
+        geopositionRequiredImage = (ImageView) findViewById(R.id.geopositionBackImageDoubleCheck);
+
         colorPickerText = findViewById(R.id.colorText);
 
         visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
@@ -300,6 +322,48 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 scaleType.setVisibility(View.VISIBLE);
             }
         });
+        geopositionDont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                geopositionDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                geopositionEnabled.setText("не надо");
+                geopositionDontImage.setImageResource(R.drawable.active_dont);
+                geopositionOptionalImage.setImageResource(R.drawable.not_active_check);
+                geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                geoposition=TrackingCustomization.None;
+            }
+        });
+
+        geopositionOptional.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionEnabled.setText("не обязательно");
+                geopositionDontImage.setImageResource(R.drawable.not_active_dont);
+                geopositionOptionalImage.setImageResource(R.drawable.active_check);
+                geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                geopositionOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                geoposition=TrackingCustomization.Optional;
+            }
+        });
+
+
+        geopositionRequired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionEnabled.setText("обязательно");
+                geopositionDontImage.setImageResource(R.drawable.not_active_dont);
+                geopositionOptionalImage.setImageResource(R.drawable.not_active_check);
+                geopositionRequiredImage.setImageResource(R.drawable.active_double_check);
+                geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                geopositionRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                geoposition=TrackingCustomization.Required;
+            }
+        });
 
         final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
         colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
@@ -392,7 +456,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                         if(scale != TrackingCustomization.None){
                             scaleNumb = scaleType.getText().toString().trim();
                         }
-                        TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, scaleNumb, trackingColor);
+                        TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment,geoposition, scaleNumb, trackingColor);
                         trackingRepository.AddNewTracking(newTrackingV1);
                         YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
                         Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
