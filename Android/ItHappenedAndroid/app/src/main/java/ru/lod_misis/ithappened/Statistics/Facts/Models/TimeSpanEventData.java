@@ -18,6 +18,7 @@ public class TimeSpanEventData {
         Date = date;
         EventCount = 0;
         EventIds = new ArrayList<>();
+        illustartionData = new ArrayList<>();
     }
 
     public List<UUID> getEventIds() {
@@ -41,11 +42,13 @@ public class TimeSpanEventData {
 
     public DateTime getLeftWeekBorder() {
         int day = Date.getDayOfWeek();
+        illustartionData.add(Date.minusDays(day - 1).toDate());
         return Date.minusDays(day - 1);
     }
 
     public DateTime getRightWeekBorder() {
         int day = Date.getDayOfWeek();
+        illustartionData.add(Date.minusDays(7 - day).toDate());
         return Date.plusDays(7 - day);
     }
 

@@ -123,6 +123,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
 
+        dateFrom = (Button) view.findViewById(R.id.dateFromButton);
+        dateTo = (Button) view.findViewById(R.id.dateToButton);
+        trackingsPickerText = getActivity().findViewById(R.id.trackingsPickerText);
+        trackingsPickerBtn = getActivity().findViewById(R.id.trackingsFiltersCard);
+        hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
+        filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
+        eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
+
         startPosition = 0;
         endPosition = 10;
 
@@ -149,10 +157,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
         eventsHistoryPresenter = new EventsHistoryPresenterImpl(collection, trackingService, getActivity(), this);
-        trackingsPickerText = getActivity().findViewById(R.id.trackingsPickerText);
-        trackingsPickerBtn = getActivity().findViewById(R.id.trackingsFiltersCard);
-        hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
-        filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
+
         eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
                 dateF,
                 dateT,
@@ -195,7 +200,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         filtersHintText.setVisibility(View.GONE);
 
-        eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
+
         manager = new LinearLayoutManager(getActivity().getApplicationContext());
         eventsRecycler.setLayoutManager(manager);
 
@@ -305,8 +310,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             //hintForSpinner.setVisibility(View.VISIBLE);
         }
 
-        dateFrom = (Button) view.findViewById(R.id.dateFromButton);
-        dateTo = (Button) view.findViewById(R.id.dateToButton);
+
 
         dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override

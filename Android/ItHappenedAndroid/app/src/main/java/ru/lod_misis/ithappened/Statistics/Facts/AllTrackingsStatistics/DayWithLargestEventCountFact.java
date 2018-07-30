@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Domain.Event;
@@ -50,6 +51,7 @@ public class DayWithLargestEventCountFact extends Fact {
 
     @Override
     public String textDescription() {
+        initIllustration();
         return DescriptionBuilder.LargestEventCountDayDescription(LargestEventCountDay);
     }
 
@@ -82,6 +84,24 @@ public class DayWithLargestEventCountFact extends Fact {
                 LargestEventCountDay = d;
             }
         }
+    }
+
+    private void initIllustration(){
+        Date dayDate = LargestEventCountDay.getDate().toDate();
+        List<Date> dayBorders = new ArrayList<>();
+        Date leftBoreder = new Date(dayDate.getYear(),
+                dayDate.getMonth(),
+                dayDate.getDate(),
+                0,
+                0);
+        Date rightBoreder = new Date(dayDate.getYear(),
+                dayDate.getMonth(),
+                dayDate.getDate(),
+                23,
+                59);
+        dayBorders.add(leftBoreder);
+        dayBorders.add(rightBoreder);
+        illustartion.setEventHistoryRef(dayBorders);
     }
 
     private List<EventV1> SortEventsByDate(List<EventV1> events) {
