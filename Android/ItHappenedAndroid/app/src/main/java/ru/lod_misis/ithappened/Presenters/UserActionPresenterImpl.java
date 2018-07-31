@@ -203,6 +203,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                             @Override
                             public void call(Throwable throwable) {
                                 isTokenFailed = true;
+                                userActionView.showMessage(throwable+"");
                             }
                         });
 
