@@ -140,7 +140,7 @@ namespace ItHappenedWebAPI
       var splunkToken = splunkConfiguration["SplunkToken"];
 
       Log.Logger = new LoggerConfiguration()
-        .MinimumLevel.Information()
+        .MinimumLevel.Verbose()
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .Enrich.FromLogContext()
         .WriteTo.Loggly()
