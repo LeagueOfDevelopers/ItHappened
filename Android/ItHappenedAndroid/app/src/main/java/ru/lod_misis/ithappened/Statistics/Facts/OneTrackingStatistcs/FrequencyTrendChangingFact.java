@@ -51,16 +51,13 @@ public class FrequencyTrendChangingFact extends Fact {
     @Override
     public void calculateData() {
         CalculateTrendData();
+        if (PointOfChange == null || LastInterval == null) return;
         calculatePriority();
     }
 
     @Override
     protected void calculatePriority() {
         // Вычисляем количество дней в периоде
-        if (LastInterval == null || PointOfChange == null) {
-            priority = 0.;
-            return;
-        }
         Integer days = LastInterval.toDuration().toStandardDays().getDays();
         if (NewAverage - PointOfChange.getAverageValue() > 0)
             // Если среднее возросло
@@ -97,7 +94,7 @@ public class FrequencyTrendChangingFact extends Fact {
     }
 
     public boolean IsTrendDeltaSignificant() {
-        return PointOfChange != null
+        return PointOfChange != null && LastInterval != null
                 && NewAverage - PointOfChange.getAverageValue() != 0
                 && LastPeriodEventCount != 0;
     }
@@ -115,6 +112,7 @@ public class FrequencyTrendChangingFact extends Fact {
         // так как нужно откуда то взять точное значение даты, то это будет
         // либо дата первого эвента в периоде, либо дата начала периода
         int periodIndex = SequenceAnalyzer.DetectTrendChangingPoint(data);
+        if (periodIndex == -1) return;
 
         // Считаем количество событий за последний период путем суммирования
         // количества событий произошедших с того времени
@@ -144,19 +142,19 @@ public class FrequencyTrendChangingFact extends Fact {
             return;
         }
 
-        // Среднее значение за период от начала и до ключевого эвента (даты точки перелома)
+        // Если индекс начала изменения тренда равен 0, то среднее в начале отслеживания = 0
         Double mean;
         if (periodIndex == 0) {
             mean = 0.;
         }
         else {
+            // Среднее значение за период от начала и до ключевого эвента (даты точки перелома)
             mean = data.Slice(0, periodIndex).Mean();
         }
 
         // Собираем все полученные данные в обьект, хранящий данные
         // о изменении тренда и сохраняем как переменную класса
         PointOfChange = new TrendChangingPoint(mean, leftIntervalBorder.toDate());
-
         // Собираем даты в интервал
         LastInterval = new Interval(leftIntervalBorder, rightIntervalBorder);
     }

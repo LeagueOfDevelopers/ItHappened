@@ -79,7 +79,7 @@ public class DayWithLargestEventCountFact extends Fact {
         }
         int maxCount = 0;
         for (TimeSpanEventData d: counts) {
-            if (d.getEventCount() > maxCount) {
+            if (d.getEventCount() >= maxCount && d.getDate().isBefore(DateTime.now())) {
                 maxCount = d.getEventCount();
                 LargestEventCountDay = d;
             }

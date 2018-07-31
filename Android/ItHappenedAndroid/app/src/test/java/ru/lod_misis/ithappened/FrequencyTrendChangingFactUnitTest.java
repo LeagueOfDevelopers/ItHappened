@@ -1,6 +1,9 @@
 package ru.lod_misis.ithappened;
 
+import android.util.Log;
+
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,14 +17,14 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.FrequencyTrendChangingFact;
+import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.SumScaleFact;
 
 public class FrequencyTrendChangingFactUnitTest {
 
     @Test
     public void FrequencyTrendChangingTest_GotCorrectLastPeriodEventCountAndLastPerionDuration() {
         TrackingV1 tracking = GenerateTracking();
-        Fact fact = new FrequencyTrendChangingFact(tracking);
-        fact.calculateData();
+        Fact fact = FunctionApplicability.FrequencyTrendChangingFactApplicability(tracking);
         String descr = fact.textDescription();
         Assert.assertEquals(descr, "Событие <b>null</b> происходит <b>чаще</b>: за последние <b>6 дней</b> - <b>9</b> раз.");
     }
@@ -30,12 +33,22 @@ public class FrequencyTrendChangingFactUnitTest {
     /*@Test
     public void FrequencyTrendChangingFactStressTest_FactDoesnotRaiseExceptions() {
         Random gen = new Random();
+        int i = 1;
+        DateTime time = DateTime.now();
         while (true) {
             TrackingV1 tracking = GenerateRandomTracking(gen);
             Fact fact = FunctionApplicability.FrequencyTrendChangingFactApplicability(tracking);
             if (fact != null) {
                 String descr = fact.textDescription();
             }
+            System.out.print("Test " + i + " finished\n");
+            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
+            if (fact == null) {
+                System.out.print("Fact is null\n");
+            }
+            System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
+            time = DateTime.now();
+            i++;
         }
     }*/
 
