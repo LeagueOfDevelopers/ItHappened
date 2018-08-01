@@ -202,7 +202,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 FragmentTransaction fragmentTransaction = manager.beginTransaction();
                                 EventsFragment eventsFragment = new EventsFragment();
                                 eventsFragment.setArguments(bundle);
-                                fragmentTransaction.replace(R.id.trackingsFrg, eventsFragment);
+                                fragmentTransaction.replace(R.id.trackingsFrg, eventsFragment).addToBackStack(null);
                                 fragmentTransaction.commit();
                             }
                         });
