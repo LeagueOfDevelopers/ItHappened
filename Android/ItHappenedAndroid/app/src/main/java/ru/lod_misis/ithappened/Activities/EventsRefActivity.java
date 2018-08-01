@@ -40,7 +40,7 @@ public class EventsRefActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        this.finish();
 
     }
 }
