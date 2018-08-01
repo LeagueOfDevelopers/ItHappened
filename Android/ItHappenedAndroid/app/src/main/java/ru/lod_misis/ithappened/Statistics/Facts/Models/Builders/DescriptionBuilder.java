@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Statistics.Facts.Models.Builders;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -29,7 +30,7 @@ public class DescriptionBuilder {
             "С момента <b>%s</b> среднее значение рейтинга события <b>%s</b> <b>%s</b> на <b>%s</b>.";
 
     private static final String FreqTrendReportFormat =
-            "Событие <b>%s</b> происходит <b>%s</b>: за последние <b>%s</b> - <b>%s</b> раз.";
+            "Событие <b>%s</b> происходит <b>%s</b>: за последние <b>%s</b> - <b>%s</b> ";
 
     private static final String LongestBreakReportFormat =
             "Самый большой перерыв в <b>%s</b> произошёл с <b>%s</b> до <b>%s</b>. Длина перерыва в днях: <b>%d</b>.";
@@ -169,25 +170,25 @@ public class DescriptionBuilder {
     public static String BuildScaleTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, String scaleName) {
         String deltaDescription = newAverange - delta.getAverageValue() > 0 ? "увеличилось" : "уменьшилось";
         DateTime date = new DateTime(delta.getPointEventDate());
+        DecimalFormat format = new DecimalFormat("#.##");
         return String.format(ScaleTrendReportFormat,
                 DateDescription(date), scaleName, trackingName,
-                deltaDescription, String.format(DateFormatLocalization, "%.2f",
-                        Math.abs(delta.getAverageValue() - newAverange)));
+                deltaDescription, format.format(Math.abs(delta.getAverageValue() - newAverange)));
     }
 
     public static String BuildRatingTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName) {
         String deltaDescription = newAverange - delta.getAverageValue() > 0 ? "увеличилось" : "уменьшилось";
         DateTime date = new DateTime(delta.getPointEventDate());
+        DecimalFormat format = new DecimalFormat("#.##");
         return String.format(RatingTrendReportFormat,
                 DateDescription(date), trackingName,
-                deltaDescription, String.format(DateFormatLocalization, "%.2f",
-                        Math.abs(delta.getAverageValue() - newAverange)));
+                deltaDescription, format.format(Math.abs(delta.getAverageValue() - newAverange)));
     }
 
     public static String BuildFrequencyTrendReport(TrendChangingPoint delta, Double newAverage, String trackingName, Interval period, int count) {
         String orientation = newAverage - delta.getAverageValue() > 0 ? "чаще" : "реже";
         String duration = IntervalDescription(period);
-        return String.format(FreqTrendReportFormat, trackingName, orientation, duration, count);
+        return String.format(FreqTrendReportFormat + TimesCountDescription(count), trackingName, orientation, duration, count);
     }
 
     public static String BuildLongestBreakDescription(String trackingName,
@@ -219,6 +220,19 @@ public class DescriptionBuilder {
                 rightBorderDescription, data.getEventCount()).trim();
     }
 
+    private static String TimesCountDescription(int times) {
+        String timesDescr = "";
+        int lastEventCountDigit = times % 10;
+        if (lastEventCountDigit > 1 && lastEventCountDigit < 5) {
+            timesDescr = "раза.";
+        }
+        boolean additionalCondition = times % 100 > 10 && times % 100 < 20;
+        if (lastEventCountDigit > 4 || lastEventCountDigit <= 1 || additionalCondition) {
+            timesDescr = "раз.";
+        }
+        return timesDescr;
+    }
+
     private static String EventCountDescription(int eventCount) {
         String eventCountDescr = "";
         int lastEventCountDigit = eventCount % 10;
@@ -242,15 +256,15 @@ public class DescriptionBuilder {
         int minutes = interval.toDuration().toStandardMinutes().getMinutes() - days * 24 * 60 - hours * 60;
         if (days > 0) {
             int lastDigitD = days % 10;
-            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
+            // Данное условие отвечает за описание чисел с 10 до 20: например 11 дней но 21 день
             boolean condition = days % 100 > 10 && days % 100 < 20;
             if (lastDigitD > 4 || lastDigitD == 0 || condition) {
                 duration += String.format("%s дней ", days);
             }
-            if (lastDigitD > 1 && lastDigitD <= 4) {
+            if (lastDigitD > 1 && lastDigitD <= 4 && !condition) {
                 duration += String.format("%s дня ", days);
             }
-            if (lastDigitD == 1) {
+            if (lastDigitD == 1 && !condition) {
                 duration += String.format("%s день ", days);
             }
         }
@@ -261,10 +275,10 @@ public class DescriptionBuilder {
             if (lastDigitH > 4 || lastDigitH == 0 || condition) {
                 duration += String.format("%s часов ", hours);
             }
-            if (lastDigitH > 1 && lastDigitH <= 4) {
+            if (lastDigitH > 1 && lastDigitH <= 4 && !condition) {
                 duration += String.format("%s часа ", hours);
             }
-            if (lastDigitH == 1) {
+            if (lastDigitH == 1 && !condition) {
                 duration += String.format("%s час ", hours);
             }
         }
@@ -275,10 +289,10 @@ public class DescriptionBuilder {
             if (lastDigitM > 4 || lastDigitM == 0 || condition) {
                 duration += String.format("%s минут ", minutes);
             }
-            if (lastDigitM > 1 && lastDigitM <= 4) {
+            if (lastDigitM > 1 && lastDigitM <= 4 && !condition) {
                 duration += String.format("%s минуты ", minutes);
             }
-            if (lastDigitM == 1) {
+            if (lastDigitM == 1 && !condition) {
                 duration += String.format("%s минуту ", minutes);
             }
         }

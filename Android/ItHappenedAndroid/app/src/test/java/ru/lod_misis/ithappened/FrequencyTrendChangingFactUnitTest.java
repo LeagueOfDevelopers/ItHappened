@@ -26,7 +26,7 @@ public class FrequencyTrendChangingFactUnitTest {
         TrackingV1 tracking = GenerateTracking();
         Fact fact = FunctionApplicability.FrequencyTrendChangingFactApplicability(tracking);
         String descr = fact.textDescription();
-        Assert.assertEquals(descr, "Событие <b>null</b> происходит <b>чаще</b>: за последние <b>6 дней</b> - <b>9</b> раз.");
+        Assert.assertEquals(descr, "Событие <b>null</b> происходит <b>реже</b>: за последние <b>15 дней</b> - <b>10</b> раз.");
     }
 
     // STRESS TEST
@@ -40,6 +40,7 @@ public class FrequencyTrendChangingFactUnitTest {
             Fact fact = FunctionApplicability.FrequencyTrendChangingFactApplicability(tracking);
             if (fact != null) {
                 String descr = fact.textDescription();
+                System.out.print(descr + "\n");
             }
             System.out.print("Test " + i + " finished\n");
             System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
@@ -63,7 +64,7 @@ public class FrequencyTrendChangingFactUnitTest {
         for (int day: dates) {
             EventV1 event = new EventV1();
             event.setEventId(UUID.randomUUID().toString());
-            event.setEventDate(new DateTime(2000, 1, day, 0, 0).toDate());
+            event.setEventDate(DateTime.now().minusDays(day).toDate());
             tracking.AddEvent(event);
         }
         return tracking;
