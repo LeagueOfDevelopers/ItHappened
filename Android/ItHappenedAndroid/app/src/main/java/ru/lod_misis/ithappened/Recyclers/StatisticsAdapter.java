@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
+import ru.lod_misis.ithappened.Activities.EventsRefActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
@@ -204,6 +205,11 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                                 eventsFragment.setArguments(bundle);
                                 fragmentTransaction.replace(R.id.trackingsFrg, eventsFragment).addToBackStack(null);
                                 fragmentTransaction.commit();
+                                Intent intent = new Intent(context, EventsRefActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("dateFrom", illustartionSet.getEventHistoryRef().get(0).getTime());
+                                intent.putExtra("dateTo", illustartionSet.getEventHistoryRef().get(1).getTime());
+                                context.startActivity(intent);
                             }
                         });
                     }else{
