@@ -3,9 +3,6 @@ package ru.lod_misis.ithappened.Recyclers;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-/**
- * Created by Пользователь on 02.07.2018.
- */
 
 public abstract class PagonationScrollListener extends RecyclerView.OnScrollListener {
 

@@ -21,6 +21,7 @@ import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -61,64 +62,64 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RegistrationResponse>() {
-                    @Override
-                    public void call(RegistrationResponse registrationResponse) {
+                               @Override
+                               public void call(RegistrationResponse registrationResponse) {
 
-                        String lastId = sharedPreferences.getString("LastId", "");
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.clear();
-                        editor.putString("UserId", registrationResponse.getUserId());
-                        editor.putString("Nick", registrationResponse.getUserNickname());
-                        editor.putString("Url", registrationResponse.getPicUrl());
-                        editor.putString("Token", registrationResponse.getToken());
-                        editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
-                        editor.putString("refreshToken", registrationResponse.getRefreshToken());
-                        editor.commit();
+                                   String lastId = sharedPreferences.getString("LastId", "");
+                                   SharedPreferences.Editor editor = sharedPreferences.edit();
+                                   editor.clear();
+                                   editor.putString("UserId", registrationResponse.getUserId());
+                                   editor.putString("Nick", registrationResponse.getUserNickname());
+                                   editor.putString("Url", registrationResponse.getPicUrl());
+                                   editor.putString("Token", registrationResponse.getToken());
+                                   editor.putLong("NickDate", registrationResponse.getNicknameDateOfChange().getTime());
+                                   editor.putString("refreshToken", registrationResponse.getRefreshToken());
+                                   editor.commit();
 
-                        if (!lastId.equals(sharedPreferences.getString("UserId", ""))) {
-                            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-                            repository = StaticInMemoryRepository.getInstance();
+                                   if (!lastId.equals(sharedPreferences.getString("UserId", ""))) {
+                                       StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
+                                       repository = StaticInMemoryRepository.getInstance();
+                                   }
+
+                                   SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
+                                           new Date(sharedPreferences.getLong("NickDate", 0)),
+                                           repository.GetTrackingCollection());
+
+                                   ItHappenedApplication.
+                                           getApi().SynchronizeData("Bearer " + registrationResponse.getToken(), synchronizationRequest)
+                                           .subscribeOn(Schedulers.io())
+                                           .observeOn(AndroidSchedulers.mainThread())
+                                           .subscribe(new Action1<SynchronizationRequest>() {
+                                               @Override
+                                               public void call(SynchronizationRequest sync) {
+                                                   List<TrackingV1> trackingV1s = sync.getTrackingV1Collection();
+                                                   for (TrackingV1 trackingV1 : trackingV1s) {
+                                                       if (trackingV1.getColor() == null)
+                                                           trackingV1.setColor("11119017");
+                                                   }
+                                                   saveDataToDb(trackingV1s);
+
+                                                   SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                                   SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                   editor.putLong("NickDate", sync.getNicknameDateOfChange().getTime());
+                                                   editor.commit();
+                                                   userActionView.showMessage("Синхронизировано");
+                                                   Intent intent = new Intent(context, UserActionsActivity.class);
+                                                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                   context.startActivity(intent);
+                                               }
+                                           });
+
+                               }
+                           }
+                        , new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                userActionView.hideLoading();
+                                Log.e("Reg", "" + throwable);
+                                userActionView.showMessage("Разорвано подключение!");
+                            }
                         }
-
-                        SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
-                                new Date(sharedPreferences.getLong("NickDate", 0)),
-                                repository.GetTrackingCollection());
-
-                        ItHappenedApplication.
-                                getApi().SynchronizeData("Bearer " + registrationResponse.getToken(), synchronizationRequest)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<SynchronizationRequest>() {
-                                    @Override
-                                    public void call(SynchronizationRequest sync) {
-                                        List<TrackingV1> trackingV1s = sync.getTrackingV1Collection();
-                                        for (TrackingV1 trackingV1 : trackingV1s) {
-                                            if (trackingV1.getColor() == null)
-                                                trackingV1.setColor("11119017");
-                                        }
-                                        saveDataToDb(trackingV1s);
-
-                                        SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putLong("NickDate", sync.getNicknameDateOfChange().getTime());
-                                        editor.commit();
-                                        userActionView.showMessage("Синхронизировано");
-                                        Intent intent = new Intent(context, UserActionsActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        context.startActivity(intent);
-                                    }
-                                });
-
-                    }
-                }
-                , new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        userActionView.hideLoading();
-                        Log.e("Reg", "" + throwable);
-                        userActionView.showMessage("Разорвано подключение!");
-                    }
-                }
                 );
 
     }
@@ -133,7 +134,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
         userActionView.startMenuAnimation();
 
-        ItHappenedApplication.getApi()
+        /*ItHappenedApplication.getApi()
                 .Refresh(sharedPreferences.getString("refreshToken", ""))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -181,7 +182,23 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                             public void call(Throwable throwable) {
                                 Log.e("Токен упал", throwable + "");
                             }
-                        });
+                        });*/
+
+        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("kennytmb.3run@gmail.com",
+                new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
+                StaticInMemoryRepository.getInstance().GetTrackingCollection());
+
+        ItHappenedApplication
+                .getApi().
+                TestSync("kennytmb.3run@gmail.com", synchronizationRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<SynchronizationRequest>() {
+                    @Override
+                    public void call(SynchronizationRequest synchronizationRequest) {
+
+                    }
+                });
     }
 
     @Override
@@ -203,6 +220,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                             @Override
                             public void call(Throwable throwable) {
                                 isTokenFailed = true;
+                                userActionView.showMessage(throwable + "");
                             }
                         });
 
