@@ -134,7 +134,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
         userActionView.startMenuAnimation();
 
-        /*ItHappenedApplication.getApi()
+        ItHappenedApplication.getApi()
                 .Refresh(sharedPreferences.getString("refreshToken", ""))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -182,9 +182,9 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                             public void call(Throwable throwable) {
                                 Log.e("Токен упал", throwable + "");
                             }
-                        });*/
+                        });
 
-        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("kennytmb.3run@gmail.com",
+        /*final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("kennytmb.3run@gmail.com",
                 new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
                 StaticInMemoryRepository.getInstance().GetTrackingCollection());
 
@@ -198,7 +198,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                     public void call(SynchronizationRequest synchronizationRequest) {
 
                     }
-                });
+                });*/
     }
 
     @Override
