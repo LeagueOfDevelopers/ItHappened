@@ -40,7 +40,7 @@ namespace ItHappenedWebAPI.Controllers
     [Route("reg/{userId}")]
     public IActionResult Reg([FromRoute] string userId, [FromBody] RegistrationResponse model)
     {
-      var userData = _userList.SignUp(userId);
+      var userData = _userList.TestRegistration(userId);
       return Ok(userData);
     }
 

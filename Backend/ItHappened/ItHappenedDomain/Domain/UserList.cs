@@ -89,5 +89,33 @@ namespace ItHappenedDomain.Domain
 
     private IMongoDatabase db;
 
+    public RegistrationResponse TestRegistration(string userId)
+    {
+      var collection = db.GetCollection<User>("Users");
+
+      var user = collection.Find(us => us.UserId == userId);
+
+      if (user.Count() != 0)
+      {
+        return new RegistrationResponse
+        {
+          PicUrl = user.First().PictureUrl,
+          NicknameDateOfChange = user.First().NicknameDateOfChange,
+          UserId = user.First().UserId,
+          UserNickname = user.First().UserNickname
+        };
+      }
+      DateTimeOffset date = DateTimeOffset.UtcNow;
+      User newUser = new User(userId, "", date);
+      collection.InsertOne(newUser);
+      RegistrationResponse toReturn = new RegistrationResponse
+      {
+        NicknameDateOfChange = date,
+        PicUrl = "",
+        UserId = userId,
+        UserNickname = userId
+      };
+      return toReturn;
+    }
   }
 }
