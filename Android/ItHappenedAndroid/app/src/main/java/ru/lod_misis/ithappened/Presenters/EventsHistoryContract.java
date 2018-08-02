@@ -14,6 +14,7 @@ public interface EventsHistoryContract {
 
         void showEvents(List<EventV1> eventV1s);
         void cancelFilters();
+        void showLoading(boolean isLoading);
 
 
     }
