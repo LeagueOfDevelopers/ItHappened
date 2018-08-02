@@ -44,6 +44,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                              Double scale,
                              Comparison ratingComparison,
                              Rating rating, int startPosition, int endPosition) {
+        eventsHistoryView.showLoading(true);
         eventV1s = new ArrayList<>();
         service.FilterEventCollection(trackingId,
                 dateFrom,
@@ -62,7 +63,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        eventsHistoryView.showLoading(false);
                     }
                 },
                 new Action0() {
@@ -77,6 +78,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                             filtersHintText.setVisibility(View.GONE);
                         }
                         */
+                        eventsHistoryView.showLoading(false);
                         eventsHistoryView.showEvents(eventV1s);
                     }
                 });
@@ -85,10 +87,11 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
     @Override
     public void cancleFilters() {
         eventV1s = new ArrayList<>();
+        eventsHistoryView.showLoading(true);
         service.FilterEventCollection
-                (null,null,null,
-                        null,null,null,
-                        null, 0 , 100)
+                (null, null, null,
+                        null, null, null,
+                        null, 0, 100)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<EventV1>() {
@@ -100,7 +103,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                         new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
-
+                                eventsHistoryView.showLoading(false);
                             }
                         },
                         new Action0() {
@@ -109,6 +112,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
 
 
                                 eventsHistoryView.showEvents(eventV1s);
+                                eventsHistoryView.showLoading(false);
                                 /*eventsAdpt = new EventsAdapter(allEvents, getActivity(), 1);
 
                                 eventsRecycler.setAdapter(eventsAdpt);*/

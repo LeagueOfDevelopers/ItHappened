@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -100,6 +101,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     RelativeLayout filtersHint;
     FloatingActionButton filtersCancel;
     TextView trackingsPickerText;
+    ProgressBar progressBar;
 
 
     ITrackingRepository collection;
@@ -130,6 +132,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
         filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
         eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
+        progressBar = (ProgressBar) view.findViewById(R.id.eventsHistoryProgressBar);
 
         startPosition = 0;
         endPosition = 10;
@@ -532,6 +535,17 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     public void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history));
+    }
+
+    @Override
+    public void showLoading(boolean isLoading) {
+        if(isLoading){
+            eventsRecycler.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        }else{
+            eventsRecycler.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
