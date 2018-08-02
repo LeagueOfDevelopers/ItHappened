@@ -259,9 +259,13 @@ public class DataSetBuilder {
 
         // Находим правую и левую границы интервала,
         // а так же шаг разбиения данного интервала (дельту)
+        // Правая граница - это текущая дата,
+        // но dateDelta - это среднее время между эвентами,
+        // поэтому вычисляем его через дату последнего эвента
         long leftBorder = copy.get(0).GetEventDate().getTime();
-        long rightBorder = copy.get(copy.size() - 1).GetEventDate().getTime();
-        long dateDelta = (rightBorder - leftBorder) / (events.size() - 1);
+        long rightBorder = DateTime.now().toDate().getTime();
+        long lastEventDate = copy.get(copy.size() - 1).GetEventDate().getTime();
+        long dateDelta = (lastEventDate - leftBorder) / (events.size() - 1);
 
         // Создаем новый обьект, который будет хранить данные
         // о том, в какой период, какие события произошли

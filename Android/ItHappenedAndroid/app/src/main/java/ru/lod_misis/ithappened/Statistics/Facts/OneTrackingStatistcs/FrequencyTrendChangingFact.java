@@ -131,8 +131,8 @@ public class FrequencyTrendChangingFact extends Fact {
                     periodIndex).getEventDate());
         }
 
-        // Дата конца последнего периода - это дата последнего события
-        DateTime rightIntervalBorder = new DateTime(Events.get(Events.size() - 1).GetEventDate().getTime());
+        // Дата конца последнего периода - это текущая дата
+        DateTime rightIntervalBorder = DateTime.now();
 
         // Если новый эвент в коллекции и есть точка перелома,
         // значит надо вернуть заглушки и обработать их позднее

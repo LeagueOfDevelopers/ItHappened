@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
+import ru.lod_misis.ithappened.Activities.EventsRefActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
@@ -195,15 +196,11 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                         eventsHistoryRef.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Bundle bundle = new Bundle();
-                                bundle.putLong("dateFrom", illustartionSet.getEventHistoryRef().get(0).getTime());
-                                bundle.putLong("dateTo", illustartionSet.getEventHistoryRef().get(1).getTime());
-                                FragmentManager manager = ((UserActionsActivity) view.getContext()).getFragmentManager();
-                                FragmentTransaction fragmentTransaction = manager.beginTransaction();
-                                EventsFragment eventsFragment = new EventsFragment();
-                                eventsFragment.setArguments(bundle);
-                                fragmentTransaction.replace(R.id.trackingsFrg, eventsFragment);
-                                fragmentTransaction.commit();
+                                Intent intent = new Intent(context, EventsRefActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("dateFrom", illustartionSet.getEventHistoryRef().get(0).getTime());
+                                intent.putExtra("dateTo", illustartionSet.getEventHistoryRef().get(1).getTime());
+                                context.startActivity(intent);
                             }
                         });
                     }else{

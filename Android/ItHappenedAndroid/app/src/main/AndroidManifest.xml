@@ -64,6 +64,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyBack"></activity>
 
+        <activity android:name=".Activities.EventsRefActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MyBack"></activity>
+
     </application>
 
 </manifest>
