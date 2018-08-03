@@ -18,6 +18,12 @@ namespace ItHappenedWebAPI.Filters
       {
         var msg = context.Exception.Message;
         Log.Error(msg);
+
+        var stackTrace = context.Exception.StackTrace;
+        Log.Error("Strack trace: " + stackTrace);
+
+        var exceptionSource = context.Exception.Source;
+        Log.Error("Exception source: " + exceptionSource);
       }
 
       switch (context.Exception)
