@@ -31,7 +31,8 @@ public interface ITrackingRepository
                    Double newScale,
                    Rating newRating,
                    String newComment,
-                   String newGeoposition,
+                   Double newLotitude,
+                   Double newLongitude,
                    Date newDate);
     void editTracking(UUID trackingId,
                       TrackingCustomization editedCounter,

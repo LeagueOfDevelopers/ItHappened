@@ -14,14 +14,15 @@ import io.realm.annotations.PrimaryKey;
 
 public class EventV1 extends RealmObject
 {
-    public EventV1(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment,String geoposition)
+    public EventV1(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment,Double lotitude,Double longitude)
     {
         this.eventId = eventId.toString();
         this.dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
-        this.geoposition=geoposition;
+        this.longitude=longitude;
+        this.lotitude=lotitude;
         this.trackingId = trackingID.toString();
         this.eventDate = date;
     }
@@ -35,7 +36,8 @@ public class EventV1 extends RealmObject
         else
             this.rating = null;
         this.comment = event.comment;
-        this.geoposition=event.geoposition;
+        this.lotitude=event.lotitude;
+        this.longitude=event.longitude;
         this.trackingId = event.trackingId;
         dateOfChange = event.dateOfChange;
         isDeleted = event.isDeleted;
@@ -44,7 +46,7 @@ public class EventV1 extends RealmObject
     public EventV1(){}
 
     public EventV1(UUID eventId, UUID trackingID, Date eventDate,
-                   Double scale, Rating rating, String comment,String geoposition,
+                   Double scale, Rating rating, String comment,Double lotitude,Double longitude,
                    boolean status, Date changeDate)
     {
         this.eventId = eventId.toString();
@@ -52,7 +54,8 @@ public class EventV1 extends RealmObject
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
-        this.geoposition=geoposition;
+        this.lotitude=lotitude;
+        this.longitude=longitude;
         this.trackingId = trackingID.toString();
         dateOfChange = changeDate;
         isDeleted = status;
@@ -75,8 +78,9 @@ public class EventV1 extends RealmObject
         this.comment = comment;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
-    public void EditGeoposition(String geoposition) {
-        this.geoposition = geoposition;
+    public void EditGeoposition(Double lotitude,Double longitude) {
+        this.lotitude=lotitude;
+        this.longitude=longitude;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
     public void RemoveEvent()
@@ -152,12 +156,20 @@ public class EventV1 extends RealmObject
         this.comment = comment;
     }
 
-    public String getGeoposition() {
-        return geoposition;
+    public Double getLotitude() {
+        return lotitude;
     }
 
-    public void setGeoposition(String geoposition) {
-        this.geoposition = geoposition;
+    public void setLotitude(Double lotitude) {
+        this.lotitude = lotitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public Date getDateOfChange() {
@@ -196,7 +208,8 @@ public class EventV1 extends RealmObject
     @Expose
     @SerializedName("comment")
     private String comment;
-    private String geoposition;
+    private Double lotitude;
+    private Double longitude;
     @Expose
     @SerializedName("dateOfChange")
     private Date dateOfChange;

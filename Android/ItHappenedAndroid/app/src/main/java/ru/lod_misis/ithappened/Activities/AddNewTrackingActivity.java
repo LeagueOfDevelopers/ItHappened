@@ -1,10 +1,17 @@
 package ru.lod_misis.ithappened.Activities;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -18,11 +25,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.Marker;
 import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
+import java.security.Permission;
 import java.util.UUID;
 
+import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -98,11 +108,17 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
     TrackingCustomization geoposition ;
 
+    Context context;
+    Activity activity;
+    Boolean permissionForGPS=false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
 
+        context=this;
+        activity=this;
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -392,96 +408,15 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(trackingName.getText().toString().isEmpty()||trackingName.getText().toString().trim().isEmpty()){
-                    Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
-                }else{
-
-                    trackingColor = String.valueOf(colorPickerText.getCurrentTextColor());
-                    String trackingTitle = trackingName.getText().toString().trim();
-
-                    TrackingCustomization rating = TrackingCustomization.None;
-                    TrackingCustomization comment = TrackingCustomization.None;
-                    TrackingCustomization scale = TrackingCustomization.None;
-
-                    String scaleNumb = null;
-
-                    switch (stateForRating){
-                        case 0:
-                            rating = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            rating = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            rating = TrackingCustomization.Required;
-                            break;
-                        default:
-                            break;
-                    }
-
-
-                    switch (stateForText){
-                        case 0:
-                            comment = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            comment = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            comment = TrackingCustomization.Required;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    switch (stateForScale){
-                        case 0:
-                            scale = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            scale = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            scale = TrackingCustomization.Required;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
-                            (scaleType.getText().toString().isEmpty()
-                            ||scaleType.getText().toString().trim().isEmpty())){
-                        Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
+                if(geoposition== TrackingCustomization.Optional||geoposition==TrackingCustomization.Required){
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
                     }else{
-                        if(scale != TrackingCustomization.None){
-                            scaleNumb = scaleType.getText().toString().trim();
-                        }
-                        TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment,geoposition, scaleNumb, trackingColor);
-                        trackingRepository.AddNewTracking(newTrackingV1);
-                        YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
-                        Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTrackingV1.GetTrackingID())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                        startActivity(intent);
+                        addNewTracking();
                     }
                 }
+
+
             }
         });
 
@@ -511,5 +446,108 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 1:{
+                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED&&
+                        grantResults[1]==PackageManager.PERMISSION_GRANTED ){
+                    addNewTracking();
+                }
+            }
+        }
+    }
+    private void addNewTracking(){
+        if(trackingName.getText().toString().isEmpty()||trackingName.getText().toString().trim().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
+        }else{
 
+            trackingColor = String.valueOf(colorPickerText.getCurrentTextColor());
+            String trackingTitle = trackingName.getText().toString().trim();
+
+            TrackingCustomization rating = TrackingCustomization.None;
+            TrackingCustomization comment = TrackingCustomization.None;
+            TrackingCustomization scale = TrackingCustomization.None;
+
+            String scaleNumb = null;
+
+            switch (stateForRating){
+                case 0:
+                    rating = TrackingCustomization.None;
+                    break;
+                case 1:
+                    rating = TrackingCustomization.Optional;
+                    break;
+                case 2:
+                    rating = TrackingCustomization.Required;
+                    break;
+                default:
+                    break;
+            }
+
+
+            switch (stateForText){
+                case 0:
+                    comment = TrackingCustomization.None;
+                    break;
+                case 1:
+                    comment = TrackingCustomization.Optional;
+                    break;
+                case 2:
+                    comment = TrackingCustomization.Required;
+                    break;
+                default:
+                    break;
+            }
+
+            switch (stateForScale){
+                case 0:
+                    scale = TrackingCustomization.None;
+                    break;
+                case 1:
+                    scale = TrackingCustomization.Optional;
+                    break;
+                case 2:
+                    scale = TrackingCustomization.Required;
+                    break;
+                default:
+                    break;
+            }
+
+            if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
+                    (scaleType.getText().toString().isEmpty()
+                            ||scaleType.getText().toString().trim().isEmpty())){
+                Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
+            }else{
+                if(scale != TrackingCustomization.None){
+                    scaleNumb = scaleType.getText().toString().trim();
+                }
+                TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment,geoposition, scaleNumb, trackingColor);
+                trackingRepository.AddNewTracking(newTrackingV1);
+                YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
+                Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
+                factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTrackingV1.GetTrackingID())
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                Log.d("Statistics", "calculate");
+                            }
+                        });
+                factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                Log.d("Statistics", "calculate");
+                            }
+                        });
+                Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
 }

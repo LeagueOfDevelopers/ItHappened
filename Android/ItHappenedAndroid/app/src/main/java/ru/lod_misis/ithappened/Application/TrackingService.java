@@ -52,10 +52,11 @@ public class TrackingService
     }
 
     public void EditEvent(UUID trackingId, UUID eventId,
-                          Double newScale, Rating newRating, String newComment,String newGeoposition,
+                          Double newScale, Rating newRating, String newComment,Double newLotitude,
+                          Double newLongitude,
                           Date newDate)
     {
-        trackingCollection.editEvent(trackingId, eventId, newScale, newRating, newComment,newGeoposition, newDate);
+        trackingCollection.editEvent(trackingId, eventId, newScale, newRating, newComment,newLotitude,newLongitude, newDate);
     }
 
     public Observable<EventV1> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,

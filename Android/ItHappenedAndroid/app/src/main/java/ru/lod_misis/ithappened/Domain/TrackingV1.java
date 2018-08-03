@@ -99,7 +99,8 @@ public class TrackingV1 extends RealmObject {
         CustomizationCheck(newEventV1.getScale(), GetScaleCustomization());
         CustomizationCheck(newEventV1.getRating(), GetRatingCustomization());
         CustomizationCheck(newEventV1.getComment(), GetCommentCustomization());
-        CustomizationCheck(newEventV1.getGeoposition(), GetGeopositionCustomization());
+        CustomizationCheck(newEventV1.getLotitude(), GetGeopositionCustomization());
+        CustomizationCheck(newEventV1.getLongitude(), GetGeopositionCustomization());
         eventV1Collection.add(newEventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
@@ -125,7 +126,8 @@ public class TrackingV1 extends RealmObject {
                           Double newScale,
                           Rating newRating,
                           String newComment,
-                          String newGeoposition,
+                          Double newLotitude,
+                          Double newLongitude,
                           Date newDate)
     {
         EventV1 editedEventV1 = null;
@@ -149,8 +151,8 @@ public class TrackingV1 extends RealmObject {
             editedEventV1.EditValueOfRating(newRating);
         if (ChangesCheck(newComment, GetCommentCustomization()))
             editedEventV1.EditComment(newComment);
-        if (ChangesCheck(newGeoposition, GetGeopositionCustomization()))
-            editedEventV1.EditGeoposition(newGeoposition);
+        if (ChangesCheck(newLotitude, GetGeopositionCustomization())&&ChangesCheck(newLongitude, GetGeopositionCustomization()))
+            editedEventV1.EditGeoposition(newLotitude,newLongitude);
         if (newDate!=null)
             editedEventV1.EditDate(newDate);
         eventV1Collection.set(index, editedEventV1);

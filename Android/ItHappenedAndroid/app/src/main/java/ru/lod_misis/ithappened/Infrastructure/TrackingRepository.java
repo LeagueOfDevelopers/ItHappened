@@ -137,7 +137,8 @@ public class TrackingRepository implements ITrackingRepository {
                           Double newScale,
                           Rating newRating,
                           String newComment,
-                          String newGeoposition,
+                          Double newLotitude,
+                          Double newLongitude,
                           Date newDate){
         TrackingV1 trackingV1 = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString()).findFirst();
@@ -146,7 +147,7 @@ public class TrackingRepository implements ITrackingRepository {
 
         realm.beginTransaction();
         TrackingV1 tracking = realm.copyFromRealm(trackingV1);
-        tracking.EditEvent(eventId, newScale, newRating, newComment, newGeoposition,newDate);
+        tracking.EditEvent(eventId, newScale, newRating, newComment, newLotitude,newLongitude,newDate);
 
         realm.copyToRealmOrUpdate(tracking);
         realm.commitTransaction();
