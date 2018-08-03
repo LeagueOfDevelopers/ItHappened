@@ -102,7 +102,7 @@ namespace ItHappenedWebAPI
         .AddSingleton<ErrorHandlingMiddleware>();
       services.AddMvc(o =>
       {
-        o.Filters.Add(new ActionFilter());
+        //o.Filters.Add(new ActionFilter());
         o.Filters.Add(new ExceptionFilter());
       });
     }
