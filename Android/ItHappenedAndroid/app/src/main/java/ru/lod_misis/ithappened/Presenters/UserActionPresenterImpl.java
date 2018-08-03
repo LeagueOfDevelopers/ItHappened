@@ -90,25 +90,31 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                            .subscribeOn(Schedulers.io())
                                            .observeOn(AndroidSchedulers.mainThread())
                                            .subscribe(new Action1<SynchronizationRequest>() {
-                                               @Override
-                                               public void call(SynchronizationRequest sync) {
-                                                   List<TrackingV1> trackingV1s = sync.getTrackingV1Collection();
-                                                   for (TrackingV1 trackingV1 : trackingV1s) {
-                                                       if (trackingV1.getColor() == null)
-                                                           trackingV1.setColor("11119017");
-                                                   }
-                                                   saveDataToDb(trackingV1s);
+                                                          @Override
+                                                          public void call(SynchronizationRequest sync) {
+                                                              List<TrackingV1> trackingV1s = sync.getTrackingV1Collection();
+                                                              for (TrackingV1 trackingV1 : trackingV1s) {
+                                                                  if (trackingV1.getColor() == null)
+                                                                      trackingV1.setColor("11119017");
+                                                              }
+                                                              saveDataToDb(trackingV1s);
 
-                                                   SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-                                                   SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                   editor.putLong("NickDate", sync.getNicknameDateOfChange().getTime());
-                                                   editor.commit();
-                                                   userActionView.showMessage("Синхронизировано");
-                                                   Intent intent = new Intent(context, UserActionsActivity.class);
-                                                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                   context.startActivity(intent);
-                                               }
-                                           });
+                                                              SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                                                              SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                              editor.putLong("NickDate", sync.getNicknameDateOfChange().getTime());
+                                                              editor.commit();
+                                                              userActionView.showMessage("Синхронизировано");
+                                                              Intent intent = new Intent(context, UserActionsActivity.class);
+                                                              intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                              context.startActivity(intent);
+                                                          }
+                                                      }
+                                                   , new Action1<Throwable>() {
+                                                       @Override
+                                                       public void call(Throwable throwable) {
+                                                           userActionView.showMessage("Синхронизация не прошла! Проверьте подключение к интернету.");
+                                                       }
+                                                   });
 
                                }
                            }
@@ -157,24 +163,30 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                            .subscribeOn(Schedulers.io())
                                            .observeOn(AndroidSchedulers.mainThread())
                                            .subscribe(new Action1<SynchronizationRequest>() {
-                                               @Override
-                                               public void call(SynchronizationRequest request) {
-                                                   List<TrackingV1> trackingV1s = request.getTrackingV1Collection();
-                                                   for (TrackingV1 trackingV1 : trackingV1s) {
-                                                       if (trackingV1.getColor() == null)
-                                                           trackingV1.setColor("11119017");
-                                                   }
-                                                   saveDataToDb(trackingV1s);
-                                                   SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                   editor.putString("Nick", synchronizationRequest.getUserNickname());
-                                                   editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
-                                                   userActionView.finishActivity();
-                                                   userActionView.stopMenuAnimation();
-                                                   userActionView.startActivity();
-                                                   YandexMetrica.reportEvent("Пользователь синхронизировался");
-                                                   userActionView.showMessage("Синхронизировано");
-                                               }
-                                           });
+                                                          @Override
+                                                          public void call(SynchronizationRequest request) {
+                                                              List<TrackingV1> trackingV1s = request.getTrackingV1Collection();
+                                                              for (TrackingV1 trackingV1 : trackingV1s) {
+                                                                  if (trackingV1.getColor() == null)
+                                                                      trackingV1.setColor("11119017");
+                                                              }
+                                                              saveDataToDb(trackingV1s);
+                                                              SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                              editor.putString("Nick", synchronizationRequest.getUserNickname());
+                                                              editor.putLong("NickDate", synchronizationRequest.getNicknameDateOfChange().getTime());
+                                                              userActionView.finishActivity();
+                                                              userActionView.stopMenuAnimation();
+                                                              userActionView.startActivity();
+                                                              YandexMetrica.reportEvent("Пользователь синхронизировался");
+                                                              userActionView.showMessage("Синхронизировано");
+                                                          }
+                                                      }
+                                                   , new Action1<Throwable>() {
+                                                       @Override
+                                                       public void call(Throwable throwable) {
+                                                           userActionView.showMessage("Синхронизация не прошла! Проверьте подключение к интернету.");
+                                                       }
+                                                   });
                                }
                            },
                         new Action1<Throwable>() {
