@@ -2,6 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
+def getMyVersionCode = { ->
+    def code = project.hasProperty('versionCode') ? versionCode.toInteger() : -1
+    return code
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
@@ -10,8 +15,7 @@ android {
         applicationId "ru.lod_misis.ithappened"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 18
-        manifestPlaceholders = [manVersionCode: versionCode]
+        versionCode getMyVersionCode()
         versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
