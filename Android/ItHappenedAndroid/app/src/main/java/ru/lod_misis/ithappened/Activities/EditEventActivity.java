@@ -1,10 +1,16 @@
 package ru.lod_misis.ithappened.Activities;
 
+import android.Manifest;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
@@ -19,6 +25,15 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.yandex.metrica.YandexMetrica;
 
 import java.text.ParseException;
@@ -54,6 +69,8 @@ public class EditEventActivity extends AppCompatActivity {
     int commentState;
     int scaleState;
     int ratingState;
+    int geopositionState;
+
     UUID trackingId;
     UUID eventId;
 
@@ -61,10 +78,12 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout commentContainer;
     LinearLayout scaleContainer;
     LinearLayout ratingContainer;
+    LinearLayout geopositionContainer;
 
     TextView commentAccess;
     TextView scaleAccess;
     TextView ratingAccess;
+    TextView geopositionAccess;
 
     EditText commentControl;
     EditText scaleControl;
@@ -78,18 +97,29 @@ public class EditEventActivity extends AppCompatActivity {
     TrackingV1 trackingV1;
     EventV1 eventV1;
 
+    SupportMapFragment supportMapFragment;
+    GoogleMap map;
+    Marker marker;
+    LocationManager locationManager;
+    Double latitude = null;
+    Double longitude = null;
+
+    Context context;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
 
+        context=this;
+
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
+        if (sharedPreferences.getString("LastId", "").isEmpty()) {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
             trackingCollection = StaticInMemoryRepository.getInstance();
-        }else{
+        } else {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
             trackingCollection = StaticInMemoryRepository.getInstance();
         }
@@ -104,10 +134,16 @@ public class EditEventActivity extends AppCompatActivity {
         commentContainer = (LinearLayout) findViewById(R.id.commentEventContainerEdit);
         ratingContainer = (LinearLayout) findViewById(R.id.ratingEventContainerEdit);
         scaleContainer = (LinearLayout) findViewById(R.id.scaleEventContainerEdit);
+        geopositionContainer = (LinearLayout) findViewById(R.id.geopositionEventContainerEdit);
 
         commentAccess = (TextView) findViewById(R.id.commentAccessEdit);
         scaleAccess = (TextView) findViewById(R.id.scaleAccessEdit);
         ratingAccess = (TextView) findViewById(R.id.ratingAccessEdit);
+        geopositionAccess = (TextView) findViewById(R.id.geopositionAccess);
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         commentControl = (EditText) findViewById(R.id.eventCommentControlEdit);
         scaleControl = (EditText) findViewById(R.id.eventScaleControlEdit);
@@ -133,13 +169,15 @@ public class EditEventActivity extends AppCompatActivity {
         commentState = calculateState(trackingV1.GetCommentCustomization());
         ratingState = calculateState(trackingV1.GetRatingCustomization());
         scaleState = calculateState(trackingV1.GetScaleCustomization());
+        geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
 
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
+        calculateUX(geopositionContainer, geopositionAccess, geopositionState);
 
-        if(trackingV1.GetScaleCustomization()!=TrackingCustomization.None && trackingV1.getScaleName()!=null){
-                scaleType.setText(trackingV1.getScaleName());
+        if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
+            scaleType.setText(trackingV1.getScaleName());
         }
 
         Date thisDate = eventV1.GetEventDate();
@@ -148,28 +186,31 @@ public class EditEventActivity extends AppCompatActivity {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
 
-        if((trackingV1.GetScaleCustomization()==TrackingCustomization.Optional
-                || trackingV1.GetScaleCustomization()==TrackingCustomization.Required) && eventV1.GetScale()!=null){
+        if ((trackingV1.GetScaleCustomization() == TrackingCustomization.Optional
+                || trackingV1.GetScaleCustomization() == TrackingCustomization.Required) && eventV1.GetScale() != null) {
             scaleControl.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue()));
-            if(trackingV1.getScaleName()!=null){
-                if(trackingV1.getScaleName().length()>=3){
-                    scaleType.setText(trackingV1.getScaleName().substring(0,2));
-                }else{
+            if (trackingV1.getScaleName() != null) {
+                if (trackingV1.getScaleName().length() >= 3) {
+                    scaleType.setText(trackingV1.getScaleName().substring(0, 2));
+                } else {
                     scaleType.setText(trackingV1.getScaleName());
                 }
             }
         }
 
-        if((trackingV1.GetRatingCustomization()==TrackingCustomization.Optional
-                || trackingV1.GetRatingCustomization()==TrackingCustomization.Required) && eventV1.GetRating()!=null){
-            ratingControl.setRating(eventV1.GetRating().getRating()/2.0f);
-            }
-
-        if((trackingV1.GetCommentCustomization()==TrackingCustomization.Optional
-                || trackingV1.GetCommentCustomization()==TrackingCustomization.Required) && eventV1.GetComment()!=null){
-            commentControl.setText(eventV1.GetComment());
+        if ((trackingV1.GetRatingCustomization() == TrackingCustomization.Optional
+                || trackingV1.GetRatingCustomization() == TrackingCustomization.Required) && eventV1.GetRating() != null) {
+            ratingControl.setRating(eventV1.GetRating().getRating() / 2.0f);
         }
 
+        if ((trackingV1.GetCommentCustomization() == TrackingCustomization.Optional
+                || trackingV1.GetCommentCustomization() == TrackingCustomization.Required) && eventV1.GetComment() != null) {
+            commentControl.setText(eventV1.GetComment());
+        }
+        if ((trackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional
+                || trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required) ) {
+            mapInit();
+        }
 
 
         dateControl.setText(format.format(thisDate).toString());
@@ -190,31 +231,36 @@ public class EditEventActivity extends AppCompatActivity {
                 boolean commentFlag = true;
                 boolean scaleFlag = true;
                 boolean ratingFlag = true;
+                boolean geopositionFlag = true;
 
-                if(commentState == 2 && commentControl.getText().toString().isEmpty()){
-                    commentFlag=false;
+                if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
+                    commentFlag = false;
                 }
 
-                if(ratingState == 2 && ratingControl.getRating() == 0){
+                if (ratingState == 2 && ratingControl.getRating() == 0) {
                     ratingFlag = false;
                 }
 
-                if(scaleState == 2 && scaleControl.getText().toString().isEmpty()){
+                if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
                     scaleFlag = false;
+                }
+                if (geopositionState == 2 && (latitude == null || longitude == null)) {
+                    geopositionFlag = false;
                 }
 
                 String comment = null;
                 Double scale = null;
                 Rating rating = null;
 
-                if(commentFlag&&ratingFlag&&scaleFlag){
-                    if(!commentControl.getText().toString().isEmpty()&&!commentControl.getText().toString().trim().isEmpty()){
+
+                if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
+                    if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
                         comment = commentControl.getText().toString().trim();
                     }
-                    if(!(ratingControl.getRating()==0)){
-                        rating = new Rating((int) (ratingControl.getRating()*2));
+                    if (!(ratingControl.getRating() == 0)) {
+                        rating = new Rating((int) (ratingControl.getRating() * 2));
                     }
-                    if(!scaleControl.getText().toString().isEmpty()){
+                    if (!scaleControl.getText().toString().isEmpty()) {
                         try {
                             scale = Double.parseDouble(scaleControl.getText().toString());
                             Date eventDate = null;
@@ -226,7 +272,7 @@ public class EditEventActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
                             YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
@@ -248,10 +294,10 @@ public class EditEventActivity extends AppCompatActivity {
                                     });
                             Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                             finishActivity();
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
                         }
-                    }else {
+                    } else {
                         Date eventDate = null;
                         Locale locale = new Locale("ru");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
@@ -261,7 +307,7 @@ public class EditEventActivity extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        trackingService.EditEvent(trackingId, eventId,  scale, rating, comment,eventDate);
+                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
                         YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
@@ -284,14 +330,13 @@ public class EditEventActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                         finishActivity();
                     }
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
-
 
 
     @Override
@@ -310,8 +355,8 @@ public class EditEventActivity extends AppCompatActivity {
         super.onPostResume();
     }
 
-    private int calculateState(TrackingCustomization customization){
-        switch (customization){
+    private int calculateState(TrackingCustomization customization) {
+        switch (customization) {
             case None:
                 return 0;
             case Optional:
@@ -330,22 +375,89 @@ public class EditEventActivity extends AppCompatActivity {
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_event));
     }
 
-    private void finishActivity(){
+    private void finishActivity() {
         this.finish();
     }
 
-    private void calculateUX(LinearLayout container, TextView access, int state){
-        switch (state){
+    private void calculateUX(LinearLayout container, TextView access, int state) {
+        switch (state) {
             case 0:
                 container.setVisibility(View.GONE);
                 break;
             case 1:
                 break;
             case 2:
-                access.setText(access.getText().toString()+"*");
+                access.setText(access.getText().toString() + "*");
                 break;
             default:
                 break;
         }
+    }
+
+    private void mapInit() {
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                if (eventV1.getLotitude() != null && eventV1.getLongitude() != null) {
+                    marker = map.addMarker(new MarkerOptions().position(new LatLng(eventV1.getLotitude(), eventV1.getLongitude())));
+                    moveCamera(eventV1.getLotitude(), eventV1.getLongitude());
+                } else {
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    marker= map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())));
+                    moveCamera(location.getLatitude(),location.getLongitude());
+
+                }
+                marker.setDraggable(true);
+
+
+                map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                    @Override
+                    public void onMarkerDragStart(Marker marker) {
+
+                    }
+
+                    @Override
+                    public void onMarkerDrag(Marker marker) {
+
+                    }
+
+                    @Override
+                    public void onMarkerDragEnd(Marker marker) {
+                        latitude=marker.getPosition().latitude;
+                        longitude=marker.getPosition().longitude;
+                    }
+                });
+                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        marker.setPosition(latLng);
+                        latitude=latLng.latitude;
+                        longitude=latLng.longitude;
+                    }
+                });
+            }
+        });
+    }
+    private void moveCamera(Double latitude,Double longitude){
+        CameraUpdate cameraUpdate;
+        cameraUpdate= CameraUpdateFactory.newCameraPosition(
+                new CameraPosition.Builder()
+                        .target(new LatLng(latitude,longitude))
+                        .zoom(5)
+                        .build()
+        );
+        map.moveCamera(cameraUpdate);
     }
 }

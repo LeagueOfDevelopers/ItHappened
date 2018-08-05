@@ -19,13 +19,15 @@ import io.realm.annotations.Required;
 
 public class Event extends RealmObject {
 
-    public Event(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment)
+    public Event(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment,Double lotitude,Double longitude)
     {
         this.eventId = eventId.toString();
         this.dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
+        this.lotitude=lotitude;
+        this.longitude=longitude;
         this.trackingId = trackingID.toString();
         this.eventDate = date;
     }
@@ -50,6 +52,8 @@ public class Event extends RealmObject {
     @Expose
     @SerializedName("comment")
     public String comment;
+    public Double lotitude;
+    public Double longitude;
     @Expose
     @SerializedName("dateOfChange")
     public Date dateOfChange;

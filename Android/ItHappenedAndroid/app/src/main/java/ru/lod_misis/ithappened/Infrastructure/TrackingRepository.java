@@ -137,6 +137,8 @@ public class TrackingRepository implements ITrackingRepository {
                           Double newScale,
                           Rating newRating,
                           String newComment,
+                          Double newLotitude,
+                          Double newLongitude,
                           Date newDate){
         TrackingV1 trackingV1 = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString()).findFirst();
@@ -145,7 +147,7 @@ public class TrackingRepository implements ITrackingRepository {
 
         realm.beginTransaction();
         TrackingV1 tracking = realm.copyFromRealm(trackingV1);
-        tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
+        tracking.EditEvent(eventId, newScale, newRating, newComment, newLotitude,newLongitude,newDate);
 
         realm.copyToRealmOrUpdate(tracking);
         realm.commitTransaction();
@@ -155,6 +157,7 @@ public class TrackingRepository implements ITrackingRepository {
                              TrackingCustomization editedCounter,
                              TrackingCustomization editedScale,
                              TrackingCustomization editedComment,
+                             TrackingCustomization editedGeoposition,
                              String editedTrackingName,
                              String scaleName,
                              String color) {
@@ -165,7 +168,7 @@ public class TrackingRepository implements ITrackingRepository {
             throw new IllegalArgumentException("TrackingV1 with such ID doesn't exists");
 
         realm.beginTransaction();
-        trackingV1.EditTracking(editedCounter, editedScale, editedComment,
+        trackingV1.EditTracking(editedCounter, editedScale, editedComment,editedGeoposition,
                 editedTrackingName, scaleName, color);
         realm.commitTransaction();
     }
