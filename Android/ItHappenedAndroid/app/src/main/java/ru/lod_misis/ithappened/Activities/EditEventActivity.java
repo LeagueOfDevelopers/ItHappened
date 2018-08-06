@@ -399,7 +399,7 @@ public class EditEventActivity extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
-                map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                 if (eventV1.getLotitude() != null && eventV1.getLongitude() != null) {
                     marker = map.addMarker(new MarkerOptions().position(new LatLng(eventV1.getLotitude(), eventV1.getLongitude())));
                     moveCamera(eventV1.getLotitude(), eventV1.getLongitude());

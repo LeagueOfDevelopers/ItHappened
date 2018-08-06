@@ -18,7 +18,7 @@ public class Tracking extends RealmObject{
 
     public Tracking(String scaleName, String trackingName,
                     String trackingId, Date trackingDate,
-                    String scale, String rating, String comment,String geoposition,
+                    String scale, String rating, String comment,
                     RealmList<Event> eventCollection, Date dateOfChange,
                     boolean isDeleted, String color) {
         this.scaleName = scaleName;
@@ -28,7 +28,6 @@ public class Tracking extends RealmObject{
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
-        this.geoposition=geoposition;
         this.eventCollection = eventCollection;
         this.dateOfChange = dateOfChange;
         this.isDeleted = isDeleted;
@@ -56,7 +55,6 @@ public class Tracking extends RealmObject{
     @Expose
     @SerializedName("comment")
     public String comment;
-    public String geoposition;
     @Expose
     public RealmList<Event> eventCollection;
     @Expose

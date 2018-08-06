@@ -74,7 +74,6 @@ public class TrackingV1 extends RealmObject {
         SetScaleCustomization(TrackingCustomization.valueOf(tracking.scale));
         SetRatingCustomization(TrackingCustomization.valueOf(tracking.rating));
         SetCommentCustomization(TrackingCustomization.valueOf(tracking.comment));
-        SetGeopositionCustomization(TrackingCustomization.valueOf((tracking.geoposition)));
         this.trackingId = tracking.trackingId;
         this.trackingDate = tracking.trackingDate;
         eventV1Collection = new RealmList<>();

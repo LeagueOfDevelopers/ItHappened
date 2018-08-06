@@ -220,7 +220,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     public void onMapReady(GoogleMap googleMap) {
                         CameraUpdate cameraUpdate;
                         map=googleMap;
-                        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                         map.addMarker(new MarkerOptions().position(new LatLng(lotitude,longitude)));
                         cameraUpdate= CameraUpdateFactory.newCameraPosition(
                                 new CameraPosition.Builder()

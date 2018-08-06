@@ -36,8 +36,6 @@ public class EventV1 extends RealmObject
         else
             this.rating = null;
         this.comment = event.comment;
-        this.lotitude=event.lotitude;
-        this.longitude=event.longitude;
         this.trackingId = event.trackingId;
         dateOfChange = event.dateOfChange;
         isDeleted = event.isDeleted;

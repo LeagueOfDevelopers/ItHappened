@@ -428,7 +428,7 @@ private void initMap(){
 
             map = googleMap;
             CameraUpdate cameraUpdate;
-            map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 marker.setPosition(new LatLng(0,0));
             }
