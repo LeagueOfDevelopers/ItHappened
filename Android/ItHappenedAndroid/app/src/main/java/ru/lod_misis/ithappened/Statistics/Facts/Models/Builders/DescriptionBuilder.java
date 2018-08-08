@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -40,6 +41,11 @@ public class DescriptionBuilder {
 
     private static final String LargestEventCountWeekReportFormat =
             "Самая насыщенная событиями неделя была с <b>%s</b> до <b>%s</b>. В течении этой недели произошло <b>%s</b> ";
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat
+            ("dd.MM.yyyy HH:mm", DateFormatLocalization);
+
+    private static DecimalFormat format = new DecimalFormat("#.##");
 
     public static String BuildBinaryCorrelationReport(Double corr,
                                                       String firstTrackingName,
@@ -170,7 +176,6 @@ public class DescriptionBuilder {
     public static String BuildScaleTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName, String scaleName) {
         String deltaDescription = newAverange - delta.getAverageValue() > 0 ? "увеличилось" : "уменьшилось";
         DateTime date = new DateTime(delta.getPointEventDate());
-        DecimalFormat format = new DecimalFormat("#.##");
         return String.format(ScaleTrendReportFormat,
                 DateDescription(date), scaleName, trackingName,
                 deltaDescription, format.format(Math.abs(delta.getAverageValue() - newAverange)));
@@ -179,7 +184,6 @@ public class DescriptionBuilder {
     public static String BuildRatingTrendReport(TrendChangingPoint delta, Double newAverange, String trackingName) {
         String deltaDescription = newAverange - delta.getAverageValue() > 0 ? "увеличилось" : "уменьшилось";
         DateTime date = new DateTime(delta.getPointEventDate());
-        DecimalFormat format = new DecimalFormat("#.##");
         return String.format(RatingTrendReportFormat,
                 DateDescription(date), trackingName,
                 deltaDescription, format.format(Math.abs(delta.getAverageValue() - newAverange)));
@@ -198,15 +202,15 @@ public class DescriptionBuilder {
         DateTime end = new DateTime(secondEventDate);
         return String.format(DateFormatLocalization, LongestBreakReportFormat,
                 trackingName,
-                DateDescription(begin),
-                DateDescription(end),
+                dateFormat.format(begin),
+                dateFormat.format(end),
                 (secondEventDate.getTime() - firstEventDate.getTime()) / (1000 * 60 * 60 * 24));
     }
 
     public static String LargestEventCountDayDescription(TimeSpanEventData data) {
         String eventCountDescr = EventCountDescription(data.getEventCount());
         String pattern = LargestEventCountReportFormat + eventCountDescr;
-        return String.format(pattern, DateDescription(data.getDate()), data.getEventCount()).trim();
+        return String.format(pattern, dateFormat.format(data.getDate()), data.getEventCount()).trim();
     }
 
     public static String LargestEventCountWeekDescription(TimeSpanEventData data) {
@@ -214,8 +218,8 @@ public class DescriptionBuilder {
         String pattern = LargestEventCountWeekReportFormat + eventCountDescr;
         DateTime leftWeekBorder = data.getLeftWeekBorder();
         DateTime rightWeekBorder = data.getRightWeekBorder();
-        String leftBorderDescription = DateDescription(leftWeekBorder);
-        String rightBorderDescription = DateDescription(rightWeekBorder);
+        String leftBorderDescription = dateFormat.format(leftWeekBorder);
+        String rightBorderDescription = dateFormat.format(rightWeekBorder);
         return String.format(pattern, leftBorderDescription,
                 rightBorderDescription, data.getEventCount()).trim();
     }
