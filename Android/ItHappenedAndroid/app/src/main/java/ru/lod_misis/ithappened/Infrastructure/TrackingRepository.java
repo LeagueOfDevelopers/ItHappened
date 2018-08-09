@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -305,10 +306,9 @@ public class TrackingRepository implements ITrackingRepository {
 
     public void configureRealm() {
         RealmConfiguration config = new RealmConfiguration.Builder()
-                .name("ItHappened.realm").schemaVersion(1).migration(new RealmMigration() {
+                .name("ItHappened.realm").schemaVersion(2).migration(new RealmMigration() {
                     @Override
                     public void migrate(DynamicRealm dynamicRealm, long oldVersion, long l1) {
-
                         if (oldVersion == 0) {
                             RealmSchema schema = dynamicRealm.getSchema();
 
@@ -348,6 +348,27 @@ public class TrackingRepository implements ITrackingRepository {
                             newDbModelSchema.addRealmListField("eventSourceCollection", eventSourceSchema);
                             newDbModelSchema.addRealmListField("trackingV1Collection", newTrackingSchema);
 
+                            oldVersion++;
+                        }
+
+                        if (oldVersion == 1){
+                            RealmSchema schema = dynamicRealm.getSchema();
+
+                            RealmObjectSchema trackingSchema = schema.get("TrackingV1");
+                            RealmObjectSchema eventSchema = schema.get("EventV1");
+
+                            trackingSchema.addField("geoposition", String.class);
+
+                            eventSchema.addField("lotitude", Double.class);
+                            eventSchema.addField("longitude", Double.class);
+
+                            trackingSchema.transform(new RealmObjectSchema.Function() {
+                                @Override
+                                public void apply(DynamicRealmObject dynamicRealmObject) {
+                                    dynamicRealmObject.set("geoposition", "None");
+                                }
+                            });
+                            oldVersion++;
                         }
                     }
                 }).build();
