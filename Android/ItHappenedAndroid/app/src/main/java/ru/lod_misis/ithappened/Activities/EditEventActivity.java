@@ -1,9 +1,11 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.text.ParseException;
@@ -44,6 +48,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
+import ru.lod_misis.ithappened.Dialog.ChoicePhotoDialog;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -56,6 +61,8 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
+import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
+import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -70,6 +77,7 @@ public class EditEventActivity extends AppCompatActivity {
     int scaleState;
     int ratingState;
     int geopositionState;
+    int photoState;
 
     UUID trackingId;
     UUID eventId;
@@ -79,11 +87,13 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout scaleContainer;
     LinearLayout ratingContainer;
     LinearLayout geopositionContainer;
+    LinearLayout photoContainer;
 
     TextView commentAccess;
     TextView scaleAccess;
     TextView ratingAccess;
     TextView geopositionAccess;
+    TextView photoAccess;
 
     EditText commentControl;
     EditText scaleControl;
@@ -93,6 +103,12 @@ public class EditEventActivity extends AppCompatActivity {
     TextView scaleType;
 
     Button addEvent;
+
+    IWorkWithFIles workWithFIles;
+    String photoPath;
+    ImageView photo;
+    ChoicePhotoDialog dialog;
+    Boolean flagPhoto=false;
 
     TrackingV1 trackingV1;
     EventV1 eventV1;
@@ -105,6 +121,7 @@ public class EditEventActivity extends AppCompatActivity {
     Double longitude = null;
 
     Context context;
+    Activity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +129,7 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
 
         context=this;
+        activity=this;
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
@@ -135,14 +153,18 @@ public class EditEventActivity extends AppCompatActivity {
         ratingContainer = (LinearLayout) findViewById(R.id.ratingEventContainerEdit);
         scaleContainer = (LinearLayout) findViewById(R.id.scaleEventContainerEdit);
         geopositionContainer = (LinearLayout) findViewById(R.id.geopositionEventContainerEdit);
+        photoContainer = (LinearLayout) findViewById(R.id.photoEventContainerEdit);
+
 
         commentAccess = (TextView) findViewById(R.id.commentAccessEdit);
         scaleAccess = (TextView) findViewById(R.id.scaleAccessEdit);
         ratingAccess = (TextView) findViewById(R.id.ratingAccessEdit);
         geopositionAccess = (TextView) findViewById(R.id.geopositionAccess);
+        photoAccess = (TextView) findViewById(R.id.photoAccessEdit);
+
+        photo=findViewById(R.id.photoEdit);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         commentControl = (EditText) findViewById(R.id.eventCommentControlEdit);
@@ -170,11 +192,13 @@ public class EditEventActivity extends AppCompatActivity {
         ratingState = calculateState(trackingV1.GetRatingCustomization());
         scaleState = calculateState(trackingV1.GetScaleCustomization());
         geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
-
+        photoState=calculateState(trackingV1.GetPhotoCustomization());
+        photoContainer.setVisibility(View.VISIBLE);
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
         calculateUX(geopositionContainer, geopositionAccess, geopositionState);
+        calculateUX(photoContainer,photoAccess,photoState);
 
         if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
             scaleType.setText(trackingV1.getScaleName());
@@ -232,6 +256,7 @@ public class EditEventActivity extends AppCompatActivity {
                 boolean scaleFlag = true;
                 boolean ratingFlag = true;
                 boolean geopositionFlag = true;
+                boolean photoFlag = true;
 
                 if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
                     commentFlag = false;
@@ -246,6 +271,9 @@ public class EditEventActivity extends AppCompatActivity {
                 }
                 if (geopositionState == 2 && (latitude == null || longitude == null)) {
                     geopositionFlag = false;
+                }
+                if(photoState == 2 && !flagPhoto){
+                    photoFlag = false;
                 }
 
                 String comment = null;
@@ -272,7 +300,7 @@ public class EditEventActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
+                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath, eventDate);
                             YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
@@ -307,7 +335,7 @@ public class EditEventActivity extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
+                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath,eventDate);
                         YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
@@ -333,6 +361,14 @@ public class EditEventActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                workWithFIles=new WorkWithFiles(getApplication(),context);
+                dialog=new ChoicePhotoDialog(context,activity,workWithFIles);
+                dialog.show();
             }
         });
 
@@ -459,5 +495,26 @@ public class EditEventActivity extends AppCompatActivity {
                         .build()
         );
         map.moveCamera(cameraUpdate);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!=RESULT_OK){
+            dialog.cancel();
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =(((("+"\n"+"Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(requestCode==1){
+            Picasso.get().load(data.getData()).into(photo);
+            photoPath =workWithFIles.saveBitmap(data.getData()).toString();
+            flagPhoto=true;
+            dialog.cancel();
+        }
+        if(requestCode==2){
+            Picasso.get().load(data.getData()).into(photo);
+            photoPath =workWithFIles.saveBitmap(data.getData());
+            flagPhoto=true;
+            dialog.cancel();
+        }
     }
 }

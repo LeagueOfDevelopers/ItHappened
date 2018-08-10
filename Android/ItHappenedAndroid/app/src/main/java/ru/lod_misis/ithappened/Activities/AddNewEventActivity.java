@@ -1,15 +1,16 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -23,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -38,11 +40,11 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -50,6 +52,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
+import ru.lod_misis.ithappened.Dialog.ChoicePhotoDialog;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -60,6 +63,8 @@ import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
+import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -74,6 +79,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     int scaleState;
     int ratingState;
     int geopositionState;
+    int photoState;
 
     UUID trackingId;
 
@@ -97,11 +103,13 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     LinearLayout scaleContainer;
     LinearLayout ratingContainer;
     LinearLayout geopositionContainer;
+    LinearLayout photoContainer;
 
     TextView commentAccess;
     TextView scaleAccess;
     TextView ratingAccess;
     TextView geopositionAccess;
+    TextView photoAccess;
 
     EditText commentControl;
     EditText scaleControl;
@@ -117,18 +125,26 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Double latitude = null;
     Double longitude = null;
 
+    IWorkWithFIles workWithFIles;
+    String photoPath;
+    ImageView photo;
+    ChoicePhotoDialog dialog;
+
     LocationManager locationManager;
     Marker marker;
 
     TrackingV1 trackingV1;
 
     Context context;
+    Activity activity;
+    boolean flagPhoto=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
         context=this;
+        activity=this;
         YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
@@ -149,15 +165,20 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         commentContainer = (LinearLayout) findViewById(R.id.commentEventContainer);
         ratingContainer = (LinearLayout) findViewById(R.id.ratingEventContainer);
         scaleContainer = (LinearLayout) findViewById(R.id.scaleEventContainer);
+        geopositionContainer = (LinearLayout) findViewById(R.id.geopositionEventContainer);
+        photoContainer = (LinearLayout) findViewById(R.id.photoEventContainer);
 
         commentAccess = (TextView) findViewById(R.id.commentAccess);
         scaleAccess = (TextView) findViewById(R.id.scaleAccess);
         ratingAccess = (TextView) findViewById(R.id.ratingAccess);
         geopositionAccess = (TextView) findViewById(R.id.geopositionAccess);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        photoAccess = (TextView) findViewById(R.id.photoAccess);
 
+        photo=findViewById(R.id.photo);
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        initMap();
+
 
         commentControl = (EditText) findViewById(R.id.eventCommentControl);
         scaleControl = (EditText) findViewById(R.id.eventScaleControl);
@@ -191,12 +212,17 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         ratingState = calculateState(trackingV1.GetRatingCustomization());
         scaleState = calculateState(trackingV1.GetScaleCustomization());
         geopositionState=calculateState(trackingV1.GetGeopositionCustomization());
+        photoState=calculateState(trackingV1.GetPhotoCustomization());
 
+        if(geopositionState==1||geopositionState==2){
+            initMap();
+        }
 
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
         calculateUX(geopositionContainer,geopositionAccess,geopositionState);
+        calculateUX(photoContainer,photoAccess,photoState);
 
         if(trackingV1.GetScaleCustomization()!=TrackingCustomization.None && trackingV1.getScaleName()!=null){
                 scaleType.setText(trackingV1.getScaleName());
@@ -208,7 +234,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
         dateControl.setText(format.format(eventDate).toString());
 
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
         datePickerDialog = new DatePickerDialog(
                 this,
@@ -232,117 +258,19 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             }
         });
 
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                workWithFIles=new WorkWithFiles(getApplication(),context);
+                dialog=new ChoicePhotoDialog(context,activity,workWithFIles);
+                dialog.show();
+            }
+        });
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean commentFlag = true;
-                boolean scaleFlag = true;
-                boolean ratingFlag = true;
-                Boolean geopositionFlag=true;
-
-                if(commentState == 2 && commentControl.getText().toString().isEmpty()){
-                    commentFlag=false;
-                }
-
-                if(ratingState == 2 && ratingControl.getRating() == 0){
-                    ratingFlag = false;
-                }
-
-                if(scaleState == 2 && scaleControl.getText().toString().isEmpty()){
-                    scaleFlag = false;
-                }
-                if(geopositionState==2 && (latitude==null||longitude==null)){
-                    geopositionFlag=false;
-                }
-
-
-                String comment = null;
-                Double scale = null;
-                Rating rating = null;
-
-
-                if(commentFlag&&ratingFlag&&scaleFlag&&geopositionFlag){
-                    if(!commentControl.getText().toString().isEmpty()&&!commentControl.getText().toString().trim().isEmpty()){
-                        comment = commentControl.getText().toString().trim();
-                    }
-                    if(!(ratingControl.getRating()==0)){
-                        rating = new Rating((int) (ratingControl.getRating()*2));
-                    }
-                    if(!scaleControl.getText().toString().isEmpty()){
-                        try {
-                            scale = Double.parseDouble(scaleControl.getText().toString().trim());
-                            trackingService.AddEvent(trackingId,
-                                    new EventV1(UUID.randomUUID(),
-                                            trackingId,
-                                            eventDate,
-                                            scale,
-                                            rating,
-                                            comment,
-                                            latitude,
-                                            longitude
-                                            ));
-                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            YandexMetrica.reportEvent("Пользователь добавил событие");
-                            Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }catch (Exception e){
-                            Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
-                        }
-                    }else {
-                        if(timeSetFlag) {
-                            Locale locale = new Locale("ru");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                            try {
-                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        trackingService.AddEvent(trackingId, new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment,latitude,longitude));
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
-                        Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                }else{
-                    Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
-                }
+                addEvent();
             }
         });
 
@@ -421,7 +349,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         }
     }
 
-private void initMap(){
+    private void initMap(){
     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
@@ -430,7 +358,7 @@ private void initMap(){
             CameraUpdate cameraUpdate;
             map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                marker.setPosition(new LatLng(0,0));
+                supportMapFragment.setMenuVisibility(false);
             }
             else{
                 Location location= locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -473,7 +401,143 @@ private void initMap(){
             });
         }
     });
-}
+    }
+    private void addEvent(){
+        boolean commentFlag = true;
+        boolean scaleFlag = true;
+        boolean ratingFlag = true;
+        boolean photoFlag=true;
+        Boolean geopositionFlag=true;
+
+        if(commentState == 2 && commentControl.getText().toString().isEmpty()){
+            commentFlag=false;
+        }
+
+        if(ratingState == 2 && ratingControl.getRating() == 0){
+            ratingFlag = false;
+        }
+
+        if(scaleState == 2 && scaleControl.getText().toString().isEmpty()){
+            scaleFlag = false;
+        }
+        if(geopositionState==2 && (latitude==null||longitude==null)){
+            geopositionFlag=false;
+        }
+        if(photoState == 2 && !flagPhoto){
+            photoFlag = false;
+        }
+
+
+        String comment = null;
+        Double scale = null;
+        Rating rating = null;
+
+
+        if(commentFlag&&ratingFlag&&scaleFlag&&geopositionFlag&&photoFlag){
+            if(!commentControl.getText().toString().isEmpty()&&!commentControl.getText().toString().trim().isEmpty()){
+                comment = commentControl.getText().toString().trim();
+            }
+            if(!(ratingControl.getRating()==0)){
+                rating = new Rating((int) (ratingControl.getRating()*2));
+            }
+            if(!scaleControl.getText().toString().isEmpty()){
+                try {
+                    scale = Double.parseDouble(scaleControl.getText().toString().trim());
+                    trackingService.AddEvent(trackingId,
+                            new EventV1(UUID.randomUUID(),
+                                    trackingId,
+                                    eventDate,
+                                    scale,
+                                    rating,
+                                    comment,
+                                    latitude,
+                                    longitude,
+                                    photoPath
+                            ));
+                    factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
+                            .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action1<Fact>() {
+                                @Override
+                                public void call(Fact fact) {
+                                    Log.d("Statistics", "calculate");
+                                }
+                            });
+                    factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                            .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action1<Fact>() {
+                                @Override
+                                public void call(Fact fact) {
+                                    Log.d("Statistics", "calculate");
+                                }
+                            });
+                    YandexMetrica.reportEvent("Пользователь добавил событие");
+                    Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
+                    finish();
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                if(timeSetFlag) {
+                    Locale locale = new Locale("ru");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                    simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                    try {
+                        eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                trackingService.AddEvent(trackingId, new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment,latitude,longitude,photoPath));
+                factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                Log.d("Statistics", "calculate");
+                            }
+                        });
+                factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Fact>() {
+                            @Override
+                            public void call(Fact fact) {
+                                Log.d("Statistics", "calculate");
+                            }
+                        });
+                YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
+                Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }else{
+            Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!=RESULT_OK){
+            dialog.cancel();
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =(((("+"\n"+"Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
+            return;
+       }
+        if(requestCode==1){
+            Picasso.get().load(data.getData()).into(photo);
+            photoPath =workWithFIles.saveBitmap(data.getData()).toString();
+            flagPhoto=true;
+            dialog.cancel();
+        }
+        if(requestCode==2){
+            Picasso.get().load(data.getData()).into(photo);
+            photoPath =workWithFIles.saveBitmap(data.getData());
+            flagPhoto=true;
+            dialog.cancel();
+        }
+    }
 }
 
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -25,8 +26,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -45,6 +48,8 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
+import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
+import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -78,8 +83,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     SupportMapFragment supportMapFragment;
     GoogleMap map;
 
+    TextView photo_title;
+    ImageView photo;
+
     Double lotitude;
     Double longitude;
+    IWorkWithFIles workWithFIles;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,7 +102,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         commentHint = findViewById(R.id.commentHint);
         scaleHint = findViewById(R.id.scaleHint);
-
         commentValue = findViewById(R.id.commentValue);
         scaleValue = findViewById(R.id.scaleValue);
         ratingValue = findViewById(R.id.ratingValue);
@@ -107,6 +115,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         geoposition_title=findViewById(R.id.geoposition_title);
+
+        photo_title=findViewById(R.id.photo_title);
+        photo=findViewById(R.id.photo);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
@@ -232,12 +243,31 @@ public class EventDetailsActivity extends AppCompatActivity {
                     }
                 });
             }else{
-                supportMapFragment.setMenuVisibility(false);
+                FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.hide(supportMapFragment);
+                fragmentTransaction.commit();
                 geoposition_title.setVisibility(View.GONE);
             }
+
+        if(thisEventV1.getPhoto()!=null){
+            workWithFIles=new WorkWithFiles(getApplication(),this);
+            photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
+            nullsCard.setVisibility(View.GONE);
+            valuesCard.setVisibility(View.VISIBLE);
+            scaleValue.setVisibility(View.GONE);
+            scaleHint.setVisibility(View.GONE);
+            commentValue.setVisibility(View.GONE);
+            commentHint.setVisibility(View.GONE);
+            ratingValue.setVisibility(View.GONE);
+
+        }else{
+            photo_title.setVisibility(View.GONE);
+            photo.setVisibility(View.GONE);
+        }
         TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();
         TrackingCustomization ratingCustomization = thisTrackingV1.GetRatingCustomization();
+        TrackingCustomization photoCustomization = thisTrackingV1.GetPhotoCustomization();
     }
 
     public void okClicked() {
