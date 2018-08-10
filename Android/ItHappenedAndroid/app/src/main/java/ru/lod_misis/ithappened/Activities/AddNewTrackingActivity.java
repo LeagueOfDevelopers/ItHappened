@@ -106,7 +106,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     int stateForRating;
     int stateForGeoposition;
 
-    TrackingCustomization geoposition ;
+    TrackingCustomization geoposition=TrackingCustomization.None;
 
     Context context;
     Activity activity;
@@ -414,9 +414,9 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     }else{
                         addNewTracking();
                     }
+
                 }
-
-
+                addNewTracking();
             }
         });
 
