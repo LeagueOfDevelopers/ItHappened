@@ -22,6 +22,7 @@ public class TrackingV1 extends RealmObject {
                       TrackingCustomization scale,
                       TrackingCustomization rating,
                       TrackingCustomization comment,
+                      TrackingCustomization geoposition,
                       String scaleName,
                       String color)
     {
@@ -30,6 +31,7 @@ public class TrackingV1 extends RealmObject {
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
         SetCommentCustomization(comment);
+        SetGeopositionCustomization(geoposition);
         this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         dateOfChange = trackingDate;
@@ -42,6 +44,7 @@ public class TrackingV1 extends RealmObject {
                       TrackingCustomization scale,
                       TrackingCustomization rating,
                       TrackingCustomization comment,
+                      TrackingCustomization geoposition,
                       Date trackingDate,
                       List<EventV1> eventV1Collection,
                       boolean status, Date changeDate,
@@ -52,6 +55,7 @@ public class TrackingV1 extends RealmObject {
         SetScaleCustomization(scale);
         SetRatingCustomization(rating);
         SetCommentCustomization(comment);
+        SetGeopositionCustomization(geoposition);
         this.trackingId = trackingId.toString();
         this.trackingDate = trackingDate;
         this.eventV1Collection = new RealmList<>();
@@ -94,6 +98,8 @@ public class TrackingV1 extends RealmObject {
         CustomizationCheck(newEventV1.getScale(), GetScaleCustomization());
         CustomizationCheck(newEventV1.getRating(), GetRatingCustomization());
         CustomizationCheck(newEventV1.getComment(), GetCommentCustomization());
+        CustomizationCheck(newEventV1.getLotitude(), GetGeopositionCustomization());
+        CustomizationCheck(newEventV1.getLongitude(), GetGeopositionCustomization());
         eventV1Collection.add(newEventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
@@ -119,6 +125,8 @@ public class TrackingV1 extends RealmObject {
                           Double newScale,
                           Rating newRating,
                           String newComment,
+                          Double newLotitude,
+                          Double newLongitude,
                           Date newDate)
     {
         EventV1 editedEventV1 = null;
@@ -142,6 +150,8 @@ public class TrackingV1 extends RealmObject {
             editedEventV1.EditValueOfRating(newRating);
         if (ChangesCheck(newComment, GetCommentCustomization()))
             editedEventV1.EditComment(newComment);
+        if (ChangesCheck(newLotitude, GetGeopositionCustomization())&&ChangesCheck(newLongitude, GetGeopositionCustomization()))
+            editedEventV1.EditGeoposition(newLotitude,newLongitude);
         if (newDate!=null)
             editedEventV1.EditDate(newDate);
         eventV1Collection.set(index, editedEventV1);
@@ -151,6 +161,7 @@ public class TrackingV1 extends RealmObject {
     public void EditTracking(TrackingCustomization editedScale,
                              TrackingCustomization editedRating,
                              TrackingCustomization editedComment,
+                             TrackingCustomization editedGeoposition,
                              String editedTrackingName,
                              String scaleName, String color)
     {
@@ -164,6 +175,8 @@ public class TrackingV1 extends RealmObject {
             SetRatingCustomization(editedRating);
         if (editedComment != null)
             SetCommentCustomization(editedComment);
+        if (editedGeoposition != null)
+            SetGeopositionCustomization(editedGeoposition);
         if (editedTrackingName != null)
             trackingName = editedTrackingName;
         if (color != null) this.color = color;
@@ -295,6 +308,7 @@ public class TrackingV1 extends RealmObject {
     public TrackingCustomization GetScaleCustomization(){ return TrackingCustomization.valueOf(scale);}
     public TrackingCustomization GetCommentCustomization(){ return TrackingCustomization.valueOf(comment);}
     public TrackingCustomization GetRatingCustomization(){ return TrackingCustomization.valueOf(rating);}
+    public TrackingCustomization GetGeopositionCustomization(){ return TrackingCustomization.valueOf(geoposition);}
     public Date GetDateOfChange() {return dateOfChange; }
     public boolean GetStatus() { return isDeleted; }
     public String getScaleName() { return scaleName; }
@@ -309,6 +323,7 @@ public class TrackingV1 extends RealmObject {
     public void SetScaleCustomization(TrackingCustomization scl){  scale = scl.toString();}
     public void SetCommentCustomization(TrackingCustomization comm){ comment = comm.toString();}
     public void SetRatingCustomization(TrackingCustomization rat){ rating = rat.toString();}
+    public void SetGeopositionCustomization(TrackingCustomization geo){ geoposition = geo.toString();}
     public void SetDateOfChange(Date date) { dateOfChange = date; }
     public void SetStatus(boolean status) { isDeleted = status; }
     public void setScaleName(String name) {scaleName = name;}
@@ -334,6 +349,7 @@ public class TrackingV1 extends RealmObject {
     @Expose
     @SerializedName("comment")
     private String comment;
+    private String geoposition;
     @Expose
     @SerializedName("eventCollection")
     private RealmList<EventV1> eventV1Collection;

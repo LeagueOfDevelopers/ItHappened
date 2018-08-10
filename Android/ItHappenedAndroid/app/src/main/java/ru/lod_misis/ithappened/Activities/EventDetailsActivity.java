@@ -16,6 +16,15 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.yandex.metrica.YandexMetrica;
 
 import java.text.SimpleDateFormat;
@@ -65,6 +74,13 @@ public class EventDetailsActivity extends AppCompatActivity {
     TextView dateValueNulls;
     RatingBar ratingValue;
 
+    TextView geoposition_title;
+    SupportMapFragment supportMapFragment;
+    GoogleMap map;
+
+    Double lotitude;
+    Double longitude;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +104,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         deleteEvent = findViewById(R.id.deleteEventButton);
 
         factRepository = StaticFactRepository.getInstance();
+
+        supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        geoposition_title=findViewById(R.id.geoposition_title);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
@@ -183,6 +202,38 @@ public class EventDetailsActivity extends AppCompatActivity {
             }else {
                 scaleValue.setVisibility(View.GONE);
                 scaleHint.setVisibility(View.GONE);
+            }
+            if(thisEventV1.getLongitude()!=null &&thisEventV1.getLotitude()!=null){
+
+                this.lotitude=thisEventV1.getLotitude();
+                this.longitude=thisEventV1.getLongitude();
+                nullsCard.setVisibility(View.GONE);
+                valuesCard.setVisibility(View.VISIBLE);
+                scaleValue.setVisibility(View.GONE);
+                scaleHint.setVisibility(View.GONE);
+                commentValue.setVisibility(View.GONE);
+                commentHint.setVisibility(View.GONE);
+                ratingValue.setVisibility(View.GONE);
+
+                supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        CameraUpdate cameraUpdate;
+                        map=googleMap;
+                        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                        map.addMarker(new MarkerOptions().position(new LatLng(lotitude,longitude)));
+                        cameraUpdate= CameraUpdateFactory.newCameraPosition(
+                                new CameraPosition.Builder()
+                                        .target(new LatLng(lotitude,longitude))
+                                        .zoom(5)
+                                        .build()
+                        );
+                        map.moveCamera(cameraUpdate);
+                    }
+                });
+            }else{
+                supportMapFragment.setMenuVisibility(false);
+                geoposition_title.setVisibility(View.GONE);
             }
         TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -137,6 +138,8 @@ public class TrackingRepository implements ITrackingRepository {
                           Double newScale,
                           Rating newRating,
                           String newComment,
+                          Double newLotitude,
+                          Double newLongitude,
                           Date newDate){
         TrackingV1 trackingV1 = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString()).findFirst();
@@ -145,7 +148,7 @@ public class TrackingRepository implements ITrackingRepository {
 
         realm.beginTransaction();
         TrackingV1 tracking = realm.copyFromRealm(trackingV1);
-        tracking.EditEvent(eventId, newScale, newRating, newComment, newDate);
+        tracking.EditEvent(eventId, newScale, newRating, newComment, newLotitude,newLongitude,newDate);
 
         realm.copyToRealmOrUpdate(tracking);
         realm.commitTransaction();
@@ -155,6 +158,7 @@ public class TrackingRepository implements ITrackingRepository {
                              TrackingCustomization editedCounter,
                              TrackingCustomization editedScale,
                              TrackingCustomization editedComment,
+                             TrackingCustomization editedGeoposition,
                              String editedTrackingName,
                              String scaleName,
                              String color) {
@@ -165,7 +169,7 @@ public class TrackingRepository implements ITrackingRepository {
             throw new IllegalArgumentException("TrackingV1 with such ID doesn't exists");
 
         realm.beginTransaction();
-        trackingV1.EditTracking(editedCounter, editedScale, editedComment,
+        trackingV1.EditTracking(editedCounter, editedScale, editedComment,editedGeoposition,
                 editedTrackingName, scaleName, color);
         realm.commitTransaction();
     }
@@ -302,10 +306,9 @@ public class TrackingRepository implements ITrackingRepository {
 
     public void configureRealm() {
         RealmConfiguration config = new RealmConfiguration.Builder()
-                .name("ItHappened.realm").schemaVersion(1).migration(new RealmMigration() {
+                .name("ItHappened.realm").schemaVersion(2).migration(new RealmMigration() {
                     @Override
                     public void migrate(DynamicRealm dynamicRealm, long oldVersion, long l1) {
-
                         if (oldVersion == 0) {
                             RealmSchema schema = dynamicRealm.getSchema();
 
@@ -345,6 +348,27 @@ public class TrackingRepository implements ITrackingRepository {
                             newDbModelSchema.addRealmListField("eventSourceCollection", eventSourceSchema);
                             newDbModelSchema.addRealmListField("trackingV1Collection", newTrackingSchema);
 
+                            oldVersion++;
+                        }
+
+                        if (oldVersion == 1){
+                            RealmSchema schema = dynamicRealm.getSchema();
+
+                            RealmObjectSchema trackingSchema = schema.get("TrackingV1");
+                            RealmObjectSchema eventSchema = schema.get("EventV1");
+
+                            trackingSchema.addField("geoposition", String.class);
+
+                            eventSchema.addField("lotitude", Double.class);
+                            eventSchema.addField("longitude", Double.class);
+
+                            trackingSchema.transform(new RealmObjectSchema.Function() {
+                                @Override
+                                public void apply(DynamicRealmObject dynamicRealmObject) {
+                                    dynamicRealmObject.set("geoposition", "None");
+                                }
+                            });
+                            oldVersion++;
                         }
                     }
                 }).build();
