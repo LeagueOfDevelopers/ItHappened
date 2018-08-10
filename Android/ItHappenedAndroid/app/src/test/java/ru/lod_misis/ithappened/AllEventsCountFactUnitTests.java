@@ -25,10 +25,26 @@ public class AllEventsCountFactUnitTests {
 
     @Test
     public void HaveTrackingCollectionWithTwoTrackings_GetEventCountShouldReturnTwo(){
-        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "", "");
-        TrackingV1 secondTrackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "", "");
-        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
-        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
+        TrackingV1 trackingV1 = new TrackingV1(
+                "",
+                UUID.randomUUID(),
+                TrackingCustomization.Optional,
+                TrackingCustomization.None,
+                TrackingCustomization.Required,
+                TrackingCustomization.None,
+                "",
+                "");
+        TrackingV1 secondTrackingV1 = new TrackingV1(
+                "",
+                UUID.randomUUID(),
+                TrackingCustomization.Optional,
+                TrackingCustomization.None,
+                TrackingCustomization.Required,
+                TrackingCustomization.None,
+                "",
+                "");
+        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
         trackingV1.AddEvent(eventV1);
         secondTrackingV1.AddEvent(secondEventV1);
 
@@ -43,10 +59,26 @@ public class AllEventsCountFactUnitTests {
 
     @Test
     public void HaveTrackingCollectionWithTwoTrackings_GetTextDescriptionShouldReturnValidData(){
-        TrackingV1 trackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "", "");
-        TrackingV1 secondTrackingV1 = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required, "", "");
-        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null,  "122");
-        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null,  "122");
+        TrackingV1 trackingV1 = new TrackingV1(
+                "",
+                UUID.randomUUID(),
+                TrackingCustomization.Optional,
+                TrackingCustomization.None,
+                TrackingCustomization.Required,
+                TrackingCustomization.None,
+                "",
+                "");
+        TrackingV1 secondTrackingV1 = new TrackingV1(
+                "",
+                UUID.randomUUID(),
+                TrackingCustomization.Optional,
+                TrackingCustomization.None,
+                TrackingCustomization.Required,
+                TrackingCustomization.None,
+                "",
+                "");
+        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
         trackingV1.AddEvent(eventV1);
         secondTrackingV1.AddEvent(secondEventV1);
 

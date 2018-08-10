@@ -47,7 +47,7 @@ public class DescriptionBuilderUnitTest {
         String descr2 = fact2.textDescription();
         String descr3 = fact3.textDescription();
         Assert.assertTrue(fact1.textDescription().equals("C <b>маленькой</b> вероятностью при увеличении количества <b>килограммы</b> в событии <b>я поел мороженного</b> происходит <b>увеличение</b> количества <b>килограммы</b> в событии <b>я потолстел</b>."));
-        Assert.assertTrue(fact2.textDescription().equals("C <b>средней</b> вероятностью при увеличении числа событий <b>я поел мороженного</b> происходит <b>увеличение</b> числа событий <b>я потолстел</b>."));
+        Assert.assertTrue(fact2.textDescription().equals("C <b>очень большой</b> вероятностью при увеличении числа событий <b>я поел мороженного</b> происходит <b>увеличение</b> числа событий <b>я потолстел</b>."));
         Assert.assertTrue(fact3.textDescription().equals(""));
     }
 
@@ -66,7 +66,7 @@ public class DescriptionBuilderUnitTest {
         LongestBreakFact fact = new LongestBreakFact(tracking);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertTrue(descr.contains("Длина перерыва в днях: <b>9</b>"));
+        Assert.assertTrue(descr.contains("Длина перерыва в днях: <b>2</b>"));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DescriptionBuilderUnitTest {
         DayWithLargestEventCountFact fact = new DayWithLargestEventCountFact(trackings);
         fact.calculateData();
         String descr = fact.textDescription();
-        Assert.assertEquals(descr, "Самый насыщенный событиями день был <b>5 января 2018 года</b>. Тогда произошло <b>2</b> события.");
+        Assert.assertEquals(descr, "Самый насыщенный событиями день был <b>5 января 2018 года</b>. Тогда произошло <b>3</b> события.");
     }
 
     @Test
@@ -94,6 +94,7 @@ public class DescriptionBuilderUnitTest {
     private TrackingV1 GenerateTrackingWithDateBreak() {
         TrackingV1 tracking = new TrackingV1("tracking",
                 UUID.randomUUID(),
+                TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
@@ -123,6 +124,7 @@ public class DescriptionBuilderUnitTest {
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "scale", "");
         Random rand = new Random();
         for (int i = 0; i < 100; i++) {
@@ -140,6 +142,7 @@ public class DescriptionBuilderUnitTest {
         TrackingV1 tracking = new TrackingV1(trackingName,
                 UUID.randomUUID(),
                 TrackingCustomization.Required,
+                TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 scaleName, "");

@@ -61,6 +61,7 @@ public class FrequencyTrendChangingFactUnitTest {
         tracking.SetScaleCustomization(TrackingCustomization.None);
         tracking.SetCommentCustomization(TrackingCustomization.None);
         tracking.SetRatingCustomization(TrackingCustomization.None);
+        tracking.SetGeopositionCustomization(TrackingCustomization.None);
         for (int day: dates) {
             EventV1 event = new EventV1();
             event.setEventId(UUID.randomUUID().toString());
@@ -78,6 +79,7 @@ public class FrequencyTrendChangingFactUnitTest {
         tracking.SetScaleCustomization(TrackingCustomization.None);
         tracking.SetCommentCustomization(TrackingCustomization.None);
         tracking.SetRatingCustomization(TrackingCustomization.None);
+        tracking.SetGeopositionCustomization(TrackingCustomization.None);
         for (int i = 0; i < eventCount; i++) {
             EventV1 e = new EventV1();
             e.setEventId(UUID.randomUUID().toString());

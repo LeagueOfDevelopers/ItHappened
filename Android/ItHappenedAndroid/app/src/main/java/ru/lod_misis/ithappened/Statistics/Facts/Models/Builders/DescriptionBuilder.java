@@ -202,15 +202,15 @@ public class DescriptionBuilder {
         DateTime end = new DateTime(secondEventDate);
         return String.format(DateFormatLocalization, LongestBreakReportFormat,
                 trackingName,
-                dateFormat.format(begin),
-                dateFormat.format(end),
+                DateDescription(begin),
+                DateDescription(end),
                 (secondEventDate.getTime() - firstEventDate.getTime()) / (1000 * 60 * 60 * 24));
     }
 
     public static String LargestEventCountDayDescription(TimeSpanEventData data) {
         String eventCountDescr = EventCountDescription(data.getEventCount());
         String pattern = LargestEventCountReportFormat + eventCountDescr;
-        return String.format(pattern, dateFormat.format(data.getDate()), data.getEventCount()).trim();
+        return String.format(pattern, DateDescription(data.getDate()), data.getEventCount()).trim();
     }
 
     public static String LargestEventCountWeekDescription(TimeSpanEventData data) {
@@ -218,8 +218,8 @@ public class DescriptionBuilder {
         String pattern = LargestEventCountWeekReportFormat + eventCountDescr;
         DateTime leftWeekBorder = data.getLeftWeekBorder();
         DateTime rightWeekBorder = data.getRightWeekBorder();
-        String leftBorderDescription = dateFormat.format(leftWeekBorder);
-        String rightBorderDescription = dateFormat.format(rightWeekBorder);
+        String leftBorderDescription = DateDescription(leftWeekBorder);
+        String rightBorderDescription = DateDescription(rightWeekBorder);
         return String.format(pattern, leftBorderDescription,
                 rightBorderDescription, data.getEventCount()).trim();
     }

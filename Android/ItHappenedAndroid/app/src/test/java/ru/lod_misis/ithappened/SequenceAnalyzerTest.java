@@ -21,7 +21,7 @@ public class SequenceAnalyzerTest {
         int index2 = SequenceAnalyzer.DetectTrendChangingPoint(sequence.Slice(0, 12));
 
         Assert.assertTrue(index1 == 14);
-        Assert.assertTrue(index2 == 1);
+        Assert.assertTrue(index2 == 2);
     }
 
     /*@Test // Stress test

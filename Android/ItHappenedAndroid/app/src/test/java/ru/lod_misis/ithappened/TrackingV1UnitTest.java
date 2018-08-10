@@ -27,8 +27,14 @@ public class TrackingV1UnitTest {
         TrackingCustomization ratingCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), scaleCustomization, ratingCustomization, commentCustomization, "", "");
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate,1.1, null , null);
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                scaleCustomization,
+                ratingCustomization,
+                commentCustomization,
+                TrackingCustomization.None, "", "");
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate,1.1, null, null, 0., 0.);
         trackingV1.AddEvent(newEventV1);
 
         List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
@@ -43,9 +49,17 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, 1.1, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, 1.1, null, null, 0., 0.);
         trackingV1.AddEvent(newEventV1);
 
         List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
@@ -61,12 +75,20 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
         Optional<Double> count = Optional.empty();
         Optional<Rating> scale = Optional.empty();
         Optional<String> comment = Optional.empty();
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -85,9 +107,17 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -106,9 +136,17 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -126,11 +164,19 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.Required;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
         Integer scaleValue = 5;
         Rating rating = new Rating(scaleValue);
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null, 0., 0.);
         trackingV1.AddEvent(newEventV1);
 
         List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
@@ -145,11 +191,19 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.Optional;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
         Integer scaleValue = 5;
         Rating rating = new Rating(scaleValue);
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null, 0., 0.);
         trackingV1.AddEvent(newEventV1);
 
         List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
@@ -165,9 +219,17 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.Required;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -186,9 +248,17 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.Optional;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -207,11 +277,19 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
         Integer scaleValue = 5;
         Rating rating = new Rating(scaleValue);
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, rating, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -229,11 +307,19 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Required;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
         String comment = "comment";
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment, 0., 0.);
         trackingV1.AddEvent(newEventV1);
 
         List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
@@ -248,10 +334,18 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Optional;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
         String comment = "comment";
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment, 0., 0.);
         trackingV1.AddEvent(newEventV1);
 
         List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
@@ -267,9 +361,17 @@ public class TrackingV1UnitTest {
         TrackingCustomization ratingCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Required;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), scaleCustomization, ratingCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                scaleCustomization,
+                ratingCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -288,9 +390,17 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.Optional;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, null, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -309,10 +419,18 @@ public class TrackingV1UnitTest {
         TrackingCustomization scaleCustomization = TrackingCustomization.None;
         TrackingCustomization commentCustomization = TrackingCustomization.None;
 
-        TrackingV1 trackingV1 = new TrackingV1(trackingname, UUID.randomUUID(), countCustomization, scaleCustomization, commentCustomization, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingname,
+                UUID.randomUUID(),
+                countCustomization,
+                scaleCustomization,
+                commentCustomization,
+                TrackingCustomization.None,
+                "",
+                "");
         String comment = "comment";
 
-        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment);
+        EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(), evDate, null, null, comment, 0., 0.);
 
         try {
             trackingV1.AddEvent(newEventV1);
@@ -331,11 +449,19 @@ public class TrackingV1UnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingId = UUID.randomUUID();
         String trackingName = "name";
-        TrackingV1 trackingV1 = new TrackingV1(trackingName, trackingId, counter, scale, comment, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingName,
+                trackingId,
+                counter,
+                scale,
+                comment,
+                TrackingCustomization.None,
+                "",
+                "");
 
         TrackingCustomization newScale = TrackingCustomization.Required;
 
-        trackingV1.EditTracking(newScale, null, null, null, null, null);
+        trackingV1.EditTracking(newScale, null, null, null, null, null, null);
 
         Assert.assertEquals(trackingV1.GetScaleCustomization(), TrackingCustomization.Required);
     }
@@ -348,11 +474,19 @@ public class TrackingV1UnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingId = UUID.randomUUID();
         String trackingName = "name";
-        TrackingV1 trackingV1 = new TrackingV1(trackingName, trackingId, counter, scale, comment, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingName,
+                trackingId,
+                counter,
+                scale,
+                comment,
+                TrackingCustomization.None,
+                "",
+                "");
 
         TrackingCustomization newRating = TrackingCustomization.Required;
 
-        trackingV1.EditTracking(null, newRating, null, null, null, null);
+        trackingV1.EditTracking(null, newRating, null, null, null, null, null);
 
         Assert.assertEquals(trackingV1.GetRatingCustomization(), TrackingCustomization.Required);
     }
@@ -365,11 +499,19 @@ public class TrackingV1UnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingId = UUID.randomUUID();
         String trackingName = "name";
-        TrackingV1 trackingV1 = new TrackingV1(trackingName, trackingId, counter, scale, comment, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingName,
+                trackingId,
+                counter,
+                scale,
+                comment,
+                TrackingCustomization.None,
+                "",
+                "");
 
         TrackingCustomization newComment = TrackingCustomization.Required;
 
-        trackingV1.EditTracking(null, null, newComment, null, null, null);
+        trackingV1.EditTracking(null, null, newComment, null, null, null, null);
 
         Assert.assertEquals(trackingV1.GetCommentCustomization(), TrackingCustomization.Required);
     }
@@ -382,12 +524,20 @@ public class TrackingV1UnitTest {
         TrackingCustomization comment = TrackingCustomization.None;
         UUID trackingId = UUID.randomUUID();
         String trackingName = "name";
-        TrackingV1 trackingV1 = new TrackingV1(trackingName, trackingId, counter, scale, comment, "", "");
+        TrackingV1 trackingV1 = new TrackingV1(
+                trackingName,
+                trackingId,
+                counter,
+                scale,
+                comment,
+                TrackingCustomization.None,
+                "",
+                "");
 
         String newName = "new name";
         String newTrackingName = newName;
 
-        trackingV1.EditTracking(null, null, null, newTrackingName, null, null);
+        trackingV1.EditTracking(null, null, null, TrackingCustomization.None, newTrackingName, null, null);
 
         Assert.assertEquals(trackingV1.GetTrackingName(), newName);
     }
@@ -403,14 +553,17 @@ public class TrackingV1UnitTest {
                 trackingID,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
-                TrackingCustomization.None, "", "");
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, null, null);
+        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, null, null, 0., 0.);
 
         trackingV1.AddEvent(eventV1);
 
         try {
-            trackingV1.EditEvent(idOfNotExistingEvent, null, null, null, null);
+            trackingV1.EditEvent(idOfNotExistingEvent, null, null, null, null, null, null);
         }
         catch (IllegalArgumentException e)
         {
@@ -430,13 +583,16 @@ public class TrackingV1UnitTest {
                 trackingID,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
-                TrackingCustomization.None, "", "");
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                "",
+                "");
 
         Double newEventCount = 2.0;
-        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, 1.0, null, null);
+        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, 1.0, null, null, 0., 0.);
 
         trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, 2.0, null, null, null);
+        trackingV1.EditEvent(eventId, 2.0, null, null, 0., 0., null);
 
         List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
@@ -454,14 +610,17 @@ public class TrackingV1UnitTest {
                 trackingID,
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
-                TrackingCustomization.None, "", "");
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                "",
+                "");
 
         Rating eventRating = new Rating(1);
         Rating newEventRating = new Rating(2);
-        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, eventRating, null);
+        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, eventRating, null, 0., 0.);
 
         trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, null, newEventRating, null, null);
+        trackingV1.EditEvent(eventId, null, newEventRating, null, 0., 0., null);
 
         List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
@@ -479,14 +638,17 @@ public class TrackingV1UnitTest {
                 trackingID,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
-                TrackingCustomization.Required, "", "");
+                TrackingCustomization.Required,
+                TrackingCustomization.None,
+                "",
+                "");
 
         String eventComment = "name";
         String newEventComment = "new name";
-        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, null, eventComment);
+        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, null, eventComment, 0., 0.);
 
         trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, null, null, newEventComment, null);
+        trackingV1.EditEvent(eventId, null, null, newEventComment, 0., 0., null);
 
         List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
@@ -504,14 +666,17 @@ public class TrackingV1UnitTest {
                 trackingID,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
-                TrackingCustomization.None, "", "");
+                TrackingCustomization.None,
+                TrackingCustomization.None,
+                "",
+                "");
 
-        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, null, null);
+        EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, null, null, 0., 0.);
 
         Date newDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, null, null, null, newDate);
+        trackingV1.EditEvent(eventId, null, null, null, 0., 0., newDate);
 
         List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);

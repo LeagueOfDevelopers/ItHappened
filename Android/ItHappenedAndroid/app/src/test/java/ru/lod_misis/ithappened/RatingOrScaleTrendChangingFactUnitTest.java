@@ -17,49 +17,49 @@ import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
 public class RatingOrScaleTrendChangingFactUnitTest {
 
-    @Test
-    public void RatingIsChangingFactStressTest_FactDoesNotRaiseExceptions() {
-        Random gen = new Random();
-        int i = 1;
-        DateTime time;
-        while (true) {
-            TrackingV1 tracking = GenerateRandomRatingTracking(gen);
-            time = DateTime.now();
-            Fact fact = FunctionApplicability.RatingTrendChangingFactApplicability(tracking);
-            if (fact != null) {
-                String descr = fact.textDescription();
-            }
-            System.out.print("Test " + i + " finished\n");
-            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
-            if (fact == null) {
-                System.out.print("Fact is null\n");
-            }
-            System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
-            i++;
-        }
-    }
-
-    @Test
-    public void ScaleIsChangingStressTest_FactDoesNotRaiseExceptions() {
-        Random gen = new Random();
-        int i = 1;
-        DateTime time;
-        while (true) {
-            TrackingV1 tracking = GenerateRandomScaleTracking(gen);
-            time = DateTime.now();
-            Fact fact = FunctionApplicability.ScaleTrendChangingFactApplicability(tracking);
-            if (fact != null) {
-                String descr = fact.textDescription();
-            }
-            System.out.print("Test " + i + " finished\n");
-            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
-            if (fact == null) {
-                System.out.print("Fact is null\n");
-            }
-            System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
-            i++;
-        }
-    }
+//    @Test
+//    public void RatingIsChangingFactStressTest_FactDoesNotRaiseExceptions() {
+//        Random gen = new Random();
+//        int i = 1;
+//        DateTime time;
+//        while (true) {
+//            TrackingV1 tracking = GenerateRandomRatingTracking(gen);
+//            time = DateTime.now();
+//            Fact fact = FunctionApplicability.RatingTrendChangingFactApplicability(tracking);
+//            if (fact != null) {
+//                String descr = fact.textDescription();
+//            }
+//            System.out.print("Test " + i + " finished\n");
+//            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
+//            if (fact == null) {
+//                System.out.print("Fact is null\n");
+//            }
+//            System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
+//            i++;
+//        }
+//    }
+//
+//    @Test
+//    public void ScaleIsChangingStressTest_FactDoesNotRaiseExceptions() {
+//        Random gen = new Random();
+//        int i = 1;
+//        DateTime time;
+//        while (true) {
+//            TrackingV1 tracking = GenerateRandomScaleTracking(gen);
+//            time = DateTime.now();
+//            Fact fact = FunctionApplicability.ScaleTrendChangingFactApplicability(tracking);
+//            if (fact != null) {
+//                String descr = fact.textDescription();
+//            }
+//            System.out.print("Test " + i + " finished\n");
+//            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
+//            if (fact == null) {
+//                System.out.print("Fact is null\n");
+//            }
+//            System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
+//            i++;
+//        }
+//    }
 
     private TrackingV1 GenerateRandomRatingTracking(Random r) {
         int eventCount = r.nextInt(10000);
