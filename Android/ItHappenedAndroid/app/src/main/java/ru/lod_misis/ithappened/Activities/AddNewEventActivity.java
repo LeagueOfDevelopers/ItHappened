@@ -49,6 +49,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -93,25 +95,38 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     Date eventDate;
 
+    @BindView(R.id.commentEventContainer)
     LinearLayout commentContainer;
+    @BindView(R.id.scaleEventContainer)
     LinearLayout scaleContainer;
+    @BindView(R.id.ratingEventContainer)
     LinearLayout ratingContainer;
+    @BindView(R.id.geopositionEventContainer)
     LinearLayout geopositionContainer;
 
+    @BindView(R.id.commentAccess)
     TextView commentAccess;
+    @BindView(R.id.scaleAccess)
     TextView scaleAccess;
+    @BindView(R.id.ratingAccess)
     TextView ratingAccess;
+    @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
 
+    @BindView(R.id.eventCommentControl)
     EditText commentControl;
+    @BindView(R.id.eventScaleControl)
     EditText scaleControl;
+    @BindView(R.id.ratingEventControl)
     RatingBar ratingControl;
+    @BindView(R.id.eventDateControl)
     Button dateControl;
     SupportMapFragment supportMapFragment;
     GoogleMap map;
 
+    @BindView(R.id.scaleTypeAccess)
     TextView scaleType;
-
+    @BindView(R.id.addEvent)
     Button addEvent;
 
     Double latitude = null;
@@ -128,7 +143,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
-        context=this;
+        ButterKnife.bind(this);
+        context = this;
         YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
@@ -145,24 +161,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
 
-
-        commentContainer = (LinearLayout) findViewById(R.id.commentEventContainer);
-        ratingContainer = (LinearLayout) findViewById(R.id.ratingEventContainer);
-        scaleContainer = (LinearLayout) findViewById(R.id.scaleEventContainer);
-
-        commentAccess = (TextView) findViewById(R.id.commentAccess);
-        scaleAccess = (TextView) findViewById(R.id.scaleAccess);
-        ratingAccess = (TextView) findViewById(R.id.ratingAccess);
-        geopositionAccess = (TextView) findViewById(R.id.geopositionAccess);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         initMap();
-
-        commentControl = (EditText) findViewById(R.id.eventCommentControl);
-        scaleControl = (EditText) findViewById(R.id.eventScaleControl);
-        ratingControl = (RatingBar) findViewById(R.id.ratingEventControl);
-        dateControl = (Button) findViewById(R.id.eventDateControl);
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
@@ -176,10 +178,6 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             }
         });
 
-        scaleType = (TextView) findViewById(R.id.scaleTypeAccess);
-
-        addEvent = (Button) findViewById(R.id.addEvent);
-
         trackingV1 = trackingCollection.GetTracking(trackingId);
 
         ActionBar actionBar = getSupportActionBar();
@@ -190,16 +188,16 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         commentState = calculateState(trackingV1.GetCommentCustomization());
         ratingState = calculateState(trackingV1.GetRatingCustomization());
         scaleState = calculateState(trackingV1.GetScaleCustomization());
-        geopositionState=calculateState(trackingV1.GetGeopositionCustomization());
+        geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
 
 
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
-        calculateUX(geopositionContainer,geopositionAccess,geopositionState);
+        calculateUX(geopositionContainer, geopositionAccess, geopositionState);
 
-        if(trackingV1.GetScaleCustomization()!=TrackingCustomization.None && trackingV1.getScaleName()!=null){
-                scaleType.setText(trackingV1.getScaleName());
+        if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
+            scaleType.setText(trackingV1.getScaleName());
         }
 
         Locale loc = new Locale("ru");
@@ -239,21 +237,21 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 boolean commentFlag = true;
                 boolean scaleFlag = true;
                 boolean ratingFlag = true;
-                Boolean geopositionFlag=true;
+                Boolean geopositionFlag = true;
 
-                if(commentState == 2 && commentControl.getText().toString().isEmpty()){
-                    commentFlag=false;
+                if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
+                    commentFlag = false;
                 }
 
-                if(ratingState == 2 && ratingControl.getRating() == 0){
+                if (ratingState == 2 && ratingControl.getRating() == 0) {
                     ratingFlag = false;
                 }
 
-                if(scaleState == 2 && scaleControl.getText().toString().isEmpty()){
+                if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
                     scaleFlag = false;
                 }
-                if(geopositionState==2 && (latitude==null||longitude==null)){
-                    geopositionFlag=false;
+                if (geopositionState == 2 && (latitude == null || longitude == null)) {
+                    geopositionFlag = false;
                 }
 
 
@@ -262,14 +260,14 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 Rating rating = null;
 
 
-                if(commentFlag&&ratingFlag&&scaleFlag&&geopositionFlag){
-                    if(!commentControl.getText().toString().isEmpty()&&!commentControl.getText().toString().trim().isEmpty()){
+                if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
+                    if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
                         comment = commentControl.getText().toString().trim();
                     }
-                    if(!(ratingControl.getRating()==0)){
-                        rating = new Rating((int) (ratingControl.getRating()*2));
+                    if (!(ratingControl.getRating() == 0)) {
+                        rating = new Rating((int) (ratingControl.getRating() * 2));
                     }
-                    if(!scaleControl.getText().toString().isEmpty()){
+                    if (!scaleControl.getText().toString().isEmpty()) {
                         try {
                             scale = Double.parseDouble(scaleControl.getText().toString().trim());
                             trackingService.AddEvent(trackingId,
@@ -281,7 +279,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                                             comment,
                                             latitude,
                                             longitude
-                                            ));
+                                    ));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -303,11 +301,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                             YandexMetrica.reportEvent("Пользователь добавил событие");
                             Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                             finish();
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
                         }
-                    }else {
-                        if(timeSetFlag) {
+                    } else {
+                        if (timeSetFlag) {
                             Locale locale = new Locale("ru");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
                             simpleDateFormat.setTimeZone(TimeZone.getDefault());
@@ -317,7 +315,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                                 e.printStackTrace();
                             }
                         }
-                        trackingService.AddEvent(trackingId, new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment,latitude,longitude));
+                        trackingService.AddEvent(trackingId, new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude));
                         factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -340,7 +338,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                         Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
                         finish();
                     }
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -373,7 +371,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        eventYear = year-1900;
+        eventYear = year - 1900;
         eventMonth = month;
         eventDay = day;
         timePickerDialog.show();
@@ -392,8 +390,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     }
 
-    private int calculateState(TrackingCustomization customization){
-        switch (customization){
+    private int calculateState(TrackingCustomization customization) {
+        switch (customization) {
             case None:
                 return 0;
             case Optional:
@@ -406,74 +404,73 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         return 0;
     }
 
-    private void calculateUX(LinearLayout container, TextView access, int state){
-        switch (state){
+    private void calculateUX(LinearLayout container, TextView access, int state) {
+        switch (state) {
             case 0:
                 container.setVisibility(View.GONE);
                 break;
             case 1:
                 break;
             case 2:
-                access.setText(access.getText().toString()+"*");
+                access.setText(access.getText().toString() + "*");
                 break;
             default:
                 break;
         }
     }
 
-private void initMap(){
-    supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
+    private void initMap() {
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
 
-            map = googleMap;
-            CameraUpdate cameraUpdate;
-            map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                marker.setPosition(new LatLng(0,0));
+                map = googleMap;
+                CameraUpdate cameraUpdate;
+                map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    marker.setPosition(new LatLng(0, 0));
+                } else {
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    Log.d("test position", location.getLongitude() + "");
+                    marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+                    cameraUpdate = CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder()
+                                    .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                                    .zoom(5)
+                                    .build()
+                    );
+                    map.moveCamera(cameraUpdate);
+                }
+                marker.setDraggable(true);
+                map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                    @Override
+                    public void onMarkerDragStart(Marker marker) {
+
+                    }
+
+                    @Override
+                    public void onMarkerDrag(Marker marker) {
+
+                    }
+
+                    @Override
+                    public void onMarkerDragEnd(Marker marker) {
+                        latitude = marker.getPosition().latitude;
+                        longitude = marker.getPosition().longitude;
+                    }
+                });
+                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        latitude = latLng.latitude;
+                        longitude = latLng.longitude;
+                        marker.setPosition(latLng);
+
+                    }
+                });
             }
-            else{
-                Location location= locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Log.d("test position",location.getLongitude()+"");
-                marker= map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())));
-                cameraUpdate=CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition.Builder()
-                                .target(new LatLng(location.getLatitude(),location.getLongitude()))
-                                .zoom(5)
-                                .build()
-                );
-                map.moveCamera(cameraUpdate);
-            }
-            marker.setDraggable(true);
-            map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                @Override
-                public void onMarkerDragStart(Marker marker) {
-
-                }
-
-                @Override
-                public void onMarkerDrag(Marker marker) {
-
-                }
-
-                @Override
-                public void onMarkerDragEnd(Marker marker) {
-                    latitude=marker.getPosition().latitude;
-                    longitude=marker.getPosition().longitude;
-                }
-            });
-            map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    latitude=latLng.latitude;
-                    longitude=latLng.longitude;
-                    marker.setPosition(latLng);
-
-                }
-            });
-        }
-    });
-}
+        });
+    }
 }
 
 

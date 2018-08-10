@@ -21,6 +21,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -139,29 +141,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             }
         });
 
-        /*holder.editEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, EditEventActivity.class);
-                intent.putExtra("trackingId", eventV1.GetTrackingId().toString());
-                String eventId = eventV1.GetEventId().toString();
-                intent.putExtra("eventId", eventV1.GetEventId().toString());
-                context.startActivity(intent);
-            }
-        });*/
-
-        /*holder.deleteEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DeleteEventFromFragmentDiaolog delete = new DeleteEventFromFragmentDiaolog();
-                Bundle bundle = new Bundle();
-                bundle.putString("trackingId", eventV1.GetTrackingId().toString());
-                bundle.putString("eventId" , eventV1.GetEventId().toString());
-                delete.setArguments(bundle);
-                delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
-            }
-        });*/
-
         Date eventDate = eventV1.GetEventDate();
 
         Locale loc = new Locale("ru");
@@ -182,14 +161,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.TrackingTitle)
         TextView trackingTitle;
+        @BindView(R.id.eventDate)
         TextView eventDate;
+        @BindView(R.id.eventRL)
         RelativeLayout itemLL;
 
+        @BindView(R.id.scaleValue)
         TextView scaleValue;
+        @BindView(R.id.ratingValue)
         TextView ratingValue;
+        @BindView(R.id.starIcon)
         ImageView starIcon;
-
+        @BindView(R.id.trackingColorEvent)
         CardView trackingColor;
 
         ImageView deleteEvent;
@@ -197,15 +182,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
-            /*deleteEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.deleteEventIcn);
-            editEvent = (ImageView) itemView.findViewById(ru.lod_misis.ithappened.R.id.editEventIcn);  */
-            scaleValue = (TextView) itemView.findViewById(R.id.scaleValue);
-            ratingValue = (TextView) itemView.findViewById(R.id.ratingValue);
-            starIcon = (ImageView) itemView.findViewById(R.id.starIcon);
-            trackingColor = itemView.findViewById(R.id.trackingColorEvent);
-            eventDate = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventDate);
-            trackingTitle = (TextView) itemView.findViewById(ru.lod_misis.ithappened.R.id.TrackingTitle);
-            itemLL = (RelativeLayout) itemView.findViewById(ru.lod_misis.ithappened.R.id.eventRL);
+            ButterKnife.bind(this, itemView);
 
         }
     }

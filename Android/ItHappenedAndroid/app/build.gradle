@@ -91,6 +91,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.nvanbenschoten.motion:library:1.1.2'
     compile 'com.yandex.android:mobmetricalib:2.80'
+
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
     compile 'joda-time:joda-time:2.9.9'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'

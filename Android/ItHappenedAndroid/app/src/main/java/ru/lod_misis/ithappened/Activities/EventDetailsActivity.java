@@ -33,6 +33,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -54,7 +56,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     InMemoryFactRepository factRepository;
 
+    @BindView(R.id.editEventButton)
     Button editEvent;
+    @BindView(R.id.deleteEventButton)
     Button deleteEvent;
 
     UUID trackingId;
@@ -62,18 +66,28 @@ public class EventDetailsActivity extends AppCompatActivity {
     ITrackingRepository collection;
     TrackingService trackingSercvice;
 
+    @BindView(R.id.valuesCard)
     CardView valuesCard;
+    @BindView(R.id.nullsCard)
     CardView nullsCard;
 
+    @BindView(R.id.commentHint)
     ImageView commentHint;
+    @BindView(R.id.scaleHint)
     ImageView scaleHint;
 
+    @BindView(R.id.commentValue)
     TextView commentValue;
+    @BindView(R.id.scaleValue)
     TextView scaleValue;
+    @BindView(R.id.dateValue)
     TextView dateValue;
+    @BindView(R.id.dateValueNulls)
     TextView dateValueNulls;
+    @BindView(R.id.ratingValue)
     RatingBar ratingValue;
 
+    @BindView(R.id.geoposition_title)
     TextView geoposition_title;
     SupportMapFragment supportMapFragment;
     GoogleMap map;
@@ -86,28 +100,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
+        ButterKnife.bind(this);
+
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
-
-        valuesCard = findViewById(R.id.valuesCard);
-        nullsCard = findViewById(R.id.nullsCard);
-
-        commentHint = findViewById(R.id.commentHint);
-        scaleHint = findViewById(R.id.scaleHint);
-
-        commentValue = findViewById(R.id.commentValue);
-        scaleValue = findViewById(R.id.scaleValue);
-        ratingValue = findViewById(R.id.ratingValue);
-        dateValue = findViewById(R.id.dateValue);
-        dateValueNulls = findViewById(R.id.dateValueNulls);
-
-        editEvent = findViewById(R.id.editEventButton);
-        deleteEvent = findViewById(R.id.deleteEventButton);
-
         factRepository = StaticFactRepository.getInstance();
 
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        geoposition_title=findViewById(R.id.geoposition_title);
-
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
         if(sharedPreferences.getString("LastId","").isEmpty()) {
