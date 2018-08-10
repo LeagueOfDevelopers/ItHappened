@@ -83,7 +83,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.BinaryCorrelationFactApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Binary correlation\n");
-            System.out.print("Data set size: " + trackingV1_1.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 1 size: " + trackingV1_1.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 2 size: " + trackingV1_2.getEventV1Collection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");
@@ -111,7 +112,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.ScaleCorrelationFactApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Scale correlation\n");
-            System.out.print("Data set size: " + trackingV1_1.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 1 size: " + trackingV1_1.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 2 size: " + trackingV1_2.getEventV1Collection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");
@@ -139,7 +141,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.MultinomialCorrelationApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Rating correlation\n");
-            System.out.print("Data set size: " + trackingV1_1.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 1 size: " + trackingV1_1.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 2 size: " + trackingV1_2.getEventV1Collection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");

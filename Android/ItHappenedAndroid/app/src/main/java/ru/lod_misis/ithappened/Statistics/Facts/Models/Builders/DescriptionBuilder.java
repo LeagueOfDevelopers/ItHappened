@@ -251,51 +251,131 @@ public class DescriptionBuilder {
 
     private static String IntervalDescription(Interval interval) {
         String duration = "";
+        final int DAYS_TO_ADD_YEAR_LIMIT = 350;
+        final int DAYS_TO_ADD_MONTH_LIMIT = 25;
+        final int HOURS_TO_ADD_DAY_LIMIT = 20;
+        final int MINUTES_TO_ADD_HOUR = 50;
+        final int SECONDS_TO_ADD_MINUTE = 50;
+        // Собираем данные по интервалу
+        // Сколько в нем было целых дней
         int days = interval.toDuration().toStandardDays().getDays();
-        int hours = interval.toDuration().toStandardHours().getHours() - days * 24;
-        int minutes = interval.toDuration().toStandardMinutes().getMinutes() - days * 24 * 60 - hours * 60;
-        if (days > 0) {
-            int lastDigitD = days % 10;
-            // Данное условие отвечает за описание чисел с 10 до 20: например 11 дней но 21 день
-            boolean condition = days % 100 > 10 && days % 100 < 20;
-            if (lastDigitD > 4 || lastDigitD == 0 || condition) {
-                duration += String.format("%s дней ", days);
-            }
-            if (lastDigitD > 1 && lastDigitD <= 4 && !condition) {
-                duration += String.format("%s дня ", days);
-            }
-            if (lastDigitD == 1 && !condition) {
-                duration += String.format("%s день ", days);
+        // Сколько в нем было целых часов (не считая тех, что вошли в состав дней)
+        int hours = interval.toDuration().toStandardHours().getHours() % 24;
+        // Сколько в нем было целых минут (не считая тех, что вошли в состав часов)
+        int minutes = interval.toDuration().toStandardMinutes().getMinutes() % 60;
+        // Сколько в нем было целых секунд (не считая тех, что вошли в состав часов)
+        int seconds = interval.toDuration().toStandardSeconds().getSeconds() % 60;
+        // Сколько в нем было лет
+        int years_rounded = (int)Math.floor(days / 365.);
+        // Округление
+        if (days % 365 >= DAYS_TO_ADD_YEAR_LIMIT) {
+            years_rounded += 1;
+        }
+        // Сколько было месяцев
+        int months_rounded = (int)Math.floor(days / 30.);
+        // Округление
+        if (days % 30 >= DAYS_TO_ADD_MONTH_LIMIT) {
+            months_rounded += 1;
+        }
+        int days_rounded = hours >= HOURS_TO_ADD_DAY_LIMIT ? days + 1 : days;
+        int hours_rounded = minutes >= MINUTES_TO_ADD_HOUR ? hours + 1 : hours;
+        int minutes_rounded = seconds >= SECONDS_TO_ADD_MINUTE ? minutes + 1 : minutes;
+        int[] time_units = {years_rounded, months_rounded, days_rounded, hours_rounded, minutes_rounded, seconds};
+        String[][] time_uints_descr = {
+                {"лет", "года", "год"},
+                {"месяцев", "месяца", "месяц"},
+                {"дней", "дня", "день"},
+                {"часов", "часа", "час"},
+                {"минут", "минуты", "минуту"},
+                {"секунд", "секунды", "секунду"}
+        };
+        for (int i = 0; i < time_units.length; i++) {
+            if (time_units[i] > 0) {
+                int lastDigit = time_units[i] % 10;
+                boolean condition = time_units[i] % 100 > 10 && time_units[i] % 100 < 20;
+                if (lastDigit > 4 || lastDigit == 0 || condition) {
+                    return String.format("%s " + time_uints_descr[i][0], time_units[i]);
+                }
+                if (lastDigit > 1 && lastDigit <= 4 && !condition) {
+                    return String.format("%s " + time_uints_descr[i][1], time_units[i]);
+                }
+                if (lastDigit == 1 && !condition) {
+                    return String.format("%s " + time_uints_descr[i][2], time_units[i]);
+                }
             }
         }
-        if (hours > 0) {
-            int lastDigitH = hours % 10;
-            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
-            boolean condition = hours % 100 > 10 && hours % 100 < 20;
-            if (lastDigitH > 4 || lastDigitH == 0 || condition) {
-                duration += String.format("%s часов ", hours);
-            }
-            if (lastDigitH > 1 && lastDigitH <= 4 && !condition) {
-                duration += String.format("%s часа ", hours);
-            }
-            if (lastDigitH == 1 && !condition) {
-                duration += String.format("%s час ", hours);
-            }
-        }
-        if (minutes > 0) {
-            int lastDigitM = minutes % 10;
-            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
-            boolean condition = minutes % 100 > 10 && minutes % 100 < 20;
-            if (lastDigitM > 4 || lastDigitM == 0 || condition) {
-                duration += String.format("%s минут ", minutes);
-            }
-            if (lastDigitM > 1 && lastDigitM <= 4 && !condition) {
-                duration += String.format("%s минуты ", minutes);
-            }
-            if (lastDigitM == 1 && !condition) {
-                duration += String.format("%s минуту ", minutes);
-            }
-        }
+//        if (years_rounded > 0) {
+//            int lastDigitY = years_rounded % 10;
+//            // Данное условие отвечает за описание чисел с 10 до 20: например 11 дней но 21 день
+//            boolean condition = years_rounded % 100 > 10 && years_rounded % 100 < 20;
+//            if (lastDigitY > 4 || lastDigitY == 0 || condition) {
+//                return String.format("%s лет ", years_rounded);
+//            }
+//            if (lastDigitY > 1 && lastDigitY <= 4 && !condition) {
+//                return String.format("%s года ", years_rounded);
+//            }
+//            if (lastDigitY == 1 && !condition) {
+//                return String.format("%s год ", years_rounded);
+//            }
+//        }
+//        if (months_rounded > 0) {
+//
+//        }
+//        if (days_rounded > 0) {
+//            int lastDigitD = days_rounded % 10;
+//            // Данное условие отвечает за описание чисел с 10 до 20: например 11 дней но 21 день
+//            boolean condition = days_rounded % 100 > 10 && days_rounded % 100 < 20;
+//            if (lastDigitD > 4 || lastDigitD == 0 || condition) {
+//                return String.format("%s дней ", days_rounded);
+//            }
+//            if (lastDigitD > 1 && lastDigitD <= 4 && !condition) {
+//                return String.format("%s дня ", days_rounded);
+//            }
+//            if (lastDigitD == 1 && !condition) {
+//                return String.format("%s день ", days_rounded);
+//            }
+//        }
+//        if (hours_rounded > 0) {
+//            int lastDigitH = hours_rounded % 10;
+//            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
+//            boolean condition = hours_rounded % 100 > 10 && hours_rounded % 100 < 20;
+//            if (lastDigitH > 4 || lastDigitH == 0 || condition) {
+//                return String.format("%s часов ", hours_rounded);
+//            }
+//            if (lastDigitH > 1 && lastDigitH <= 4 && !condition) {
+//                return String.format("%s часа ", hours_rounded);
+//            }
+//            if (lastDigitH == 1 && !condition) {
+//                return String.format("%s час ", hours_rounded);
+//            }
+//        }
+//        if (minutes_rounded > 0) {
+//            int lastDigitM = minutes_rounded % 10;
+//            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
+//            boolean condition = minutes_rounded % 100 > 10 && minutes_rounded % 100 < 20;
+//            if (lastDigitM > 4 || lastDigitM == 0 || condition) {
+//                return String.format("%s минут ", minutes_rounded);
+//            }
+//            if (lastDigitM > 1 && lastDigitM <= 4 && !condition) {
+//                return String.format("%s минуты ", minutes_rounded);
+//            }
+//            if (lastDigitM == 1 && !condition) {
+//                return String.format("%s минуту ", minutes_rounded);
+//            }
+//        }
+//        if (seconds > 0) {
+//            int lastDigitS = seconds % 10;
+//            boolean condition = seconds % 100 > 10 && seconds % 100 < 20;
+//            if (lastDigitS > 4 || lastDigitS == 0 || condition) {
+//                return String.format("%s секунд ", seconds);
+//            }
+//            if (lastDigitS > 1 && lastDigitS <= 4 && !condition) {
+//                return String.format("%s секунды ", seconds);
+//            }
+//            if (lastDigitS == 1 && !condition) {
+//                return String.format("%s секунду ", seconds);
+//            }
+//        }
         return duration.trim();
     }
 

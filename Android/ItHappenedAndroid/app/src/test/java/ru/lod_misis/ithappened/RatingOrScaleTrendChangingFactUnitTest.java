@@ -17,7 +17,7 @@ import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
 
 public class RatingOrScaleTrendChangingFactUnitTest {
 
-    /*@Test
+    @Test
     public void RatingIsChangingFactStressTest_FactDoesNotRaiseExceptions() {
         Random gen = new Random();
         int i = 1;
@@ -59,7 +59,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
             System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
             i++;
         }
-    }*/
+    }
 
     private TrackingV1 GenerateRandomRatingTracking(Random r) {
         int eventCount = r.nextInt(10000);

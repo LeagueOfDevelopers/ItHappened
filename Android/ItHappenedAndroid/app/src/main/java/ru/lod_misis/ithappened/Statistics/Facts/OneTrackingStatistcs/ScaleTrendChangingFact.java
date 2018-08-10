@@ -59,8 +59,6 @@ public class ScaleTrendChangingFact extends Fact {
     public void calculateData() {
         CalculateTrendDelta();
         if (PointOfChange == null) return;
-        illustartion = new IllustartionModel(IllustrationType.GRAPH);
-        illustartion.setGraphData(DataSetBuilder.BuildScaleSequence(Events).ToList());
         calculatePriority();
     }
 

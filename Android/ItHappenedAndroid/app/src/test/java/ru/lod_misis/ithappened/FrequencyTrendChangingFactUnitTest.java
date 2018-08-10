@@ -30,28 +30,28 @@ public class FrequencyTrendChangingFactUnitTest {
     }
 
     // STRESS TEST
-    /*@Test
-    public void FrequencyTrendChangingFactStressTest_FactDoesnotRaiseExceptions() {
-        Random gen = new Random();
-        int i = 1;
-        DateTime time = DateTime.now();
-        while (true) {
-            TrackingV1 tracking = GenerateRandomTracking(gen);
-            Fact fact = FunctionApplicability.FrequencyTrendChangingFactApplicability(tracking);
-            if (fact != null) {
-                String descr = fact.textDescription();
-                System.out.print(descr + "\n");
-            }
-            System.out.print("Test " + i + " finished\n");
-            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
-            if (fact == null) {
-                System.out.print("Fact is null\n");
-            }
-            System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
-            time = DateTime.now();
-            i++;
-        }
-    }*/
+//    @Test
+//    public void FrequencyTrendChangingFactStressTest_FactDoesnotRaiseExceptions() {
+//        Random gen = new Random();
+//        int i = 1;
+//        DateTime time = DateTime.now();
+//        while (true) {
+//            TrackingV1 tracking = GenerateRandomTracking(gen);
+//            Fact fact = FunctionApplicability.FrequencyTrendChangingFactApplicability(tracking);
+//            if (fact != null) {
+//                String descr = fact.textDescription();
+//                System.out.print(descr + "\n");
+//            }
+//            System.out.print("Test " + i + " finished\n");
+//            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
+//            if (fact == null) {
+//                System.out.print("Fact is null\n");
+//            }
+//            System.out.print("Time: " + new Interval(time.toInstant(), DateTime.now().toInstant()).toDuration().getMillis() + "\n");
+//            time = DateTime.now();
+//            i++;
+//        }
+//    }
 
     private TrackingV1 GenerateTracking() {
         int[] dates = {1, 3, 5, 6, 8, 9, 12, 13, 14, 15, 16, 17, 18, 18, 18};
