@@ -30,6 +30,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindInt;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Activities.EventsRefActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
@@ -320,26 +323,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
                     }
                     break;
-                case GRAPH:
-                    IllustartionModel graphModel = fact.getIllustration();
-                    if (graphModel != null) {
-                        if (graphModel.getGraphData() != null) {
-                            List<Double> data = graphModel.getGraphData();
-                            lineChart.setVisibility(View.VISIBLE);
-                            List<Entry> entries = new ArrayList<>();
-                            List<String> strings = new ArrayList<>();
-                            for (int i = 0; i < data.size(); i++) {
-                                entries.add(new Entry(data.get(i).floatValue(), i));
-                                strings.add("" + i);
-                            }
-                            LineDataSet dataSet = new LineDataSet(entries, "");
-                            LineData lineData = new LineData(strings, dataSet);
-                            lineChart.setData(lineData);
-                            lineChart.setDescription("");
-                        }
-                    }
-
-                    break;
+                
                 default:
                     break;
             }
@@ -354,21 +338,22 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.textFactForTracking)
         TextView factDescription;
+        @BindView(R.id.pieFact)
         PieChart pieChart;
+        @BindView(R.id.graphFact)
         LineChart lineChart;
+        @BindView(R.id.barFact)
         BarChart barChart;
+        @BindView(R.id.eventRefBtn)
         TextView eventRef;
+        @BindView(R.id.eventHistoryRefBtn)
         TextView eventHistoryRef;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            factDescription = (TextView) itemView.findViewById(R.id.textFactForTracking);
-            lineChart = (LineChart) itemView.findViewById(R.id.graphFact);
-            pieChart = (PieChart) itemView.findViewById(R.id.pieFact);
-            barChart = (BarChart) itemView.findViewById(R.id.barFact);
-            eventRef = (TextView) itemView.findViewById(R.id.eventRefBtn);
-            eventHistoryRef = itemView.findViewById(R.id.eventHistoryRefBtn);
+            ButterKnife.bind(this, itemView);
         }
     }
 

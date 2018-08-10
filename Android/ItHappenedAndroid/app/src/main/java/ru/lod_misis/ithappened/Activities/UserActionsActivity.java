@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
 import ru.lod_misis.ithappened.ConnectionReciver;
@@ -70,6 +72,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     UserActionPresenterImpl userActionPresenter;
 
+    @BindView(R.id.nav_view)
     NavigationView navigationView;
 
     private final static String G_PLUS_SCOPE =
@@ -101,7 +104,7 @@ public class UserActionsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
-
+        ButterKnife.bind(this);
         Fabric.with(this, new Crashlytics());
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -116,8 +119,6 @@ public class UserActionsActivity extends AppCompatActivity
         toggle.syncState();
 
         connectionToken = ConnectionReciver.isConnected();
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-
         sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId",""));
 

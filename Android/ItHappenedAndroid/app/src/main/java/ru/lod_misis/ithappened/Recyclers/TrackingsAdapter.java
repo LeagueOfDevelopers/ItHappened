@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import jp.shts.android.library.TriangleLabelView;
 import ru.lod_misis.ithappened.Activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.Activities.EditTrackingActivity;
@@ -134,15 +136,16 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.TracingTitle)
         TextView trackingTitle;
+        @BindView(R.id.itemLL)
         CardView itemLL;
+        @BindView(R.id.trackingColor)
         TriangleLabelView trackingColor;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            trackingTitle = (TextView) itemView.findViewById(R.id.TracingTitle);
-            itemLL = (CardView) itemView.findViewById(R.id.itemLL);
-            trackingColor = itemView.findViewById(R.id.trackingColor);
+            ButterKnife.bind(this, itemView);
         }
     }
 

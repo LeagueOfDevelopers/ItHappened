@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -29,11 +31,14 @@ import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class EventsForTrackingActivity extends AppCompatActivity {
 
+    @BindView(R.id.eventsForTrackingRV)
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
 
+    @BindView(R.id.hintForEventsFragment)
     TextView hintForEvents;
 
+    @BindView(R.id.addNewEvent)
     FloatingActionButton addNewEvent;
     TrackingV1 thisTrackingV1;
 
@@ -48,6 +53,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_history_for_tracking);
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -62,16 +68,15 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        hintForEvents = (TextView) findViewById(R.id.hintForEventsFragment);
 
-            trackingId = UUID.fromString(intent.getStringExtra("id"));
+        trackingId = UUID.fromString(intent.getStringExtra("id"));
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
+        if (sharedPreferences.getString("LastId", "").isEmpty()) {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
             trackingsCollection = StaticInMemoryRepository.getInstance();
-        }else{
+        } else {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
             trackingsCollection = StaticInMemoryRepository.getInstance();
         }
@@ -83,33 +88,29 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         eventV1s = trackingsCollection.getEventCollection(trackingId);
 
-        for(int i = 0; i< eventV1s.size(); i++){
-            if(eventV1s.get(i).GetStatus()){
+        for (int i = 0; i < eventV1s.size(); i++) {
+            if (eventV1s.get(i).GetStatus()) {
                 eventV1s.remove(i);
             }
         }
 
         List<EventV1> visibleEventV1s = new ArrayList<>();
 
-        for(int i = 0; i< eventV1s.size(); i++){
-            if(!eventV1s.get(i).GetStatus()){
+        for (int i = 0; i < eventV1s.size(); i++) {
+            if (!eventV1s.get(i).GetStatus()) {
                 visibleEventV1s.add(eventV1s.get(i));
             }
         }
 
-        if(visibleEventV1s.size()!=0){
+        if (visibleEventV1s.size() != 0) {
             hintForEvents.setVisibility(View.INVISIBLE);
         }
 
         setTitle(thisTrackingV1.GetTrackingName());
 
-        eventsRecycler = (RecyclerView) findViewById(R.id.eventsForTrackingRV);
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
         eventsAdpt = new EventsAdapter(visibleEventV1s, this, 0);
         eventsRecycler.setAdapter(eventsAdpt);
-
-
-        addNewEvent = (FloatingActionButton) findViewById(R.id.addNewEvent);
 
         addNewEvent.setOnClickListener(new View.OnClickListener() {
             @Override

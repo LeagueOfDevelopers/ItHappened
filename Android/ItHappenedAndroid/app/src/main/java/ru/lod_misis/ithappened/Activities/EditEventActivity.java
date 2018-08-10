@@ -43,6 +43,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -74,24 +76,36 @@ public class EditEventActivity extends AppCompatActivity {
     UUID trackingId;
     UUID eventId;
 
-
+    @BindView(R.id.commentEventContainerEdit)
     LinearLayout commentContainer;
+    @BindView(R.id.scaleEventContainerEdit)
     LinearLayout scaleContainer;
+    @BindView(R.id.ratingEventContainerEdit)
     LinearLayout ratingContainer;
+    @BindView(R.id.geopositionEventContainerEdit)
     LinearLayout geopositionContainer;
 
+    @BindView(R.id.commentAccessEdit)
     TextView commentAccess;
+    @BindView(R.id.scaleAccessEdit)
     TextView scaleAccess;
+    @BindView(R.id.ratingAccessEdit)
     TextView ratingAccess;
+    @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
 
+    @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
+    @BindView(R.id.eventScaleControlEdit)
     EditText scaleControl;
+    @BindView(R.id.ratingEventControlEdit)
     RatingBar ratingControl;
+    @BindView(R.id.eventDateControlEdit)
     Button dateControl;
 
+    @BindView(R.id.scaleTypeAccessEdit)
     TextView scaleType;
-
+    @BindView(R.id.editEvent)
     Button addEvent;
 
     TrackingV1 trackingV1;
@@ -110,8 +124,9 @@ public class EditEventActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
+        ButterKnife.bind(this);
 
-        context=this;
+        context = this;
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
@@ -131,31 +146,14 @@ public class EditEventActivity extends AppCompatActivity {
         eventId = UUID.fromString(getIntent().getStringExtra("eventId"));
 
 
-        commentContainer = (LinearLayout) findViewById(R.id.commentEventContainerEdit);
-        ratingContainer = (LinearLayout) findViewById(R.id.ratingEventContainerEdit);
-        scaleContainer = (LinearLayout) findViewById(R.id.scaleEventContainerEdit);
-        geopositionContainer = (LinearLayout) findViewById(R.id.geopositionEventContainerEdit);
-
-        commentAccess = (TextView) findViewById(R.id.commentAccessEdit);
-        scaleAccess = (TextView) findViewById(R.id.scaleAccessEdit);
-        ratingAccess = (TextView) findViewById(R.id.ratingAccessEdit);
-        geopositionAccess = (TextView) findViewById(R.id.geopositionAccess);
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-        commentControl = (EditText) findViewById(R.id.eventCommentControlEdit);
-        scaleControl = (EditText) findViewById(R.id.eventScaleControlEdit);
-        ratingControl = (RatingBar) findViewById(R.id.ratingEventControlEdit);
-        dateControl = (Button) findViewById(R.id.eventDateControlEdit);
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
 
-        scaleType = (TextView) findViewById(R.id.scaleTypeAccessEdit);
-
-        addEvent = (Button) findViewById(R.id.editEvent);
 
         trackingV1 = trackingCollection.GetTracking(trackingId);
 
@@ -208,7 +206,7 @@ public class EditEventActivity extends AppCompatActivity {
             commentControl.setText(eventV1.GetComment());
         }
         if ((trackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required) ) {
+                || trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required)) {
             mapInit();
         }
 
@@ -415,8 +413,8 @@ public class EditEventActivity extends AppCompatActivity {
                         return;
                     }
                     Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    marker= map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())));
-                    moveCamera(location.getLatitude(),location.getLongitude());
+                    marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+                    moveCamera(location.getLatitude(), location.getLongitude());
 
                 }
                 marker.setDraggable(true);
@@ -435,26 +433,27 @@ public class EditEventActivity extends AppCompatActivity {
 
                     @Override
                     public void onMarkerDragEnd(Marker marker) {
-                        latitude=marker.getPosition().latitude;
-                        longitude=marker.getPosition().longitude;
+                        latitude = marker.getPosition().latitude;
+                        longitude = marker.getPosition().longitude;
                     }
                 });
                 map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
                         marker.setPosition(latLng);
-                        latitude=latLng.latitude;
-                        longitude=latLng.longitude;
+                        latitude = latLng.latitude;
+                        longitude = latLng.longitude;
                     }
                 });
             }
         });
     }
-    private void moveCamera(Double latitude,Double longitude){
+
+    private void moveCamera(Double latitude, Double longitude) {
         CameraUpdate cameraUpdate;
-        cameraUpdate= CameraUpdateFactory.newCameraPosition(
+        cameraUpdate = CameraUpdateFactory.newCameraPosition(
                 new CameraPosition.Builder()
-                        .target(new LatLng(latitude,longitude))
+                        .target(new LatLng(latitude, longitude))
                         .zoom(5)
                         .build()
         );

@@ -32,6 +32,8 @@ import com.yandex.metrica.YandexMetrica;
 import java.security.Permission;
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
@@ -50,55 +52,89 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     ITrackingRepository trackingRepository;
     InMemoryFactRepository factRepository;
 
+    @BindView(R.id.editTitleOfTracking)
     EditText trackingName;
 
+    @BindView(R.id.ratingTextEnabled)
     TextView ratingEnabled;
+    @BindView(R.id.commentTextEnabled)
     TextView commentEnabled;
+    @BindView(R.id.scaleTextEnabled)
     TextView scaleEnabled;
+    @BindView(R.id.geopositionTextEnabled)
     TextView geopositionEnabled;
 
+    @BindView(R.id.colorPicker)
     CardView colorPickerButton;
+    @BindView(R.id.colorText)
     TextView colorPickerText;
 
+    @BindView(R.id.ratingBackColorDont)
     LinearLayout ratingDont;
+    @BindView(R.id.ratingBackColorCheck)
     LinearLayout ratingOptional;
+    @BindView(R.id.ratingBackColorDoubleCheck)
     LinearLayout ratingRequired;
 
+    @BindView(R.id.commentBackColorDont)
     LinearLayout commentDont;
+    @BindView(R.id.commentBackColorCheck)
     LinearLayout commentOptional;
+    @BindView(R.id.commentBackColorDoubleCheck)
     LinearLayout commentRequired;
 
+    @BindView(R.id.scaleBackColorDont)
     LinearLayout scaleDont;
+    @BindView(R.id.scaleBackColorCheck)
     LinearLayout scaleOptional;
+    @BindView(R.id.scaleBackColorDoubleCheck)
     LinearLayout scaleRequired;
 
+    @BindView(R.id.geopositionBackColorDont)
     LinearLayout geopositionDont;
+    @BindView(R.id.geopositionBackColorCheck)
     LinearLayout geopositionOptional;
+    @BindView(R.id.geopositionBackColorDoubleCheck)
     LinearLayout geopositionRequired;
 
+    @BindView(R.id.ratingBackImageDont)
     ImageView ratingDontImage;
+    @BindView(R.id.ratingBackImageCheck)
     ImageView ratingOptionalImage;
+    @BindView(R.id.ratingBackImageDoubleCheck)
     ImageView ratingRequiredImage;
 
+    @BindView(R.id.commentBackImageDont)
     ImageView commentDontImage;
+    @BindView(R.id.commentBackImageCheck)
     ImageView commentOptionalImage;
+    @BindView(R.id.commentBackImageDoubleCheck)
     ImageView commentRequiredImage;
 
+    @BindView(R.id.scaleBackImageDont)
     ImageView scaleDontImage;
+    @BindView(R.id.scaleBackImageCheck)
     ImageView scaleOptionalImage;
+    @BindView(R.id.scaleBackImageDoubleCheck)
     ImageView scaleRequiredImage;
 
+    @BindView(R.id.geopositionBackImageDont)
     ImageView geopositionDontImage;
+    @BindView(R.id.geopositionBackImageCheck)
     ImageView geopositionOptionalImage;
+    @BindView(R.id.geopositionBackImageDoubleCheck)
     ImageView geopositionRequiredImage;
 
     String trackingColor;
 
-
+    @BindView(R.id.scaleTypeContainer)
     CardView visibilityScaleType;
+    @BindView(R.id.scaleTypeHint)
     TextView visbilityScaleTypeHint;
+    @BindView(R.id.editTypeOfScale)
     EditText scaleType;
 
+    @BindView(R.id.addTrack)
     Button addTrackingBtn;
 
     int stateForScale;
@@ -106,19 +142,19 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     int stateForRating;
     int stateForGeoposition;
 
-    TrackingCustomization geoposition=TrackingCustomization.None;
+    TrackingCustomization geoposition = TrackingCustomization.None;
 
     Context context;
     Activity activity;
-    Boolean permissionForGPS=false;
+    Boolean permissionForGPS = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
-
-        context=this;
-        activity=this;
+        ButterKnife.bind(this);
+        context = this;
+        activity = this;
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -127,67 +163,19 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_add_tracking));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
+        if (sharedPreferences.getString("LastId", "").isEmpty()) {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
             trackingRepository = StaticInMemoryRepository.getInstance();
-        }else{
+        } else {
             StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
             trackingRepository = StaticInMemoryRepository.getInstance();
         }
 
-        addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
-
-        trackingName = (EditText) findViewById(R.id.editTitleOfTracking);
-
         stateForScale = 0;
         stateForText = 0;
         stateForRating = 0;
-        stateForGeoposition=0;
+        stateForGeoposition = 0;
 
-        ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabled);
-        commentEnabled = (TextView) findViewById(R.id.commentTextEnabled);
-        scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabled);
-        geopositionEnabled = (TextView) findViewById(R.id.geopositionTextEnabled);
-
-        ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDont);
-        ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
-        ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheck);
-
-        colorPickerButton = findViewById(R.id.colorPicker);
-
-        commentDont = (LinearLayout) findViewById(R.id.commentBackColorDont);
-        commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheck);
-        commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheck);
-
-        scaleDont = (LinearLayout) findViewById(R.id.scaleBackColorDont);
-        scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheck);
-        scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheck);
-
-        geopositionDont = (LinearLayout) findViewById(R.id.geopositionBackColorDont);
-        geopositionOptional = (LinearLayout) findViewById(R.id.geopositionBackColorCheck);
-        geopositionRequired= (LinearLayout) findViewById(R.id.geopositionBackColorDoubleCheck);
-
-        ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDont);
-        ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheck);
-        ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheck);
-
-        commentDontImage = (ImageView) findViewById(R.id.commentBackImageDont);
-        commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheck);
-        commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheck);
-
-        scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
-        scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
-        scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
-
-        geopositionDontImage = (ImageView) findViewById(R.id.geopositionBackImageDont);
-        geopositionOptionalImage = (ImageView) findViewById(R.id.geopositionBackImageCheck);
-        geopositionRequiredImage = (ImageView) findViewById(R.id.geopositionBackImageDoubleCheck);
-
-        colorPickerText = findViewById(R.id.colorText);
-
-        visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
-        visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
-        scaleType = (EditText) findViewById(R.id.editTypeOfScale);
 
         visbilityScaleTypeHint.setVisibility(View.GONE);
         visibilityScaleType.setVisibility(View.GONE);
@@ -238,7 +226,6 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         });
 
 
-
         commentDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -281,7 +268,6 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 stateForText = 2;
             }
         });
-
 
 
         scaleDont.setOnClickListener(new View.OnClickListener() {
@@ -348,7 +334,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
-                geoposition=TrackingCustomization.None;
+                geoposition = TrackingCustomization.None;
             }
         });
 
@@ -362,7 +348,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 geopositionOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
-                geoposition=TrackingCustomization.Optional;
+                geoposition = TrackingCustomization.Optional;
             }
         });
 
@@ -377,7 +363,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 geopositionRequiredImage.setImageResource(R.drawable.active_double_check);
                 geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionRequired.setBackgroundColor(getResources().getColor(R.color.required));
-                geoposition=TrackingCustomization.Required;
+                geoposition = TrackingCustomization.Required;
             }
         });
 
@@ -388,10 +374,10 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(boolean b, int i) {
-                        if(b){
-                            Toast.makeText(getApplicationContext(), Integer.toHexString(i)+"", Toast.LENGTH_SHORT).show();
+                        if (b) {
+                            Toast.makeText(getApplicationContext(), Integer.toHexString(i) + "", Toast.LENGTH_SHORT).show();
                             colorPickerDialogBuilder.setSelectedColor(i);
-                            colorPickerText.setTextColor(i  );
+                            colorPickerText.setTextColor(i);
                         }
                     }
                 });
@@ -408,10 +394,10 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(geoposition== TrackingCustomization.Optional||geoposition==TrackingCustomization.Required){
+                if (geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required) {
                     if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
-                    }else{
+                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    } else {
                         addNewTracking();
                     }
 
@@ -449,19 +435,20 @@ public class AddNewTrackingActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case 1:{
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED&&
-                        grantResults[1]==PackageManager.PERMISSION_GRANTED ){
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     addNewTracking();
                 }
             }
         }
     }
-    private void addNewTracking(){
-        if(trackingName.getText().toString().isEmpty()||trackingName.getText().toString().trim().isEmpty()){
+
+    private void addNewTracking() {
+        if (trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty()) {
             Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
 
             trackingColor = String.valueOf(colorPickerText.getCurrentTextColor());
             String trackingTitle = trackingName.getText().toString().trim();
@@ -472,7 +459,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
 
             String scaleNumb = null;
 
-            switch (stateForRating){
+            switch (stateForRating) {
                 case 0:
                     rating = TrackingCustomization.None;
                     break;
@@ -487,7 +474,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             }
 
 
-            switch (stateForText){
+            switch (stateForText) {
                 case 0:
                     comment = TrackingCustomization.None;
                     break;
@@ -501,7 +488,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     break;
             }
 
-            switch (stateForScale){
+            switch (stateForScale) {
                 case 0:
                     scale = TrackingCustomization.None;
                     break;
@@ -515,15 +502,15 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                     break;
             }
 
-            if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
+            if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
                     (scaleType.getText().toString().isEmpty()
-                            ||scaleType.getText().toString().trim().isEmpty())){
+                            || scaleType.getText().toString().trim().isEmpty())) {
                 Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
-            }else{
-                if(scale != TrackingCustomization.None){
+            } else {
+                if (scale != TrackingCustomization.None) {
                     scaleNumb = scaleType.getText().toString().trim();
                 }
-                TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment,geoposition, scaleNumb, trackingColor);
+                TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, geoposition, scaleNumb, trackingColor);
                 trackingRepository.AddNewTracking(newTrackingV1);
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
                 Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
