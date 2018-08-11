@@ -25,28 +25,28 @@ namespace ItHappenedDomain.Application
         new DateTimeOffset(2010, 01, 01, 12, 30, 30, TimeSpan.Zero), "Optional",
         "Optional", "Optional",
         new DateTimeOffset(2010, 01, 01, 12, 30, 30, TimeSpan.Zero),
-        false, new List<Event>(), "event", "");
+        false, new List<Event>(), "event", "", "Optional");
 
       var secondIncreasingTracking = new Tracking("Second increasing tracking",
         secondIncreasingTrackingGuid,
         new DateTimeOffset(2010, 01, 01, 12, 30, 31, TimeSpan.Zero), "Optional",
         "Optional", "Optional",
         new DateTimeOffset(2010, 01, 01, 12, 30, 31, TimeSpan.Zero),
-        false, new List<Event>(), "event", "");
+        false, new List<Event>(), "event", "", "Optional");
 
       var firstDecreasingTracking = new Tracking("First decreasing tracking",
         firstDecreasingTrackingGuid,
         new DateTimeOffset(2020, 01, 01, 12, 30, 30, TimeSpan.Zero), "Optional",
         "Optional", "Optional",
         new DateTimeOffset(2020, 01, 01, 12, 30, 30, TimeSpan.Zero),
-        false, new List<Event>(), "event", "");
+        false, new List<Event>(), "event", "", "Optional");
 
       var secondDecreasingTracking = new Tracking("Second decreasing tracking",
         secondDecreasingTrackingGuid,
         new DateTimeOffset(2020, 01, 01, 12, 30, 31, TimeSpan.Zero), "Optional",
         "Optional", "Optional",
         new DateTimeOffset(2020, 01, 01, 12, 30, 31, TimeSpan.Zero),
-        false, new List<Event>(), "event", "");
+        false, new List<Event>(), "event", "", "Optional");
 
       for (int i = 0; i < 40; i++)
       {
@@ -101,17 +101,17 @@ namespace ItHappenedDomain.Application
         }
 
         var firstIncreasingEvent = new Event(Guid.NewGuid().ToString(), firstIncreasingTrackingGuid,
-          firstDate, i*10, new Rating(increasingRating), "", firstDate, false);
+          firstDate, i*10, new Rating(increasingRating), "", firstDate, false, 0, 0);
         var secondIncreasingEvent = new Event(Guid.NewGuid().ToString(), secondIncreasingTrackingGuid,
-          firstDate, i * 10, new Rating(increasingRating), "", firstDate, false);
+          firstDate, i * 10, new Rating(increasingRating), "", firstDate, false, 0, 0);
 
         firstIncreasingTracking.EventCollection.Add(firstIncreasingEvent);
         secondIncreasingTracking.EventCollection.Add(firstIncreasingEvent);
 
         var firstDecreasingEvent = new Event(Guid.NewGuid().ToString(), firstDecreasingTrackingGuid,
-          secondDate, 400 - i * 10, new Rating(decreasingRating), "", secondDate, false);
+          secondDate, 400 - i * 10, new Rating(decreasingRating), "", secondDate, false, 0, 0);
         var secondDecreasingEvent = new Event(Guid.NewGuid().ToString(), secondDecreasingTrackingGuid,
-          secondDate, 400 - i * 10, new Rating(decreasingRating), "", secondDate, false);
+          secondDate, 400 - i * 10, new Rating(decreasingRating), "", secondDate, false, 0, 0);
 
         firstDecreasingTracking.EventCollection.Add(firstDecreasingEvent);
         secondDecreasingTracking.EventCollection.Add(secondDecreasingEvent);

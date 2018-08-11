@@ -17,7 +17,8 @@ namespace ItHappenedDomain.Domain
       DateTimeOffset dateOfChange, bool isDeleted, 
       List<Event> eventCollection,
       string scaleName,
-      string color)
+      string color,
+      string geoposition)
     {
       this.scaleName = scaleName;
       this.trackingName = trackingName;
@@ -30,6 +31,7 @@ namespace ItHappenedDomain.Domain
       this.isDeleted = isDeleted;
       this.EventCollection = eventCollection;
       this.color = color ?? "-5658199";
+      this.geoposition = geoposition ?? "None";
     }
 
     public string trackingName { set; get; }
@@ -49,5 +51,10 @@ namespace ItHappenedDomain.Domain
       get => color ?? "-5658199";
       set => color = value ?? "-5658199";
     }
+
+    private string geoposition;
+    public string Geoposition {
+      get { return geoposition ?? "None"; }
+      set { geoposition = value ?? "None"; } }
   }
 }
