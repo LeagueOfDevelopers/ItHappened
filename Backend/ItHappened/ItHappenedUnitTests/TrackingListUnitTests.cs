@@ -23,16 +23,16 @@ namespace ItHappenedUnitTests
       var event2DateOfChange = new DateTimeOffset();
 
       Event event1 = new Event(eventId1, trackingId, event1DateOfChange,
-        1, new Rating(1), "", event1DateOfChange, false);
+        1, new Rating(1), "", event1DateOfChange, false, 0, 0);
       Event event2 = new Event(eventId2, trackingId, event2DateOfChange,
-        1, new Rating(1), "", event2DateOfChange, false);
+        1, new Rating(1), "", event2DateOfChange, false, 0, 0);
       List<Event> eventCollection = new List<Event>();
       eventCollection.Add(event1);
       eventCollection.Add(event2);
 
       Tracking tracking = new Tracking(trackingName, trackingId, event1DateOfChange,
         "Optional", "Optional", "Optional",
-        event1DateOfChange, false, eventCollection, "", null);
+        event1DateOfChange, false, eventCollection, "", null, "Optional");
 
       TrackingCollection trackingCollection = new TrackingCollection();
 
@@ -55,16 +55,16 @@ namespace ItHappenedUnitTests
       var event2DateOfChange = new DateTimeOffset();
 
       Event event1 = new Event(eventId1, trackingId, event1DateOfChange,
-        1, new Rating(1), "", event1DateOfChange, false);
+        1, new Rating(1), "", event1DateOfChange, false, 0, 0);
       Event event2 = new Event(eventId2, trackingId, event2DateOfChange,
-        1, new Rating(1), "", event2DateOfChange, false);
+        1, new Rating(1), "", event2DateOfChange, false, 0, 0);
       List<Event> eventCollection = new List<Event>();
       eventCollection.Add(event1);
       eventCollection.Add(event2);
 
       Tracking tracking = new Tracking(trackingName, trackingId, event1DateOfChange,
         "Optional", "Optional", "Optional",
-        event1DateOfChange, false, eventCollection, "", null);
+        event1DateOfChange, false, eventCollection, "", null, "Optional");
 
       TrackingCollection trackingCollection = new TrackingCollection();
 

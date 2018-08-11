@@ -14,11 +14,26 @@ namespace ItHappenedDomain.Domain
     public string comment { set; get; }
     public DateTimeOffset dateOfChange { set; get; }
     public bool isDeleted { set; get; }
+    private double longitude;
+    private double lotitude;
+
+    public double Lotitude
+    {
+      get => lotitude;
+      set => lotitude = value;
+    }
+    public double Longitude
+    {
+      get => longitude;
+      set => longitude = value;
+    }
+    
 
     public Event(string eventId, string trackingId,
       DateTimeOffset eventDate, 
       double? scale, Rating rating, string comment, 
-      DateTimeOffset dateOfChange, bool isDeleted)
+      DateTimeOffset dateOfChange, bool isDeleted,
+      double longitude, double lotitude)
     {
       this.eventId = eventId;
       this.trackingId = trackingId;
@@ -28,6 +43,8 @@ namespace ItHappenedDomain.Domain
       this.comment = comment;
       this.dateOfChange = dateOfChange;
       this.isDeleted = isDeleted;
+      this.lotitude = lotitude;
+      this.longitude = longitude;
     }
   }
 }
