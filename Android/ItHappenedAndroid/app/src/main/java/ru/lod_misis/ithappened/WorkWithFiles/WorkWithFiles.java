@@ -30,6 +30,8 @@ public class WorkWithFiles implements IWorkWithFIles {
     final int TYPE_VIDEO = 2;
     Application application;
     Context context;
+    String uriPhotoFromCamera;
+
     public WorkWithFiles(Application application, Context context){
         this.application=application;
         this.context=context;
@@ -74,7 +76,12 @@ public class WorkWithFiles implements IWorkWithFIles {
                 break;
             }
         }
+        uriPhotoFromCamera=FileProvider.getUriForFile(context, "ru.lod_misis.ithappened.fileprovider", file).toString();
         return FileProvider.getUriForFile(context, "ru.lod_misis.ithappened.fileprovider", file);
+    }
+    @Override
+    public String getUriPhotoFromCamera() {
+        return uriPhotoFromCamera;
     }
 
 }

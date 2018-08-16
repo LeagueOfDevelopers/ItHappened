@@ -19,6 +19,7 @@ import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 public class ChoicePhotoDialog extends Dialog {
     Button gallery;
     Button camera;
+    String uriPhotoFromCamera;
     IWorkWithFIles workWithFIles;
     Activity activity;
     Context context;
@@ -27,6 +28,7 @@ public class ChoicePhotoDialog extends Dialog {
         this.activity=activity;
         this.context=context;
         this.workWithFIles = workWithFIles;
+
     }
 
     @Override
@@ -57,6 +59,7 @@ public class ChoicePhotoDialog extends Dialog {
     private void pickCamera(){
 
         Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        uriPhotoFromCamera=workWithFIles.generateFileUri(1).toString();
         intent.putExtra(MediaStore.EXTRA_OUTPUT,workWithFIles.generateFileUri(1));
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         activity.startActivityForResult(intent,1);
@@ -69,5 +72,7 @@ public class ChoicePhotoDialog extends Dialog {
         }
     }
 
-
+    public String getUriPhotoFromCamera() {
+        return uriPhotoFromCamera;
+    }
 }

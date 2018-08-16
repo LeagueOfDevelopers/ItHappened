@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -526,8 +527,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             return;
        }
         if(requestCode==1){
-            Picasso.get().load(data.getData()).into(photo);
-            photoPath =workWithFIles.saveBitmap(data.getData()).toString();
+
+            Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
+            photoPath =workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
             flagPhoto=true;
             dialog.cancel();
         }

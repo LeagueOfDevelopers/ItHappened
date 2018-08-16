@@ -11,4 +11,5 @@ public interface IWorkWithFIles {
     String saveBitmap(Uri uri);
     Bitmap loadImage(String path);
     Uri generateFileUri(int type);
+    String getUriPhotoFromCamera();
 }
