@@ -58,6 +58,7 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
+import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -131,13 +132,7 @@ public class EditEventActivity extends AppCompatActivity {
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        }
+        trackingCollection=UserDataUtils.setUserDataSet(sharedPreferences);
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
 
         factRepository = StaticFactRepository.getInstance();

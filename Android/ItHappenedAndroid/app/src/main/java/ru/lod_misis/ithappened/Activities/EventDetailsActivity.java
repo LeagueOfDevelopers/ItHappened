@@ -47,6 +47,7 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
+import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -108,13 +109,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            collection = StaticInMemoryRepository.getInstance();
-        }else{
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            collection = StaticInMemoryRepository.getInstance();
-        }
+        collection= UserDataUtils.setUserDataSet(sharedPreferences);
         trackingSercvice = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
 
         Intent intent = getIntent();
