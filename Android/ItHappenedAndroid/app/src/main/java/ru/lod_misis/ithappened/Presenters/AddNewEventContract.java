@@ -7,7 +7,7 @@ import java.util.UUID;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 
-public interface AddNewEventCaontract {
+public interface AddNewEventContract {
     interface AddNewEventView{
         void addNewEvent();
         void requestPermissionForGeoposition();

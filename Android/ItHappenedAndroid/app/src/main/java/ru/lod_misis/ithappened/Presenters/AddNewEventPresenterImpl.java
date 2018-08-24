@@ -12,8 +12,8 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Utils.UserDataUtils;
 
-public class AddNewEventPresenterImpl implements AddNewEventCaontract.AddNewEventPresenter {
-    AddNewEventCaontract.AddNewEventView addNewEventView;
+public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEventPresenter {
+    AddNewEventContract.AddNewEventView addNewEventView;
     ITrackingRepository trackingRepository;
     FactCalculator factCalculator;
     TrackingService trackingService;
@@ -40,7 +40,7 @@ public class AddNewEventPresenterImpl implements AddNewEventCaontract.AddNewEven
     }
 
     @Override
-    public void attachView(AddNewEventCaontract.AddNewEventView addNewEventView) {
+    public void attachView(AddNewEventContract.AddNewEventView addNewEventView) {
         this.addNewEventView=addNewEventView;
     }
 

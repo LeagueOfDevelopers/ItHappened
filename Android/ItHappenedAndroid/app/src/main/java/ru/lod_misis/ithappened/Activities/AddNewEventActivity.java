@@ -43,7 +43,6 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -59,19 +58,11 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
-import ru.lod_misis.ithappened.Presenters.AddNewEventCaontract;
+import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
 import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.FactCalculator;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
-public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,AddNewEventCaontract.AddNewEventView {
+public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,AddNewEventContract.AddNewEventView {
 
     TrackingService trackingService;
     InMemoryFactRepository factRepository;
@@ -145,7 +136,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Context context;
     Activity activity;
 
-    AddNewEventCaontract.AddNewEventPresenter addNeEventPresenter;
+    AddNewEventContract.AddNewEventPresenter addNeEventPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
