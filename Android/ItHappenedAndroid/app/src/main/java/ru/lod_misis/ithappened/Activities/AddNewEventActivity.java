@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -59,15 +60,18 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Presenters.AddNewEventCaontract;
+import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,AddNewEventCaontract.AddNewEventView {
 
     TrackingService trackingService;
     InMemoryFactRepository factRepository;
@@ -139,84 +143,26 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     TrackingV1 trackingV1;
 
     Context context;
+    Activity activity;
+
+    AddNewEventCaontract.AddNewEventPresenter addNeEventPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
         ButterKnife.bind(this);
-        context = this;
         YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingCollection=UserDataUtils.setUserDataSet(sharedPreferences);
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
+        addNeEventPresenter=new AddNewEventPresenterImpl(sharedPreferences);
+        addNeEventPresenter.attachView(this);
+        addNeEventPresenter.init(this);
+    }
 
-        factRepository = StaticFactRepository.getInstance();
-        eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
-
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        initMap();
-
-        KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
-        scaleControl.setKeyListener(keyListener);
-
-        scaleContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                scaleControl.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(scaleControl, InputMethodManager.SHOW_IMPLICIT);
-            }
-        });
-
-        trackingV1 = trackingCollection.GetTracking(trackingId);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(trackingV1.GetTrackingName());
-
-        commentState = calculateState(trackingV1.GetCommentCustomization());
-        ratingState = calculateState(trackingV1.GetRatingCustomization());
-        scaleState = calculateState(trackingV1.GetScaleCustomization());
-        geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
-
-
-        calculateUX(commentContainer, commentAccess, commentState);
-        calculateUX(ratingContainer, ratingAccess, ratingState);
-        calculateUX(scaleContainer, scaleAccess, scaleState);
-        calculateUX(geopositionContainer, geopositionAccess, geopositionState);
-
-        if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
-            scaleType.setText(trackingV1.getScaleName());
-        }
-
-        Locale loc = new Locale("ru");
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-        format.setTimeZone(TimeZone.getDefault());
-
-        dateControl.setText(format.format(eventDate).toString());
-
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-
-        datePickerDialog = new DatePickerDialog(
-                this,
-                this,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-
-        timePickerDialog = new TimePickerDialog(
-                this,
-                this,
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                true);
-
+    @Override
+    protected void onStart() {
+        super.onStart();
         dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,118 +175,18 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean commentFlag = true;
-                boolean scaleFlag = true;
-                boolean ratingFlag = true;
-                Boolean geopositionFlag = true;
-
-                if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
-                    commentFlag = false;
-                }
-
-                if (ratingState == 2 && ratingControl.getRating() == 0) {
-                    ratingFlag = false;
-                }
-
-                if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
-                    scaleFlag = false;
-                }
-                if (geopositionState == 2 && (latitude == null || longitude == null)) {
-                    geopositionFlag = false;
-                }
-
-
-                String comment = null;
-                Double scale = null;
-                Rating rating = null;
-
-
-                if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
-                    if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
-                        comment = commentControl.getText().toString().trim();
-                    }
-                    if (!(ratingControl.getRating() == 0)) {
-                        rating = new Rating((int) (ratingControl.getRating() * 2));
-                    }
-                    if (!scaleControl.getText().toString().isEmpty()) {
-                        try {
-                            scale = Double.parseDouble(scaleControl.getText().toString().trim());
-                            trackingService.AddEvent(trackingId,
-                                    new EventV1(UUID.randomUUID(),
-                                            trackingId,
-                                            eventDate,
-                                            scale,
-                                            rating,
-                                            comment,
-                                            latitude,
-                                            longitude
-                                    ));
-                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            YandexMetrica.reportEvent("Пользователь добавил событие");
-                            Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        if (timeSetFlag) {
-                            Locale locale = new Locale("ru");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                            try {
-                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        trackingService.AddEvent(trackingId, new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude));
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
-                        Toast.makeText(getApplicationContext(), "Событие добавлено", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
-                }
+                addNeEventPresenter.addNewEvent();
             }
         });
-
+        scaleContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scaleControl.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(scaleControl, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
     }
-
 
     @Override
     protected void onPause() {
@@ -414,6 +260,21 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    createAndInitMap();
+                }else{
+                    onBackPressed();
+                }
+            }
+        }
+    }
+
     private void initMap() {
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -423,7 +284,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 CameraUpdate cameraUpdate;
                 map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    marker.setPosition(new LatLng(0, 0));
+                    addNeEventPresenter.requestPermission(1);
                 } else {
                     Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     Log.d("test position", location.getLongitude() + "");
@@ -435,37 +296,217 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                                     .build()
                     );
                     map.moveCamera(cameraUpdate);
+                    marker.setDraggable(true);
+                    map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                        @Override
+                        public void onMarkerDragStart(Marker marker) {
+
+                        }
+
+                        @Override
+                        public void onMarkerDrag(Marker marker) {
+
+                        }
+
+                        @Override
+                        public void onMarkerDragEnd(Marker marker) {
+                            latitude = marker.getPosition().latitude;
+                            longitude = marker.getPosition().longitude;
+                        }
+                    });
+                    map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(LatLng latLng) {
+                            latitude = latLng.latitude;
+                            longitude = latLng.longitude;
+                            marker.setPosition(latLng);
+
+                        }
+                    });
                 }
-                marker.setDraggable(true);
-                map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart(Marker marker) {
 
-                    }
-
-                    @Override
-                    public void onMarkerDrag(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDragEnd(Marker marker) {
-                        latitude = marker.getPosition().latitude;
-                        longitude = marker.getPosition().longitude;
-                    }
-                });
-                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        latitude = latLng.latitude;
-                        longitude = latLng.longitude;
-                        marker.setPosition(latLng);
-
-                    }
-                });
             }
         });
     }
+
+    @Override
+    public void addNewEvent() {
+        addEvent();
+    }
+
+    @Override
+    public void requestPermissionForGeoposition() {
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    }
+
+    @Override
+    public void requestPermissionForCamera() {
+
+    }
+
+    @Override
+    public void startConfigurationView() {
+
+        calculateUx();
+
+        createAndInitMap();
+        initToolbar();
+
+        if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
+            scaleType.setText(trackingV1.getScaleName());
+        }
+
+        initDate();
+
+        initCalenarDialog();
+    }
+
+    @Override
+    public void startedConfiguration(UUID trackingId,TrackingV1 trackingV1) {
+
+        eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
+
+        KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
+        scaleControl.setKeyListener(keyListener);
+
+        this.trackingV1=trackingV1;
+        this.trackingId=trackingId;
+
+        context = this;
+        activity=this;
+
+        calculateState();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void finishAddEventActivity() {
+        finish();
+        addNeEventPresenter.detachView();
+    }
+
+    private void addEvent(){
+        boolean commentFlag = true;
+        boolean scaleFlag = true;
+        boolean ratingFlag = true;
+        Boolean geopositionFlag = true;
+
+        if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
+            commentFlag = false;
+        }
+
+        if (ratingState == 2 && ratingControl.getRating() == 0) {
+            ratingFlag = false;
+        }
+
+        if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
+            scaleFlag = false;
+        }
+        if (geopositionState == 2 && (latitude == null || longitude == null)) {
+            geopositionFlag = false;
+        }
+
+
+        String comment = null;
+        Double scale = null;
+        Rating rating = null;
+
+
+        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
+            if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
+                comment = commentControl.getText().toString().trim();
+            }
+            if (!(ratingControl.getRating() == 0)) {
+                rating = new Rating((int) (ratingControl.getRating() * 2));
+            }
+            if (!scaleControl.getText().toString().isEmpty()) {
+                try {
+                    scale = Double.parseDouble(scaleControl.getText().toString().trim());
+                    addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude),trackingId);
+                    YandexMetrica.reportEvent("Пользователь добавил событие");
+
+
+                } catch (Exception e) {
+                    showMessage("Введите число");
+                }
+            } else {
+                if (timeSetFlag) {
+                    Locale locale = new Locale("ru");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                    simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                    try {
+                        eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude),trackingId);
+                YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
+
+
+            }
+        } else {
+            showMessage("Заполните поля с *");
+        }
+    }
+    private void calculateState(){
+        commentState = calculateState(trackingV1.GetCommentCustomization());
+        ratingState = calculateState(trackingV1.GetRatingCustomization());
+        scaleState = calculateState(trackingV1.GetScaleCustomization());
+        geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
+    }
+    private void calculateUx(){
+        calculateUX(commentContainer, commentAccess, commentState);
+        calculateUX(ratingContainer, ratingAccess, ratingState);
+        calculateUX(scaleContainer, scaleAccess, scaleState);
+        calculateUX(geopositionContainer, geopositionAccess, geopositionState);
+    }
+
+    private void initToolbar(){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(trackingV1.GetTrackingName());
+    }
+
+    private void initDate(){
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getDefault());
+
+        dateControl.setText(format.format(eventDate).toString());
+    }
+
+    private void initCalenarDialog(){
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+
+        datePickerDialog = new DatePickerDialog(
+                this,
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        timePickerDialog = new TimePickerDialog(
+                this,
+                this,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true);
+    }
+    private void createAndInitMap(){
+        if (geopositionState == 1 || geopositionState == 2){
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        initMap();
+        }
+    }
+
+
 }
 
 
