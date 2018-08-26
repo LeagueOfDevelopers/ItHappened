@@ -40,17 +40,23 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Presenters.CreateTrackingContract;
+import ru.lod_misis.ithappened.Presenters.CreateTrackingPresenter;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class AddNewTrackingActivity extends AppCompatActivity {
+public class AddNewTrackingActivity extends AppCompatActivity  implements CreateTrackingContract.CreateTrackingView{
 
     ITrackingRepository trackingRepository;
     InMemoryFactRepository factRepository;
+    CreateTrackingContract.CreateTrackingPresenter createTrackingPresenter;
+    FactCalculator factCalculator;
 
     @BindView(R.id.editTitleOfTracking)
     EditText trackingName;
@@ -153,34 +159,17 @@ public class AddNewTrackingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
-        context = this;
-        activity = this;
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Отслеживать");
-        factRepository = StaticFactRepository.getInstance();
-        YandexMetrica.reportEvent(getString(R.string.metrica_enter_add_tracking));
-
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
+        createTrackingPresenter=new CreateTrackingPresenter(sharedPreferences);
+        createTrackingPresenter.attachView(this);
+        createTrackingPresenter.init();
 
-        stateForScale = 0;
-        stateForText = 0;
-        stateForRating = 0;
-        stateForGeoposition = 0;
+    }
 
-
-        visbilityScaleTypeHint.setVisibility(View.GONE);
-        visibilityScaleType.setVisibility(View.GONE);
-        scaleType.setVisibility(View.GONE);
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_add_tracking));
 
         ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -396,17 +385,15 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required) {
                     if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        createTrackingPresenter.requestPermission(1);
                     } else {
-                        addNewTracking();
+                        createTrackingPresenter.createNewTracking();
                     }
-
+                }else{
+                    createTrackingPresenter.createNewTracking();
                 }
-                addNewTracking();
             }
         });
-
-
     }
 
     @Override
@@ -439,7 +426,7 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    addNewTracking();
+                    createTrackingPresenter.createNewTracking();
                 }
             }
         }
@@ -505,36 +492,71 @@ public class AddNewTrackingActivity extends AppCompatActivity {
             if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
                     (scaleType.getText().toString().isEmpty()
                             || scaleType.getText().toString().trim().isEmpty())) {
-                Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
+               showMessage("Введите единицу измерения шкалы");
             } else {
                 if (scale != TrackingCustomization.None) {
                     scaleNumb = scaleType.getText().toString().trim();
                 }
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, geoposition, scaleNumb, trackingColor);
-                trackingRepository.AddNewTracking(newTrackingV1);
+                createTrackingPresenter.saveNewTracking(newTrackingV1);
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
-                Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
-                factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTrackingV1.GetTrackingID())
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Fact>() {
-                            @Override
-                            public void call(Fact fact) {
-                                Log.d("Statistics", "calculate");
-                            }
-                        });
-                factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Fact>() {
-                            @Override
-                            public void call(Fact fact) {
-                                Log.d("Statistics", "calculate");
-                            }
-                        });
-                Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                startActivity(intent);
+
+
+
             }
         }
+    }
+
+    @Override
+    public void createTracking() {
+        addNewTracking();
+    }
+
+    @Override
+    public void requestPermissionForGeoposition() {
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    }
+
+    @Override
+    public void requestPermissionForCamera() {
+
+    }
+
+    @Override
+    public void startConfigurationView() {
+        visbilityScaleTypeHint.setVisibility(View.GONE);
+        visibilityScaleType.setVisibility(View.GONE);
+        scaleType.setVisibility(View.GONE);
+        setupToolbar();
+    }
+
+    @Override
+    public void satredConfiguration() {
+        stateForScale = 0;
+        stateForText = 0;
+        stateForRating = 0;
+        stateForGeoposition = 0;
+
+        context = this;
+        activity = this;
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void finishCreatingTracking() {
+        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+        startActivity(intent);
+        createTrackingPresenter.detachView();
+    }
+
+    private void setupToolbar(){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Отслеживать");
     }
 }

@@ -88,7 +88,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
     compile 'com.jaredrummler:material-spinner:1.2.5'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'com.google.android.gms:play-services-auth:16.0.0'
     compile 'com.nvanbenschoten.motion:library:1.1.2'
     compile 'com.yandex.android:mobmetricalib:2.80'
 

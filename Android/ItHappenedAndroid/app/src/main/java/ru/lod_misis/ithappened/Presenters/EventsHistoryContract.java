@@ -17,6 +17,7 @@ public interface EventsHistoryContract {
         void showLoading(boolean isLoading);
 
 
+
     }
 
     interface EventsHistoryPresenter{

@@ -55,6 +55,7 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.Subscription;
 
 public class UserActionsActivity extends AppCompatActivity
@@ -157,14 +158,7 @@ public class UserActionsActivity extends AppCompatActivity
         syncPB = (ProgressBar) findViewById(R.id.syncPB);
         layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
 
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
-            StaticInMemoryRepository.setInstance(getApplicationContext(),
-                    sharedPreferences.getString("UserId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }else{
-            StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
+        trackingRepository=UserDataUtils.setUserDataSet(sharedPreferences);
 
         factCalculator.calculateFacts();
 
@@ -394,8 +388,7 @@ public class UserActionsActivity extends AppCompatActivity
                     String idToken = "";
 
                     try {
-                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName,
-                                SCOPES);
+                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName, SCOPES);
                         return idToken;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
@@ -433,7 +426,6 @@ public class UserActionsActivity extends AppCompatActivity
 
         ConnectionReciver connectivityReceiver = new ConnectionReciver();
         registerReceiver(connectivityReceiver, intentFilter);
-
         ItHappenedApplication.getInstance().setConnectionListener(this);
     }
 
