@@ -388,8 +388,7 @@ public class UserActionsActivity extends AppCompatActivity
                     String idToken = "";
 
                     try {
-                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName,
-                                SCOPES);
+                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName, SCOPES);
                         return idToken;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
@@ -427,7 +426,6 @@ public class UserActionsActivity extends AppCompatActivity
 
         ConnectionReciver connectivityReceiver = new ConnectionReciver();
         registerReceiver(connectivityReceiver, intentFilter);
-
         ItHappenedApplication.getInstance().setConnectionListener(this);
     }
 
