@@ -153,13 +153,14 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
     Context context;
     Activity activity;
     Boolean permissionForGPS = false;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
         createTrackingPresenter=new CreateTrackingPresenter(sharedPreferences);
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
@@ -432,7 +433,7 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
         }
     }
 
-    private void addNewTracking() {
+    public void addNewTracking() {
         if (trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty()) {
             Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
         } else {
