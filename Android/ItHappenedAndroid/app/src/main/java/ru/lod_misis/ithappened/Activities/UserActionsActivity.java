@@ -119,7 +119,7 @@ public class UserActionsActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
+        navigationView=findViewById(R.id.nav_view);
         connectionToken = ConnectionReciver.isConnected();
         sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId",""));
