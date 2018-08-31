@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -192,31 +193,35 @@ public class UserActionsActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        userNick = (TextView) findViewById(R.id.userNickname);
-        userNick.setText(sharedPreferences.getString("Nick",""));
-        loginButton = (TextView) findViewById(R.id.loginButton);
-        urlUser = (CircleImageView) findViewById(R.id.imageView);
-        lable = (TextView) findViewById(R.id.menuTitle);
-        if(!sharedPreferences.getString("UserId", "").equals("Offline")) {
-            loginButton.setVisibility(View.GONE);
-            new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
-        }else{
-            loginButton.setVisibility(View.VISIBLE);
-            lable.setVisibility(View.GONE);
-            userNick.setVisibility(View.GONE);
-            urlUser.setVisibility(View.GONE);
+        ViewTreeObserver vto = navigationView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener
+                (new ViewTreeObserver.OnGlobalLayoutListener() {@Override public void onGlobalLayout() {
+                    sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                    userNick = (TextView) findViewById(R.id.userNickname);
+                    userNick.setText(sharedPreferences.getString("Nick",""));
+                    loginButton = (TextView) findViewById(R.id.loginButton);
+                    urlUser = (CircleImageView) findViewById(R.id.imageView);
+                    lable = (TextView) findViewById(R.id.menuTitle);
+                    if(!sharedPreferences.getString("UserId", "").equals("Offline")) {
+                        loginButton.setVisibility(View.GONE);
+                        new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
+                    }else{
+                        loginButton.setVisibility(View.VISIBLE);
+                        lable.setVisibility(View.GONE);
+                        userNick.setVisibility(View.GONE);
+                        urlUser.setVisibility(View.GONE);
 
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    userActionPresenter.getGoogleToken();
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                }
-            });
-        }
+                        loginButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                userActionPresenter.getGoogleToken();
+                                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                                drawer.closeDrawer(GravityCompat.START);
+                            }
+                        });
+                    }
 
+                } });
         return true;
     }
 

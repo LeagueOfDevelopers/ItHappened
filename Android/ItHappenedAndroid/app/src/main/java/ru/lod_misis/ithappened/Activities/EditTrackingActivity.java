@@ -56,6 +56,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     TextView scaleEnabled;
     @BindView(R.id.geopositionTextEnabled)
     TextView geopositionEnabled;
+    TextView photoEnabled;
 
     @BindView(R.id.colorPicker)
     CardView colorPickerButton;
@@ -90,7 +91,14 @@ public class EditTrackingActivity extends AppCompatActivity {
     @BindView(R.id.geopositionBackColorDoubleCheck)
     LinearLayout geopositionRequired;
 
+<<<<<<< HEAD
     @BindView(R.id.ratingBackImageDont)
+=======
+    LinearLayout photoDont;
+    LinearLayout photoOptional;
+    LinearLayout photoRequired;
+
+>>>>>>> new_customization(photo)
     ImageView ratingDontImage;
     @BindView(R.id.ratingBackImageCheck)
     ImageView ratingOptionalImage;
@@ -118,9 +126,16 @@ public class EditTrackingActivity extends AppCompatActivity {
     @BindView(R.id.geopositionBackImageDoubleCheck)
     ImageView geopositionRequiredImage;
 
+<<<<<<< HEAD
     String trackingColor;
 
     @BindView(R.id.scaleTypeContainer)
+=======
+    ImageView photoDontImage;
+    ImageView photoOptionalImage;
+    ImageView photoRequiredImage;
+
+>>>>>>> new_customization(photo)
     CardView visibilityScaleType;
     @BindView(R.id.scaleTypeHint)
     TextView visbilityScaleTypeHint;
@@ -137,6 +152,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     int stateForText;
     int stateForRating;
     int stateForGeoposition;
+    int stateForPhoto;
 
     TrackingCustomization geoposition;
 
@@ -162,6 +178,69 @@ public class EditTrackingActivity extends AppCompatActivity {
 
         service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
 
+<<<<<<< HEAD
+=======
+        addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
+
+        trackingName = (EditText) findViewById(R.id.editTitleOfTracking);
+
+
+        ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabled);
+        commentEnabled = (TextView) findViewById(R.id.commentTextEnabled);
+        scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabled);
+        geopositionEnabled = (TextView) findViewById(R.id.geopositionTextEnabled);
+        photoEnabled = (TextView) findViewById(R.id.photoTextEnabled);
+
+
+        ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDont);
+        ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
+        ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheck);
+
+        commentDont = (LinearLayout) findViewById(R.id.commentBackColorDont);
+        commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheck);
+        commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheck);
+
+        scaleDont = (LinearLayout) findViewById(R.id.scaleBackColorDont);
+        scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheck);
+        scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheck);
+
+        geopositionDont = (LinearLayout) findViewById(R.id.geopositionBackColorDont);
+        geopositionOptional = (LinearLayout) findViewById(R.id.geopositionBackColorCheck);
+        geopositionRequired= (LinearLayout) findViewById(R.id.geopositionBackColorDoubleCheck);
+
+        photoDont = (LinearLayout) findViewById(R.id.photoBackColorDont);
+        photoOptional = (LinearLayout) findViewById(R.id.photoBackColorCheck);
+        photoRequired= (LinearLayout) findViewById(R.id.photoBackColorDoubleCheck);
+
+        ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDont);
+        ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheck);
+        ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheck);
+
+        colorTrackingEdit = findViewById(R.id.colorPicker);
+        colorTrackingTextEdit = findViewById(R.id.colorText);
+
+        commentDontImage = (ImageView) findViewById(R.id.commentBackImageDont);
+        commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheck);
+        commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheck);
+
+        scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
+        scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
+        scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
+
+        geopositionDontImage = (ImageView) findViewById(R.id.geopositionBackImageDont);
+        geopositionOptionalImage = (ImageView) findViewById(R.id.geopositionBackImageCheck);
+        geopositionRequiredImage = (ImageView) findViewById(R.id.geopositionBackImageDoubleCheck);
+
+        photoDontImage = (ImageView) findViewById(R.id.photoBackImageDont);
+        photoOptionalImage = (ImageView) findViewById(R.id.photoBackImageCheck);
+        photoRequiredImage = (ImageView) findViewById(R.id.photoBackImageDoubleCheck);
+
+        visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
+        visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
+        scaleType = (EditText) findViewById(R.id.editTypeOfScale);
+
+
+>>>>>>> new_customization(photo)
         editableTrackingV1 = trackingRepository.GetTracking(trackingId);
 
         trackingName.setText(editableTrackingV1.GetTrackingName());
@@ -236,7 +315,21 @@ public class EditTrackingActivity extends AppCompatActivity {
                 geopositionDont,
                 geopositionOptional,
                 geopositionRequired,
+<<<<<<< HEAD
                 geopositionEnabled);
+=======
+                geopositionEnabled );
+        stateForPhoto=calculateState(editableTrackingV1.GetPhotoCustomization(),
+                photoDontImage,
+                photoOptionalImage,
+                photoRequiredImage,
+                photoDont,
+                photoOptional,
+                photoRequired,
+                photoEnabled );
+
+
+>>>>>>> new_customization(photo)
 
 
         ratingDont.setOnClickListener(new View.OnClickListener() {
@@ -424,6 +517,49 @@ public class EditTrackingActivity extends AppCompatActivity {
             }
         });
 
+        photoDont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                photoEnabled.setText("не надо");
+                photoDontImage.setImageResource(R.drawable.active_dont);
+                photoOptionalImage.setImageResource(R.drawable.not_active_check);
+                photoRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                photoOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForPhoto=0;
+            }
+        });
+
+        photoOptional.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoEnabled.setText("не обязательно");
+                photoDontImage.setImageResource(R.drawable.not_active_dont);
+                photoOptionalImage.setImageResource(R.drawable.active_check);
+                photoRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                photoOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                photoRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForPhoto=1;
+            }
+        });
+
+
+        photoRequired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoEnabled.setText("обязательно");
+                photoDontImage.setImageResource(R.drawable.not_active_dont);
+                photoOptionalImage.setImageResource(R.drawable.not_active_check);
+                photoRequiredImage.setImageResource(R.drawable.active_double_check);
+                photoOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                stateForPhoto=2;
+            }
+        });
+
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -437,6 +573,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                     TrackingCustomization rating = TrackingCustomization.None;
                     TrackingCustomization comment = TrackingCustomization.None;
                     TrackingCustomization scale = TrackingCustomization.None;
+                    TrackingCustomization photo = TrackingCustomization.None;
 
                     String scaleNumb = null;
 
@@ -483,7 +620,25 @@ public class EditTrackingActivity extends AppCompatActivity {
                             break;
                     }
 
+<<<<<<< HEAD
                     if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
+=======
+                    switch (stateForPhoto){
+                        case 0:
+                            photo = TrackingCustomization.None;
+                            break;
+                        case 1:
+                            photo = TrackingCustomization.Optional;
+                            break;
+                        case 2:
+                            photo = TrackingCustomization.Required;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
+>>>>>>> new_customization(photo)
                             (scaleType.getText().toString().isEmpty()
                                     || scaleType.getText().toString().trim().isEmpty())) {
                         Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
@@ -491,7 +646,11 @@ public class EditTrackingActivity extends AppCompatActivity {
                         if (scale != TrackingCustomization.None) {
                             scaleNumb = scaleType.getText().toString().trim();
                         }
+<<<<<<< HEAD
                         service.EditTracking(trackingId, scale, rating, comment, geoposition, trackingTitle, scaleNumb, trackingColor);
+=======
+                        service.EditTracking(trackingId, scale, rating, comment,geoposition,photo,trackingTitle, scaleNumb, trackingColor);
+>>>>>>> new_customization(photo)
                         factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())

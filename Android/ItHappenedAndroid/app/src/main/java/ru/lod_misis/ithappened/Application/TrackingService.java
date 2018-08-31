@@ -37,12 +37,13 @@ public class TrackingService
                              TrackingCustomization editedScale,
                              TrackingCustomization editedComment,
                              TrackingCustomization editedGeoposition,
+                             TrackingCustomization editedPhoto,
                              String editedTrackingName,
                              String scaleName,
                              String color)
     {
         trackingCollection.editTracking(trackingId,
-                editedCounter, editedScale, editedComment,editedGeoposition,
+                editedCounter, editedScale, editedComment,editedGeoposition,editedPhoto,
                 editedTrackingName, scaleName, color);
     }
 
@@ -53,10 +54,10 @@ public class TrackingService
 
     public void EditEvent(UUID trackingId, UUID eventId,
                           Double newScale, Rating newRating, String newComment,Double newLotitude,
-                          Double newLongitude,
+                          Double newLongitude,String newPhoto,
                           Date newDate)
     {
-        trackingCollection.editEvent(trackingId, eventId, newScale, newRating, newComment,newLotitude,newLongitude, newDate);
+        trackingCollection.editEvent(trackingId, eventId, newScale, newRating, newComment,newLotitude,newLongitude,newPhoto, newDate);
     }
 
     public Observable<EventV1> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
