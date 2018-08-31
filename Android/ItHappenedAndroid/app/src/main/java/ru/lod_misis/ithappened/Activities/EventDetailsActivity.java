@@ -53,12 +53,9 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
-<<<<<<< HEAD
 import ru.lod_misis.ithappened.Utils.UserDataUtils;
-=======
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
->>>>>>> new_customization(photo)
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -104,7 +101,9 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     SupportMapFragment supportMapFragment;
     GoogleMap map;
 
+    @BindView(R.id.photo_title)
     TextView photo_title;
+    @BindView(R.id.photo)
     ImageView photo;
 
     Double lotitude;
@@ -129,34 +128,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         ButterKnife.bind(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
-<<<<<<< HEAD
         sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-=======
 
-        valuesCard = findViewById(R.id.valuesCard);
-        nullsCard = findViewById(R.id.nullsCard);
-
-        commentHint = findViewById(R.id.commentHint);
-        scaleHint = findViewById(R.id.scaleHint);
-        commentValue = findViewById(R.id.commentValue);
-        scaleValue = findViewById(R.id.scaleValue);
-        ratingValue = findViewById(R.id.ratingValue);
-        dateValue = findViewById(R.id.dateValue);
-        dateValueNulls = findViewById(R.id.dateValueNulls);
-
-        editEvent = findViewById(R.id.editEventButton);
-        deleteEvent = findViewById(R.id.deleteEventButton);
-
-        factRepository = StaticFactRepository.getInstance();
-
-        supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        geoposition_title=findViewById(R.id.geoposition_title);
-
-        photo_title=findViewById(R.id.photo_title);
-        photo=findViewById(R.id.photo);
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
->>>>>>> new_customization(photo)
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
 
         eventDetailsPresenter=new EventDetailsPresenterImpl(sharedPreferences,intent);
@@ -181,126 +154,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 eventDetailsPresenter.deleteEvent();
             }
         });
-<<<<<<< HEAD
-=======
-
-
-        TrackingV1 thisTrackingV1 = collection.GetTracking(trackingId);
-        EventV1 thisEventV1 = thisTrackingV1.GetEvent(eventId);
-
-
-        if ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetScaleCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetRatingCustomization()==TrackingCustomization.None)
-                ||
-                ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.Optional&& thisEventV1.GetComment()==null)
-                &&(thisTrackingV1.GetScaleCustomization()==TrackingCustomization.Optional&& thisEventV1.GetScale()==null)
-                &&(thisTrackingV1.GetRatingCustomization()==TrackingCustomization.Optional&& thisEventV1.GetRating()==null)
-                )
-                ){
-            valuesCard.setVisibility(View.GONE);
-            nullsCard.setVisibility(View.VISIBLE);
-            Date thisDate = thisEventV1.GetEventDate();
-
-            Locale loc = new Locale("ru");
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-            format.setTimeZone(TimeZone.getDefault());
-
-            dateValueNulls.setText(format.format(thisDate));
-
-        }
-
-            Date thisDate = thisEventV1.GetEventDate();
-
-            Locale loc = new Locale("ru");
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-            format.setTimeZone(TimeZone.getDefault());
-
-            dateValue.setText(format.format(thisDate));
-
-            if(thisEventV1.GetRating()!=null) {
-                ratingValue.setVisibility(View.VISIBLE);
-                nullsCard.setVisibility(View.GONE);
-                valuesCard.setVisibility(View.VISIBLE);
-                ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
-            }else {
-                ratingValue.setVisibility(View.GONE);
-            }
-
-            if(thisEventV1.GetComment()!=null) {
-                nullsCard.setVisibility(View.GONE);
-                valuesCard.setVisibility(View.VISIBLE);
-                commentValue.setVisibility(View.VISIBLE);
-                commentValue.setText(thisEventV1.GetComment());
-            }else {
-                commentValue.setVisibility(View.GONE);
-                commentHint.setVisibility(View.GONE);
-            }
-
-            if(thisEventV1.GetScale()!=null) {
-                nullsCard.setVisibility(View.GONE);
-                valuesCard.setVisibility(View.VISIBLE);
-                scaleValue.setVisibility(View.VISIBLE);
-                scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue())+" "+ thisTrackingV1.getScaleName());
-            }else {
-                scaleValue.setVisibility(View.GONE);
-                scaleHint.setVisibility(View.GONE);
-            }
-            if(thisEventV1.getLongitude()!=null &&thisEventV1.getLotitude()!=null){
-
-                this.lotitude=thisEventV1.getLotitude();
-                this.longitude=thisEventV1.getLongitude();
-                nullsCard.setVisibility(View.GONE);
-                valuesCard.setVisibility(View.VISIBLE);
-                scaleValue.setVisibility(View.GONE);
-                scaleHint.setVisibility(View.GONE);
-                commentValue.setVisibility(View.GONE);
-                commentHint.setVisibility(View.GONE);
-                ratingValue.setVisibility(View.GONE);
-
-                supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        CameraUpdate cameraUpdate;
-                        map=googleMap;
-                        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                        map.addMarker(new MarkerOptions().position(new LatLng(lotitude,longitude)));
-                        cameraUpdate= CameraUpdateFactory.newCameraPosition(
-                                new CameraPosition.Builder()
-                                        .target(new LatLng(lotitude,longitude))
-                                        .zoom(5)
-                                        .build()
-                        );
-                        map.moveCamera(cameraUpdate);
-                    }
-                });
-            }else{
-                FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(supportMapFragment);
-                fragmentTransaction.commit();
-                geoposition_title.setVisibility(View.GONE);
-            }
-
-        if(thisEventV1.getPhoto()!=null){
-            workWithFIles=new WorkWithFiles(getApplication(),this);
-            photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
-            nullsCard.setVisibility(View.GONE);
-            valuesCard.setVisibility(View.VISIBLE);
-            scaleValue.setVisibility(View.GONE);
-            scaleHint.setVisibility(View.GONE);
-            commentValue.setVisibility(View.GONE);
-            commentHint.setVisibility(View.GONE);
-            ratingValue.setVisibility(View.GONE);
-
-        }else{
-            photo_title.setVisibility(View.GONE);
-            photo.setVisibility(View.GONE);
-        }
-        TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
-        TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();
-        TrackingCustomization ratingCustomization = thisTrackingV1.GetRatingCustomization();
-        TrackingCustomization photoCustomization = thisTrackingV1.GetPhotoCustomization();
->>>>>>> new_customization(photo)
     }
 
     public void okClicked() {
@@ -421,6 +274,21 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         }else{
             getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
             geoposition_title.setVisibility(View.GONE);
+        }
+        if(thisEventV1.getPhoto()!=null){
+            workWithFIles=new WorkWithFiles(getApplication(),this);
+            photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
+            nullsCard.setVisibility(View.GONE);
+            valuesCard.setVisibility(View.VISIBLE);
+            scaleValue.setVisibility(View.GONE);
+            scaleHint.setVisibility(View.GONE);
+            commentValue.setVisibility(View.GONE);
+            commentHint.setVisibility(View.GONE);
+            ratingValue.setVisibility(View.GONE);
+
+        }else{
+            photo_title.setVisibility(View.GONE);
+            photo.setVisibility(View.GONE);
         }
     }
 

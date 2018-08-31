@@ -62,14 +62,15 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
-<<<<<<< HEAD
+
 import ru.lod_misis.ithappened.Utils.UserDataUtils;
-=======
+
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
->>>>>>> new_customization(photo)
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -147,13 +148,8 @@ public class EditEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
         ButterKnife.bind(this);
-
-<<<<<<< HEAD
-        context = this;
-=======
         context=this;
         activity=this;
->>>>>>> new_customization(photo)
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
@@ -165,26 +161,6 @@ public class EditEventActivity extends AppCompatActivity {
 
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
         eventId = UUID.fromString(getIntent().getStringExtra("eventId"));
-
-
-<<<<<<< HEAD
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-=======
-        commentContainer = (LinearLayout) findViewById(R.id.commentEventContainerEdit);
-        ratingContainer = (LinearLayout) findViewById(R.id.ratingEventContainerEdit);
-        scaleContainer = (LinearLayout) findViewById(R.id.scaleEventContainerEdit);
-        geopositionContainer = (LinearLayout) findViewById(R.id.geopositionEventContainerEdit);
-        photoContainer = (LinearLayout) findViewById(R.id.photoEventContainerEdit);
-
-
-        commentAccess = (TextView) findViewById(R.id.commentAccessEdit);
-        scaleAccess = (TextView) findViewById(R.id.scaleAccessEdit);
-        ratingAccess = (TextView) findViewById(R.id.ratingAccessEdit);
-        geopositionAccess = (TextView) findViewById(R.id.geopositionAccess);
-        photoAccess = (TextView) findViewById(R.id.photoAccessEdit);
-
-        photo=findViewById(R.id.photoEdit);
->>>>>>> new_customization(photo)
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -352,24 +328,7 @@ public class EditEventActivity extends AppCompatActivity {
                         }
                         trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath,eventDate);
                         YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
+                        new FactCalculator(trackingCollection).calculateFactsForAddNewEventActivity(trackingId);
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                         finishActivity();
                     }

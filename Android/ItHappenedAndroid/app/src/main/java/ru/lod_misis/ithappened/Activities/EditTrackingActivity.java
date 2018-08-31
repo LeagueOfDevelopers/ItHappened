@@ -33,6 +33,7 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
@@ -91,14 +92,15 @@ public class EditTrackingActivity extends AppCompatActivity {
     @BindView(R.id.geopositionBackColorDoubleCheck)
     LinearLayout geopositionRequired;
 
-<<<<<<< HEAD
-    @BindView(R.id.ratingBackImageDont)
-=======
+    @BindView(R.id.photoBackColorDont)
     LinearLayout photoDont;
+    @BindView(R.id.photoBackColorCheck)
     LinearLayout photoOptional;
+    @BindView(R.id.photoBackColorDoubleCheck)
     LinearLayout photoRequired;
 
->>>>>>> new_customization(photo)
+
+    @BindView(R.id.ratingBackImageDont)
     ImageView ratingDontImage;
     @BindView(R.id.ratingBackImageCheck)
     ImageView ratingOptionalImage;
@@ -126,16 +128,16 @@ public class EditTrackingActivity extends AppCompatActivity {
     @BindView(R.id.geopositionBackImageDoubleCheck)
     ImageView geopositionRequiredImage;
 
-<<<<<<< HEAD
+    @BindView(R.id.photoBackImageDont)
+    ImageView photoDontImage;
+    @BindView(R.id.photoBackImageCheck)
+    ImageView photoOptionalImage;
+    @BindView(R.id.photoBackImageDoubleCheck)
+    ImageView photoRequiredImage;
+
     String trackingColor;
 
     @BindView(R.id.scaleTypeContainer)
-=======
-    ImageView photoDontImage;
-    ImageView photoOptionalImage;
-    ImageView photoRequiredImage;
-
->>>>>>> new_customization(photo)
     CardView visibilityScaleType;
     @BindView(R.id.scaleTypeHint)
     TextView visbilityScaleTypeHint;
@@ -178,69 +180,6 @@ public class EditTrackingActivity extends AppCompatActivity {
 
         service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
 
-<<<<<<< HEAD
-=======
-        addTrackingBtn = (Button) findViewById(ru.lod_misis.ithappened.R.id.addTrack);
-
-        trackingName = (EditText) findViewById(R.id.editTitleOfTracking);
-
-
-        ratingEnabled = (TextView) findViewById(R.id.ratingTextEnabled);
-        commentEnabled = (TextView) findViewById(R.id.commentTextEnabled);
-        scaleEnabled = (TextView) findViewById(R.id.scaleTextEnabled);
-        geopositionEnabled = (TextView) findViewById(R.id.geopositionTextEnabled);
-        photoEnabled = (TextView) findViewById(R.id.photoTextEnabled);
-
-
-        ratingDont = (LinearLayout) findViewById(R.id.ratingBackColorDont);
-        ratingOptional = (LinearLayout) findViewById(R.id.ratingBackColorCheck);
-        ratingRequired = (LinearLayout) findViewById(R.id.ratingBackColorDoubleCheck);
-
-        commentDont = (LinearLayout) findViewById(R.id.commentBackColorDont);
-        commentOptional = (LinearLayout) findViewById(R.id.commentBackColorCheck);
-        commentRequired = (LinearLayout) findViewById(R.id.commentBackColorDoubleCheck);
-
-        scaleDont = (LinearLayout) findViewById(R.id.scaleBackColorDont);
-        scaleOptional = (LinearLayout) findViewById(R.id.scaleBackColorCheck);
-        scaleRequired = (LinearLayout) findViewById(R.id.scaleBackColorDoubleCheck);
-
-        geopositionDont = (LinearLayout) findViewById(R.id.geopositionBackColorDont);
-        geopositionOptional = (LinearLayout) findViewById(R.id.geopositionBackColorCheck);
-        geopositionRequired= (LinearLayout) findViewById(R.id.geopositionBackColorDoubleCheck);
-
-        photoDont = (LinearLayout) findViewById(R.id.photoBackColorDont);
-        photoOptional = (LinearLayout) findViewById(R.id.photoBackColorCheck);
-        photoRequired= (LinearLayout) findViewById(R.id.photoBackColorDoubleCheck);
-
-        ratingDontImage = (ImageView) findViewById(R.id.ratingBackImageDont);
-        ratingOptionalImage = (ImageView) findViewById(R.id.ratingBackImageCheck);
-        ratingRequiredImage = (ImageView) findViewById(R.id.ratingBackImageDoubleCheck);
-
-        colorTrackingEdit = findViewById(R.id.colorPicker);
-        colorTrackingTextEdit = findViewById(R.id.colorText);
-
-        commentDontImage = (ImageView) findViewById(R.id.commentBackImageDont);
-        commentOptionalImage = (ImageView) findViewById(R.id.commentBackImageCheck);
-        commentRequiredImage = (ImageView) findViewById(R.id.commentBackImageDoubleCheck);
-
-        scaleDontImage = (ImageView) findViewById(R.id.scaleBackImageDont);
-        scaleOptionalImage = (ImageView) findViewById(R.id.scaleBackImageCheck);
-        scaleRequiredImage = (ImageView) findViewById(R.id.scaleBackImageDoubleCheck);
-
-        geopositionDontImage = (ImageView) findViewById(R.id.geopositionBackImageDont);
-        geopositionOptionalImage = (ImageView) findViewById(R.id.geopositionBackImageCheck);
-        geopositionRequiredImage = (ImageView) findViewById(R.id.geopositionBackImageDoubleCheck);
-
-        photoDontImage = (ImageView) findViewById(R.id.photoBackImageDont);
-        photoOptionalImage = (ImageView) findViewById(R.id.photoBackImageCheck);
-        photoRequiredImage = (ImageView) findViewById(R.id.photoBackImageDoubleCheck);
-
-        visbilityScaleTypeHint = (TextView) findViewById(R.id.scaleTypeHint);
-        visibilityScaleType = (CardView) findViewById(R.id.scaleTypeContainer);
-        scaleType = (EditText) findViewById(R.id.editTypeOfScale);
-
-
->>>>>>> new_customization(photo)
         editableTrackingV1 = trackingRepository.GetTracking(trackingId);
 
         trackingName.setText(editableTrackingV1.GetTrackingName());
@@ -315,9 +254,6 @@ public class EditTrackingActivity extends AppCompatActivity {
                 geopositionDont,
                 geopositionOptional,
                 geopositionRequired,
-<<<<<<< HEAD
-                geopositionEnabled);
-=======
                 geopositionEnabled );
         stateForPhoto=calculateState(editableTrackingV1.GetPhotoCustomization(),
                 photoDontImage,
@@ -327,9 +263,6 @@ public class EditTrackingActivity extends AppCompatActivity {
                 photoOptional,
                 photoRequired,
                 photoEnabled );
-
-
->>>>>>> new_customization(photo)
 
 
         ratingDont.setOnClickListener(new View.OnClickListener() {
@@ -620,9 +553,6 @@ public class EditTrackingActivity extends AppCompatActivity {
                             break;
                     }
 
-<<<<<<< HEAD
-                    if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
-=======
                     switch (stateForPhoto){
                         case 0:
                             photo = TrackingCustomization.None;
@@ -638,7 +568,6 @@ public class EditTrackingActivity extends AppCompatActivity {
                     }
 
                     if((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required)&&
->>>>>>> new_customization(photo)
                             (scaleType.getText().toString().isEmpty()
                                     || scaleType.getText().toString().trim().isEmpty())) {
                         Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
@@ -646,29 +575,8 @@ public class EditTrackingActivity extends AppCompatActivity {
                         if (scale != TrackingCustomization.None) {
                             scaleNumb = scaleType.getText().toString().trim();
                         }
-<<<<<<< HEAD
-                        service.EditTracking(trackingId, scale, rating, comment, geoposition, trackingTitle, scaleNumb, trackingColor);
-=======
                         service.EditTracking(trackingId, scale, rating, comment,geoposition,photo,trackingTitle, scaleNumb, trackingColor);
->>>>>>> new_customization(photo)
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
+                        new FactCalculator(trackingRepository).calculateFactsForAddNewEventActivity(trackingId);
                         YandexMetrica.reportEvent(getString(R.string.metrica_edit_tracking));
                         Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
