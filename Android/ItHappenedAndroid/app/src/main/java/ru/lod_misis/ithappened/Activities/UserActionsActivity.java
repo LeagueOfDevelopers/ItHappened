@@ -124,13 +124,7 @@ public class UserActionsActivity extends AppCompatActivity
         sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId",""));
 
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("Offline", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
+        trackingRepository=UserDataUtils.setUserDataSet(sharedPreferences);
         userActionPresenter = new UserActionPresenterImpl(this, this, sharedPreferences, trackingRepository);
 
         factCalculator = new FactCalculator(trackingRepository);
@@ -158,8 +152,15 @@ public class UserActionsActivity extends AppCompatActivity
 
         syncPB = (ProgressBar) findViewById(R.id.syncPB);
         layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
+        if(sharedPreferences.getString("LastId","").isEmpty()) {
+            StaticInMemoryRepository.setInstance(getApplicationContext(),
+                    sharedPreferences.getString("UserId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
+        }else{
+            StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("LastId", ""));
+            trackingRepository = StaticInMemoryRepository.getInstance();
+        }
 
-        trackingRepository=UserDataUtils.setUserDataSet(sharedPreferences);
 
         factCalculator.calculateFacts();
 
