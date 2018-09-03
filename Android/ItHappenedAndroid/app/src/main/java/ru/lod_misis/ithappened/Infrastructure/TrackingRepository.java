@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.Realm;
@@ -30,6 +32,7 @@ import ru.lod_misis.ithappened.Models.EventSource;
 
 public class TrackingRepository implements ITrackingRepository {
 
+    @Inject
     public TrackingRepository(Context cntxt, String userId) {
         context = cntxt;
         Realm.init(context);

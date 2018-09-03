@@ -16,9 +16,8 @@ import rx.Observable;
 
 public class TrackingService
 {
-    public TrackingService(String userId, ITrackingRepository trackingRepository)
+    public TrackingService(ITrackingRepository trackingRepository)
     {
-        this.userId = userId;
         trackingCollection = trackingRepository;
     }
 

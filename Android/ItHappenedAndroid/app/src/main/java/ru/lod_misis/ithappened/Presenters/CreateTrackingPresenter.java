@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
 
 
 public class CreateTrackingPresenter implements CreateTrackingContract.CreateTrackingPresenter {
