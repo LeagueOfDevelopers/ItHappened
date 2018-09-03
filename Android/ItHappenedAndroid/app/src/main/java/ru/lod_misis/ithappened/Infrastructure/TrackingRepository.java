@@ -58,10 +58,10 @@ public class TrackingRepository implements ITrackingRepository {
         DbModelV1 model = realm.where(DbModelV1.class)
                 .equalTo("userId", userId).findFirst();
 
-        if (model == null) return  new ArrayList<>();
-        if (model.getTrackingV1Collection() == null) return  new ArrayList<>();
+        if (model == null) return new ArrayList<>();
+        if (model.getTrackingV1Collection() == null) return new ArrayList<>();
 
-        List<TrackingV1>  trackingV1Collection = model.getTrackingV1Collection().where()
+        List<TrackingV1> trackingV1Collection = model.getTrackingV1Collection().where()
                 .equalTo("isDeleted", false)
                 .findAllSorted("dateOfChange", Sort.DESCENDING);
 
@@ -116,7 +116,7 @@ public class TrackingRepository implements ITrackingRepository {
         return realm.copyFromRealm(event);
     }
 
-    public void editEvent(EventV1 event){
+    public void editEvent(EventV1 event) {
         if (realm.where(TrackingV1.class)
                 .equalTo("trackingId", event.GetTrackingId().toString()).findFirst() == null)
             throw new IllegalArgumentException("Tracking with such ID doesn't exists");
@@ -180,14 +180,14 @@ public class TrackingRepository implements ITrackingRepository {
 
         RealmResults<TrackingV1> trackingResult = dbModel.getTrackingV1Collection().where().
                 equalTo("isDeleted", false).findAll();
-        List<String> idList = new ArrayList<>();
+        String[] idArray = new String[trackingResult.size()];
 
-        for (TrackingV1 tracking: trackingResult) {
-            idList.add(tracking.getTrackingId());
+        for (int i =0; i<trackingResult.size(); i++) {
+            idArray[i] = trackingResult.get(i).getTrackingId();
         }
 
         RealmResults<EventV1> events = realm.where(EventV1.class)
-                .in("trackingId", (String[])idList.toArray())
+                .in("trackingId", idArray)
                 .equalTo("isDeleted", false).findAll();
 
         if (trackingId != null) {
@@ -299,7 +299,7 @@ public class TrackingRepository implements ITrackingRepository {
                             oldVersion++;
                         }
 
-                        if (oldVersion == 1){
+                        if (oldVersion == 1) {
                             RealmSchema schema = dynamicRealm.getSchema();
 
                             RealmObjectSchema trackingSchema = schema.get("TrackingV1");
@@ -350,18 +350,14 @@ public class TrackingRepository implements ITrackingRepository {
         realm.commitTransaction();
     }
 
-    private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue)
-    {
-        if (comparison == Comparison.Less)
-        {
+    private boolean CompareValues(Comparison comparison, Double firstValue, Double secondValue) {
+        if (comparison == Comparison.Less) {
             return (firstValue < secondValue);
         }
-        if (comparison == Comparison.Equal)
-        {
+        if (comparison == Comparison.Equal) {
             return (firstValue.equals(secondValue));
         }
-        if (comparison == Comparison.More)
-        {
+        if (comparison == Comparison.More) {
             return (firstValue > secondValue);
         }
         return false;
