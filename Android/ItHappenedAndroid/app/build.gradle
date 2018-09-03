@@ -88,7 +88,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
     compile 'com.jaredrummler:material-spinner:1.2.5'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'com.google.android.gms:play-services-auth:16.0.0'
     compile 'com.nvanbenschoten.motion:library:1.1.2'
     compile 'com.yandex.android:mobmetricalib:2.80'
 
@@ -97,6 +97,8 @@ dependencies {
 
     compile 'joda-time:joda-time:2.9.9'
     testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:2.18.3"
+    testCompile 'org.assertj:assertj-core:3.9.0'
     androidTestCompile 'org.testng:testng:6.9.6'
     compile('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true

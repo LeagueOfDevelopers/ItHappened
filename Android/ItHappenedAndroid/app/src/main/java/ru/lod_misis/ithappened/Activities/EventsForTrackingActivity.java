@@ -28,6 +28,7 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Utils.UserDataUtils;
 
 public class EventsForTrackingActivity extends AppCompatActivity {
 
@@ -73,13 +74,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            trackingsCollection = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingsCollection = StaticInMemoryRepository.getInstance();
-        }
+        trackingsCollection=UserDataUtils.setUserDataSet(sharedPreferences);
         trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingsCollection);
 
 
