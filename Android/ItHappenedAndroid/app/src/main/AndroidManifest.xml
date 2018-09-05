@@ -41,7 +41,15 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version">
         </meta-data>
-
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ru.lod_misis.ithappened.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files" />
+        </provider>
         <activity
             android:screenOrientation="portrait"
             android:name="ru.lod_misis.ithappened.Activities.UserActionsActivity"

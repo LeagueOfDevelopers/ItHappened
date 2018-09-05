@@ -14,7 +14,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class EventV1 extends RealmObject
 {
-    public EventV1(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment,Double lotitude,Double longitude)
+    public EventV1(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment,Double lotitude,Double longitude,String photo)
     {
         this.eventId = eventId.toString();
         this.dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
@@ -23,6 +23,7 @@ public class EventV1 extends RealmObject
         this.comment = comment;
         this.longitude=longitude;
         this.lotitude=lotitude;
+        this.photo=photo;
         this.trackingId = trackingID.toString();
         this.eventDate = date;
     }
@@ -44,7 +45,7 @@ public class EventV1 extends RealmObject
     public EventV1(){}
 
     public EventV1(UUID eventId, UUID trackingID, Date eventDate,
-                   Double scale, Rating rating, String comment,Double lotitude,Double longitude,
+                   Double scale, Rating rating, String comment,Double lotitude,Double longitude,String photo,
                    boolean status, Date changeDate)
     {
         this.eventId = eventId.toString();
@@ -54,6 +55,7 @@ public class EventV1 extends RealmObject
         this.comment = comment;
         this.lotitude=lotitude;
         this.longitude=longitude;
+        this.photo=photo;
         this.trackingId = trackingID.toString();
         dateOfChange = changeDate;
         isDeleted = status;
@@ -79,6 +81,10 @@ public class EventV1 extends RealmObject
     public void EditGeoposition(Double lotitude,Double longitude) {
         this.lotitude=lotitude;
         this.longitude=longitude;
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+    }
+    public void EditPhoto(String photo) {
+        this.photo = photo;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
     public void RemoveEvent()
@@ -170,6 +176,14 @@ public class EventV1 extends RealmObject
         this.longitude = longitude;
     }
 
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public Date getDateOfChange() {
         return dateOfChange;
     }
@@ -208,6 +222,7 @@ public class EventV1 extends RealmObject
     private String comment;
     private Double lotitude;
     private Double longitude;
+    private String photo;
     @Expose
     @SerializedName("dateOfChange")
     private Date dateOfChange;

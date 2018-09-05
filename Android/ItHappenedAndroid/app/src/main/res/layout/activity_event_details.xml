@@ -115,6 +115,21 @@
                         android:layout_marginBottom="20dp"
                         android:layout_marginTop="10dp"
                         />
+                    <com.rey.material.widget.TextView
+                        android:id="@+id/photo_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Фотография"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@+id/map"/>
+                    <ImageView
+                        android:id="@+id/photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/photo_title"/>
 
                 </RelativeLayout>
 
