@@ -44,7 +44,7 @@ public class TrackingService
     {
         TrackingV1 tracking = trackingCollection.GetTracking(trackingId);
         tracking.EditTracking(editedCounter, editedScale, editedComment,editedGeoposition,
-                photo_custmization_with_Mvp_branch, editedTrackingName, scaleName, color);
+                editedPhoto, editedTrackingName, scaleName, color);
 
         trackingCollection.editTracking(tracking);
     }
