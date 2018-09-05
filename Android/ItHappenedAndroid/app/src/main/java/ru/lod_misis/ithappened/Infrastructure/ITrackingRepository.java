@@ -27,23 +27,8 @@ public interface ITrackingRepository
     EventV1 getEvent(UUID eventId);
     void deleteEvent(UUID eventId);
     void deleteTracking(UUID trackingId);
-    void editEvent(UUID trackingId, UUID eventId,
-                   Double newScale,
-                   Rating newRating,
-                   String newComment,
-                   Double newLotitude,
-                   Double newLongitude,
-                   String newPhoto,
-                   Date newDate);
-    void editTracking(UUID trackingId,
-                      TrackingCustomization editedCounter,
-                      TrackingCustomization editedScale,
-                      TrackingCustomization editedComment,
-                      TrackingCustomization editedGeoposition,
-                      TrackingCustomization editedPhoto,
-                      String editedTrackingName,
-                      String scaleName,
-                      String color);
+    void editEvent(EventV1 event);
+    void editTracking(TrackingV1 tracking);
     void addEvent(UUID trackingId, EventV1 newEventV1);
     List<EventV1> getEventCollection(UUID trackingId);
 }

@@ -11,7 +11,6 @@ import ru.lod_misis.ithappened.Domain.Tracking;
 
 public class DbModelV1 extends RealmObject {
     private RealmList<TrackingV1> trackingV1Collection;
-    private RealmList<EventSource> eventSourceCollection;
     @PrimaryKey
     private String userId;
 
@@ -28,12 +27,6 @@ public class DbModelV1 extends RealmObject {
             this.trackingV1Collection.add(new TrackingV1(tracking));
         }
         this.userId = dbModel.userId;
-
-        eventSourceCollection = new RealmList<>();
-        for (Tracking tracking: dbModel.trackingCollection) {
-            for (Event event: tracking.eventCollection)
-                eventSourceCollection.add(new EventSource(event));
-        }
     }
 
     public DbModelV1(){
@@ -53,13 +46,5 @@ public class DbModelV1 extends RealmObject {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public RealmList<EventSource> getEventSourceCollection() {
-        return eventSourceCollection;
-    }
-
-    public void setEventSourceCollection(RealmList<EventSource> eventSourceCollection) {
-        this.eventSourceCollection = eventSourceCollection;
     }
 }
