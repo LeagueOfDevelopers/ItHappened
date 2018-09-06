@@ -98,6 +98,7 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout ratingContainer;
     @BindView(R.id.geopositionEventContainerEdit)
     LinearLayout geopositionContainer;
+    @BindView(R.id.photoEventContainerEdit)
     LinearLayout photoContainer;
 
     @BindView(R.id.commentAccessEdit)
@@ -108,6 +109,7 @@ public class EditEventActivity extends AppCompatActivity {
     TextView ratingAccess;
     @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
+    @BindView(R.id.photoAccessEdit)
     TextView photoAccess;
 
     @BindView(R.id.eventCommentControlEdit)
@@ -126,6 +128,7 @@ public class EditEventActivity extends AppCompatActivity {
 
     IWorkWithFIles workWithFIles;
     String photoPath;
+    @BindView(R.id.photoEdit)
     ImageView photo;
     ChoicePhotoDialog dialog;
     Boolean flagPhoto=false;

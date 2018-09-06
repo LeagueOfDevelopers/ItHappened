@@ -40,6 +40,7 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingContract;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingPresenter;
 import ru.lod_misis.ithappened.R;
@@ -187,7 +188,7 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
         stateForPhoto=0;
-
+        trackingRepository=UserDataUtils.setUserDataSet(sharedPreferences);
         photoEnabled = (TextView) findViewById(R.id.photoTextEnabled);
 
         photoDont = (LinearLayout) findViewById(R.id.photoBackColorDont);
@@ -596,7 +597,8 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
                 }
 
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment,geoposition,photo, scaleNumb, trackingColor);
-                trackingRepository.AddNewTracking(newTrackingV1);
+                createTrackingPresenter.saveNewTracking(newTrackingV1);
+
 
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
 
@@ -623,6 +625,7 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
 
     @Override
     public void startConfigurationView() {
+
         visbilityScaleTypeHint.setVisibility(View.GONE);
         visibilityScaleType.setVisibility(View.GONE);
         scaleType.setVisibility(View.GONE);

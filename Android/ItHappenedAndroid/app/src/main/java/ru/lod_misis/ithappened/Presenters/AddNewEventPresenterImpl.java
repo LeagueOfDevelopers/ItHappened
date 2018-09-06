@@ -25,7 +25,8 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
 
     @Override
     public void addNewEvent() {
-        addNewEventView.addNewEvent();
+        if(isViewAttached()){
+        addNewEventView.addNewEvent();}
     }
 
     @Override

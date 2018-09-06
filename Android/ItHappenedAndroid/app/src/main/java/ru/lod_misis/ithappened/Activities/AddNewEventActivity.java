@@ -147,6 +147,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     IWorkWithFIles workWithFIles;
     String photoPath;
+    @BindView(R.id.photo)
     ImageView photo;
     ChoicePhotoDialog dialog;
 
@@ -445,9 +446,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         Rating rating = null;
 
 
-        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
+        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag&&photoFlag) {
             if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
-                comment = commentControl.getText().toString().trim();
+                comment = commentControl.getText().toString().trim();}
             if (!(ratingControl.getRating() == 0)) {
                 rating = new Rating((int) (ratingControl.getRating() * 2));
             }
@@ -480,7 +481,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         } else {
             showMessage("Заполните поля с *");
         }
-    };
+
 }
     private void calculateState(){
         commentState = calculateState(trackingV1.GetCommentCustomization());
