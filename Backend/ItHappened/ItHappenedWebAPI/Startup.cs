@@ -40,14 +40,14 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
-	    services.AddOptions();
-	    services.AddMemoryCache();
-	    services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
-	    services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
-	    services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-	    services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+      services.AddOptions();
+      services.AddMemoryCache();
+      services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+      services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+      services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+      services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
-			var securityConfiguration = Configuration.GetSection("Security");
+      var securityConfiguration = Configuration.GetSection("Security");
 
       var securitySettings = new SecuritySettings(securityConfiguration["Issue"],
         securityConfiguration["AccessEncryptionKey"],
@@ -121,9 +121,9 @@ namespace ItHappenedWebAPI
         app.UseDeveloperExceptionPage();
       }
 
-	    app.UseIpRateLimiting();
+      app.UseIpRateLimiting();
 
-			app.UseMvc();
+      app.UseMvc();
     }
 
     private void StartLogging()
@@ -156,5 +156,5 @@ namespace ItHappenedWebAPI
       Log.Information("Loggly started");
       Log.Information("Splunk started");
     }
-	}
+  }
 }
