@@ -24,10 +24,6 @@ android {
         }
     }
 
-    aaptOptions {
-        cruncherEnabled = false
-    }
-
     signingConfigs {
         debug {
             storeFile file("debug.keystore")
