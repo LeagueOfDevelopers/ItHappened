@@ -309,6 +309,7 @@ public class TrackingRepository implements ITrackingRepository {
 
                             eventSchema.addField("lotitude", Double.class);
                             eventSchema.addField("longitude", Double.class);
+                            eventSchema.addField("photo", String.class);
 
                             trackingSchema.transform(new RealmObjectSchema.Function() {
                                 @Override

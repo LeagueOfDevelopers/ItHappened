@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -26,8 +27,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -51,6 +54,8 @@ import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.Utils.UserDataUtils;
+import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
+import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -96,8 +101,14 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     SupportMapFragment supportMapFragment;
     GoogleMap map;
 
+    @BindView(R.id.photo_title)
+    TextView photo_title;
+    @BindView(R.id.photo)
+    ImageView photo;
+
     Double lotitude;
     Double longitude;
+    IWorkWithFIles workWithFIles;
 
     TrackingV1 thisTrackingV1;
     EventV1 thisEventV1;
@@ -118,6 +129,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
         sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
 
         eventDetailsPresenter=new EventDetailsPresenterImpl(sharedPreferences,intent);
@@ -262,6 +274,21 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         }else{
             getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
             geoposition_title.setVisibility(View.GONE);
+        }
+        if(thisEventV1.getPhoto()!=null){
+            workWithFIles=new WorkWithFiles(getApplication(),this);
+            photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
+            nullsCard.setVisibility(View.GONE);
+            valuesCard.setVisibility(View.VISIBLE);
+            scaleValue.setVisibility(View.GONE);
+            scaleHint.setVisibility(View.GONE);
+            commentValue.setVisibility(View.GONE);
+            commentHint.setVisibility(View.GONE);
+            ratingValue.setVisibility(View.GONE);
+
+        }else{
+            photo_title.setVisibility(View.GONE);
+            photo.setVisibility(View.GONE);
         }
     }
 

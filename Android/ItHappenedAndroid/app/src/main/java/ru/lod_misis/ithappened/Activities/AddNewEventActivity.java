@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.text.ParseException;
@@ -52,6 +56,7 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
+import ru.lod_misis.ithappened.Dialog.ChoicePhotoDialog;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -61,6 +66,15 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
 import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.R;
+
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
+import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 
 public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,AddNewEventContract.AddNewEventView {
 
@@ -72,6 +86,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     int scaleState;
     int ratingState;
     int geopositionState;
+    int photoState;
 
     UUID trackingId;
 
@@ -99,6 +114,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     LinearLayout ratingContainer;
     @BindView(R.id.geopositionEventContainer)
     LinearLayout geopositionContainer;
+    LinearLayout photoContainer;
 
     @BindView(R.id.commentAccess)
     TextView commentAccess;
@@ -108,6 +124,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     TextView ratingAccess;
     @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
+    TextView photoAccess;
 
     @BindView(R.id.eventCommentControl)
     EditText commentControl;
@@ -128,6 +145,12 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Double latitude = null;
     Double longitude = null;
 
+    IWorkWithFIles workWithFIles;
+    String photoPath;
+    @BindView(R.id.photo)
+    ImageView photo;
+    ChoicePhotoDialog dialog;
+
     LocationManager locationManager;
     Marker marker;
 
@@ -138,10 +161,14 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     AddNewEventContract.AddNewEventPresenter addNeEventPresenter;
 
+    boolean flagPhoto=false;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
+
         ButterKnife.bind(this);
         YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
@@ -162,6 +189,14 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             }
         });
 
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                workWithFIles=new WorkWithFiles(getApplication(),context);
+                dialog=new ChoicePhotoDialog(context,activity,workWithFIles);
+                dialog.show();
+            }
+        });
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,6 +285,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 break;
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -384,7 +420,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         boolean commentFlag = true;
         boolean scaleFlag = true;
         boolean ratingFlag = true;
-        Boolean geopositionFlag = true;
+        boolean geopositionFlag = true;
+        boolean photoFlag = true;
 
         if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
             commentFlag = false;
@@ -400,24 +437,25 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         if (geopositionState == 2 && (latitude == null || longitude == null)) {
             geopositionFlag = false;
         }
-
+        if (photoState == 2 && photoPath==null) {
+            photoFlag = false;
+        }
 
         String comment = null;
         Double scale = null;
         Rating rating = null;
 
 
-        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
+        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag&&photoFlag) {
             if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
-                comment = commentControl.getText().toString().trim();
-            }
+                comment = commentControl.getText().toString().trim();}
             if (!(ratingControl.getRating() == 0)) {
                 rating = new Rating((int) (ratingControl.getRating() * 2));
             }
             if (!scaleControl.getText().toString().isEmpty()) {
                 try {
                     scale = Double.parseDouble(scaleControl.getText().toString().trim());
-                    addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude),trackingId);
+                    addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
                     YandexMetrica.reportEvent("Пользователь добавил событие");
 
 
@@ -435,7 +473,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                         e.printStackTrace();
                     }
                 }
-                addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude),trackingId);
+                addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
 
 
@@ -443,7 +481,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         } else {
             showMessage("Заполните поля с *");
         }
-    }
+
+}
     private void calculateState(){
         commentState = calculateState(trackingV1.GetCommentCustomization());
         ratingState = calculateState(trackingV1.GetRatingCustomization());
@@ -498,6 +537,32 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
 
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!=RESULT_OK){
+            dialog.cancel();
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =(((("+"\n"+"Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
+            return;
+       }
+        if(requestCode==1){
+
+            Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
+            photoPath =workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
+            flagPhoto=true;
+            dialog.cancel();
+        }
+        if(requestCode==2){
+            Picasso.get().load(data.getData()).into(photo);
+            photoPath =workWithFIles.saveBitmap(data.getData());
+            flagPhoto=true;
+            dialog.cancel();
+        }
+    }
 }
 
 
