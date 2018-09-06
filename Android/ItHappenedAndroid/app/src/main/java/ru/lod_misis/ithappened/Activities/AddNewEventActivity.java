@@ -67,13 +67,9 @@ import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
 import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.R;
 
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 
 public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,AddNewEventContract.AddNewEventView {
@@ -159,7 +155,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Context context;
     Activity activity;
 
-    AddNewEventContract.AddNewEventPresenter addNeEventPresenter;
+    AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
 
     boolean flagPhoto=false;
 
@@ -173,9 +169,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        addNeEventPresenter=new AddNewEventPresenterImpl(sharedPreferences);
-        addNeEventPresenter.attachView(this);
-        addNeEventPresenter.init(this);
+        addNewEventPresenter =new AddNewEventPresenterImpl(sharedPreferences);
+        addNewEventPresenter.attachView(this);
+        addNewEventPresenter.init(this);
     }
 
     @Override
@@ -201,7 +197,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNeEventPresenter.addNewEvent();
+                addNewEventPresenter.addNewEvent();
             }
         });
         scaleContainer.setOnClickListener(new View.OnClickListener() {
@@ -311,7 +307,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 CameraUpdate cameraUpdate;
                 map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    addNeEventPresenter.requestPermission(1);
+                    addNewEventPresenter.requestPermission(1);
                 } else {
                     Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     Log.d("test position", location.getLongitude() + "");
@@ -413,7 +409,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     @Override
     public void finishAddEventActivity() {
         finish();
-        addNeEventPresenter.detachView();
+        addNewEventPresenter.detachView();
     }
 
     private void addEvent(){
@@ -455,7 +451,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             if (!scaleControl.getText().toString().isEmpty()) {
                 try {
                     scale = Double.parseDouble(scaleControl.getText().toString().trim());
-                    addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
+                    addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
                     YandexMetrica.reportEvent("Пользователь добавил событие");
 
 
@@ -473,7 +469,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                         e.printStackTrace();
                     }
                 }
-                addNeEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
+                addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
 
 

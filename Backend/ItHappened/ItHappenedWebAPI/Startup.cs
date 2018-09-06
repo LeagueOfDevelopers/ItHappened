@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
+using AspNetCoreRateLimit;
 using ItHappenedDomain.Domain;
 using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
-using ItHappenedWebAPI.Middlewares;
 using ItHappenedWebAPI.Security;
 using Loggly;
 using Loggly.Config;
@@ -40,7 +40,14 @@ namespace ItHappenedWebAPI
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
 
-      var securityConfiguration = Configuration.GetSection("Security");
+	    services.AddOptions();
+	    services.AddMemoryCache();
+	    services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+	    services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+	    services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+	    services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+
+			var securityConfiguration = Configuration.GetSection("Security");
 
       var securitySettings = new SecuritySettings(securityConfiguration["Issue"],
         securityConfiguration["AccessEncryptionKey"],
@@ -98,8 +105,7 @@ namespace ItHappenedWebAPI
 
       var userList = new UserList(db);
       services
-        .AddSingleton<UserList>(userList)
-        .AddSingleton<ErrorHandlingMiddleware>();
+        .AddSingleton<UserList>(userList);
       services.AddMvc(o =>
       {
         o.Filters.Add(new ActionFilter());
@@ -115,9 +121,9 @@ namespace ItHappenedWebAPI
         app.UseDeveloperExceptionPage();
       }
 
-      app.DomainErrorHandlingMiddleware();
+	    app.UseIpRateLimiting();
 
-      app.UseMvc();
+			app.UseMvc();
     }
 
     private void StartLogging()
@@ -150,5 +156,5 @@ namespace ItHappenedWebAPI
       Log.Information("Loggly started");
       Log.Information("Splunk started");
     }
-  }
+	}
 }
