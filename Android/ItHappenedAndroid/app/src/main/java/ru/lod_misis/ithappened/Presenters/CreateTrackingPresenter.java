@@ -13,8 +13,12 @@ public class CreateTrackingPresenter implements CreateTrackingContract.CreateTra
     FactCalculator factCalculator;
     SharedPreferences sharedPreferences;
 
-    public CreateTrackingPresenter(SharedPreferences sharedPreferences){
+    public CreateTrackingPresenter(SharedPreferences sharedPreferences,
+                                   ITrackingRepository trackingRepository,
+                                   FactCalculator factCalculator){
         this.sharedPreferences=sharedPreferences;
+        this.trackingRepository = trackingRepository;
+        this.factCalculator = factCalculator;
     }
     @Override
     public void init() {
@@ -43,8 +47,6 @@ public class CreateTrackingPresenter implements CreateTrackingContract.CreateTra
     @Override
     public void saveNewTracking(TrackingV1 newTrackingV1) {
         if(isViewAttached()){
-            trackingRepository= UserDataUtils.setUserDataSet(sharedPreferences);
-            factCalculator=new FactCalculator(trackingRepository);
             trackingRepository.AddNewTracking(newTrackingV1);
             factCalculator.calculateFacts();
             createTrackingView.showMessage("Отслеживание добавлено");
