@@ -50,4 +50,18 @@
     <string name="metrica_user_logout">Пользователь вышел из профиля</string>
     <string name="metrica_delete_tracking">Пользователь удалил отслеживание</string>
     <string name="metrica_user_login">Пользователь привязал аккаунт к google</string>
+    <string name="metrica_user_last_activity_add_event">Последний экран, посещенный пользователем - добавить событие</string>
+    <string name="metrica_user_last_activity_add_tracking">Последний экран, посещенный пользователем - добавить отслеживание</string>
+    <string name="metrica_user_last_activity_edit_event">Последний экран, посещенный пользователем - изменить событие</string>
+    <string name="metrica_user_last_activity_edit_tracking">Последний экран, посещенный пользователем - изменить отслеживание</string>
+    <string name="metrica_user_last_activity_event_details">Последний экран, посещенный пользователем - информация о событии</string>
+    <string name="metrica_user_last_activity_events_for_tracking">Последний экран, посещенный пользователем - все события отслеживания</string>
+    <string name="metrica_user_last_activity_events_ref">Последний экран, посещенный пользователем - ссылка на событие</string>
+    <string name="metrica_user_time_on_activity_add_event">Время, проведенное пользователем на экране "Добавить событие"</string>
+    <string name="metrica_user_time_on_activity_add_tracking">Время, проведенное пользователем на экране "Добавить отслеживание"</string>
+    <string name="metrica_user_time_on_activity_edit_event">Время, проведенное пользователем на экране "Изменить событие"</string>
+    <string name="metrica_user_time_on_activity_edit_tracking">Время, проведенное пользователем на экране "Изменить отслеживание"</string>
+    <string name="metrica_user_time_on_activity_event_details">Время, проведенное пользователем на экране "Информация о событии"</string>
+    <string name="metrica_user_time_on_activity_events_for_tracking">Время, проведенное пользователем на экране "Все события отслеживания"</string>
+    <string name="metrica_user_time_on_activity_events_ref">Время, проведенное пользователем на экране "Ссылка на событие"</string>
 </resources>

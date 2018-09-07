@@ -6,10 +6,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.yandex.metrica.YandexMetrica;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.R;
 
 public class EventsRefActivity extends AppCompatActivity {
+
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,8 +52,28 @@ public class EventsRefActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        UserOpenAnActivityDateTime = DateTime.now();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_events_ref), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_events_ref));
+    }
+
+    @Override
     public void onBackPressed() {
         this.finish();
-
     }
 }

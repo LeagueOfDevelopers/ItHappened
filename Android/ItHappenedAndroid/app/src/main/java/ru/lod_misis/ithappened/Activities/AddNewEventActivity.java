@@ -40,12 +40,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.yandex.metrica.YandexMetrica;
 
+import org.joda.time.DateTime;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -138,6 +142,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     TrackingV1 trackingV1;
 
     Context context;
+
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -346,11 +354,26 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UserOpenAnActivityDateTime = DateTime.now();
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_from_add_event));
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_add_event), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_add_event));
     }
 
     @Override

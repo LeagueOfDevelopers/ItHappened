@@ -21,6 +21,10 @@ import android.widget.Toast;
 import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
+import org.joda.time.DateTime;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -138,6 +142,10 @@ public class EditTrackingActivity extends AppCompatActivity {
     int stateForGeoposition;
 
     TrackingCustomization geoposition;
+
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -543,9 +551,25 @@ public class EditTrackingActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        UserOpenAnActivityDateTime = DateTime.now();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_tracking));
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_edit_tracking), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_edit_tracking));
     }
 
     private int calculateState(TrackingCustomization customization,

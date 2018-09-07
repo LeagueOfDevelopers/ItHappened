@@ -31,7 +31,7 @@ public class FrequencyTrendChangingFactUnitTest {
 
     // STRESS TEST
 //    @Test
-//    public void FrequencyTrendChangingFactStressTest_FactDoesnotRaiseExceptions() {
+//    public void FrequencyTrendChangingFactStressTest_FactDoesNotRaiseExceptions() {
 //        Random gen = new Random();
 //        int i = 1;
 //        DateTime time = DateTime.now();
