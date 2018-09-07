@@ -2,9 +2,11 @@ package ru.lod_misis.ithappened.Activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -145,7 +148,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     String photoPath;
     @BindView(R.id.photo)
     ImageView photo;
-    ChoicePhotoDialog dialog;
+    AlertDialog.Builder dialog;
 
     LocationManager locationManager;
     Marker marker;
@@ -159,6 +162,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     boolean flagPhoto=false;
 
+    String uriPhotoFromCamera;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -189,7 +193,24 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             @Override
             public void onClick(View view) {
                 workWithFIles=new WorkWithFiles(getApplication(),context);
-                dialog=new ChoicePhotoDialog(context,activity,workWithFIles);
+                dialog=new AlertDialog.Builder(context);
+                dialog.setTitle(R.string.title_dialog_for_photo);
+                dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i){
+                            case 0:{
+                                pickGallery();
+                                break;
+                            }
+                            case 1:{
+                                pickCamera();
+                                break;
+                            }
+                        }
+                    }
+                });
+
                 dialog.show();
             }
         });
@@ -541,7 +562,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode!=RESULT_OK){
-            dialog.cancel();
+
             Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =(((("+"\n"+"Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
             return;
        }
@@ -550,13 +571,31 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
             photoPath =workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
             flagPhoto=true;
-            dialog.cancel();
+
         }
         if(requestCode==2){
             Picasso.get().load(data.getData()).into(photo);
             photoPath =workWithFIles.saveBitmap(data.getData());
             flagPhoto=true;
-            dialog.cancel();
+
+        }
+
+    }
+    private void pickCamera(){
+        if(workWithFIles!=null){
+        Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        uriPhotoFromCamera=workWithFIles.generateFileUri(1).toString();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,workWithFIles.generateFileUri(1));
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        activity.startActivityForResult(intent,1);}
+    }
+    private void pickGallery(){
+        if(workWithFIles!=null){
+        Intent intent=new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivityForResult(intent,2);
+        }
         }
     }
 }

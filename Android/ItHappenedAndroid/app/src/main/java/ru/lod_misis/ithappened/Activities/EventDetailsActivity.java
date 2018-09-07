@@ -249,11 +249,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             this.longitude=thisEventV1.getLongitude();
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            scaleValue.setVisibility(View.GONE);
-            scaleHint.setVisibility(View.GONE);
-            commentValue.setVisibility(View.GONE);
-            commentHint.setVisibility(View.GONE);
-            ratingValue.setVisibility(View.GONE);
+
 
             supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
@@ -279,12 +275,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             workWithFIles=new WorkWithFiles(getApplication(),this);
             photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
             nullsCard.setVisibility(View.GONE);
-            valuesCard.setVisibility(View.VISIBLE);
-            scaleValue.setVisibility(View.GONE);
-            scaleHint.setVisibility(View.GONE);
-            commentValue.setVisibility(View.GONE);
-            commentHint.setVisibility(View.GONE);
-            ratingValue.setVisibility(View.GONE);
 
         }else{
             photo_title.setVisibility(View.GONE);

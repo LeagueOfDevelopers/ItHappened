@@ -48,7 +48,6 @@ public class EditTrackingActivity extends AppCompatActivity {
 
     @BindView(R.id.editTitleOfTracking)
     EditText trackingName;
-
     @BindView(R.id.ratingTextEnabled)
     TextView ratingEnabled;
     @BindView(R.id.commentTextEnabled)
@@ -57,6 +56,7 @@ public class EditTrackingActivity extends AppCompatActivity {
     TextView scaleEnabled;
     @BindView(R.id.geopositionTextEnabled)
     TextView geopositionEnabled;
+    @BindView(R.id.photoTextEnabled)
     TextView photoEnabled;
 
     @BindView(R.id.colorPicker)
