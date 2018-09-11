@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ItHappenedDomain.Domain
+﻿namespace ItHappenedDomain.Domain
 {
   public enum TrackingCustomization
   {

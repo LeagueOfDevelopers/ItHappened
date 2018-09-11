@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using ItHappenedDomain.Application;
 using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Models;
 using ItHappenedWebAPI.Security;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ItHappenedWebAPI.Controllers
 {

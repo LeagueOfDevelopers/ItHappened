@@ -2,7 +2,6 @@
 using System.Text;
 using AspNetCoreRateLimit;
 using ItHappenedDomain.Domain;
-using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Security;
 using Loggly;
@@ -11,14 +10,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.Splunk;
 
 namespace ItHappenedWebAPI
 {
