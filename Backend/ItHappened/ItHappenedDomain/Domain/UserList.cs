@@ -87,8 +87,6 @@ namespace ItHappenedDomain.Domain
       return user.Count() != 0;
     }
 
-    private IMongoDatabase db;
-
     public RegistrationResponse TestRegistration(string userId)
     {
       var collection = db.GetCollection<User>("Users");
@@ -117,5 +115,7 @@ namespace ItHappenedDomain.Domain
       };
       return toReturn;
     }
+
+    private IMongoDatabase db;
   }
 }
