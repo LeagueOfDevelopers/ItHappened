@@ -339,9 +339,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     addNewEventPresenter.requestPermission(1);
                 } else {
-                    Location location = mYlocation;
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if (trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required) {
-                        marker = map.addMarker(new MarkerOptions().position(new LatLng(myLatitude, mylongitude)));
+                        marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
                         latitude = marker.getPosition().latitude;
                         longitude = marker.getPosition().longitude;
                         marker.setDraggable(true);
@@ -579,7 +579,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, 1000 * 10, 10,
                     locationListener);
-            locationListener.getInit();
+            supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            initMap();
         }
     }
 
@@ -628,26 +629,16 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         }
     }
 
-    private void updateMyPosition(Location location) {
-        myLatitude = location.getLatitude();
-        mylongitude = location.getLongitude();
-        mYlocation = location;
-    }
 
-    private interface MyLocationListener extends LocationListener {
-        void getInit();
-    }
 
-    private MyLocationListener locationListener = new MyLocationListener() {
-        @Override
-        public void getInit() {
-            supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            initMap();
-        }
+
+
+    private LocationListener locationListener = new LocationListener() {
+
 
         @Override
         public void onLocationChanged(Location location) {
-            updateMyPosition(location);
+            //Эта хрень нужна чтобы возращалась позиция!!!!
         }
 
         @Override
