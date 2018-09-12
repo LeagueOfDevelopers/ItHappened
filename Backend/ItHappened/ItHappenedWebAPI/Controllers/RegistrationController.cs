@@ -8,11 +8,11 @@ namespace ItHappenedWebAPI.Controllers
   public class RegistrationController : Controller
   {
     private readonly IJwtIssuer _jwtIssuer;
-    private readonly UserList _userList;
+    private readonly ITrackingManager _trackingManager;
 
-    public RegistrationController(UserList users, IJwtIssuer jwtIssuer)
+    public RegistrationController(ITrackingManager manager, IJwtIssuer jwtIssuer)
     {
-      _userList = users;
+      _trackingManager = manager;
       _jwtIssuer = jwtIssuer;
     }
 
@@ -20,7 +20,7 @@ namespace ItHappenedWebAPI.Controllers
     [Route("{idToken}")]
     public IActionResult SignUp([FromRoute] string idToken)
     {
-      var userData = _userList.SignUp(idToken);
+      var userData = _trackingManager.SingIn(idToken);
       if (userData != null)
       {
         userData.Token = _jwtIssuer.IssueAccessJwt(userData.UserId);
@@ -30,13 +30,13 @@ namespace ItHappenedWebAPI.Controllers
       return BadRequest("Registration failed");
     }
 
-    [HttpPost]
-    [Route("reg/{userId}")]
-    public IActionResult Reg([FromRoute] string userId, [FromBody] RegistrationResponse model)
-    {
-      var userData = _userList.TestRegistration(userId);
-      return Ok(userData);
-    }
+    //[HttpPost]
+    //[Route("reg/{userId}")]
+    //public IActionResult Reg([FromRoute] string userId, [FromBody] RegistrationResponse model)
+    //{
+    //  var userData = _manager.TestRegistration(userId);
+    //  return Ok(userData);
+    //}
 
     
   }

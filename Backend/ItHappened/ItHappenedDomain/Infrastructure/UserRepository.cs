@@ -51,18 +51,20 @@ namespace ItHappenedDomain.Infrastructure
       return user.Count() != 0;
     }
 
-    public TrackingCollection GetTrackingCollection(string userId)
+    public User GetUserData(string userId)
     {
       var collection = GetMongoCollection();
-      var user = collection.Find(us => us.UserId == userId);
-
-      var trackingCollection = user.First().TrackingCollection;
-      return trackingCollection;
+      var user = collection.Find(us => us.UserId == userId).First();
+      
+      return user;
     }
 
-    public TrackingCollection SaveTrackingCollection(string userId)
+    public void SaveUserData(User user)
     {
-      return null;
+      var collection = GetMongoCollection();
+
+      var filter = Builders<User>.Filter.Eq(us => us.UserId, user.UserId);
+      collection.ReplaceOne(filter, user);
     }
 
     private IMongoCollection<User> GetMongoCollection()

@@ -8,7 +8,7 @@ using ItHappenedDomain.Models;
 
 namespace ItHappenedDomain.Application
 {
-  public class TrackingManager
+  public class TrackingManager : ITrackingManager
   {
     public TrackingManager(IUserRepository userRepository)
     {
@@ -38,7 +38,26 @@ namespace ItHappenedDomain.Application
     public SynchronisationRequest SynchronizeData(string userId, DateTimeOffset nicknameDateOfChange, 
       string userNickname, List<Tracking> trackingCollection)
     {
-      var toReturn = _userRepository.GetTrackingCollection(userId);
+      var user = _userRepository.GetUserData(userId);
+
+      if (user.NicknameDateOfChange < nicknameDateOfChange)
+      {
+        user.NicknameDateOfChange = nicknameDateOfChange;
+        user.UserNickname = userNickname;
+      }
+
+      List<Tracking> collectionToReturn = user.ChangeTrackingCollection(trackingCollection);
+
+      _userRepository.SaveUserData(user);
+
+      SynchronisationRequest toReturn = new SynchronisationRequest()
+      {
+        NicknameDateOfChange = user.NicknameDateOfChange,
+        UserNickname = user.UserNickname,
+        trackingCollection = collectionToReturn
+      };
+
+      return toReturn;
     }
 
     private readonly IUserRepository _userRepository;

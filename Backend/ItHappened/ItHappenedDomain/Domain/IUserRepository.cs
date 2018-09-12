@@ -7,8 +7,8 @@ namespace ItHappenedDomain.Domain
   public interface IUserRepository
   {
     RegistrationResponse AddOrFindUser(GoogleResponseJson userId);
-    TrackingCollection GetTrackingCollection(string userId);
-    TrackingCollection SaveTrackingCollection(string userId);
+    User GetUserData(string userId);
+    void SaveUserData(User user);
     bool FindUser(string userId);
   }
 }
