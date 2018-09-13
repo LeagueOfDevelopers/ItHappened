@@ -16,7 +16,9 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.ConnectionReciver;
+import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
 import ru.lod_misis.ithappened.di.components.MainComponent;
+import ru.lod_misis.ithappened.di.modules.MainModule;
 
 /**
  * Created by Пользователь on 19.01.2018.
@@ -40,6 +42,7 @@ public class ItHappenedApplication extends Application {
         super.onCreate();
         mInstance = this;
 
+        appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
 
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 

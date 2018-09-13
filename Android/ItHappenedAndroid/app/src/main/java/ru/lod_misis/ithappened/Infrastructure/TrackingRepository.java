@@ -36,6 +36,7 @@ public class TrackingRepository implements ITrackingRepository {
     public TrackingRepository(Context cntxt, String userId) {
         context = cntxt;
         Realm.init(context);
+        configureRealm();
         this.userId = userId;
     }
 
