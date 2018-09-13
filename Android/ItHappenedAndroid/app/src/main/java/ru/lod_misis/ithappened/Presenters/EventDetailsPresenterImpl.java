@@ -20,31 +20,27 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     InMemoryFactRepository factRepository;
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection;
     TrackingService trackingSercvice;
 
-    public EventDetailsPresenterImpl(SharedPreferences sharedPreferences, Intent intent) {
-        factRepository = StaticFactRepository.getInstance();
-        collection = UserDataUtils.setUserDataSet(sharedPreferences);
-        factRepository = StaticFactRepository.getInstance();
-        collection = UserDataUtils.setUserDataSet(sharedPreferences);
-        trackingSercvice = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
-        trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
-        eventId = UUID.fromString(intent.getStringExtra("eventId"));
+    public EventDetailsPresenterImpl(TrackingService service, InMemoryFactRepository factRepository) {
+        this.trackingSercvice = service;
+        this.factRepository = factRepository;
     }
 
     @Override
     public void init() {
         if (isViewAttached()) {
-            eventDetailsView.startedConfiguration(collection, trackingId, eventId);
+            eventDetailsView.startedConfiguration(trackingSercvice, trackingId, eventId);
             eventDetailsView.startConfigurationView();
         }
 
     }
 
     @Override
-    public void attachView(EventDetailsContract.EventDetailsView eventDetailsView) {
+    public void attachView(EventDetailsContract.EventDetailsView eventDetailsView, UUID trackingId, UUID eventId) {
         this.eventDetailsView = eventDetailsView;
+        this.trackingId = trackingId;
+        this.eventId = eventId;
     }
 
     @Override
@@ -62,7 +58,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     @Override
     public void okClicked() {
         trackingSercvice.RemoveEvent(eventId);
-        factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
+        factRepository.onChangeCalculateOneTrackingFacts(trackingSercvice.GetTrackingCollection(), trackingId)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
@@ -71,7 +67,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
                         Log.d("Statistics", "calculateOneTrackingFact");
                     }
                 });
-        factRepository.calculateAllTrackingsFacts(collection.GetTrackingCollection())
+        factRepository.calculateAllTrackingsFacts(trackingSercvice.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {

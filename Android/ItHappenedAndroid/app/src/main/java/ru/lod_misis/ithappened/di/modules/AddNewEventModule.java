@@ -8,7 +8,7 @@ import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
 import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
-@Module
+@Module(includes = MainModule.class)
 public class AddNewEventModule {
 
     @Provides

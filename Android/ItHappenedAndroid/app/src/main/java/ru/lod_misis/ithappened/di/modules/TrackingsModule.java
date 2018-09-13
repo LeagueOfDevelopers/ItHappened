@@ -9,7 +9,7 @@ import ru.lod_misis.ithappened.Presenters.TrackingsContract;
 import ru.lod_misis.ithappened.Presenters.TrackingsPresenterImpl;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
-@Module
+@Module(includes = MainModule.class)
 public class TrackingsModule {
 
     @Provides

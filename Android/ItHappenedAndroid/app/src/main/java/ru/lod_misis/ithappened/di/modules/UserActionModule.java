@@ -8,12 +8,10 @@ import dagger.Provides;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.UserActionContract;
 import ru.lod_misis.ithappened.Presenters.UserActionPresenterImpl;
-import ru.lod_misis.ithappened.di.scopes.UserActionScope;
 
 @Module(includes = {MainModule.class})
 public class UserActionModule {
 
-    @UserActionScope
     @Provides
     public UserActionContract.UserActionPresenter provideUserActionPresenter(Context context,
                                                                              SharedPreferences sharedPreferences,

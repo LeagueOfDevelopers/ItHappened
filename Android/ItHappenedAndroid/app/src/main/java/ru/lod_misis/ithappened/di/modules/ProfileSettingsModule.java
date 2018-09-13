@@ -8,7 +8,7 @@ import dagger.Provides;
 import ru.lod_misis.ithappened.Presenters.ProfileSettingsFragmentContract;
 import ru.lod_misis.ithappened.Presenters.ProfileSettingsFragmentPresenterImpl;
 
-@Module
+@Module(includes = MainModule.class)
 public class ProfileSettingsModule {
 
     @Provides

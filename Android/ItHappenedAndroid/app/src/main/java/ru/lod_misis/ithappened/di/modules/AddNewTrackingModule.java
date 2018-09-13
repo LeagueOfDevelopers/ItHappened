@@ -8,7 +8,7 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingPresenter;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
-@Module
+@Module(includes = MainModule.class)
 public class AddNewTrackingModule {
 
     @Provides

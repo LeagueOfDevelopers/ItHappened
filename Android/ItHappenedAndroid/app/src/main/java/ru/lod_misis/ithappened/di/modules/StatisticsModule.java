@@ -9,7 +9,7 @@ import ru.lod_misis.ithappened.Presenters.StatisticsContract;
 import ru.lod_misis.ithappened.Presenters.StatisticsInteractorImpl;
 import ru.lod_misis.ithappened.Presenters.StatisticsPresenterImpl;
 
-@Module
+@Module(includes = MainModule.class)
 public class StatisticsModule {
 
     @Provides

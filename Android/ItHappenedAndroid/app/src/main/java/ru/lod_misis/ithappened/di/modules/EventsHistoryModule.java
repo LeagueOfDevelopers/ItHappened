@@ -6,7 +6,7 @@ import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
 
-@Module
+@Module(includes = MainModule.class)
 public class EventsHistoryModule {
 
     @Provides

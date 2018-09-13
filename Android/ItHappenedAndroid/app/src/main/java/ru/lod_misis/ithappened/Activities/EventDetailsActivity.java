@@ -111,7 +111,9 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
 
-        eventDetailsPresenter.attachView(this);
+        eventDetailsPresenter.attachView(this,
+                UUID.fromString(intent.getStringExtra("trackingId")),
+                UUID.fromString("eventId"));
         eventDetailsPresenter.init();
 
     }
@@ -256,13 +258,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     }
 
     @Override
-    public void startedConfiguration(ITrackingRepository collection, UUID trackingId, UUID eventId) {
+    public void startedConfiguration(TrackingService service, UUID trackingId, UUID eventId) {
 
-        setTitle(collection.GetTracking(trackingId).GetTrackingName());
+        setTitle(service.GetTrackingById(trackingId).GetTrackingName());
         this.eventId = eventId;
         this.trackingId = trackingId;
-        thisEventV1 = collection.GetTracking(trackingId).GetEvent(eventId);
-        thisTrackingV1 = collection.GetTracking(trackingId);
+        thisEventV1 = service.GetTrackingById(trackingId).GetEvent(eventId);
+        thisTrackingV1 = service.GetTrackingById(trackingId);
         thisEventV1 = thisTrackingV1.GetEvent(eventId);
         thisDate = thisEventV1.GetEventDate();
 
