@@ -1,14 +1,20 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -20,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -34,6 +41,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.text.ParseException;
@@ -48,6 +56,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
+import ru.lod_misis.ithappened.Dialog.ChoicePhotoDialog;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
@@ -57,6 +66,16 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
+
+import ru.lod_misis.ithappened.Utils.UserDataUtils;
+
+import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
+import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
+
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
@@ -77,6 +96,7 @@ public class EditEventActivity extends AppCompatActivity {
     int scaleState;
     int ratingState;
     int geopositionState;
+    int photoState;
 
     UUID trackingId;
     UUID eventId;
@@ -89,6 +109,8 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout ratingContainer;
     @BindView(R.id.geopositionEventContainerEdit)
     LinearLayout geopositionContainer;
+    @BindView(R.id.photoEventContainerEdit)
+    LinearLayout photoContainer;
 
     @BindView(R.id.commentAccessEdit)
     TextView commentAccess;
@@ -98,6 +120,8 @@ public class EditEventActivity extends AppCompatActivity {
     TextView ratingAccess;
     @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
+    @BindView(R.id.photoAccessEdit)
+    TextView photoAccess;
 
     @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
@@ -113,6 +137,13 @@ public class EditEventActivity extends AppCompatActivity {
     @BindView(R.id.editEvent)
     Button addEvent;
 
+    IWorkWithFIles workWithFIles;
+    String photoPath;
+    @BindView(R.id.photoEdit)
+    ImageView photo;
+    AlertDialog.Builder dialog;
+    Boolean flagPhoto=false;
+
     TrackingV1 trackingV1;
     EventV1 eventV1;
 
@@ -123,7 +154,10 @@ public class EditEventActivity extends AppCompatActivity {
     Double latitude = null;
     Double longitude = null;
 
+    String uriPhotoFromCamera;
+
     Context context;
+    Activity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,18 +165,17 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
         ButterKnife.bind(this);
 
-        ItHappenedApplication.getAppComponent().inject(this);
+        context=this;
+        activity=this;
 
-        context = this;
+        ItHappenedApplication.getAppComponent().inject(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
         eventId = UUID.fromString(getIntent().getStringExtra("eventId"));
 
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
 
@@ -163,11 +196,13 @@ public class EditEventActivity extends AppCompatActivity {
         ratingState = calculateState(trackingV1.GetRatingCustomization());
         scaleState = calculateState(trackingV1.GetScaleCustomization());
         geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
-
+        photoState=calculateState(trackingV1.GetPhotoCustomization());
+        photoContainer.setVisibility(View.VISIBLE);
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
         calculateUX(geopositionContainer, geopositionAccess, geopositionState);
+        calculateUX(photoContainer,photoAccess,photoState);
 
         if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
             scaleType.setText(trackingV1.getScaleName());
@@ -225,6 +260,7 @@ public class EditEventActivity extends AppCompatActivity {
                 boolean scaleFlag = true;
                 boolean ratingFlag = true;
                 boolean geopositionFlag = true;
+                boolean photoFlag = true;
 
                 if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
                     commentFlag = false;
@@ -239,6 +275,9 @@ public class EditEventActivity extends AppCompatActivity {
                 }
                 if (geopositionState == 2 && (latitude == null || longitude == null)) {
                     geopositionFlag = false;
+                }
+                if(photoState == 2 && !flagPhoto){
+                    photoFlag = false;
                 }
 
                 String comment = null;
@@ -265,7 +304,7 @@ public class EditEventActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
+                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath, eventDate);
                             YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
@@ -300,32 +339,40 @@ public class EditEventActivity extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
+                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath,eventDate);
                         YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
+                        new FactCalculator(trackingCollection).calculateFactsForAddNewEventActivity(trackingId);
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
                         finishActivity();
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                workWithFIles=new WorkWithFiles(getApplication(),context);
+                dialog=new AlertDialog.Builder(context);
+                dialog.setTitle(R.string.title_dialog_for_photo);
+                dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i){
+                            case 0:{
+                                pickGallery();
+                                break;
+                            }
+                            case 1:{
+                                pickCamera();
+                                break;
+                            }
+                        }
+                    }
+                });
+
+                dialog.show();
             }
         });
 
@@ -453,5 +500,40 @@ public class EditEventActivity extends AppCompatActivity {
                         .build()
         );
         map.moveCamera(cameraUpdate);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!=RESULT_OK){
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =(((("+"\n"+"Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(requestCode==1){
+            Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
+            photoPath =workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
+            flagPhoto=true;
+        }
+        if(requestCode==2){
+            Picasso.get().load(data.getData()).into(photo);
+            photoPath =workWithFIles.saveBitmap(data.getData());
+            flagPhoto=true;
+        }
+    }
+    private void pickCamera(){
+        if(workWithFIles!=null){
+            Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            uriPhotoFromCamera=workWithFIles.generateFileUri(1).toString();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,workWithFIles.generateFileUri(1));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivityForResult(intent,1);}
+    }
+    private void pickGallery(){
+        if(workWithFIles!=null){
+            Intent intent=new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            if (intent.resolveActivity(activity.getPackageManager()) != null) {
+                activity.startActivityForResult(intent,2);
+            }
+        }
     }
 }

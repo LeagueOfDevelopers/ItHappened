@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Text;
+using AspNetCoreRateLimit;
 using ItHappenedDomain.Domain;
-using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
-using ItHappenedWebAPI.Middlewares;
 using ItHappenedWebAPI.Security;
 using Loggly;
 using Loggly.Config;
@@ -11,14 +10,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.Splunk;
 
 namespace ItHappenedWebAPI
 {
@@ -39,6 +36,13 @@ namespace ItHappenedWebAPI
       var connectionString = "mongodb://localhost";
       var client = new MongoClient(connectionString);
       var db = client.GetDatabase("ItHappenedDB");
+
+      services.AddOptions();
+      services.AddMemoryCache();
+      services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+      services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+      services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+      services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
       var securityConfiguration = Configuration.GetSection("Security");
 
@@ -98,8 +102,7 @@ namespace ItHappenedWebAPI
 
       var userList = new UserList(db);
       services
-        .AddSingleton<UserList>(userList)
-        .AddSingleton<ErrorHandlingMiddleware>();
+        .AddSingleton<UserList>(userList);
       services.AddMvc(o =>
       {
         o.Filters.Add(new ActionFilter());
@@ -115,7 +118,7 @@ namespace ItHappenedWebAPI
         app.UseDeveloperExceptionPage();
       }
 
-      app.DomainErrorHandlingMiddleware();
+      app.UseIpRateLimiting();
 
       app.UseMvc();
     }

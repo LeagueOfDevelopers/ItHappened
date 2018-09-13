@@ -236,7 +236,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     />
+
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/geopositionEventContainerEdit"
+                android:id="@+id/photoEventContainerEdit"
+                android:paddingTop="@dimen/inner_margin_between_components"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
+                >
+
+                <TextView
+                    android:id="@+id/photoAccessEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:text="Фотография"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/photoEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_add_a_photo_black_24dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBarForPhotoEdit"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone">
+                </ProgressBar>
+            </LinearLayout>
+
 
 
 

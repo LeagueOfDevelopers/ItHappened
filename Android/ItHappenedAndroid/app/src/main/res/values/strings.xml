@@ -50,4 +50,5 @@
     <string name="metrica_user_logout">Пользователь вышел из профиля</string>
     <string name="metrica_delete_tracking">Пользователь удалил отслеживание</string>
     <string name="metrica_user_login">Пользователь привязал аккаунт к google</string>
+    <string name="title_dialog_for_photo">Загрузить фотографию</string>
 </resources>
