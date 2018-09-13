@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.yandex.metrica.YandexMetrica;
 
+import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.R;
@@ -29,17 +30,17 @@ public class StatisticsInteractorImpl implements StatisticsContract.StatisticsIn
     }
 
     @Override
-    public void loadingFacts(final ITrackingRepository trackingCollection) {
+    public void loadingFacts(final TrackingService service) {
 //        statisticsView.showLoading();
         YandexMetrica.reportEvent(context.getString(R.string.metrica_recount_statistics));
-        factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+        factRepository.calculateAllTrackingsFacts(service.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
                         Log.d("Statistics", "calculate");
-                        factRepository.calculateOneTrackingFacts(trackingCollection.GetTrackingCollection())
+                        factRepository.calculateOneTrackingFacts(service.GetTrackingCollection())
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {

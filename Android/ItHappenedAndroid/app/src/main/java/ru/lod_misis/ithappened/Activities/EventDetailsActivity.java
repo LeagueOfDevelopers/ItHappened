@@ -31,6 +31,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -43,13 +45,13 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Presenters.EventDetailsContract;
 import ru.lod_misis.ithappened.Presenters.EventDetailsPresenterImpl;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 
 public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
 
-    InMemoryFactRepository factRepository;
 
     @BindView(R.id.editEventButton)
     Button editEvent;
@@ -58,8 +60,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection;
-    TrackingService trackingSercvice;
 
     @BindView(R.id.valuesCard)
     CardView valuesCard;
@@ -95,11 +95,11 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     Date thisDate;
     SimpleDateFormat format;
 
-    SharedPreferences sharedPreferences;
-
     Intent intent;
 
+    @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +107,10 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         intent = getIntent();
         ButterKnife.bind(this);
 
-        YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
+        ItHappenedApplication.getAppComponent().inject(this);
 
-        eventDetailsPresenter=new EventDetailsPresenterImpl(sharedPreferences,intent);
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
+
         eventDetailsPresenter.attachView(this);
         eventDetailsPresenter.init();
 
@@ -181,51 +180,51 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void startConfigurationView() {
-        supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         showOrNotNullCard();
 
-        if(thisEventV1.GetRating()!=null) {
+        if (thisEventV1.GetRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
-        }else {
+            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+        } else {
             ratingValue.setVisibility(View.GONE);
         }
         dateValue.setText(format.format(thisDate));
 
-        if(thisEventV1.GetRating()!=null) {
+        if (thisEventV1.GetRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
-        }else {
+            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+        } else {
             ratingValue.setVisibility(View.GONE);
         }
 
-        if(thisEventV1.GetComment()!=null) {
+        if (thisEventV1.GetComment() != null) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             commentValue.setVisibility(View.VISIBLE);
             commentValue.setText(thisEventV1.GetComment());
-        }else {
+        } else {
             commentValue.setVisibility(View.GONE);
             commentHint.setVisibility(View.GONE);
         }
 
-        if(thisEventV1.GetScale()!=null) {
+        if (thisEventV1.GetScale() != null) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue())+" "+ thisTrackingV1.getScaleName());
-        }else {
+            scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue()) + " " + thisTrackingV1.getScaleName());
+        } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);
         }
-        if(thisEventV1.getLongitude()!=null &&thisEventV1.getLotitude()!=null){
+        if (thisEventV1.getLongitude() != null && thisEventV1.getLotitude() != null) {
 
-            this.lotitude=thisEventV1.getLotitude();
-            this.longitude=thisEventV1.getLongitude();
+            this.lotitude = thisEventV1.getLotitude();
+            this.longitude = thisEventV1.getLongitude();
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.GONE);
@@ -238,30 +237,30 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     CameraUpdate cameraUpdate;
-                    map=googleMap;
+                    map = googleMap;
                     map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude,longitude)));
-                    cameraUpdate= CameraUpdateFactory.newCameraPosition(
+                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude, longitude)));
+                    cameraUpdate = CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
-                                    .target(new LatLng(lotitude,longitude))
+                                    .target(new LatLng(lotitude, longitude))
                                     .zoom(5)
                                     .build()
                     );
                     map.moveCamera(cameraUpdate);
                 }
             });
-        }else{
+        } else {
             getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
             geoposition_title.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void startedConfiguration(ITrackingRepository collection,UUID trackingId, UUID eventId) {
+    public void startedConfiguration(ITrackingRepository collection, UUID trackingId, UUID eventId) {
 
         setTitle(collection.GetTracking(trackingId).GetTrackingName());
-        this.eventId=eventId;
-        this.trackingId=trackingId;
+        this.eventId = eventId;
+        this.trackingId = trackingId;
         thisEventV1 = collection.GetTracking(trackingId).GetEvent(eventId);
         thisTrackingV1 = collection.GetTracking(trackingId);
         thisEventV1 = thisTrackingV1.GetEvent(eventId);
@@ -270,8 +269,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         Locale loc = new Locale("ru");
         format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
-
-
 
 
         TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
@@ -305,16 +302,17 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         startActivity(intent);
         eventDetailsPresenter.detachView();
     }
-    private void showOrNotNullCard(){
-        if ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetScaleCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetRatingCustomization()==TrackingCustomization.None)
+
+    private void showOrNotNullCard() {
+        if ((thisTrackingV1.GetCommentCustomization() == TrackingCustomization.None
+                && thisTrackingV1.GetScaleCustomization() == TrackingCustomization.None
+                && thisTrackingV1.GetRatingCustomization() == TrackingCustomization.None)
                 ||
-                ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.Optional&& thisEventV1.GetComment()==null)
-                        &&(thisTrackingV1.GetScaleCustomization()==TrackingCustomization.Optional&& thisEventV1.GetScale()==null)
-                        &&(thisTrackingV1.GetRatingCustomization()==TrackingCustomization.Optional&& thisEventV1.GetRating()==null)
+                ((thisTrackingV1.GetCommentCustomization() == TrackingCustomization.Optional && thisEventV1.GetComment() == null)
+                        && (thisTrackingV1.GetScaleCustomization() == TrackingCustomization.Optional && thisEventV1.GetScale() == null)
+                        && (thisTrackingV1.GetRatingCustomization() == TrackingCustomization.Optional && thisEventV1.GetRating() == null)
                 )
-                ){
+                ) {
             valuesCard.setVisibility(View.GONE);
             nullsCard.setVisibility(View.VISIBLE);
         }

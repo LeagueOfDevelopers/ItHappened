@@ -108,6 +108,7 @@ public class UserActionsActivity extends AppCompatActivity
         setContentView(R.layout.activity_tracking);
         ButterKnife.bind(this);
         Fabric.with(this, new Crashlytics());
+        ItHappenedApplication.getAppComponent().inject(this);
         userActionPresenter.attachView(this);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);

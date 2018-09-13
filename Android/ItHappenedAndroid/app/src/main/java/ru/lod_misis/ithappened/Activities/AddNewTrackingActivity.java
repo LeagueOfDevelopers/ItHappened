@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,23 +27,20 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingContract;
-import ru.lod_misis.ithappened.Presenters.CreateTrackingPresenter;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class AddNewTrackingActivity extends AppCompatActivity  implements CreateTrackingContract.CreateTrackingView{
 
-    ITrackingRepository trackingRepository;
-    InMemoryFactRepository factRepository;
+    @Inject
     CreateTrackingContract.CreateTrackingPresenter createTrackingPresenter;
-    FactCalculator factCalculator;
 
     @BindView(R.id.editTitleOfTracking)
     EditText trackingName;
@@ -140,16 +136,15 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
 
     Context context;
     Activity activity;
-    Boolean permissionForGPS = false;
-    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        createTrackingPresenter=new CreateTrackingPresenter(sharedPreferences);
+
+        ItHappenedApplication.getAppComponent().inject(this);
+
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
 

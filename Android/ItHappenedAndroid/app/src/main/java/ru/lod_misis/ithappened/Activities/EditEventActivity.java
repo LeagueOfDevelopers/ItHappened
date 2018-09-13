@@ -43,6 +43,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -55,6 +57,7 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import rx.android.schedulers.AndroidSchedulers;
@@ -63,8 +66,11 @@ import rx.schedulers.Schedulers;
 
 public class EditEventActivity extends AppCompatActivity {
 
+    @Inject
     TrackingService trackingService;
+    @Inject
     InMemoryFactRepository factRepository;
+    @Inject
     ITrackingRepository trackingCollection;
 
     int commentState;
@@ -125,15 +131,11 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
         ButterKnife.bind(this);
 
+        ItHappenedApplication.getAppComponent().inject(this);
+
         context = this;
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingCollection=UserDataUtils.setUserDataSet(sharedPreferences);
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
-
-        factRepository = StaticFactRepository.getInstance();
 
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
         eventId = UUID.fromString(getIntent().getStringExtra("eventId"));

@@ -20,20 +20,12 @@ import rx.schedulers.Schedulers;
 
 public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsHistoryPresenter {
 
-    ITrackingRepository repository;
     TrackingService service;
-    Context context;
     EventsHistoryContract.EventsHistoryView eventsHistoryView;
     List<EventV1> eventV1s = new ArrayList<>();
 
-    public EventsHistoryPresenterImpl(ITrackingRepository repository,
-                                      TrackingService service,
-                                      Context context,
-                                      EventsHistoryContract.EventsHistoryView eventsHistoryView) {
-        this.repository = repository;
+    public EventsHistoryPresenterImpl(TrackingService service) {
         this.service = service;
-        this.context = context;
-        this.eventsHistoryView = eventsHistoryView;
     }
 
     @Override
@@ -69,19 +61,20 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 new Action0() {
                     @Override
                     public void call() {
-                        /*eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
-                        eventsRecycler.setAdapter(eventsAdpt);
-
-                        if (filteredEvents.size() == 0) {
-                            filtersHintText.setVisibility(View.VISIBLE);
-                        } else {
-                            filtersHintText.setVisibility(View.GONE);
-                        }
-                        */
                         eventsHistoryView.showLoading(false);
                         eventsHistoryView.showEvents(eventV1s);
                     }
                 });
+    }
+
+    @Override
+    public void onViewAttach(EventsHistoryContract.EventsHistoryView view) {
+        this.eventsHistoryView = view;
+    }
+
+    @Override
+    public void onViewDettach() {
+        eventsHistoryView = null;
     }
 
     @Override

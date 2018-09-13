@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -27,6 +29,7 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class EventsForTrackingActivity extends AppCompatActivity {
 
@@ -44,7 +47,9 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     List<EventV1> eventV1s;
     UUID trackingId;
 
+    @Inject
     ITrackingRepository trackingsCollection;
+    @Inject
     TrackingService trackingService;
     int trackingPosition;
 
@@ -61,6 +66,8 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_hitroy_for_tracking));
 
+        ItHappenedApplication.getAppComponent().inject(this);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -69,12 +76,6 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
 
         trackingId = UUID.fromString(intent.getStringExtra("id"));
-
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingsCollection=UserDataUtils.setUserDataSet(sharedPreferences);
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingsCollection);
-
 
         thisTrackingV1 = trackingsCollection.GetTracking(trackingId);
         actionBar.setTitle(thisTrackingV1.GetTrackingName());

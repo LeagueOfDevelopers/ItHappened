@@ -77,7 +77,7 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
         policy = (TextView) getActivity().findViewById(R.id.policy);
 
         sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        logoutPresenter = new ProfileSettingsFragmentPresenterImpl(this ,sharedPreferences, getActivity());
+        logoutPresenter = new ProfileSettingsFragmentPresenterImpl(sharedPreferences, getActivity());
 
         new ProfileSettingsFragment.DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
 
