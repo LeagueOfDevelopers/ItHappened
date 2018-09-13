@@ -3,7 +3,6 @@ package ru.lod_misis.ithappened.di.components;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import dagger.Module;
 import ru.lod_misis.ithappened.Activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.Activities.AddNewTrackingActivity;
 import ru.lod_misis.ithappened.Activities.EditEventActivity;
@@ -11,6 +10,8 @@ import ru.lod_misis.ithappened.Activities.EditTrackingActivity;
 import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
+import ru.lod_misis.ithappened.Fragments.DeleteEventFromFragmentDialog;
+import ru.lod_misis.ithappened.Fragments.DeleteTrackingFragment;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
@@ -58,5 +59,7 @@ public interface MainComponent {
     void inject(EventDetailsActivity activity);
 
     void inject(EventsForTrackingActivity activity);
+
+    void inject(DeleteEventFromFragmentDialog dialog);
 
 }

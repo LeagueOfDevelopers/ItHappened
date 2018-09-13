@@ -9,7 +9,10 @@ import android.os.Bundle;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Presenters.TrackingsContract;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 /**
  * Created by Пользователь on 30.01.2018.

@@ -26,17 +26,22 @@ import com.yandex.metrica.YandexMetrica;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import ru.lod_misis.ithappened.Presenters.ProfileSettingsFragmentContract;
 import ru.lod_misis.ithappened.Presenters.ProfileSettingsFragmentPresenterImpl;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class ProfileSettingsFragment extends Fragment implements ProfileSettingsFragmentContract.ProfileSettingsFragmentView {
 
     TextView userMail;
     TextView userNickName;
     TextView logOut;
+    @Inject
     SharedPreferences sharedPreferences;
+    @Inject
     ProfileSettingsFragmentPresenterImpl logoutPresenter;
 
     TextView policy;
@@ -57,7 +62,8 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+
+        ItHappenedApplication.getAppComponent().inject(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_profile_settings));
 
@@ -69,7 +75,7 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
         getActivity().setTitle("Настройки профиля");
         syncPB = (ProgressBar) getActivity().findViewById(R.id.syncPB);
         layoutFrg = (FrameLayout) getActivity().findViewById(R.id.trackingsFrg);
-        userMail =(TextView) getActivity().findViewById(R.id.mail);
+        userMail = (TextView) getActivity().findViewById(R.id.mail);
         userNickName = (TextView) getActivity().findViewById(R.id.nickname);
         logOut = (TextView) getActivity().findViewById(R.id.logout);
         editNickName = (Button) getActivity().findViewById(R.id.editNickName);
@@ -77,14 +83,13 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
         policy = (TextView) getActivity().findViewById(R.id.policy);
 
         sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        logoutPresenter = new ProfileSettingsFragmentPresenterImpl(sharedPreferences, getActivity());
 
         new ProfileSettingsFragment.DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
 
         userMail.setText(sharedPreferences.getString("UserId", ""));
         userNickName.setText(sharedPreferences.getString("Nick", ""));
 
-        String mystring=new String("Выйти");
+        String mystring = new String("Выйти");
         SpannableString content = new SpannableString(mystring);
         content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
         logOut.setText(content);
@@ -136,10 +141,10 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    public void openWebURL(String inURL ) {
-        Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( inURL ) );
+    public void openWebURL(String inURL) {
+        Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(inURL));
 
-        startActivity( browse );
+        startActivity(browse);
     }
 
     @Override
@@ -156,26 +161,26 @@ public class ProfileSettingsFragment extends Fragment implements ProfileSettings
     }
 
 
-    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
+    private class DownLoadImageTask extends AsyncTask<String, Void, Bitmap> {
         CircleImageView imageView;
 
-        public DownLoadImageTask(CircleImageView imageView){
+        public DownLoadImageTask(CircleImageView imageView) {
             this.imageView = imageView;
         }
 
-        protected Bitmap doInBackground(String...urls){
+        protected Bitmap doInBackground(String... urls) {
             String urlOfImage = urls[0];
             Bitmap logo = null;
-            try{
+            try {
                 InputStream is = new URL(urlOfImage).openStream();
                 logo = BitmapFactory.decodeStream(is);
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return logo;
         }
 
-        protected void onPostExecute(Bitmap result){
+        protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
     }

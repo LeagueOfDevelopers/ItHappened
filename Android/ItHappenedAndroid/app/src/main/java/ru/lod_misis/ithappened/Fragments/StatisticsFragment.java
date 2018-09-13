@@ -39,6 +39,7 @@ import ru.lod_misis.ithappened.Presenters.StatisticsContract;
 import ru.lod_misis.ithappened.Presenters.StatisticsInteractorImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.StatisticsAdapter;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
@@ -76,6 +77,7 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_statistics));
+        ItHappenedApplication.getAppComponent().inject(this);
         return inflater.inflate(ru.lod_misis.ithappened.R.layout.fragment_statistics, null);
 
     }
