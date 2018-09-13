@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Activities.AddNewTrackingActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -25,6 +27,7 @@ import ru.lod_misis.ithappened.Presenters.TrackingsContract;
 import ru.lod_misis.ithappened.Presenters.TrackingsPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.TrackingsAdapter;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class TrackingsFragment extends Fragment implements TrackingsContract.TrackingsView {
@@ -33,8 +36,7 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
     RecyclerView trackingsRecycler;
     TrackingsAdapter trackAdpt;
     FloatingActionButton addTracking;
-    ITrackingRepository trackingCollection;
-    TrackingService trackingService;
+    @Inject
     TrackingsContract.TrackingsPresenter trackingsPresenter;
 
     @Nullable
@@ -51,26 +53,11 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
     @Override
     public void onResume() {
         super.onResume();
+        ItHappenedApplication.getAppComponent().inject(this);
         getActivity().setTitle("Что произошло?");
         hintForTrackings = (TextView) getActivity().findViewById(R.id.hintForTrackingsFragment);
 
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        }else{
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        }
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
-
-        trackingsPresenter = new TrackingsPresenterImpl(
-                trackingService,
-                getActivity(),
-                this,
-                trackingCollection,
-                sharedPreferences);
-
-        trackingsRecycler = (RecyclerView)getActivity().findViewById(R.id.tracingsRV);
+        trackingsRecycler = (RecyclerView) getActivity().findViewById(R.id.tracingsRV);
         trackingsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         trackingsPresenter.loadTrackings();
@@ -90,10 +77,10 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
     @Override
     public void showTrackings(List<TrackingV1> visibleTrackingV1s) {
 
-        if(visibleTrackingV1s.size()!=0){
+        if (visibleTrackingV1s.size() != 0) {
             hintForTrackings.setVisibility(View.INVISIBLE);
         }
-        trackAdpt = new TrackingsAdapter(visibleTrackingV1s,getActivity(), trackingsPresenter);
+        trackAdpt = new TrackingsAdapter(visibleTrackingV1s, getActivity(), trackingsPresenter);
         trackingsRecycler.setAdapter(trackAdpt);
 
     }

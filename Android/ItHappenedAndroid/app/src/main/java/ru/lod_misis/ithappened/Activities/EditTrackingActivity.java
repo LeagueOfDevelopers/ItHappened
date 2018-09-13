@@ -23,6 +23,8 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -34,16 +36,19 @@ import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class EditTrackingActivity extends AppCompatActivity {
 
+    @Inject
     ITrackingRepository trackingRepository;
+    @Inject
     TrackingService service;
+    @Inject
     InMemoryFactRepository factRepository;
 
     @BindView(R.id.editTitleOfTracking)
@@ -164,6 +169,8 @@ public class EditTrackingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
 
+        ItHappenedApplication.getAppComponent().inject(this);
+
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_tracking));
 
         ActionBar actionBar = getSupportActionBar();
@@ -174,11 +181,6 @@ public class EditTrackingActivity extends AppCompatActivity {
         factRepository = StaticFactRepository.getInstance();
 
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        trackingRepository=UserDataUtils.setUserDataSet(sharedPreferences);
-
-        service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
 
         editableTrackingV1 = trackingRepository.GetTracking(trackingId);
 

@@ -16,6 +16,9 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.ConnectionReciver;
+import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
+import ru.lod_misis.ithappened.di.components.MainComponent;
+import ru.lod_misis.ithappened.di.modules.MainModule;
 
 /**
  * Created by Пользователь on 19.01.2018.
@@ -23,6 +26,7 @@ import ru.lod_misis.ithappened.ConnectionReciver;
 
 public class ItHappenedApplication extends Application {
 
+    private static MainComponent appComponent;
     private static ItHappenedApi itHappenedApi;
     private Retrofit retrofit;
     private final String API_KEY = "18db6cc1-8c43-408e-8298-a8f3b04bb595";
@@ -38,6 +42,7 @@ public class ItHappenedApplication extends Application {
         super.onCreate();
         mInstance = this;
 
+        appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
 
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 
@@ -75,6 +80,7 @@ public class ItHappenedApplication extends Application {
                 .build();
 
         itHappenedApi = retrofit.create(ItHappenedApi.class);
+
     }
 
     public static synchronized ItHappenedApplication getInstance() {
@@ -83,6 +89,10 @@ public class ItHappenedApplication extends Application {
 
     public void setConnectionListener(ConnectionReciver.ConnectionReciverListener listener) {
         ConnectionReciver.connectionReciverListener = listener;
+    }
+
+    public static MainComponent getAppComponent(){
+        return appComponent;
     }
 
     public static ItHappenedApi getApi(){
