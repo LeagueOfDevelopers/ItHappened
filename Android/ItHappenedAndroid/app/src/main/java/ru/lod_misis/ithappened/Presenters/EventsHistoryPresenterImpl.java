@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -24,6 +26,7 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
     EventsHistoryContract.EventsHistoryView eventsHistoryView;
     List<EventV1> eventV1s = new ArrayList<>();
 
+    @Inject
     public EventsHistoryPresenterImpl(TrackingService service) {
         this.service = service;
     }

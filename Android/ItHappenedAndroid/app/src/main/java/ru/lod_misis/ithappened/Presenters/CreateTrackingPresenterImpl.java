@@ -2,20 +2,23 @@ package ru.lod_misis.ithappened.Presenters;
 
 import android.content.SharedPreferences;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
 
-public class CreateTrackingPresenter implements CreateTrackingContract.CreateTrackingPresenter {
+public class CreateTrackingPresenterImpl implements CreateTrackingContract.CreateTrackingPresenter {
     CreateTrackingContract.CreateTrackingView createTrackingView;
     ITrackingRepository trackingRepository;
     FactCalculator factCalculator;
     SharedPreferences sharedPreferences;
 
-    public CreateTrackingPresenter(SharedPreferences sharedPreferences,
-                                   ITrackingRepository trackingRepository,
-                                   FactCalculator factCalculator){
+    @Inject
+    public CreateTrackingPresenterImpl(SharedPreferences sharedPreferences,
+                                       ITrackingRepository trackingRepository,
+                                       FactCalculator factCalculator){
         this.sharedPreferences=sharedPreferences;
         this.trackingRepository = trackingRepository;
         this.factCalculator = factCalculator;

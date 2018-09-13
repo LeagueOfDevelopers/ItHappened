@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.yandex.metrica.YandexMetrica;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
@@ -24,6 +26,7 @@ public class StatisticsInteractorImpl implements StatisticsContract.StatisticsIn
     StatisticsContract.StatisticsView statisticsView;
     Context context;
 
+    @Inject
     public StatisticsInteractorImpl(Context context, InMemoryFactRepository factRepository) {
         this.context = context;
         this.factRepository = factRepository;

@@ -9,6 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
@@ -46,6 +47,12 @@ public class MainModule {
     @Provides
     public ITrackingRepository provideTrackingRepository(Context context, String userId){
         return new TrackingRepository(context, userId);
+    }
+
+    @Singleton
+    @Provides
+    public InMemoryFactRepository provideFactRepository(){
+        return new InMemoryFactRepository();
     }
 
     @Singleton

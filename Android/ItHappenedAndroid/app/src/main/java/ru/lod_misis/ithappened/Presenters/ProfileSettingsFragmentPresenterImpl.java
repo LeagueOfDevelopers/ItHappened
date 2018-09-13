@@ -9,6 +9,8 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
@@ -31,6 +33,7 @@ public class ProfileSettingsFragmentPresenterImpl implements ProfileSettingsFrag
     Context context;
     ProfileSettingsFragmentContract.ProfileSettingsFragmentView view;
 
+    @Inject
     public ProfileSettingsFragmentPresenterImpl(SharedPreferences sharedPreferences,
                                                 Context context) {
         this.sharedPreferences = sharedPreferences;

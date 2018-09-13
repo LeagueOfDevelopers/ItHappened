@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -17,6 +19,7 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
     FactCalculator factCalculator;
     TrackingService trackingService;
 
+    @Inject
     public AddNewEventPresenterImpl(ITrackingRepository trackingRepository,
                                     TrackingService trackingService,
                                     FactCalculator factCalculator) {

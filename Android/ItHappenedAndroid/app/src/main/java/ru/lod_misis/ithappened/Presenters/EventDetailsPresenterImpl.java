@@ -6,6 +6,8 @@ import android.util.Log;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
@@ -22,6 +24,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     UUID eventId;
     TrackingService trackingSercvice;
 
+    @Inject
     public EventDetailsPresenterImpl(TrackingService service, InMemoryFactRepository factRepository) {
         this.trackingSercvice = service;
         this.factRepository = factRepository;
