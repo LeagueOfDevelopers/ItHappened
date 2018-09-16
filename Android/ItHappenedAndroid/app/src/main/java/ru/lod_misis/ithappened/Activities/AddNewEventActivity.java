@@ -53,6 +53,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -339,7 +340,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     addNewEventPresenter.requestPermission(1);
                 } else {
-                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    Location location = getLastKnownLocation();
                     if (trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required) {
                         marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
                         latitude = marker.getPosition().latitude;
@@ -574,11 +575,6 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 addNewEventPresenter.requestPermission(1);
             }
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    1000 * 10, 10, locationListener);
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 1000 * 10, 10,
-                    locationListener);
             supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             initMap();
         }
@@ -630,31 +626,25 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
 
-
-
-
-    private LocationListener locationListener = new LocationListener() {
-
-
-        @Override
-        public void onLocationChanged(Location location) {
-            //Эта хрень нужна чтобы возращалась позиция!!!!
+    private Location getLastKnownLocation() {
+        LocationManager mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                addNewEventPresenter.requestPermission(1);
+            }
+            Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
         }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-        }
-    };
+        return bestLocation;
+    }
 }
 
 
