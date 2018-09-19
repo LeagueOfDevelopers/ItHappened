@@ -69,6 +69,7 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.MyGeopositionService;
 import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
 import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.R;
@@ -316,11 +317,15 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("RequestPermission","responseAll");
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("RequestPermission","RequestYes");
+                    stopService(new Intent(this, MyGeopositionService.class));
+                    startService(new Intent(this, MyGeopositionService.class));
                     createAndInitMap();
                 } else {
                     onBackPressed();
@@ -340,7 +345,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     addNewEventPresenter.requestPermission(1);
                 } else {
-                    Location location = getLastKnownLocation();
+
+                    Location location = MyGeopositionService.myLocation;
+                    if(location==null){
+                        location=getLastKnownLocation();
+                    }
                     if (trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required) {
                         marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
                         latitude = marker.getPosition().latitude;
@@ -350,7 +359,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                     cameraUpdate = CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                                    .zoom(8)
+                                    .zoom(15)
                                     .build()
                     );
                     map.moveCamera(cameraUpdate);
@@ -398,7 +407,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void requestPermissionForGeoposition() {
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        Log.d("RequestPermission","Request");
+
     }
 
     @Override
@@ -573,7 +583,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         if (geopositionState == 1 || geopositionState == 2) {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                addNewEventPresenter.requestPermission(1);
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
             supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             initMap();

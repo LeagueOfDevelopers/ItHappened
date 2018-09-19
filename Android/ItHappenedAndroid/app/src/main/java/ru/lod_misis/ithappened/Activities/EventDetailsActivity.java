@@ -261,7 +261,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                     cameraUpdate= CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(lotitude,longitude))
-                                    .zoom(5)
+                                    .zoom(15)
                                     .build()
                     );
                     map.moveCamera(cameraUpdate);
