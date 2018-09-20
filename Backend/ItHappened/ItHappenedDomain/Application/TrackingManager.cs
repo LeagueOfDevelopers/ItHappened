@@ -60,6 +60,35 @@ namespace ItHappenedDomain.Application
       return toReturn;
     }
 
+    public RegistrationResponse TestRegistration(string userId)
+    {
+      var user = _userRepository.GetUserData(userId);
+
+      if (user != null)
+      {
+        return new RegistrationResponse
+        {
+          PicUrl = user.PictureUrl,
+          NicknameDateOfChange = user.NicknameDateOfChange,
+          UserId = user.UserId,
+          UserNickname = user.UserNickname
+        };
+      }
+      DateTimeOffset date = DateTimeOffset.UtcNow;
+      User newUser = new User(userId, "", date);
+
+      _userRepository.SaveUserData(newUser);
+
+      RegistrationResponse toReturn = new RegistrationResponse
+      {
+        NicknameDateOfChange = date,
+        PicUrl = "",
+        UserId = userId,
+        UserNickname = userId
+      };
+      return toReturn;
+    }
+
     private readonly IUserRepository _userRepository;
   }
 }

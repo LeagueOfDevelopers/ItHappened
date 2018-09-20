@@ -30,15 +30,19 @@ namespace ItHappenedWebAPI.Controllers
       return BadRequest("Registration failed");
     }
 
-    //[HttpPost]
-    //[Route("reg/{userId}")]
-    //public IActionResult Reg([FromRoute] string userId, [FromBody] RegistrationResponse model)
-    //{
-    //  var userData = _manager.TestRegistration(userId);
-    //  return Ok(userData);
-    //}
+    [HttpPost]
+    [Route("reg/{userId}")]
+    public IActionResult Reg([FromRoute] string userId)
+    {
+      var userData = _trackingManager.TestRegistration(userId);
 
-    
+      userData.Token = _jwtIssuer.IssueAccessJwt(userData.UserId);
+      userData.RefreshToken = _jwtIssuer.IssueRefreshJwt(userData.UserId);
+
+      return Ok(userData);
+    }
+
+
   }
 
 

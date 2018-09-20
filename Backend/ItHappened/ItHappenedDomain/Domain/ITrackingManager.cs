@@ -10,5 +10,7 @@ namespace ItHappenedDomain.Domain
     bool FindUser(string userId);
     SynchronisationRequest SynchronizeData(string userId, DateTimeOffset nicknameDateOfChange,
       string userNickname, List<Tracking> trackingCollection);
+
+    RegistrationResponse TestRegistration(string userId);
   }
 }

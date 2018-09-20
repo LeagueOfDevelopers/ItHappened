@@ -53,10 +53,13 @@ namespace ItHappenedDomain.Infrastructure
 
     public User GetUserData(string userId)
     {
-      var collection = GetMongoCollection();
-      var user = collection.Find(us => us.UserId == userId).First();
       
-      return user;
+      var collection = GetMongoCollection();
+      var user = collection.Find(us => us.UserId == userId);
+
+      if (user.Count() != 0)
+        return user.First();
+      return null;
     }
 
     public void SaveUserData(User user)
