@@ -1,8 +1,12 @@
 package ru.lod_misis.ithappened.Retrofit;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,6 +20,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.ConnectionReciver;
+import ru.lod_misis.ithappened.MyGeopositionService;
 
 /**
  * Created by Пользователь on 19.01.2018.
@@ -24,10 +29,18 @@ import ru.lod_misis.ithappened.ConnectionReciver;
 public class ItHappenedApplication extends Application {
 
     private static ItHappenedApi itHappenedApi;
-    private Retrofit retrofit;
+    private static ItHappenedApplication mInstance;
     private final String API_KEY = "18db6cc1-8c43-408e-8298-a8f3b04bb595";
     boolean isFirts = false;
-    private static ItHappenedApplication mInstance;
+    private Retrofit retrofit;
+
+    public static synchronized ItHappenedApplication getInstance() {
+        return mInstance;
+    }
+
+    public static ItHappenedApi getApi() {
+        return itHappenedApi;
+    }
 
     public String getAPI_KEY() {
         return API_KEY;
@@ -38,13 +51,19 @@ public class ItHappenedApplication extends Application {
         super.onCreate();
         mInstance = this;
 
+        if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            stopService(new Intent(this,MyGeopositionService.class));
+        }else{
+            stopService(new Intent(this, MyGeopositionService.class));
+            startService(new Intent(this, MyGeopositionService.class));
+        }
 
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         String lastId = sharedPreferences.getString("lastId", "");
 
-        if(lastId.isEmpty()){
+        if (lastId.isEmpty()) {
             isFirts = true;
         }
 
@@ -77,15 +96,8 @@ public class ItHappenedApplication extends Application {
         itHappenedApi = retrofit.create(ItHappenedApi.class);
     }
 
-    public static synchronized ItHappenedApplication getInstance() {
-        return mInstance;
-    }
-
     public void setConnectionListener(ConnectionReciver.ConnectionReciverListener listener) {
         ConnectionReciver.connectionReciverListener = listener;
     }
 
-    public static ItHappenedApi getApi(){
-        return itHappenedApi;
-    }
 }

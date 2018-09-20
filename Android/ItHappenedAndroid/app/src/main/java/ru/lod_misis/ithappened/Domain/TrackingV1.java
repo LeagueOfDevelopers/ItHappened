@@ -186,7 +186,7 @@ public class TrackingV1 extends RealmObject {
         if (editedGeoposition != null)
             SetGeopositionCustomization(editedGeoposition);
         if (editedPhoto != null)
-            SetGeopositionCustomization(editedPhoto);
+            SetPhotoCustomization(editedPhoto);
         if (editedTrackingName != null)
             trackingName = editedTrackingName;
         if (color != null) this.color = color;
