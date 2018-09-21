@@ -53,7 +53,6 @@ namespace ItHappenedDomain.Infrastructure
 
     public User GetUserData(string userId)
     {
-      
       var collection = GetMongoCollection();
       var user = collection.Find(us => us.UserId == userId);
 
