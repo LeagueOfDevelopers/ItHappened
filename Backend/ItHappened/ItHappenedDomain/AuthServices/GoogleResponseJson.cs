@@ -2,7 +2,7 @@
 
 namespace ItHappenedDomain.AuthServices
 {
-  class GoogleResponseJson
+  public class GoogleResponseJson
   {
     public string iss { get; set; }
     public string iat { get; set; }
