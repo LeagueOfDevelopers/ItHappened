@@ -26,6 +26,7 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
