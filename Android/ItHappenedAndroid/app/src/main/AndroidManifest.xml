@@ -12,7 +12,7 @@
 
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true"></uses-feature>
+        android:required="true" />
 
     <application
         android:name=".Retrofit.ItHappenedApplication"
@@ -35,10 +35,10 @@
             android:value="a34afa9902a6b1e67f5f73a97f430acb267fba06" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_API_key"></meta-data>
+            android:value="@string/google_maps_API_key" />
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"></meta-data>
+            android:value="@integer/google_play_services_version" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -64,15 +64,15 @@
         <activity
             android:name=".Activities.AddNewTrackingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyBack"></activity>
+            android:theme="@style/Theme.MyBack" />
         <activity
             android:name=".Activities.AddNewEventActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyBack"></activity>
+            android:theme="@style/Theme.MyBack" />
         <activity
             android:name=".Activities.EventDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyBack"></activity>
+            android:theme="@style/Theme.MyBack" />
         <activity
             android:name=".Activities.EditEventActivity"
             android:label="Изменить событие"
@@ -92,7 +92,13 @@
         <service
             android:name=".MyGeopositionService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+        <service
+            android:name=".NotificationJobService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+        </service>
     </application>
 
 </manifest>

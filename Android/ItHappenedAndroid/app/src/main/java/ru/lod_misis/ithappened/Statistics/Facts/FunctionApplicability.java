@@ -42,6 +42,7 @@ public final class FunctionApplicability  {
         for (TrackingV1 trackingV1 : trackingV1Collection){
             if (!trackingV1.isDeleted()) trckngs.add(trackingV1);
         }
+
         trackingV1Collection = trckngs;
         int trackingCount = 0;
         if (trackingV1Collection.size() < 2) return null;
