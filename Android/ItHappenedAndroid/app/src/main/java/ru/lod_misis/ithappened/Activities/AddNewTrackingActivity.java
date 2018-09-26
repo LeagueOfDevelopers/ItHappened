@@ -536,7 +536,14 @@ public class AddNewTrackingActivity extends AppCompatActivity {
                 }
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, geoposition, scaleNumb, trackingColor);
                 trackingRepository.AddNewTracking(newTrackingV1);
+
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
+                Map<String, Object> customizationMask = new HashMap<>();
+                customizationMask.put("Scale customization", scale);
+                customizationMask.put("Rating customization", rating);
+                customizationMask.put("Comment customization", comment);
+                YandexMetrica.reportEvent(getString(R.string.metrica_user_customization_mask), customizationMask);
+
                 Toast.makeText(getApplicationContext(), "Отслеживание добавлено", Toast.LENGTH_SHORT).show();
                 factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), newTrackingV1.GetTrackingID())
                         .subscribeOn(Schedulers.computation())

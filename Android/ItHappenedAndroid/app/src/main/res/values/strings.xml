@@ -64,4 +64,8 @@
     <string name="metrica_user_time_on_activity_event_details">Время, проведенное пользователем на экране "Информация о событии"</string>
     <string name="metrica_user_time_on_activity_events_for_tracking">Время, проведенное пользователем на экране "Все события отслеживания"</string>
     <string name="metrica_user_time_on_activity_events_ref">Время, проведенное пользователем на экране "Ссылка на событие"</string>
+    <string name="metrica_user_customization_mask">Маска выбранных пользователем кастомизаций</string>
+    <string name="metrica_user_returns_to_application_after_day">Пользователь вернулся в приложение спустя день</string>
+    <string name="metrica_user_returns_to_application_after_week">Пользователь вернулся в приложение спустя неделю</string>
+    <string name="metrica_user_returns_to_application_after_month">Пользователь вернулся в приложение спустя месяц</string>
 </resources>

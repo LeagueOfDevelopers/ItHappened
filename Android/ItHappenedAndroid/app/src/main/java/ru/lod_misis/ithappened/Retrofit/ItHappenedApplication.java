@@ -9,6 +9,9 @@ import com.google.gson.GsonBuilder;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -16,6 +19,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.ConnectionReciver;
+import ru.lod_misis.ithappened.R;
 
 /**
  * Created by Пользователь on 19.01.2018.
@@ -37,7 +41,6 @@ public class ItHappenedApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-
 
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 
