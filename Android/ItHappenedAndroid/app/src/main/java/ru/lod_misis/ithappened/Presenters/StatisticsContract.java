@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.Presenters;
 
+import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 
 /**
@@ -16,6 +17,6 @@ public interface StatisticsContract {
 
     }
     interface StatisticsInteractor{
-        void loadingFacts(ITrackingRepository trackingCollection);
+        void loadingFacts(TrackingService service);
     }
 }

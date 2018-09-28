@@ -21,6 +21,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.ConnectionReciver;
 import ru.lod_misis.ithappened.MyGeopositionService;
+import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
+import ru.lod_misis.ithappened.di.components.MainComponent;
+import ru.lod_misis.ithappened.di.modules.MainModule;
 
 /**
  * Created by Пользователь on 19.01.2018.
@@ -28,6 +31,7 @@ import ru.lod_misis.ithappened.MyGeopositionService;
 
 public class ItHappenedApplication extends Application {
 
+    private static MainComponent appComponent;
     private static ItHappenedApi itHappenedApi;
     private static ItHappenedApplication mInstance;
     private final String API_KEY = "18db6cc1-8c43-408e-8298-a8f3b04bb595";
@@ -50,13 +54,13 @@ public class ItHappenedApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-
         if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             stopService(new Intent(this,MyGeopositionService.class));
         }else{
             stopService(new Intent(this, MyGeopositionService.class));
             startService(new Intent(this, MyGeopositionService.class));
         }
+        appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
 
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 
@@ -94,10 +98,18 @@ public class ItHappenedApplication extends Application {
                 .build();
 
         itHappenedApi = retrofit.create(ItHappenedApi.class);
+
     }
 
     public void setConnectionListener(ConnectionReciver.ConnectionReciverListener listener) {
         ConnectionReciver.connectionReciverListener = listener;
     }
 
+    public static MainComponent getAppComponent(){
+        return appComponent;
+    }
+
+    public static ItHappenedApi getApi(){
+        return itHappenedApi;
+    }
 }

@@ -90,6 +90,11 @@ dependencies {
     implementation 'joda-time:joda-time:2.9.9'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.jakewharton:butterknife:8.8.1'
+
+    //Dependency injection
+    implementation 'com.google.dagger:dagger:2.0'
+    implementation 'org.glassfish:javax.annotation:10.0-b28'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'org.testng:testng:6.9.6'

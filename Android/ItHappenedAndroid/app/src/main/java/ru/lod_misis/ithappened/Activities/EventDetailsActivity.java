@@ -1,6 +1,5 @@
 package ru.lod_misis.ithappened.Activities;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +23,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
@@ -37,6 +34,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -46,12 +45,11 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Fragments.DeleteEventDialog;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Presenters.EventDetailsContract;
 import ru.lod_misis.ithappened.Presenters.EventDetailsPresenterImpl;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
@@ -60,10 +58,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-
 public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
 
-    InMemoryFactRepository factRepository;
 
     @BindView(R.id.editEventButton)
     Button editEvent;
@@ -72,8 +68,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection;
-    TrackingService trackingSercvice;
 
     @BindView(R.id.valuesCard)
     CardView valuesCard;
@@ -115,11 +109,11 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     Date thisDate;
     SimpleDateFormat format;
 
-    SharedPreferences sharedPreferences;
-
     Intent intent;
 
+    @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,13 +121,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         intent = getIntent();
         ButterKnife.bind(this);
 
+        ItHappenedApplication.getAppComponent().inject(this);
+
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
 
-        StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
-
-        eventDetailsPresenter=new EventDetailsPresenterImpl(sharedPreferences,intent);
-        eventDetailsPresenter.attachView(this);
+        eventDetailsPresenter.attachView(this,
+                UUID.fromString(intent.getStringExtra("trackingId")),
+                UUID.fromString("eventId"));
         eventDetailsPresenter.init();
 
     }
@@ -202,51 +196,51 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void startConfigurationView() {
-        supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         showOrNotNullCard();
 
-        if(thisEventV1.GetRating()!=null) {
+        if (thisEventV1.GetRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
-        }else {
+            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+        } else {
             ratingValue.setVisibility(View.GONE);
         }
         dateValue.setText(format.format(thisDate));
 
-        if(thisEventV1.GetRating()!=null) {
+        if (thisEventV1.GetRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
-        }else {
+            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+        } else {
             ratingValue.setVisibility(View.GONE);
         }
 
-        if(thisEventV1.GetComment()!=null) {
+        if (thisEventV1.GetComment() != null) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             commentValue.setVisibility(View.VISIBLE);
             commentValue.setText(thisEventV1.GetComment());
-        }else {
+        } else {
             commentValue.setVisibility(View.GONE);
             commentHint.setVisibility(View.GONE);
         }
 
-        if(thisEventV1.GetScale()!=null) {
+        if (thisEventV1.GetScale() != null) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue())+" "+ thisTrackingV1.getScaleName());
-        }else {
+            scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue()) + " " + thisTrackingV1.getScaleName());
+        } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);
         }
-        if(thisEventV1.getLongitude()!=null &&thisEventV1.getLotitude()!=null){
+        if (thisEventV1.getLongitude() != null && thisEventV1.getLotitude() != null) {
 
-            this.lotitude=thisEventV1.getLotitude();
-            this.longitude=thisEventV1.getLongitude();
+            this.lotitude = thisEventV1.getLotitude();
+            this.longitude = thisEventV1.getLongitude();
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
 
@@ -255,10 +249,10 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     CameraUpdate cameraUpdate;
-                    map=googleMap;
+                    map = googleMap;
                     map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude,longitude)));
-                    cameraUpdate= CameraUpdateFactory.newCameraPosition(
+                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude, longitude)));
+                    cameraUpdate = CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(lotitude,longitude))
                                     .zoom(15)
@@ -267,7 +261,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                     map.moveCamera(cameraUpdate);
                 }
             });
-        }else{
+        } else {
             getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
             geoposition_title.setVisibility(View.GONE);
         }
@@ -283,20 +277,19 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     }
 
     @Override
-    public void startedConfiguration(ITrackingRepository collection,UUID trackingId, UUID eventId) {
+    public void startedConfiguration(TrackingService service, UUID trackingId, UUID eventId) {
 
-        setTitle(collection.GetTracking(trackingId).GetTrackingName());
-        this.eventId=eventId;
-        this.trackingId=trackingId;
-        thisEventV1 = collection.GetTracking(trackingId).GetEvent(eventId);
-        thisTrackingV1 = collection.GetTracking(trackingId);
+        setTitle(service.GetTrackingById(trackingId).GetTrackingName());
+        this.eventId = eventId;
+        this.trackingId = trackingId;
+        thisEventV1 = service.GetTrackingById(trackingId).GetEvent(eventId);
+        thisTrackingV1 = service.GetTrackingById(trackingId);
         thisEventV1 = thisTrackingV1.GetEvent(eventId);
         thisDate = thisEventV1.GetEventDate();
 
         Locale loc = new Locale("ru");
         format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
-
         TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();
         TrackingCustomization ratingCustomization = thisTrackingV1.GetRatingCustomization();
@@ -341,7 +334,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                         &&(thisTrackingV1.GetGeopositionCustomization()==TrackingCustomization.Optional&& thisEventV1.getLongitude()==null && thisEventV1.getLotitude()==null)
                         &&(thisTrackingV1.GetPhotoCustomization()==TrackingCustomization.Optional&& thisEventV1.getPhoto()==null)
                 )
-                ){
+                ) {
             valuesCard.setVisibility(View.GONE);
             nullsCard.setVisibility(View.VISIBLE);
         }

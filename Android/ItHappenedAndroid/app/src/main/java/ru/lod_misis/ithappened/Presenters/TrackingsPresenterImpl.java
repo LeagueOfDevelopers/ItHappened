@@ -23,20 +23,23 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
     private Context context;
     private TrackingsContract.TrackingsView trackingView;
     private FactCalculator factCalculator;
-    private ITrackingRepository repository;
-    private SharedPreferences sharedPreferences;
 
     public TrackingsPresenterImpl(TrackingService service,
                                   Context context,
-                                  TrackingsContract.TrackingsView trackingView,
-                                  ITrackingRepository repository,
-                                  SharedPreferences sharedPreferences) {
+                                  FactCalculator factCalculator) {
         this.service = service;
         this.context = context;
-        this.trackingView = trackingView;
-        this.repository = repository;
-        this.sharedPreferences = sharedPreferences;
-        factCalculator = new FactCalculator(repository);
+        this.factCalculator = factCalculator;
+    }
+
+    @Override
+    public void onViewAttach(TrackingsContract.TrackingsView view) {
+        trackingView = view;
+    }
+
+    @Override
+    public void onViewDettach() {
+        trackingView = null;
     }
 
     @Override
@@ -44,8 +47,8 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
         List<TrackingV1> allTrackingV1s = service.GetTrackingCollection();
         List<TrackingV1> visibleTrackingV1s = new ArrayList<>();
 
-        for(int i = 0; i< allTrackingV1s.size(); i++){
-            if(!allTrackingV1s.get(i).GetStatus()){
+        for (int i = 0; i < allTrackingV1s.size(); i++) {
+            if (!allTrackingV1s.get(i).GetStatus()) {
                 visibleTrackingV1s.add(allTrackingV1s.get(i));
             }
         }
