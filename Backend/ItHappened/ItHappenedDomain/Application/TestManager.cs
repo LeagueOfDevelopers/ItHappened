@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
-using MongoDB.Bson.Serialization.Serializers;
 
 namespace ItHappenedDomain.Application
 {

@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using ItHappenedDomain.Application;
 using ItHappenedDomain.Domain;
 using ItHappenedDomain.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ItHappenedWebAPI.Extensions;
 using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Models;
 using ItHappenedWebAPI.Security;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ItHappenedWebAPI.Controllers
 {
@@ -20,13 +14,13 @@ namespace ItHappenedWebAPI.Controllers
   [Route("synchronization")]
   public class SynchronizationController : Controller
   {
-    private readonly UserList _users;
+    private readonly ITrackingManager _manager;
     private readonly IJwtIssuer _jwtIssuer;
 
-    public SynchronizationController(UserList users, IJwtIssuer jwtIssuer)
+    public SynchronizationController(ITrackingManager manager, IJwtIssuer jwtIssuer)
     {
-      this._users = users;
-      this._jwtIssuer = jwtIssuer;
+      _manager = manager;
+      _jwtIssuer = jwtIssuer;
     }
 
     [HttpPost]
@@ -36,10 +30,10 @@ namespace ItHappenedWebAPI.Controllers
     {
       var userId = HttpContext.GetUserId();
 
-      if (!_users.UserIsExists(userId))
+      if (!_manager.FindUser(userId))
         return BadRequest("User does not exist");
 
-      var response = _users.Synchronisation(userId, request.NicknameDateOfChange, 
+      var response = _manager.SynchronizeData(userId, request.NicknameDateOfChange, 
         request.UserNickname, request.trackingCollection);
       return Ok(response);
     }
@@ -50,7 +44,7 @@ namespace ItHappenedWebAPI.Controllers
     public IActionResult RefreshToken([FromRoute] string refreshToken)
     {
       var userId = HttpContext.GetUserId();
-      if (!_users.UserIsExists(userId))
+      if (!_manager.FindUser(userId))
         return BadRequest("User does not exist");
 
       var response = new RefreshModel
@@ -66,10 +60,10 @@ namespace ItHappenedWebAPI.Controllers
     [Route("{userId}")]
     public IActionResult TestSync([FromRoute] string userId, [FromBody] SynchronisationRequest request)
     {
-      if (!_users.UserIsExists(userId))
+      if (!_manager.FindUser(userId))
         return BadRequest("User does not exist");
 
-      var response = _users.Synchronisation(userId, request.NicknameDateOfChange,
+      var response = _manager.SynchronizeData(userId, request.NicknameDateOfChange,
         userId, request.trackingCollection);
       return Ok(response);
     }
@@ -81,7 +75,7 @@ namespace ItHappenedWebAPI.Controllers
     public IActionResult RefreshToken()
     {
       var userId = HttpContext.GetUserId();
-      if (!_users.UserIsExists(userId))
+      if (!_manager.FindUser(userId))
         return BadRequest("User does not exist");
 
       var response = _jwtIssuer.IssueAccessJwt(userId);

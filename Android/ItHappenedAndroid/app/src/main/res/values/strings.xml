@@ -68,4 +68,5 @@
     <string name="metrica_user_returns_to_application_after_day">Пользователь вернулся в приложение спустя день</string>
     <string name="metrica_user_returns_to_application_after_week">Пользователь вернулся в приложение спустя неделю</string>
     <string name="metrica_user_returns_to_application_after_month">Пользователь вернулся в приложение спустя месяц</string>
+    <string name="title_dialog_for_photo">Загрузить фотографию</string>
 </resources>

@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -55,6 +56,7 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.Subscription;
 
 public class UserActionsActivity extends AppCompatActivity
@@ -107,28 +109,22 @@ public class UserActionsActivity extends AppCompatActivity
         ButterKnife.bind(this);
         Fabric.with(this, new Crashlytics());
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
+        navigationView=findViewById(R.id.nav_view);//Без этой строчки почему то выдает nullPointerExeption
         connectionToken = ConnectionReciver.isConnected();
         sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
         StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId",""));
 
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("Offline", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
+        trackingRepository=UserDataUtils.setUserDataSet(sharedPreferences);
         userActionPresenter = new UserActionPresenterImpl(this, this, sharedPreferences, trackingRepository);
 
         factCalculator = new FactCalculator(trackingRepository);
@@ -154,9 +150,8 @@ public class UserActionsActivity extends AppCompatActivity
         fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
         fTrans.commit();
 
-        syncPB = (ProgressBar) findViewById(R.id.syncPB);
-        layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
-
+        syncPB = findViewById(R.id.syncPB);
+        layoutFrg = findViewById(R.id.trackingsFrg);
         if(sharedPreferences.getString("LastId","").isEmpty()) {
             StaticInMemoryRepository.setInstance(getApplicationContext(),
                     sharedPreferences.getString("UserId", ""));
@@ -166,13 +161,14 @@ public class UserActionsActivity extends AppCompatActivity
             trackingRepository = StaticInMemoryRepository.getInstance();
         }
 
+
         factCalculator.calculateFacts();
 
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -198,31 +194,35 @@ public class UserActionsActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        userNick = (TextView) findViewById(R.id.userNickname);
-        userNick.setText(sharedPreferences.getString("Nick",""));
-        loginButton = (TextView) findViewById(R.id.loginButton);
-        urlUser = (CircleImageView) findViewById(R.id.imageView);
-        lable = (TextView) findViewById(R.id.menuTitle);
-        if(!sharedPreferences.getString("UserId", "").equals("Offline")) {
-            loginButton.setVisibility(View.GONE);
-            new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
-        }else{
-            loginButton.setVisibility(View.VISIBLE);
-            lable.setVisibility(View.GONE);
-            userNick.setVisibility(View.GONE);
-            urlUser.setVisibility(View.GONE);
+        ViewTreeObserver vto = navigationView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener
+                (new ViewTreeObserver.OnGlobalLayoutListener() {@Override public void onGlobalLayout() {
+                    sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                    userNick = (TextView) findViewById(R.id.userNickname);
+                    userNick.setText(sharedPreferences.getString("Nick",""));
+                    loginButton = (TextView) findViewById(R.id.loginButton);
+                    urlUser = (CircleImageView) findViewById(R.id.imageView);
+                    lable = (TextView) findViewById(R.id.menuTitle);
+                    if(!sharedPreferences.getString("UserId", "").equals("Offline")) {
+                        loginButton.setVisibility(View.GONE);
+                        new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
+                    }else{
+                        loginButton.setVisibility(View.VISIBLE);
+                        lable.setVisibility(View.GONE);
+                        userNick.setVisibility(View.GONE);
+                        urlUser.setVisibility(View.GONE);
 
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    userActionPresenter.getGoogleToken();
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                }
-            });
-        }
+                        loginButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                userActionPresenter.getGoogleToken();
+                                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                                drawer.closeDrawer(GravityCompat.START);
+                            }
+                        });
+                    }
 
+                } });
         return true;
     }
 
@@ -394,8 +394,7 @@ public class UserActionsActivity extends AppCompatActivity
                     String idToken = "";
 
                     try {
-                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName,
-                                SCOPES);
+                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName, SCOPES);
                         return idToken;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
@@ -433,7 +432,6 @@ public class UserActionsActivity extends AppCompatActivity
 
         ConnectionReciver connectivityReceiver = new ConnectionReciver();
         registerReceiver(connectivityReceiver, intentFilter);
-
         ItHappenedApplication.getInstance().setConnectionListener(this);
     }
 

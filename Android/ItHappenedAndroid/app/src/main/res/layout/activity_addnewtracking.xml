@@ -4,7 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_alignParentBottom="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -346,11 +348,50 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
+
+            <TextView
+                android:id="@+id/scaleTypeHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/addNewScale"
+                android:layout_marginTop="@dimen/outer_margin"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:layout_marginLeft="4dp"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:text="Измерять в:"
+                android:textSize="16sp" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/scaleTypeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/scaleTypeHint"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/custom_edit_text"
+                android:elevation="20dp">
+
+                <EditText
+                    android:id="@+id/editTypeOfScale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_edit_text"
+                    android:hint="Киллограмм, штук"
+                    android:minHeight="40dp"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts" />
+            </android.support.v7.widget.CardView>
+
             <TextView
                 android:id="@+id/addNewGeopositionHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/addNewScale"
+                android:layout_below="@id/scaleTypeContainer"
                 android:layout_marginTop="@dimen/outer_margin"
                 android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                 android:paddingLeft="@dimen/padding_left_and_right_for_texts"
@@ -364,7 +405,7 @@
                 android:id="@+id/geopositionTextEnabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/addNewScale"
+                android:layout_below="@id/scaleTypeContainer"
                 android:layout_marginTop="16dp"
                 android:layout_toRightOf="@id/addNewGeopositionHint"
                 android:paddingBottom="@dimen/padding_up_and_down_for_texts"
@@ -440,7 +481,7 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <TextView
-                android:id="@+id/scaleTypeHint"
+                android:id="@+id/addNewPhotoHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewGeoposition"
@@ -450,40 +491,94 @@
                 android:layout_marginLeft="4dp"
                 android:paddingRight="@dimen/padding_left_and_right_for_texts"
                 android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                android:text="Измерять в:"
+                android:text="Фотография:"
                 android:textSize="16sp" />
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/scaleTypeContainer"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/photoTextEnabled"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/scaleTypeHint"
+                android:layout_below="@id/addNewGeoposition"
+                android:layout_marginTop="16dp"
+                android:layout_toRightOf="@id/addNewPhotoHint"
+                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:text="не надо"
+                android:textSize="16sp" />
+            <android.support.v7.widget.CardView
+                android:id="@+id/addNewPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/addNewPhotoHint"
                 android:layout_marginTop="@dimen/inner_margin_between_components"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:background="@drawable/custom_edit_text"
                 android:elevation="20dp">
 
-                <EditText
-                    android:id="@+id/editTypeOfScale"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/custom_edit_text"
-                    android:hint="Киллограмм, штук"
-                    android:minHeight="40dp"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                    android:paddingTop="@dimen/padding_up_and_down_for_texts" />
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+
+                    <LinearLayout
+                        android:id="@+id/photoBackColorDont"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="#A93226">
+
+                        <ImageView
+                            android:id="@+id/photoBackImageDont"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@drawable/active_dont" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/photoBackColorCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/photoBackImageCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@drawable/not_active_check" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/photoBackColorDoubleCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/photoBackImageDoubleCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:src="@drawable/not_active_double_chek" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
             </android.support.v7.widget.CardView>
-
-
 
             <android.support.v7.widget.CardView
                 android:id="@+id/colorPicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/scaleTypeContainer"
+                android:layout_below="@+id/addNewPhoto"
                 android:layout_marginBottom="12dp"
                 android:layout_marginTop="@dimen/outer_margin"
                 android:layout_marginLeft="4dp"

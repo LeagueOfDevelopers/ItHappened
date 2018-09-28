@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ItHappenedDomain.AuthServices
 {
-  class GoogleResponseJson
+  public class GoogleResponseJson
   {
     public string iss { get; set; }
     public string iat { get; set; }

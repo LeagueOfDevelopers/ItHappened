@@ -2,16 +2,13 @@ package ru.lod_misis.ithappened.Activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.yandex.metrica.YandexMetrica;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

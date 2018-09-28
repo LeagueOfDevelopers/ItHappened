@@ -37,13 +37,16 @@ public class TrackingService
                              TrackingCustomization editedScale,
                              TrackingCustomization editedComment,
                              TrackingCustomization editedGeoposition,
+                             TrackingCustomization editedPhoto,
                              String editedTrackingName,
                              String scaleName,
                              String color)
     {
-        trackingCollection.editTracking(trackingId,
-                editedCounter, editedScale, editedComment,editedGeoposition,
-                editedTrackingName, scaleName, color);
+        TrackingV1 tracking = trackingCollection.GetTracking(trackingId);
+        tracking.EditTracking(editedCounter, editedScale, editedComment,editedGeoposition,
+                editedPhoto, editedTrackingName, scaleName, color);
+
+        trackingCollection.editTracking(tracking);
     }
 
     public void AddEvent(UUID trackingId, EventV1 newEventV1)
@@ -53,10 +56,16 @@ public class TrackingService
 
     public void EditEvent(UUID trackingId, UUID eventId,
                           Double newScale, Rating newRating, String newComment,Double newLotitude,
-                          Double newLongitude,
+                          Double newLongitude,String newPhoto,
                           Date newDate)
     {
-        trackingCollection.editEvent(trackingId, eventId, newScale, newRating, newComment,newLotitude,newLongitude, newDate);
+        EventV1 event = trackingCollection.getEvent(eventId);
+        event.EditScale(newScale);
+        event.EditComment(newComment);
+        event.EditValueOfRating(newRating);
+        event.EditGeoposition(newLotitude, newLongitude);
+        event.EditPhoto(newPhoto);
+        trackingCollection.editEvent(event);
     }
 
     public Observable<EventV1> FilterEventCollection (List<UUID> trackingId, Date dateFrom, Date dateTo,
