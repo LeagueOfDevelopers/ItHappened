@@ -254,8 +254,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                     map.addMarker(new MarkerOptions().position(new LatLng(lotitude, longitude)));
                     cameraUpdate = CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
-                                    .target(new LatLng(lotitude, longitude))
-                                    .zoom(5)
+                                    .target(new LatLng(lotitude,longitude))
+                                    .zoom(15)
                                     .build()
                     );
                     map.moveCamera(cameraUpdate);
@@ -290,8 +290,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         Locale loc = new Locale("ru");
         format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
-
-
         TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();
         TrackingCustomization ratingCustomization = thisTrackingV1.GetRatingCustomization();
@@ -323,15 +321,18 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         startActivity(intent);
         eventDetailsPresenter.detachView();
     }
-
-    private void showOrNotNullCard() {
-        if ((thisTrackingV1.GetCommentCustomization() == TrackingCustomization.None
-                && thisTrackingV1.GetScaleCustomization() == TrackingCustomization.None
-                && thisTrackingV1.GetRatingCustomization() == TrackingCustomization.None)
+    private void showOrNotNullCard(){
+        if ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.None
+                && thisTrackingV1.GetScaleCustomization()==TrackingCustomization.None
+                && thisTrackingV1.GetRatingCustomization()==TrackingCustomization.None
+                && thisTrackingV1.GetGeopositionCustomization()==TrackingCustomization.None
+                && thisTrackingV1.GetPhotoCustomization()==TrackingCustomization.None)
                 ||
-                ((thisTrackingV1.GetCommentCustomization() == TrackingCustomization.Optional && thisEventV1.GetComment() == null)
-                        && (thisTrackingV1.GetScaleCustomization() == TrackingCustomization.Optional && thisEventV1.GetScale() == null)
-                        && (thisTrackingV1.GetRatingCustomization() == TrackingCustomization.Optional && thisEventV1.GetRating() == null)
+                ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.Optional&& thisEventV1.GetComment()==null)
+                        &&(thisTrackingV1.GetScaleCustomization()==TrackingCustomization.Optional&& thisEventV1.GetScale()==null)
+                        &&(thisTrackingV1.GetRatingCustomization()==TrackingCustomization.Optional&& thisEventV1.GetRating()==null)
+                        &&(thisTrackingV1.GetGeopositionCustomization()==TrackingCustomization.Optional&& thisEventV1.getLongitude()==null && thisEventV1.getLotitude()==null)
+                        &&(thisTrackingV1.GetPhotoCustomization()==TrackingCustomization.Optional&& thisEventV1.getPhoto()==null)
                 )
                 ) {
             valuesCard.setVisibility(View.GONE);

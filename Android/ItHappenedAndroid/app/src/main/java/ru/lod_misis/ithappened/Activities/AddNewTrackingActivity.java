@@ -36,6 +36,7 @@ import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
+import ru.lod_misis.ithappened.MyGeopositionService;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingContract;
 import ru.lod_misis.ithappened.R;
@@ -491,10 +492,13 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("RequestPermission","ReSPONSEaLL");
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    stopService(new Intent(this, MyGeopositionService.class));
+                    startService(new Intent(this, MyGeopositionService.class));
                     createTrackingPresenter.createNewTracking();
                 }
             }
@@ -601,6 +605,7 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
 
     @Override
     public void requestPermissionForGeoposition() {
+        Log.d("RequestPermission","Request");
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 

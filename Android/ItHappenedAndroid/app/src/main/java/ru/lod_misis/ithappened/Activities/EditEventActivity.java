@@ -197,7 +197,7 @@ public class EditEventActivity extends AppCompatActivity {
         scaleState = calculateState(trackingV1.GetScaleCustomization());
         geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
         photoState=calculateState(trackingV1.GetPhotoCustomization());
-        photoContainer.setVisibility(View.VISIBLE);
+
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
@@ -496,7 +496,7 @@ public class EditEventActivity extends AppCompatActivity {
         cameraUpdate = CameraUpdateFactory.newCameraPosition(
                 new CameraPosition.Builder()
                         .target(new LatLng(latitude, longitude))
-                        .zoom(5)
+                        .zoom(8)
                         .build()
         );
         map.moveCamera(cameraUpdate);

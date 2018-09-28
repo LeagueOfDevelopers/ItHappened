@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Text;
 using AspNetCoreRateLimit;
+using ItHappenedDomain.Application;
 using ItHappenedDomain.Domain;
+using ItHappenedDomain.Infrastructure;
 using ItHappenedWebAPI.Filters;
 using ItHappenedWebAPI.Security;
 using Loggly;
@@ -100,9 +102,10 @@ namespace ItHappenedWebAPI
       services.AddSingleton(accessFilter);
 
 
-      var userList = new UserList(db);
-      services
-        .AddSingleton<UserList>(userList);
+      var userRepository = new UserRepository(db);
+      var trackingManager = new TrackingManager(userRepository);
+
+      services.AddSingleton<ITrackingManager>(trackingManager);
       services.AddMvc(o =>
       {
         o.Filters.Add(new ActionFilter());

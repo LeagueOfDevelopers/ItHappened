@@ -5,12 +5,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.icu.util.TimeUnit;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,6 +57,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -60,12 +66,18 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.AllId;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Dialog.ChoicePhotoDialog;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.Tracking;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.MyGeopositionService;
+import ru.lod_misis.ithappened.NotificationJobService;
 import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
@@ -75,7 +87,7 @@ import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 import rx.android.schedulers.AndroidSchedulers;
 
 
-public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,AddNewEventContract.AddNewEventView {
+public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AddNewEventContract.AddNewEventView {
 
     int commentState;
     int scaleState;
@@ -109,6 +121,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     LinearLayout ratingContainer;
     @BindView(R.id.geopositionEventContainer)
     LinearLayout geopositionContainer;
+    @BindView(R.id.photoEventContainer)
     LinearLayout photoContainer;
 
     @BindView(R.id.commentAccess)
@@ -119,6 +132,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     TextView ratingAccess;
     @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
+    @BindView(R.id.photoAccess)
     TextView photoAccess;
 
     @BindView(R.id.eventCommentControl)
@@ -139,6 +153,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     Double latitude = null;
     Double longitude = null;
+    Double myLatitude = null;
+    Double mylongitude = null;
+
 
     IWorkWithFIles workWithFIles;
     String photoPath;
@@ -154,6 +171,12 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Context context;
     Activity activity;
 
+    boolean flagPhoto = false;
+
+    Location mYlocation;
+
+    String uriPhotoFromCamera;
+    private Integer jobId;
 
     @Inject
     AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
@@ -185,18 +208,18 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                workWithFIles=new WorkWithFiles(getApplication(),context);
-                dialog=new AlertDialog.Builder(context);
+                workWithFIles = new WorkWithFiles(getApplication(), context);
+                dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
                 dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i){
-                            case 0:{
+                        switch (i) {
+                            case 0: {
                                 pickGallery();
                                 break;
                             }
-                            case 1:{
+                            case 1: {
                                 pickCamera();
                                 break;
                             }
@@ -299,13 +322,17 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("RequestPermission","responseAll");
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("RequestPermission","RequestYes");
+                    stopService(new Intent(this, MyGeopositionService.class));
+                    startService(new Intent(this, MyGeopositionService.class));
                     createAndInitMap();
-                }else{
+                } else {
                     onBackPressed();
                 }
             }
@@ -323,17 +350,25 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     addNewEventPresenter.requestPermission(1);
                 } else {
-                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    Log.d("test position", location.getLongitude() + "");
-                    marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+
+                    Location location = MyGeopositionService.myLocation;
+                    if(location==null){
+                        location=getLastKnownLocation();
+                    }
+                    if (trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required) {
+                        marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+                        latitude = marker.getPosition().latitude;
+                        longitude = marker.getPosition().longitude;
+                        marker.setDraggable(true);
+                    }
                     cameraUpdate = CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                                    .zoom(5)
+                                    .zoom(15)
                                     .build()
                     );
                     map.moveCamera(cameraUpdate);
-                    marker.setDraggable(true);
+
                     map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                         @Override
                         public void onMarkerDragStart(Marker marker) {
@@ -354,10 +389,14 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                     map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                         @Override
                         public void onMapClick(LatLng latLng) {
+                            if (marker == null) {
+                                marker = map.addMarker(new MarkerOptions().position(latLng));
+                                marker.setDraggable(true);
+                            } else {
+                                marker.setPosition(latLng);
+                            }
                             latitude = latLng.latitude;
                             longitude = latLng.longitude;
-                            marker.setPosition(latLng);
-
                         }
                     });
                 }
@@ -373,7 +412,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void requestPermissionForGeoposition() {
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        Log.d("RequestPermission","Request");
+
     }
 
     @Override
@@ -383,7 +423,6 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void startConfigurationView() {
-
         calculateUx();
 
         createAndInitMap();
@@ -399,18 +438,18 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    public void startedConfiguration(UUID trackingId,TrackingV1 trackingV1) {
+    public void startedConfiguration(UUID trackingId, TrackingV1 trackingV1) {
 
         eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
 
-        this.trackingV1=trackingV1;
-        this.trackingId=trackingId;
+        this.trackingV1 = trackingV1;
+        this.trackingId = trackingId;
 
         context = this;
-        activity=this;
+        activity = this;
 
         calculateState();
     }
@@ -426,7 +465,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         addNewEventPresenter.detachView();
     }
 
-    private void addEvent(){
+    private void addEvent() {
         boolean commentFlag = true;
         boolean scaleFlag = true;
         boolean ratingFlag = true;
@@ -447,7 +486,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         if (geopositionState == 2 && (latitude == null || longitude == null)) {
             geopositionFlag = false;
         }
-        if (photoState == 2 && photoPath==null) {
+        if (photoState == 2 && photoPath == null) {
             photoFlag = false;
         }
 
@@ -456,16 +495,17 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         Rating rating = null;
 
 
-        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag&&photoFlag) {
+        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag && photoFlag) {
             if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
-                comment = commentControl.getText().toString().trim();}
+                comment = commentControl.getText().toString().trim();
+            }
             if (!(ratingControl.getRating() == 0)) {
                 rating = new Rating((int) (ratingControl.getRating() * 2));
             }
             if (!scaleControl.getText().toString().isEmpty()) {
                 try {
                     scale = Double.parseDouble(scaleControl.getText().toString().trim());
-                    addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
+                    addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude, photoPath), trackingId);
                     YandexMetrica.reportEvent("Пользователь добавил событие");
 
 
@@ -483,38 +523,46 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                         e.printStackTrace();
                     }
                 }
-                addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude,photoPath),trackingId);
-
+                addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude, photoPath), trackingId);
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_event));
 
 
             }
+            jobId=AllId.addNewValue(trackingV1.GetTrackingID());
+            JobScheduler jobScheduler=(JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.cancel(trackingV1.GetEventHistory().size()-1);
+            planningNotification();
         } else {
             showMessage("Заполните поля с *");
         }
 
-}
-    private void calculateState(){
+    }
+
+    private void calculateState() {
         commentState = calculateState(trackingV1.GetCommentCustomization());
         ratingState = calculateState(trackingV1.GetRatingCustomization());
         scaleState = calculateState(trackingV1.GetScaleCustomization());
         geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
+        photoState = calculateState(trackingV1.GetPhotoCustomization());
+
     }
-    private void calculateUx(){
+
+    private void calculateUx() {
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
         calculateUX(geopositionContainer, geopositionAccess, geopositionState);
+        calculateUX(photoContainer, photoAccess, photoState);
     }
 
-    private void initToolbar(){
+    private void initToolbar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(trackingV1.GetTrackingName());
     }
 
-    private void initDate(){
+    private void initDate() {
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
@@ -522,7 +570,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         dateControl.setText(format.format(eventDate).toString());
     }
 
-    private void initCalenarDialog(){
+    private void initCalenarDialog() {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
         datePickerDialog = new DatePickerDialog(
@@ -539,58 +587,120 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 calendar.get(Calendar.MINUTE),
                 true);
     }
-    private void createAndInitMap(){
-        if (geopositionState == 1 || geopositionState == 2){
+
+    private void createAndInitMap() {
+        if (geopositionState == 1 || geopositionState == 2) {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        initMap();
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+            supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            initMap();
         }
     }
-
-
-
-
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!=RESULT_OK){
+        if (resultCode != RESULT_OK) {
 
-            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =(((("+"\n"+"Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =((((" + "\n" + "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
             return;
-       }
-        if(requestCode==1){
+        }
+        if (requestCode == 1) {
 
             Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
-            photoPath =workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
-            flagPhoto=true;
+            photoPath = workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
+            flagPhoto = true;
 
         }
-        if(requestCode==2){
+        if (requestCode == 2) {
             Picasso.get().load(data.getData()).into(photo);
-            photoPath =workWithFIles.saveBitmap(data.getData());
-            flagPhoto=true;
+            photoPath = workWithFIles.saveBitmap(data.getData());
+            flagPhoto = true;
 
         }
 
     }
-    private void pickCamera(){
-        if(workWithFIles!=null){
-        Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        uriPhotoFromCamera=workWithFIles.generateFileUri(1).toString();
-        intent.putExtra(MediaStore.EXTRA_OUTPUT,workWithFIles.generateFileUri(1));
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        activity.startActivityForResult(intent,1);}
+
+    private void pickCamera() {
+        if (workWithFIles != null) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            uriPhotoFromCamera = workWithFIles.generateFileUri(1).toString();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, workWithFIles.generateFileUri(1));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivityForResult(intent, 1);
+        }
     }
-    private void pickGallery(){
-        if(workWithFIles!=null){
-        Intent intent=new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        if (intent.resolveActivity(activity.getPackageManager()) != null) {
-            activity.startActivityForResult(intent,2);
+
+    private void pickGallery() {
+        if (workWithFIles != null) {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            if (intent.resolveActivity(activity.getPackageManager()) != null) {
+                activity.startActivityForResult(intent, 2);
+            }
         }
+    }
+
+
+    private Location getLastKnownLocation() {
+        LocationManager mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                addNewEventPresenter.requestPermission(1);
+            }
+            Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
         }
+        return bestLocation;
+    }
+
+    private Long calculateAverangeTime(TrackingV1 trackingV1){
+        int eventCount=0;
+        Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        for (EventV1 eventV1 : trackingV1.GetEventHistory()) {
+            if (!eventV1.isDeleted()) {
+                eventCount++;
+                if (eventV1.GetEventDate().before(dateOfFirstEvent))
+                    dateOfFirstEvent = eventV1.GetEventDate();
+            }
+        }
+        return (new Date().getTime()-dateOfFirstEvent.getTime())/eventCount;
+    }
+    private void planningNotification(){
+        Long averangeTime=null;
+        Long oneDay=Long.valueOf( 60*60*60*24);
+        if(trackingV1.GetEventHistory().size()<10){
+            return;
+        }
+        averangeTime=calculateAverangeTime(trackingV1);
+        if(averangeTime==null){
+            return;
+        }
+        if(averangeTime*2<oneDay){
+            createJobSheduler(Long.valueOf(1000*60*60*24));
+        }
+        else{
+            createJobSheduler(averangeTime*2);
+        }
+    }
+    private void createJobSheduler(Long time){
+        ComponentName notificationJobServiece=new ComponentName(this,NotificationJobService.class);
+        JobInfo.Builder jobBuilder=new JobInfo.Builder(jobId,notificationJobServiece);
+        jobBuilder.setMinimumLatency(time);
+        JobScheduler jobScheduler =
+                (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobBuilder.build());
     }
 }
 
