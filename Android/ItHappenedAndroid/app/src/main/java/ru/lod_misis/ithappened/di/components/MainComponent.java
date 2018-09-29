@@ -18,6 +18,7 @@ import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.di.modules.AddNewEventModule;
 import ru.lod_misis.ithappened.di.modules.AddNewTrackingModule;
+import ru.lod_misis.ithappened.di.modules.EditTrackingModule;
 import ru.lod_misis.ithappened.di.modules.EventDetailsModule;
 import ru.lod_misis.ithappened.di.modules.EventsHistoryModule;
 import ru.lod_misis.ithappened.di.modules.MainModule;
@@ -35,7 +36,8 @@ import ru.lod_misis.ithappened.di.modules.UserActionModule;
         ProfileSettingsModule.class,
         StatisticsModule.class,
         TrackingsModule.class,
-        UserActionModule.class})
+        UserActionModule.class,
+        EditTrackingModule.class})
 public interface MainComponent {
 
     void inject(UserActionsActivity activity);

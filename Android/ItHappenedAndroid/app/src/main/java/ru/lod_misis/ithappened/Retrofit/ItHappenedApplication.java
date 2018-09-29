@@ -42,10 +42,6 @@ public class ItHappenedApplication extends Application {
         return mInstance;
     }
 
-    public static ItHappenedApi getApi() {
-        return itHappenedApi;
-    }
-
     public String getAPI_KEY() {
         return API_KEY;
     }

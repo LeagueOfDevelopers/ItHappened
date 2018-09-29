@@ -14,22 +14,23 @@ import android.util.Log;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
 
 public class NotificationJobService extends JobService {
     TrackingV1 trackingV1;
+    @Inject
+    ITrackingRepository trackingRepository;
 
     public NotificationJobService() {
     }
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        ITrackingRepository trackingRepository = UserDataUtils.setUserDataSet(sharedPreferences);
         trackingV1 = trackingRepository.GetTracking((UUID) AllId.map.get(jobParameters.getJobId()));
         Log.i("JOB SERVICE!!!", "JOB SERVICE");
         NotificationCompat.Builder builder = createBulder();
