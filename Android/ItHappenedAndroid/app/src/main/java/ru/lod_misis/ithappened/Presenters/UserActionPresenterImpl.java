@@ -9,7 +9,6 @@ import com.google.android.gms.common.AccountPicker;
 import com.yandex.metrica.YandexMetrica;
 
 import java.sql.Date;
-import java.util.Calendar;
 import java.util.List;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
@@ -21,7 +20,6 @@ import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
