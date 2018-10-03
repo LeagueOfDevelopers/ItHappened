@@ -54,6 +54,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
@@ -68,17 +70,13 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.MyGeopositionService;
 import ru.lod_misis.ithappened.NotificationJobService;
 import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
-import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 
 
 public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AddNewEventContract.AddNewEventView {
-
-    TrackingService trackingService;
-    InMemoryFactRepository factRepository;
-    ITrackingRepository trackingCollection;
 
     int commentState;
     int scaleState;
@@ -163,14 +161,15 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Context context;
     Activity activity;
 
-    AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
-
     boolean flagPhoto = false;
 
     Location mYlocation;
 
     String uriPhotoFromCamera;
     private Integer jobId;
+
+    @Inject
+    AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -180,8 +179,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         ButterKnife.bind(this);
         YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        addNewEventPresenter = new AddNewEventPresenterImpl(sharedPreferences);
+        ItHappenedApplication.getAppComponent().inject(this);
         addNewEventPresenter.attachView(this);
         addNewEventPresenter.init(this);
     }

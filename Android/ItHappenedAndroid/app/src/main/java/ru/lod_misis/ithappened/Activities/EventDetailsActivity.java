@@ -19,6 +19,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
@@ -28,6 +32,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,15 +48,14 @@ import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Presenters.EventDetailsContract;
 import ru.lod_misis.ithappened.Presenters.EventDetailsPresenterImpl;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 
-
 public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
 
-    InMemoryFactRepository factRepository;
 
     @BindView(R.id.editEventButton)
     Button editEvent;
@@ -59,8 +64,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection;
-    TrackingService trackingSercvice;
 
     @BindView(R.id.valuesCard)
     CardView valuesCard;
@@ -104,12 +107,9 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     Date thisDate;
     SimpleDateFormat format;
 
-    SharedPreferences sharedPreferences;
-
     Intent intent;
 
     Activity activity;
-
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
 
     @Override
@@ -120,10 +120,9 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         ButterKnife.bind(this);
         activity=this;
 
-        YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
+        ItHappenedApplication.getAppComponent().inject(this);
 
-        StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
 
         eventDetailsPresenter = new EventDetailsPresenterImpl(sharedPreferences, intent);
         eventDetailsPresenter.attachView(this);
@@ -206,6 +205,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void startConfigurationView() {
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         showOrNotNullCard();
 
         if (thisEventV1.GetRating() != null) {
@@ -257,6 +257,24 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
+            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    CameraUpdate cameraUpdate;
+                    map = googleMap;
+                    map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude, longitude)));
+                    cameraUpdate = CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder()
+                                    .target(new LatLng(lotitude,longitude))
+                                    .zoom(15)
+                                    .build()
+                    );
+                    map.moveCamera(cameraUpdate);
+                }
+            });
         } else {
             getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
             geoposition_title.setVisibility(View.GONE);
@@ -286,7 +304,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         Locale loc = new Locale("ru");
         format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
-
         TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
         TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();
         TrackingCustomization ratingCustomization = thisTrackingV1.GetRatingCustomization();

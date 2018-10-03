@@ -6,12 +6,13 @@ import android.util.Log;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -21,7 +22,6 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     InMemoryFactRepository factRepository;
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection;
     TrackingService trackingSercvice;
 
     public EventDetailsPresenterImpl(SharedPreferences sharedPreferences, Intent intent) {
@@ -63,7 +63,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     @Override
     public void okClicked() {
         trackingSercvice.RemoveEvent(eventId);
-        factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
+        factRepository.onChangeCalculateOneTrackingFacts(trackingSercvice.GetTrackingCollection(), trackingId)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
@@ -72,7 +72,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
                         Log.d("Statistics", "calculateOneTrackingFact");
                     }
                 });
-        factRepository.calculateAllTrackingsFacts(collection.GetTrackingCollection())
+        factRepository.calculateAllTrackingsFacts(trackingSercvice.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
