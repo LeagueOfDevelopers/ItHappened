@@ -45,14 +45,14 @@ android {
     }
 
     buildTypes {
-        release{
+        release {
             buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
             signingConfig signingConfigs.release
             resValue "integer", "app_version", "${defaultConfig.versionCode}"
-            ext.betaDistributionGroupAliases="testers"
+            ext.betaDistributionGroupAliases = "testers"
         }
 
-        debug{
+        debug {
             buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
             minifyEnabled false
         }

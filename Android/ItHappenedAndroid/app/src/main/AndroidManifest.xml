@@ -97,8 +97,10 @@
             android:name=".NotificationJobService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-        </service>
+            android:permission="android.permission.BIND_JOB_SERVICE"></service>
+
+        <activity android:name=".Activities.MapActivity.MapActivity">
+        </activity>
     </application>
 
 </manifest>
