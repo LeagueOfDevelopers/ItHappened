@@ -56,6 +56,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.AllId;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;

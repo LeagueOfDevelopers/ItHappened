@@ -17,14 +17,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
@@ -37,6 +31,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
