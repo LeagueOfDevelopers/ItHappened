@@ -258,23 +258,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 e.printStackTrace();
             }
 
-
-            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    CameraUpdate cameraUpdate;
-                    map = googleMap;
-                    map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude, longitude)));
-                    cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition.Builder()
-                                    .target(new LatLng(lotitude,longitude))
-                                    .zoom(15)
-                                    .build()
-                    );
-                    map.moveCamera(cameraUpdate);
-                }
-            });
         } else {
             getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
             geoposition_title.setVisibility(View.GONE);
