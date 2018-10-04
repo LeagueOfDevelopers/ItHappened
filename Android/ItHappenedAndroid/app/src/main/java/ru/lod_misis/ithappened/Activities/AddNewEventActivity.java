@@ -61,6 +61,7 @@ import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.AllId;
 import ru.lod_misis.ithappened.Application.TrackingService;
+import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
@@ -595,7 +596,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     private void planningNotification() {
         Long averangeTime = null;
-        Long oneDay = Long.valueOf(60 * 60 * 60 * 24);
+        Long oneDay = Long.valueOf(1000 * 60 * 60 * 24);
         if (trackingV1.GetEventHistory().size() < 10) {
             return;
         }
@@ -604,9 +605,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             return;
         }
         if (averangeTime * 2 < oneDay) {
-            createJobSheduler(Long.valueOf(1000 * 60 * 60 * 24));
+            //createJobSheduler(oneDay);
+            createJobSheduler(BuildConfig.TEST_PUSH);
         } else {
-            createJobSheduler(averangeTime * 2);
+            createJobSheduler(BuildConfig.TEST_PUSH);
         }
     }
 
