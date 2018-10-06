@@ -13,8 +13,8 @@ import rx.Observable;
 
 public interface ItHappenedApi {
 
-    @POST("{idToken}")
-    Observable<RegistrationResponse> SignUp(@Path("idToken")String idToken);
+    @POST("registration")
+    Observable<RegistrationResponse> SignUp(@Header("GoogleToken") String idToken);
 
     @POST("synchronization/synchronize")
     Observable<SynchronizationRequest> SynchronizeData(@Header("Authorization") String token, @Body SynchronizationRequest synchronizationRequest);
