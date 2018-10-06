@@ -9,8 +9,9 @@ import com.google.android.gms.common.AccountPicker;
 import com.yandex.metrica.YandexMetrica;
 
 import java.sql.Date;
-import java.util.Calendar;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -21,7 +22,6 @@ import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -34,8 +34,8 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     ITrackingRepository repository;
     boolean isTokenFailed = false;
 
-    public UserActionPresenterImpl(UserActionContract.UserActionView userActionView,
-                                   Context context,
+    @Inject
+    public UserActionPresenterImpl(Context context,
                                    SharedPreferences sharedPreferences,
                                    ITrackingRepository repository) {
         this.userActionView = userActionView;
@@ -131,11 +131,6 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     }
 
     @Override
-    public void onDestroy() {
-        userActionView = null;
-    }
-
-    @Override
     public void syncronization() {
 
         userActionView.startMenuAnimation();
@@ -211,6 +206,16 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
                     }
                 });*/
+    }
+
+    @Override
+    public void attachView(UserActionContract.UserActionView view) {
+        userActionView = view;
+    }
+
+    @Override
+    public void dettachView() {
+        userActionView = null;
     }
 
     @Override

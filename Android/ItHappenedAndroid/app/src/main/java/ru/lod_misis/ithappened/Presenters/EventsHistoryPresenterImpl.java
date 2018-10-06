@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -20,20 +22,13 @@ import rx.schedulers.Schedulers;
 
 public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsHistoryPresenter {
 
-    ITrackingRepository repository;
     TrackingService service;
-    Context context;
     EventsHistoryContract.EventsHistoryView eventsHistoryView;
     List<EventV1> eventV1s = new ArrayList<>();
 
-    public EventsHistoryPresenterImpl(ITrackingRepository repository,
-                                      TrackingService service,
-                                      Context context,
-                                      EventsHistoryContract.EventsHistoryView eventsHistoryView) {
-        this.repository = repository;
+    @Inject
+    public EventsHistoryPresenterImpl(TrackingService service) {
         this.service = service;
-        this.context = context;
-        this.eventsHistoryView = eventsHistoryView;
     }
 
     @Override
@@ -69,19 +64,20 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 new Action0() {
                     @Override
                     public void call() {
-                        /*eventsAdpt = new EventsAdapter(filteredEvents, getActivity(), 1);
-                        eventsRecycler.setAdapter(eventsAdpt);
-
-                        if (filteredEvents.size() == 0) {
-                            filtersHintText.setVisibility(View.VISIBLE);
-                        } else {
-                            filtersHintText.setVisibility(View.GONE);
-                        }
-                        */
                         eventsHistoryView.showLoading(false);
                         eventsHistoryView.showEvents(eventV1s);
                     }
                 });
+    }
+
+    @Override
+    public void onViewAttach(EventsHistoryContract.EventsHistoryView view) {
+        this.eventsHistoryView = view;
+    }
+
+    @Override
+    public void onViewDettach() {
+        eventsHistoryView = null;
     }
 
     @Override
