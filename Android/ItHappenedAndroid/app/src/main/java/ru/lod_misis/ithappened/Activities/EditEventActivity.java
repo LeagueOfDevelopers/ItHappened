@@ -8,7 +8,6 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -56,28 +55,20 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Dialog.ChoicePhotoDialog;
 import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
-
-
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
-
-import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -141,7 +132,7 @@ public class EditEventActivity extends AppCompatActivity {
     @BindView(R.id.photoEdit)
     ImageView photo;
     AlertDialog.Builder dialog;
-    Boolean flagPhoto=false;
+    Boolean flagPhoto = false;
 
     TrackingV1 trackingV1;
     EventV1 eventV1;
@@ -164,8 +155,8 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
         ButterKnife.bind(this);
 
-        context=this;
-        activity=this;
+        context = this;
+        activity = this;
 
         ItHappenedApplication.getAppComponent().inject(this);
 
@@ -195,13 +186,13 @@ public class EditEventActivity extends AppCompatActivity {
         ratingState = calculateState(trackingV1.GetRatingCustomization());
         scaleState = calculateState(trackingV1.GetScaleCustomization());
         geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
-        photoState=calculateState(trackingV1.GetPhotoCustomization());
+        photoState = calculateState(trackingV1.GetPhotoCustomization());
 
         calculateUX(commentContainer, commentAccess, commentState);
         calculateUX(ratingContainer, ratingAccess, ratingState);
         calculateUX(scaleContainer, scaleAccess, scaleState);
         calculateUX(geopositionContainer, geopositionAccess, geopositionState);
-        calculateUX(photoContainer,photoAccess,photoState);
+        calculateUX(photoContainer, photoAccess, photoState);
 
         if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
             scaleType.setText(trackingV1.getScaleName());
@@ -275,7 +266,7 @@ public class EditEventActivity extends AppCompatActivity {
                 if (geopositionState == 2 && (latitude == null || longitude == null)) {
                     geopositionFlag = false;
                 }
-                if(photoState == 2 && !flagPhoto){
+                if (photoState == 2 && !flagPhoto) {
                     photoFlag = false;
                 }
 
@@ -303,7 +294,7 @@ public class EditEventActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath, eventDate);
+                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, photoPath, eventDate);
                             YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                             factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
                                     .subscribeOn(Schedulers.computation())
@@ -338,7 +329,7 @@ public class EditEventActivity extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath,eventDate);
+                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, photoPath, eventDate);
                         YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
                         new FactCalculator(trackingCollection).calculateFactsForAddNewEventActivity(trackingId);
                         Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
@@ -352,18 +343,18 @@ public class EditEventActivity extends AppCompatActivity {
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                workWithFIles=new WorkWithFiles(getApplication(),context);
-                dialog=new AlertDialog.Builder(context);
+                workWithFIles = new WorkWithFiles(getApplication(), context);
+                dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
                 dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i){
-                            case 0:{
+                        switch (i) {
+                            case 0: {
                                 pickGallery();
                                 break;
                             }
-                            case 1:{
+                            case 1: {
                                 pickCamera();
                                 break;
                             }
@@ -500,38 +491,42 @@ public class EditEventActivity extends AppCompatActivity {
         );
         map.moveCamera(cameraUpdate);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!=RESULT_OK){
-            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =(((("+"\n"+"Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =((((" + "\n" + "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(requestCode==1){
+        if (requestCode == 1) {
             Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
-            photoPath =workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
-            flagPhoto=true;
+            photoPath = workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
+            flagPhoto = true;
         }
-        if(requestCode==2){
+        if (requestCode == 2) {
             Picasso.get().load(data.getData()).into(photo);
-            photoPath =workWithFIles.saveBitmap(data.getData());
-            flagPhoto=true;
+            photoPath = workWithFIles.saveBitmap(data.getData());
+            flagPhoto = true;
         }
     }
-    private void pickCamera(){
-        if(workWithFIles!=null){
-            Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            uriPhotoFromCamera=workWithFIles.generateFileUri(1).toString();
-            intent.putExtra(MediaStore.EXTRA_OUTPUT,workWithFIles.generateFileUri(1));
+
+    private void pickCamera() {
+        if (workWithFIles != null) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            uriPhotoFromCamera = workWithFIles.generateFileUri(1).toString();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, workWithFIles.generateFileUri(1));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            activity.startActivityForResult(intent,1);}
+            activity.startActivityForResult(intent, 1);
+        }
     }
-    private void pickGallery(){
-        if(workWithFIles!=null){
-            Intent intent=new Intent(Intent.ACTION_PICK);
+
+    private void pickGallery() {
+        if (workWithFIles != null) {
+            Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                activity.startActivityForResult(intent,2);
+                activity.startActivityForResult(intent, 2);
             }
         }
     }

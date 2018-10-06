@@ -1,20 +1,12 @@
 package ru.lod_misis.ithappened.Presenters;
 
-import android.content.Intent;
-import android.widget.Toast;
-
-import com.yandex.metrica.YandexMetrica;
-
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.Statistics.FactCalculator;
 
 public class EditTrackingPresenterImpl implements EditTrackingContract.EditTrackingPresenter {
 

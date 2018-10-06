@@ -1,7 +1,5 @@
 package ru.lod_misis.ithappened.di.modules;
 
-import android.support.transition.Visibility;
-
 import dagger.Module;
 import dagger.Provides;
 import ru.lod_misis.ithappened.Application.TrackingService;

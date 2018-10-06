@@ -11,7 +11,6 @@ import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Fragments.DeleteEventFromFragmentDialog;
-import ru.lod_misis.ithappened.Fragments.DeleteTrackingFragment;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
