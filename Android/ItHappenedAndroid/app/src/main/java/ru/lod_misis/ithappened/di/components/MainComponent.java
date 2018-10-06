@@ -15,6 +15,7 @@ import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
+import ru.lod_misis.ithappened.NotificationJobService;
 import ru.lod_misis.ithappened.di.modules.AddNewEventModule;
 import ru.lod_misis.ithappened.di.modules.AddNewTrackingModule;
 import ru.lod_misis.ithappened.di.modules.EditTrackingModule;
@@ -62,5 +63,7 @@ public interface MainComponent {
     void inject(EventsForTrackingActivity activity);
 
     void inject(DeleteEventFromFragmentDialog dialog);
+
+    void inject(NotificationJobService service);
 
 }

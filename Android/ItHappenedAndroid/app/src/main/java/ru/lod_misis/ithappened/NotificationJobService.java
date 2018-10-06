@@ -20,6 +20,7 @@ import ru.lod_misis.ithappened.Activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class NotificationJobService extends JobService {
     TrackingV1 trackingV1;
@@ -31,6 +32,7 @@ public class NotificationJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
+        ItHappenedApplication.getAppComponent().inject(this);
         trackingV1 = trackingRepository.GetTracking((UUID) AllId.map.get(jobParameters.getJobId()));
         Log.i("JOB SERVICE!!!", "JOB SERVICE");
         NotificationCompat.Builder builder = createBulder();

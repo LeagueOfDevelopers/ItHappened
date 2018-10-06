@@ -1,5 +1,7 @@
 package ru.lod_misis.ithappened.di.modules;
 
+import android.content.SharedPreferences;
+
 import dagger.Module;
 import dagger.Provides;
 import ru.lod_misis.ithappened.Application.TrackingService;
@@ -11,7 +13,7 @@ import ru.lod_misis.ithappened.Presenters.EventDetailsPresenterImpl;
 public class EventDetailsModule {
 
     @Provides
-    public EventDetailsContract.EventDetailsPresenter provideEventDetailsPresenter(TrackingService service, InMemoryFactRepository factRepository){
+    public EventDetailsContract.EventDetailsPresenter provideEventDetailsPresenter(SharedPreferences service, InMemoryFactRepository factRepository){
         return new EventDetailsPresenterImpl(service, factRepository);
     }
 

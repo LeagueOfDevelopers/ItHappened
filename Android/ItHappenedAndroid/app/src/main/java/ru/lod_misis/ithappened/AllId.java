@@ -1,7 +1,5 @@
 package ru.lod_misis.ithappened;
 
-import android.content.Intent;
-
 import java.util.HashMap;
 
 public class AllId {
