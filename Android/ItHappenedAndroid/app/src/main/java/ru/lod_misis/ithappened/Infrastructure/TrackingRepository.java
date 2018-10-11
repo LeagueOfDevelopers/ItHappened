@@ -30,8 +30,8 @@ public class TrackingRepository implements ITrackingRepository {
     @Inject
     public TrackingRepository(Context cntxt, String userId) {
         context = cntxt;
-        Realm.init(context);
-        configureRealm();
+
+        //configureRealm();
         this.userId = userId;
     }
 
@@ -262,10 +262,10 @@ public class TrackingRepository implements ITrackingRepository {
     }
 
     public void configureRealm() {
+        Realm.init(context);
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("ItHappened.realm").schemaVersion(2).migration(new RealmMigrations()).build();
         realm = Realm.getInstance(config);
-
         migrateData();
     }
 
