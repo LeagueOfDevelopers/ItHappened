@@ -6,13 +6,22 @@ import java.util.UUID;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 
 public interface TrackingsContract {
-    interface TrackingsView{
+    interface TrackingsView {
         void showTrackings(List<TrackingV1> visibaleTrackingV1s);
+
         void showMessage(String message);
     }
-    interface TrackingsPresenter{
+
+    interface TrackingsPresenter {
+
+        void onViewAttach(TrackingsView view);
+
         void loadTrackings();
+
         void deleteTracking(UUID trackingId);
+
         void cancelDeleting();
+
+        void onViewDettach();
     }
 }

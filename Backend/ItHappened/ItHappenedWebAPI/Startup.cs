@@ -40,9 +40,12 @@ namespace ItHappenedWebAPI
       var db = client.GetDatabase("ItHappenedDB");
 
       services.AddOptions();
+
       services.AddMemoryCache();
+
       services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
       services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+
       services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
       services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 

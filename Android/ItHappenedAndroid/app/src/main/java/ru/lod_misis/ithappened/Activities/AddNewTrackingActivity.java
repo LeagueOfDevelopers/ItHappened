@@ -4,10 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +13,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,40 +22,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.Marker;
 import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
-import java.security.Permission;
 import java.util.UUID;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.Domain.Tracking;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
 import ru.lod_misis.ithappened.MyGeopositionService;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingContract;
-import ru.lod_misis.ithappened.Presenters.CreateTrackingPresenter;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.FactCalculator;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class AddNewTrackingActivity extends AppCompatActivity  implements CreateTrackingContract.CreateTrackingView{
 
-    ITrackingRepository trackingRepository;
-    InMemoryFactRepository factRepository;
+    @Inject
     CreateTrackingContract.CreateTrackingPresenter createTrackingPresenter;
-    FactCalculator factCalculator;
 
     @BindView(R.id.editTitleOfTracking)
     EditText trackingName;
@@ -176,16 +163,15 @@ public class AddNewTrackingActivity extends AppCompatActivity  implements Create
 
     Context context;
     Activity activity;
-    Boolean permissionForGPS = false;
-    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        createTrackingPresenter=new CreateTrackingPresenter(sharedPreferences);
+
+        ItHappenedApplication.getAppComponent().inject(this);
+
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
         stateForPhoto=0;

@@ -5,11 +5,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.icu.util.TimeUnit;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -58,8 +62,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.AllId;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Dialog.ChoicePhotoDialog;
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -70,9 +77,10 @@ import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.MyGeopositionService;
+import ru.lod_misis.ithappened.NotificationJobService;
 import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
-import ru.lod_misis.ithappened.Presenters.AddNewEventPresenterImpl;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
@@ -80,10 +88,6 @@ import rx.android.schedulers.AndroidSchedulers;
 
 
 public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AddNewEventContract.AddNewEventView {
-
-    TrackingService trackingService;
-    InMemoryFactRepository factRepository;
-    ITrackingRepository trackingCollection;
 
     int commentState;
     int scaleState;
@@ -167,13 +171,15 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Context context;
     Activity activity;
 
-    AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
-
     boolean flagPhoto = false;
 
     Location mYlocation;
 
     String uriPhotoFromCamera;
+    private Integer jobId;
+
+    @Inject
+    AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -183,8 +189,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         ButterKnife.bind(this);
         YandexMetrica.reportEvent("Пользователь вошел в создание события");
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        addNewEventPresenter = new AddNewEventPresenterImpl(sharedPreferences);
+        ItHappenedApplication.getAppComponent().inject(this);
         addNewEventPresenter.attachView(this);
         addNewEventPresenter.init(this);
     }
@@ -523,6 +528,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
 
             }
+            jobId=AllId.addNewValue(trackingV1.GetTrackingID());
+            JobScheduler jobScheduler=(JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.cancel(trackingV1.GetEventHistory().size()-1);
+            planningNotification();
         } else {
             showMessage("Заполните поля с *");
         }
@@ -654,6 +663,44 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             }
         }
         return bestLocation;
+    }
+
+    private Long calculateAverangeTime(TrackingV1 trackingV1){
+        int eventCount=0;
+        Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        for (EventV1 eventV1 : trackingV1.GetEventHistory()) {
+            if (!eventV1.isDeleted()) {
+                eventCount++;
+                if (eventV1.GetEventDate().before(dateOfFirstEvent))
+                    dateOfFirstEvent = eventV1.GetEventDate();
+            }
+        }
+        return (new Date().getTime()-dateOfFirstEvent.getTime())/eventCount;
+    }
+    private void planningNotification(){
+        Long averangeTime=null;
+        Long oneDay=Long.valueOf( 60*60*60*24);
+        if(trackingV1.GetEventHistory().size()<10){
+            return;
+        }
+        averangeTime=calculateAverangeTime(trackingV1);
+        if(averangeTime==null){
+            return;
+        }
+        if(averangeTime*2<oneDay){
+            createJobSheduler(Long.valueOf(1000*60*60*24));
+        }
+        else{
+            createJobSheduler(averangeTime*2);
+        }
+    }
+    private void createJobSheduler(Long time){
+        ComponentName notificationJobServiece=new ComponentName(this,NotificationJobService.class);
+        JobInfo.Builder jobBuilder=new JobInfo.Builder(jobId,notificationJobServiece);
+        jobBuilder.setMinimumLatency(time);
+        JobScheduler jobScheduler =
+                (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobBuilder.build());
     }
 }
 

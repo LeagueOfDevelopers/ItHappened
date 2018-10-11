@@ -17,11 +17,12 @@ public interface UserActionContract {
     }
 
     interface UserActionPresenter{
+        void attachView(UserActionView view);
         void getGoogleToken();
         void registrate(String idToken);
         void syncronization();
         boolean updateToken();
-        void onDestroy();
+        void dettachView();
     }
 
 }
