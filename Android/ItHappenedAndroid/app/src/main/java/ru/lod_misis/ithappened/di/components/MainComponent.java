@@ -19,6 +19,7 @@ import ru.lod_misis.ithappened.NotificationJobService;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.di.modules.AddNewEventModule;
 import ru.lod_misis.ithappened.di.modules.AddNewTrackingModule;
+import ru.lod_misis.ithappened.di.modules.EditEvetModule;
 import ru.lod_misis.ithappened.di.modules.EditTrackingModule;
 import ru.lod_misis.ithappened.di.modules.EventDetailsModule;
 import ru.lod_misis.ithappened.di.modules.EventsHistoryModule;
@@ -38,7 +39,8 @@ import ru.lod_misis.ithappened.di.modules.UserActionModule;
         StatisticsModule.class,
         TrackingsModule.class,
         UserActionModule.class,
-        EditTrackingModule.class})
+        EditTrackingModule.class,
+        EditEvetModule.class})
 public interface MainComponent {
 
     void inject(UserActionsActivity activity);
