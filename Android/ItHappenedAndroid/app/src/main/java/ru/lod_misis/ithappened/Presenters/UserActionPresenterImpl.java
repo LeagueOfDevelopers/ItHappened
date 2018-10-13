@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.gms.common.AccountPicker;
-import com.yandex.metrica.YandexMetrica;
 
-import java.sql.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,10 +15,7 @@ import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Models.RefreshModel;
-import ru.lod_misis.ithappened.Models.RegistrationResponse;
-import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -58,7 +53,8 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
         Log.e(TAG, "Токен получен");
 
-        ItHappenedApplication.getApi().SignUp(idToken)
+        //TODO выпилить
+        /*ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RegistrationResponse>() {
@@ -126,7 +122,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                 userActionView.showMessage("Разорвано подключение!");
                             }
                         }
-                );
+                );*/
 
     }
 
@@ -135,7 +131,8 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
         userActionView.startMenuAnimation();
 
-        ItHappenedApplication.getApi()
+        //TODO выпилить
+        /*ItHappenedApplication.getApi()
                 .Refresh(sharedPreferences.getString("refreshToken", ""))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -189,7 +186,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                             public void call(Throwable throwable) {
                                 Log.e("Токен упал", throwable + "");
                             }
-                        });
+                        });*/
 
         /*final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("kennytmb.3run@gmail.com",
                 new java.util.Date(sharedPreferences.getLong("NickDate", 0)),

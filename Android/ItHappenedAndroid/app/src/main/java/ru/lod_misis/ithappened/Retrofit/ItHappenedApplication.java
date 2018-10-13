@@ -20,6 +20,9 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.ConnectionReciver;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
+import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
+import javax.inject.Inject;
 import ru.lod_misis.ithappened.MyGeopositionService;
 import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
 import ru.lod_misis.ithappened.di.components.MainComponent;
@@ -41,7 +44,8 @@ public class ItHappenedApplication extends Application {
     public static synchronized ItHappenedApplication getInstance() {
         return mInstance;
     }
-
+    @Inject
+    ITrackingRepository repository;
     public String getAPI_KEY() {
         return API_KEY;
     }
@@ -57,6 +61,8 @@ public class ItHappenedApplication extends Application {
             startService(new Intent(this, MyGeopositionService.class));
         }
         appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
+        appComponent.inject(this);
+        repository.configureRealm();
 
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 

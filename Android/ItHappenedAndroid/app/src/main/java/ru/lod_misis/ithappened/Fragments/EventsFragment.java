@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -49,12 +47,10 @@ import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
-import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.Recyclers.PagonationScrollListener;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
 

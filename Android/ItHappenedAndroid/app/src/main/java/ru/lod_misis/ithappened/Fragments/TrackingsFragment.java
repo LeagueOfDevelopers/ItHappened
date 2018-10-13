@@ -1,9 +1,7 @@
 package ru.lod_misis.ithappened.Fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -20,15 +18,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.Activities.AddNewTrackingActivity;
-import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.TrackingsContract;
-import ru.lod_misis.ithappened.Presenters.TrackingsPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.TrackingsAdapter;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 
 public class TrackingsFragment extends Fragment implements TrackingsContract.TrackingsView {
 
