@@ -31,6 +31,25 @@ namespace ItHappenedWebAPI.Controllers
     }
 
     [HttpPost]
+    [Route("registration")]
+    public IActionResult SignUp()
+    {
+      if (!HttpContext.Request.Headers.ContainsKey("GoogleToken"))
+        return BadRequest("Request doesn't contains token");
+
+      var googleToken = HttpContext.Request.Headers["GoogleToken"];
+
+      var userData = _trackingManager.SingIn(googleToken);
+      if (userData != null)
+      {
+        userData.Token = _jwtIssuer.IssueAccessJwt(userData.UserId);
+        userData.RefreshToken = _jwtIssuer.IssueRefreshJwt(userData.UserId);
+        return Ok(userData);
+      }
+      return BadRequest("Registration failed");
+    }
+
+    [HttpPost]
     [Route("reg/{userId}")]
     public IActionResult Reg([FromRoute] string userId)
     {
@@ -41,7 +60,6 @@ namespace ItHappenedWebAPI.Controllers
 
       return Ok(userData);
     }
-
 
   }
 
