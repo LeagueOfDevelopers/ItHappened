@@ -62,6 +62,7 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Presenters.EditEventContract;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
@@ -73,14 +74,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class EditEventActivity extends AppCompatActivity {
+public class EditEventActivity extends AppCompatActivity implements EditEventContract.EditEventView {
 
     @Inject
-    TrackingService trackingService;
-    @Inject
-    InMemoryFactRepository factRepository;
-    @Inject
-    ITrackingRepository trackingCollection;
+    EditEventContract.EditEventPresenter presenter;
 
     int commentState;
     int scaleState;
@@ -159,11 +156,12 @@ public class EditEventActivity extends AppCompatActivity {
         activity = this;
 
         ItHappenedApplication.getAppComponent().inject(this);
+        presenter.onViewAttached(this);
+        presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")),
+                UUID.fromString(getIntent().getStringExtra("eventId")));
+        presenter.onViewCreated();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
-
-        trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
-        eventId = UUID.fromString(getIntent().getStringExtra("eventId"));
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -172,66 +170,12 @@ public class EditEventActivity extends AppCompatActivity {
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
 
-
-        trackingV1 = trackingCollection.GetTracking(trackingId);
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(trackingV1.GetTrackingName());
 
         eventV1 = trackingV1.GetEvent(eventId);
-
-        commentState = calculateState(trackingV1.GetCommentCustomization());
-        ratingState = calculateState(trackingV1.GetRatingCustomization());
-        scaleState = calculateState(trackingV1.GetScaleCustomization());
-        geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
-        photoState = calculateState(trackingV1.GetPhotoCustomization());
-
-        calculateUX(commentContainer, commentAccess, commentState);
-        calculateUX(ratingContainer, ratingAccess, ratingState);
-        calculateUX(scaleContainer, scaleAccess, scaleState);
-        calculateUX(geopositionContainer, geopositionAccess, geopositionState);
-        calculateUX(photoContainer, photoAccess, photoState);
-
-        if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
-            scaleType.setText(trackingV1.getScaleName());
-        }
-
-        Date thisDate = eventV1.GetEventDate();
-
-        Locale loc = new Locale("ru");
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-        format.setTimeZone(TimeZone.getDefault());
-
-        if ((trackingV1.GetScaleCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetScaleCustomization() == TrackingCustomization.Required) && eventV1.GetScale() != null) {
-            scaleControl.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue()));
-            if (trackingV1.getScaleName() != null) {
-                if (trackingV1.getScaleName().length() >= 3) {
-                    scaleType.setText(trackingV1.getScaleName().substring(0, 2));
-                } else {
-                    scaleType.setText(trackingV1.getScaleName());
-                }
-            }
-        }
-
-        if ((trackingV1.GetRatingCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetRatingCustomization() == TrackingCustomization.Required) && eventV1.GetRating() != null) {
-            ratingControl.setRating(eventV1.GetRating().getRating() / 2.0f);
-        }
-
-        if ((trackingV1.GetCommentCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetCommentCustomization() == TrackingCustomization.Required) && eventV1.GetComment() != null) {
-            commentControl.setText(eventV1.GetComment());
-        }
-        if ((trackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required)) {
-            mapInit();
-        }
-
-
-        dateControl.setText(format.format(thisDate).toString());
 
 
         dateControl.setOnClickListener(new View.OnClickListener() {
@@ -246,98 +190,7 @@ public class EditEventActivity extends AppCompatActivity {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean commentFlag = true;
-                boolean scaleFlag = true;
-                boolean ratingFlag = true;
-                boolean geopositionFlag = true;
-                boolean photoFlag = true;
-
-                if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
-                    commentFlag = false;
-                }
-
-                if (ratingState == 2 && ratingControl.getRating() == 0) {
-                    ratingFlag = false;
-                }
-
-                if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
-                    scaleFlag = false;
-                }
-                if (geopositionState == 2 && (latitude == null || longitude == null)) {
-                    geopositionFlag = false;
-                }
-                if (photoState == 2 && !flagPhoto) {
-                    photoFlag = false;
-                }
-
-                String comment = null;
-                Double scale = null;
-                Rating rating = null;
-
-
-                if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
-                    if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
-                        comment = commentControl.getText().toString().trim();
-                    }
-                    if (!(ratingControl.getRating() == 0)) {
-                        rating = new Rating((int) (ratingControl.getRating() * 2));
-                    }
-                    if (!scaleControl.getText().toString().isEmpty()) {
-                        try {
-                            scale = Double.parseDouble(scaleControl.getText().toString());
-                            Date eventDate = null;
-                            Locale locale = new Locale("ru");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                            try {
-                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, photoPath, eventDate);
-                            YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                            finishActivity();
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Date eventDate = null;
-                        Locale locale = new Locale("ru");
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                        try {
-                            eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, photoPath, eventDate);
-                        YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                        new FactCalculator(trackingCollection).calculateFactsForAddNewEventActivity(trackingId);
-                        Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                        finishActivity();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
-                }
+                presenter.addEventClick(commentState, ratingState, scaleState, geopositionState);
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
@@ -381,6 +234,73 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
     @Override
+    public void showEditResult() {
+        finish();
+    }
+
+    @Override
+    public void onViewCreated(TrackingCustomization comment,
+                              TrackingCustomization rating,
+                              TrackingCustomization scale,
+                              TrackingCustomization photo,
+                              TrackingCustomization geoposition,
+                              Date date,
+                              String commentValue,
+                              Double scaleValue,
+                              Rating ratingValue,
+                              String scaleName) {
+
+        commentState = calculateState(comment);
+        ratingState = calculateState(rating);
+        scaleState = calculateState(scale);
+        geopositionState = calculateState(geoposition);
+        photoState = calculateState(photo);
+
+        calculateContainerState(commentContainer, commentAccess, commentState);
+        calculateContainerState(ratingContainer, ratingAccess, ratingState);
+        calculateContainerState(scaleContainer, scaleAccess, scaleState);
+        calculateContainerState(geopositionContainer, geopositionAccess, geopositionState);
+        calculateContainerState(photoContainer, photoAccess, photoState);
+
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getDefault());
+
+        dateControl.setText(format.format(date));
+
+        if (scale != TrackingCustomization.None && scaleName != null) {
+            scaleType.setText(trackingV1.getScaleName());
+        }
+
+        if ((scale == TrackingCustomization.Optional
+                || scale == TrackingCustomization.Required) && scaleValue != null) {
+            scaleControl.setText(StringParse.parseDouble(scaleValue));
+            if (trackingV1.getScaleName() != null) {
+                if (trackingV1.getScaleName().length() >= 3) {
+                    scaleType.setText(scaleName.substring(0, 2));
+                } else {
+                    scaleType.setText(scaleName);
+                }
+            }
+        }
+
+        if ((rating == TrackingCustomization.Optional
+                || rating == TrackingCustomization.Required) && ratingValue != null) {
+            ratingControl.setRating(ratingValue.getRating() / 2.0f);
+        }
+
+        if ((comment == TrackingCustomization.Optional
+                || comment == TrackingCustomization.Required) && commentValue != null) {
+            commentControl.setText(commentValue);
+        }
+        if ((geoposition == TrackingCustomization.Optional
+                || geoposition == TrackingCustomization.Required)) {
+            mapInit();
+        }
+
+    }
+
+    @Override
     protected void onPostResume() {
         super.onPostResume();
     }
@@ -405,11 +325,61 @@ public class EditEventActivity extends AppCompatActivity {
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_event));
     }
 
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public String getComment() {
+        return commentControl.getText().toString();
+    }
+
+    @Override
+    public Double getScale() {
+        if (!scaleControl.getText().toString().isEmpty())
+            return Double.parseDouble(scaleControl.getText().toString());
+        return null;
+    }
+
+    @Override
+    public Rating getRating() {
+        if (!(ratingControl.getRating() == 0)) {
+            return new Rating((int) (ratingControl.getRating() * 2));
+        }
+        return null;
+    }
+
+    @Override
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    @Override
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    @Override
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    @Override
+    public String getDate() {
+        return dateControl.getText().toString();
+    }
+
+    @Override
+    public void reportEvent(int resourceId) {
+        YandexMetrica.reportEvent(getString(resourceId));
+    }
+
     private void finishActivity() {
         this.finish();
     }
 
-    private void calculateUX(LinearLayout container, TextView access, int state) {
+    private void calculateContainerState(LinearLayout container, TextView access, int state) {
         switch (state) {
             case 0:
                 container.setVisibility(View.GONE);
