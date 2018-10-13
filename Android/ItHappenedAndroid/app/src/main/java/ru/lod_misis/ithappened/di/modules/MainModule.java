@@ -63,7 +63,7 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public FactCalculator provideFactCalculator(TrackingRepository trackingRepository){
+    public FactCalculator provideFactCalculator(ITrackingRepository trackingRepository){
         return new FactCalculator(trackingRepository);
     }
 }
