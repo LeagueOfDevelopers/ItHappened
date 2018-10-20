@@ -61,7 +61,6 @@ namespace ItHappenedWebAPI.Controllers
       return Ok(userData);
     }
 
-
   }
 
 
