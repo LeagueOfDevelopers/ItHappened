@@ -24,14 +24,10 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     UUID eventId;
     TrackingService trackingSercvice;
 
-    public EventDetailsPresenterImpl(SharedPreferences sharedPreferences, InMemoryFactRepository factRepository) {
-        /*factRepository = StaticFactRepository.getInstance();
-        collection = UserDataUtils.setUserDataSet(sharedPreferences);
-        factRepository = StaticFactRepository.getInstance();
-        collection = UserDataUtils.setUserDataSet(sharedPreferences);
-        trackingSercvice = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
-        trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
-        eventId = UUID.fromString(intent.getStringExtra("eventId"));*/
+    @Inject
+    public EventDetailsPresenterImpl(TrackingService trackingSercvice,InMemoryFactRepository factRepository) {
+        this.trackingSercvice = trackingSercvice;
+        this.factRepository = factRepository;
     }
 
     @Override
@@ -45,7 +41,9 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
 
     @Override
     public void attachView(EventDetailsContract.EventDetailsView eventDetailsView, UUID trackingId, UUID eventId) {
-
+        this.eventDetailsView = eventDetailsView;
+        this.trackingId = trackingId;
+        this.eventId = eventId;
     }
 
     @Override
