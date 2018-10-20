@@ -42,10 +42,6 @@ public class ItHappenedApplication extends Application {
         return mInstance;
     }
 
-    public static ItHappenedApi getApi() {
-        return itHappenedApi;
-    }
-
     public String getAPI_KEY() {
         return API_KEY;
     }
@@ -61,7 +57,6 @@ public class ItHappenedApplication extends Application {
             startService(new Intent(this, MyGeopositionService.class));
         }
         appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
-
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);

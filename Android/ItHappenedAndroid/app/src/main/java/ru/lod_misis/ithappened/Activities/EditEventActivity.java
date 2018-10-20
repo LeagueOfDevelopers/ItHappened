@@ -71,8 +71,6 @@ import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
-
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 
