@@ -13,7 +13,6 @@ import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmResults;
@@ -31,8 +30,8 @@ public class TrackingRepository implements ITrackingRepository {
     @Inject
     public TrackingRepository(Context cntxt, String userId) {
         context = cntxt;
-        Realm.init(context);
-        configureRealm();
+
+        //configureRealm();
         this.userId = userId;
     }
 
@@ -263,10 +262,10 @@ public class TrackingRepository implements ITrackingRepository {
     }
 
     public void configureRealm() {
+        Realm.init(context);
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("ItHappened.realm").schemaVersion(2).migration(new RealmMigrations()).build();
         realm = Realm.getInstance(config);
-
         migrateData();
     }
 

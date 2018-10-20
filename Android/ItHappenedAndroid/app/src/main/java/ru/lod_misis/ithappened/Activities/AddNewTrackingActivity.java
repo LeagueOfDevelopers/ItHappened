@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -174,7 +175,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
         stateForPhoto = 0;
-        trackingRepository = UserDataUtils.setUserDataSet(sharedPreferences);
         photoEnabled = (TextView) findViewById(R.id.photoTextEnabled);
 
         photoDont = (LinearLayout) findViewById(R.id.photoBackColorDont);

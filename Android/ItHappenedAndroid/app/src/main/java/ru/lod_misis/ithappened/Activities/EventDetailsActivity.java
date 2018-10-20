@@ -2,7 +2,6 @@ package ru.lod_misis.ithappened.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,12 +16,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
@@ -33,8 +34,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
@@ -43,13 +42,9 @@ import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Fragments.DeleteEventDialog;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Presenters.EventDetailsContract;
-import ru.lod_misis.ithappened.Presenters.EventDetailsPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
@@ -83,7 +78,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     TextView dateValue;
     @BindView(R.id.dateValueNulls)
     TextView dateValueNulls;
-    @BindView(R.id.adress)
+    //@BindView(R.id.adress)
     TextView adress;
     @BindView(R.id.ratingValue)
     RatingBar ratingValue;
@@ -118,15 +113,15 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         setContentView(R.layout.activity_event_details);
         intent = getIntent();
         ButterKnife.bind(this);
-        activity=this;
+        activity = this;
 
         ItHappenedApplication.getAppComponent().inject(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
 
-        eventDetailsPresenter = new EventDetailsPresenterImpl(sharedPreferences, intent);
+        /*eventDetailsPresenter = new EventDetailsPresenterImpl(sharedPreferences, intent);
         eventDetailsPresenter.attachView(this);
-        eventDetailsPresenter.init();
+        eventDetailsPresenter.init();*/
 
     }
 
@@ -171,8 +166,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
     }
+
 
     public void cancelClicked() {
         eventDetailsPresenter.canselClicked();
@@ -253,7 +248,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             try {
-                adress.setText(getAddress(this.lotitude,this.longitude));
+                adress.setText(getAddress(this.lotitude, this.longitude));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -268,7 +263,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                     map.addMarker(new MarkerOptions().position(new LatLng(lotitude, longitude)));
                     cameraUpdate = CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
-                                    .target(new LatLng(lotitude,longitude))
+                                    .target(new LatLng(lotitude, longitude))
                                     .zoom(15)
                                     .build()
                     );
@@ -291,13 +286,12 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     }
 
     @Override
-    public void startedConfiguration(ITrackingRepository collection, UUID trackingId, UUID eventId) {
-
-        setTitle(collection.GetTracking(trackingId).GetTrackingName());
+    public void startedConfiguration(TrackingService collection, UUID trackingId, UUID eventId) {
+        setTitle(collection.GetTrackingById(trackingId).GetTrackingName());
         this.eventId = eventId;
         this.trackingId = trackingId;
-        thisEventV1 = collection.GetTracking(trackingId).GetEvent(eventId);
-        thisTrackingV1 = collection.GetTracking(trackingId);
+        thisEventV1 = collection.GetTrackingById(trackingId).GetEvent(eventId);
+        thisTrackingV1 = collection.GetTrackingById(trackingId);
         thisEventV1 = thisTrackingV1.GetEvent(eventId);
         thisDate = thisEventV1.GetEventDate();
 
@@ -354,6 +348,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             nullsCard.setVisibility(View.VISIBLE);
         }
     }
+
     private String getAddress(Double latitude, Double longitude) throws IOException {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         return geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);

@@ -11,13 +11,16 @@ import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Activities.EventsForTrackingActivity;
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Fragments.DeleteEventFromFragmentDialog;
-import ru.lod_misis.ithappened.Fragments.DeleteTrackingFragment;
 import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
+import ru.lod_misis.ithappened.NotificationJobService;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.di.modules.AddNewEventModule;
 import ru.lod_misis.ithappened.di.modules.AddNewTrackingModule;
+import ru.lod_misis.ithappened.di.modules.EditEvetModule;
+import ru.lod_misis.ithappened.di.modules.EditTrackingModule;
 import ru.lod_misis.ithappened.di.modules.EventDetailsModule;
 import ru.lod_misis.ithappened.di.modules.EventsHistoryModule;
 import ru.lod_misis.ithappened.di.modules.MainModule;
@@ -35,7 +38,9 @@ import ru.lod_misis.ithappened.di.modules.UserActionModule;
         ProfileSettingsModule.class,
         StatisticsModule.class,
         TrackingsModule.class,
-        UserActionModule.class})
+        UserActionModule.class,
+        EditTrackingModule.class,
+        EditEvetModule.class})
 public interface MainComponent {
 
     void inject(UserActionsActivity activity);
@@ -61,5 +66,9 @@ public interface MainComponent {
     void inject(EventsForTrackingActivity activity);
 
     void inject(DeleteEventFromFragmentDialog dialog);
+
+    void inject(NotificationJobService service);
+
+    void inject(ItHappenedApplication itHappenedApplication);
 
 }

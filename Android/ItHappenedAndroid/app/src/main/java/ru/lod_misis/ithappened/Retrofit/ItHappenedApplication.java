@@ -13,6 +13,8 @@ import com.google.gson.GsonBuilder;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
+import javax.inject.Inject;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -20,6 +22,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.ConnectionReciver;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.MyGeopositionService;
 import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
 import ru.lod_misis.ithappened.di.components.MainComponent;
@@ -42,6 +45,9 @@ public class ItHappenedApplication extends Application {
         return mInstance;
     }
 
+    @Inject
+    ITrackingRepository repository;
+
     public String getAPI_KEY() {
         return API_KEY;
     }
@@ -50,13 +56,15 @@ public class ItHappenedApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            stopService(new Intent(this,MyGeopositionService.class));
-        }else{
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            stopService(new Intent(this, MyGeopositionService.class));
+        } else {
             stopService(new Intent(this, MyGeopositionService.class));
             startService(new Intent(this, MyGeopositionService.class));
         }
         appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
+        appComponent.inject(this);
+        repository.configureRealm();
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
@@ -100,11 +108,11 @@ public class ItHappenedApplication extends Application {
         ConnectionReciver.connectionReciverListener = listener;
     }
 
-    public static MainComponent getAppComponent(){
+    public static MainComponent getAppComponent() {
         return appComponent;
     }
 
-    public static ItHappenedApi getApi(){
+    public static ItHappenedApi getApi() {
         return itHappenedApi;
     }
 }
