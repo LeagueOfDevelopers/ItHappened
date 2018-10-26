@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
@@ -34,6 +35,8 @@ public class DeleteEventFromFragmentDialog extends DialogFragment {
     InMemoryFactRepository factRepository;
     @Inject
     TrackingService trackingService;
+    @Inject
+    ITrackingRepository trackingRepository;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class DeleteEventFromFragmentDialog extends DialogFragment {
                         if(eventV1s.size()==0){
                             eventsFragment.hintForEventsHistory.setVisibility(View.VISIBLE);
                         }
-                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(eventV1s, getActivity(), 1));
+                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(eventV1s, getActivity(), 1,trackingRepository));
                         Toast.makeText(getActivity().getApplicationContext(), "Событие удалено", Toast.LENGTH_SHORT).show();
                     }
                 })

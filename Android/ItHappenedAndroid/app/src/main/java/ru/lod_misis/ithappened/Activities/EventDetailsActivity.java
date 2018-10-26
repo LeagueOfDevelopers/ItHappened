@@ -34,6 +34,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
@@ -78,15 +80,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     TextView dateValue;
     @BindView(R.id.dateValueNulls)
     TextView dateValueNulls;
-    //@BindView(R.id.adress)
+    @BindView(R.id.adress)
     TextView adress;
     @BindView(R.id.ratingValue)
     RatingBar ratingValue;
 
     @BindView(R.id.geoposition_title)
     TextView geoposition_title;
-    SupportMapFragment supportMapFragment;
-    GoogleMap map;
 
     @BindView(R.id.photo_title)
     TextView photo_title;
@@ -96,7 +96,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     Double lotitude;
     Double longitude;
     IWorkWithFIles workWithFIles;
-
     TrackingV1 thisTrackingV1;
     EventV1 thisEventV1;
     Date thisDate;
@@ -105,6 +104,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     Intent intent;
 
     Activity activity;
+    @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
 
     @Override
@@ -122,12 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         eventDetailsPresenter.attachView(this,
                 UUID.fromString(getIntent().getStringExtra("trackingId")),
                 UUID.fromString(getIntent().getStringExtra("eventId")));
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        eventDetailsPresenter.init();
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,6 +148,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             }
         });
     }
+
+
 
     public void okClicked() {
         eventDetailsPresenter.okClicked();
@@ -200,9 +197,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void startConfigurationView() {
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         showOrNotNullCard();
-
         if (thisEventV1.GetRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);

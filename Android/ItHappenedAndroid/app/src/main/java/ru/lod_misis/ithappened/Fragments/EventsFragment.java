@@ -373,6 +373,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
 
+        /*Это надо полюбому переделать!
         eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
             @Override
             protected void loadMoreItems() {
@@ -409,7 +410,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             public boolean isLastPage() {
                 return isLastPage;
             }
-        });
+        });*/
 
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -477,10 +478,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         if (eventsForAdapter.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1,collection);
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1,collection);
             eventsAdpt.notifyDataSetChanged();
         }
         if (eventsAdpt != null) {
@@ -496,7 +497,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             if (refreshedEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1,collection));
         }
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -505,21 +506,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     @Override
     public void onResume() {
         super.onResume();
-        if (eventsAdpt != null) {
-            List<EventV1> adapterEvents = eventsAdpt.getEventV1s();
-            ArrayList<EventV1> refreshedEvents = new ArrayList<>();
-            if (adapterEvents != null)
-                for (EventV1 event : adapterEvents) {
-                    collection.GetTracking(event.GetTrackingId());
-                    EventV1 addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
-                    if (!addAbleEvent.GetStatus())
-                        refreshedEvents.add(addAbleEvent);
-                }
-            if (refreshedEvents.size() == 0) {
-                hintForEventsHistory.setVisibility(View.VISIBLE);
-            }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
-        }
+
     }
 
 

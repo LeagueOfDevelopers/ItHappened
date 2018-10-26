@@ -92,7 +92,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         setTitle(thisTrackingV1.GetTrackingName());
 
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsAdpt = new EventsAdapter(visibleEventV1s , this , 0);
+        eventsAdpt = new EventsAdapter(visibleEventV1s , this , 0,trackingsCollection);
         eventsRecycler.setAdapter(eventsAdpt);
     }
 

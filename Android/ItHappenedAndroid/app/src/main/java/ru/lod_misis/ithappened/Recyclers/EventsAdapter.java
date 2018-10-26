@@ -1,6 +1,8 @@
 package ru.lod_misis.ithappened.Recyclers;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,13 +12,24 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.UUID;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
     //TODO переписать
@@ -25,7 +38,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     private Context context;
     private int state = 0;
 
-    public EventsAdapter(List<EventV1> eventV1s, Context context, int state) {
+    ITrackingRepository trackingRepository;
+
+    public EventsAdapter(List<EventV1> eventV1s, Context context, int state,ITrackingRepository trackingRepository) {
+        this.trackingRepository=trackingRepository;
         this.eventV1s = eventV1s;
         deletedEventV1 = new ArrayList<>();
         for(EventV1 eventV1 : deletedEventV1){
@@ -66,20 +82,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        /*final EventV1 eventV1 = eventV1s.get(position);
-
-        ITrackingRepository trackingRepository;
+        final EventV1 eventV1 = eventV1s.get(position);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }else{
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
-
 
         UUID trackingId = eventV1.GetTrackingId();
 
@@ -135,7 +140,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
         holder.eventDate.setText(format.format(eventDate));
-        */
+
 
     }
 
