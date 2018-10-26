@@ -249,7 +249,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             }
 
         } else {
-            getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
+            adress.setVisibility(View.GONE);
             geoposition_title.setVisibility(View.GONE);
         }
         if (thisEventV1.getPhoto() != null) {

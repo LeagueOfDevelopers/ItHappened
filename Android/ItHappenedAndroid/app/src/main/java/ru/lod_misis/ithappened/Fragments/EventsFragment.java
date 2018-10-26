@@ -302,7 +302,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             });
         } else {
             trackingsPickerText.setText("Отслеживания отсутствуют");
-            //hintForSpinner.setVisibility(View.VISIBLE);
+            hintForSpinner.setVisibility(View.VISIBLE);
         }
 
 
