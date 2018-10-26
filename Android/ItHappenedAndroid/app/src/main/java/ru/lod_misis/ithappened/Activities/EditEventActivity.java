@@ -31,7 +31,6 @@ import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +43,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
-import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
@@ -93,7 +91,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     @BindView(R.id.photoAccessEdit)
     TextView photoAccess;
     @BindView(R.id.adress)
-    TextView address;
+    TextView adress;
 
     @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
@@ -139,12 +137,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         activity = this;
 
         ItHappenedApplication.getAppComponent().inject(this);
-
-        latitude = Double.valueOf(getIntent().getStringExtra("latitude"));
-        longitude = Double.valueOf(getIntent().getStringExtra("longitude"));
         presenter.onViewAttached(this);
         presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")),
                 UUID.fromString(getIntent().getStringExtra("eventId")));
+
         presenter.onViewCreated();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
@@ -154,14 +150,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(trackingV1.GetTrackingName());
-
-        eventV1 = trackingV1.GetEvent(eventId);
-
-
         dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,7 +158,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 picker.show(fragmentManager, "from");
             }
         });
-        address.setOnClickListener(new View.OnClickListener() {
+        adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ArrayList<String> fields = new ArrayList<>();
@@ -215,6 +203,13 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
     }
 
+    private void initToolbar (String title) {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(title);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -242,7 +237,12 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                               String commentValue,
                               Double scaleValue,
                               Rating ratingValue,
+                              Double longitude,
+                              Double latitude,
+                              String photoPath,
+                              String title,
                               String scaleName) {
+        initToolbar(title);
 
         commentState = calculateState(comment);
         ratingState = calculateState(rating);
@@ -288,26 +288,20 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             commentControl.setText(commentValue);
         }
 
-        if ((trackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required)) {
+        if ((geoposition == TrackingCustomization.Optional
+                || geoposition== TrackingCustomization.Required)) {
             if (longitude != null && latitude != null) {
                 try {
-                    address.setText(getAddress(latitude,longitude));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    address.setText(getAddress(eventV1.getLotitude(),eventV1.getLongitude()));
+                    adress.setText(getAddress(latitude,longitude));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        if ((trackingV1.GetPhotoCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetPhotoCustomization() == TrackingCustomization.Required)) {
+        if ((photo == TrackingCustomization.Optional
+                || photo == TrackingCustomization.Required)) {
             workWithFIles = new WorkWithFiles(getApplication(), this);
-            this.photo.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
+            this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
         }
 
     }

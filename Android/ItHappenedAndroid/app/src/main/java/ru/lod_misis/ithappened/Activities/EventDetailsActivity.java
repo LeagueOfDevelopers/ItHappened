@@ -276,9 +276,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         Locale loc = new Locale("ru");
         format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
-        TrackingCustomization commentCustomization = thisTrackingV1.GetCommentCustomization();
-        TrackingCustomization scaleCustomization = thisTrackingV1.GetScaleCustomization();
-        TrackingCustomization ratingCustomization = thisTrackingV1.GetRatingCustomization();
     }
 
     @Override

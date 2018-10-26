@@ -154,6 +154,10 @@ public class EditEventPresenterImpl implements EditEventContract.EditEventPresen
                 tracking.GetEvent(eventId).GetComment(),
                 tracking.GetEvent(eventId).GetScale(),
                 tracking.GetEvent(eventId).GetRating(),
+                tracking.GetEvent(eventId).getLongitude(),
+                tracking.GetEvent(eventId).getLotitude(),
+                tracking.GetEvent(eventId).getPhoto(),
+                tracking.GetTrackingName(),
                 tracking.getScaleName());
     }
 
