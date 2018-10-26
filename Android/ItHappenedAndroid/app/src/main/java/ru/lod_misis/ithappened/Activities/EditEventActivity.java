@@ -1,6 +1,5 @@
 package ru.lod_misis.ithappened.Activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -10,12 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
@@ -30,19 +29,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -52,6 +45,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
+import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
@@ -99,6 +94,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TextView geopositionAccess;
     @BindView(R.id.photoAccessEdit)
     TextView photoAccess;
+    @BindView(R.id.adress)
+    TextView address;
 
     @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
@@ -124,9 +121,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TrackingV1 trackingV1;
     EventV1 eventV1;
 
-    SupportMapFragment supportMapFragment;
-    GoogleMap map;
-    Marker marker;
+
     LocationManager locationManager;
     Double latitude = null;
     Double longitude = null;
@@ -154,8 +149,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
@@ -176,11 +169,113 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 picker.show(fragmentManager, "from");
             }
         });
-
+        address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> fields = new ArrayList<>();
+                fields.add("3");
+                fields.add(trackingV1.GetTrackingID().toString());
+                fields.add(eventId.toString());
+                fields.add(eventV1.getLotitude().toString());
+                fields.add(eventV1.getLongitude().toString());
+                MapActivity.toMapActivity(activity, fields);
+            }
+        });
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.addEventClick(commentState, ratingState, scaleState, geopositionState);
+                boolean commentFlag = true;
+                boolean scaleFlag = true;
+                boolean ratingFlag = true;
+                boolean geopositionFlag = true;
+                boolean photoFlag = true;
+
+                if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
+                    commentFlag = false;
+                }
+
+                if (ratingState == 2 && ratingControl.getRating() == 0) {
+                    ratingFlag = false;
+                }
+
+                if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
+                    scaleFlag = false;
+                }
+                if (geopositionState == 2 && (latitude == null || longitude == null)) {
+                    geopositionFlag = false;
+                }
+                if(photoState == 2 && !flagPhoto){
+                    photoFlag = false;
+                }
+
+                String comment = null;
+                Double scale = null;
+                Rating rating = null;
+
+
+                if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
+                    if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
+                        comment = commentControl.getText().toString().trim();
+                    }
+                    if (!(ratingControl.getRating() == 0)) {
+                        rating = new Rating((int) (ratingControl.getRating() * 2));
+                    }
+                    if (!scaleControl.getText().toString().isEmpty()) {
+                        try {
+                            scale = Double.parseDouble(scaleControl.getText().toString());
+                            Date eventDate = null;
+                            Locale locale = new Locale("ru");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                            try {
+                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath, eventDate);
+                            YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
+                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculate");
+                                        }
+                                    });
+                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Fact>() {
+                                        @Override
+                                        public void call(Fact fact) {
+                                            Log.d("Statistics", "calculate");
+                                        }
+                                    });
+                            Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
+                            finishActivity();
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Date eventDate = null;
+                        Locale locale = new Locale("ru");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                        try {
+                            eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath,eventDate);
+                        YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
+                        new FactCalculator(trackingCollection).calculateFactsForAddNewEventActivity(trackingId);
+                        Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
+                        finishActivity();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
@@ -384,73 +479,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
     }
 
-    private void mapInit() {
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                map = googleMap;
-                map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                if (eventV1.getLotitude() != null && eventV1.getLongitude() != null) {
-                    marker = map.addMarker(new MarkerOptions().position(new LatLng(eventV1.getLotitude(), eventV1.getLongitude())));
-                    moveCamera(eventV1.getLotitude(), eventV1.getLongitude());
-                } else {
-                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
-                    moveCamera(location.getLatitude(), location.getLongitude());
-
-                }
-                marker.setDraggable(true);
-
-
-                map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDrag(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDragEnd(Marker marker) {
-                        latitude = marker.getPosition().latitude;
-                        longitude = marker.getPosition().longitude;
-                    }
-                });
-                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        marker.setPosition(latLng);
-                        latitude = latLng.latitude;
-                        longitude = latLng.longitude;
-                    }
-                });
-            }
-        });
-    }
-
-    private void moveCamera(Double latitude, Double longitude) {
-        CameraUpdate cameraUpdate;
-        cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                new CameraPosition.Builder()
-                        .target(new LatLng(latitude, longitude))
-                        .zoom(8)
-                        .build()
-        );
-        map.moveCamera(cameraUpdate);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -489,5 +517,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 activity.startActivityForResult(intent, 2);
             }
         }
+    }
+
+    private String getAddress(Double latitude, Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        return geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);
     }
 }

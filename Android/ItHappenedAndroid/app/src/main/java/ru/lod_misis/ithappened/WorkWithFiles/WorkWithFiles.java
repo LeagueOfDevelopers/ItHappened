@@ -32,6 +32,7 @@ public class WorkWithFiles implements IWorkWithFIles {
     Context context;
     String uriPhotoFromCamera;
 
+    @Inject
     public WorkWithFiles(Application application, Context context){
         this.application=application;
         this.context=context;
