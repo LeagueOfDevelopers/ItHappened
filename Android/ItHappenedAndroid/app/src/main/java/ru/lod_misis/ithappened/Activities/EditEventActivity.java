@@ -7,8 +7,6 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -141,6 +139,9 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         activity = this;
 
         ItHappenedApplication.getAppComponent().inject(this);
+
+        latitude = Double.valueOf(getIntent().getStringExtra("latitude"));
+        longitude = Double.valueOf(getIntent().getStringExtra("longitude"));
         presenter.onViewAttached(this);
         presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")),
                 UUID.fromString(getIntent().getStringExtra("eventId")));
@@ -184,98 +185,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean commentFlag = true;
-                boolean scaleFlag = true;
-                boolean ratingFlag = true;
-                boolean geopositionFlag = true;
-                boolean photoFlag = true;
-
-                if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
-                    commentFlag = false;
-                }
-
-                if (ratingState == 2 && ratingControl.getRating() == 0) {
-                    ratingFlag = false;
-                }
-
-                if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
-                    scaleFlag = false;
-                }
-                if (geopositionState == 2 && (latitude == null || longitude == null)) {
-                    geopositionFlag = false;
-                }
-                if(photoState == 2 && !flagPhoto){
-                    photoFlag = false;
-                }
-
-                String comment = null;
-                Double scale = null;
-                Rating rating = null;
-
-
-                if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
-                    if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
-                        comment = commentControl.getText().toString().trim();
-                    }
-                    if (!(ratingControl.getRating() == 0)) {
-                        rating = new Rating((int) (ratingControl.getRating() * 2));
-                    }
-                    if (!scaleControl.getText().toString().isEmpty()) {
-                        try {
-                            scale = Double.parseDouble(scaleControl.getText().toString());
-                            Date eventDate = null;
-                            Locale locale = new Locale("ru");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                            try {
-                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath, eventDate);
-                            YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                            finishActivity();
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Date eventDate = null;
-                        Locale locale = new Locale("ru");
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                        try {
-                            eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude,photoPath,eventDate);
-                        YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                        new FactCalculator(trackingCollection).calculateFactsForAddNewEventActivity(trackingId);
-                        Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                        finishActivity();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
-                }
+               presenter.addEventClick(commentState,ratingState,scaleState,geopositionState);
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
@@ -378,9 +288,27 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 || comment == TrackingCustomization.Required) && commentValue != null) {
             commentControl.setText(commentValue);
         }
-        if ((geoposition == TrackingCustomization.Optional
-                || geoposition == TrackingCustomization.Required)) {
-            mapInit();
+
+        if ((trackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional
+                || trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required)) {
+            if (longitude != null && latitude != null) {
+                try {
+                    address.setText(getAddress(latitude,longitude));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    address.setText(getAddress(eventV1.getLotitude(),eventV1.getLongitude()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if ((trackingV1.GetPhotoCustomization() == TrackingCustomization.Optional
+                || trackingV1.GetPhotoCustomization() == TrackingCustomization.Required)) {
+            workWithFIles = new WorkWithFiles(getApplication(), this);
+            photo.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
         }
 
     }
