@@ -14,8 +14,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -154,17 +152,12 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     ImageView photo;
     AlertDialog.Builder dialog;
 
-    LocationManager locationManager;
-    Marker marker;
-
     TrackingV1 trackingV1;
 
     Context context;
     Activity activity;
 
     boolean flagPhoto = false;
-
-    Location mYlocation;
 
     String uriPhotoFromCamera;
     private Integer jobId;
