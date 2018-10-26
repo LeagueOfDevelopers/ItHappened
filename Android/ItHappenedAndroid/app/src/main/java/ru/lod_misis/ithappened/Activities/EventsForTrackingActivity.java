@@ -3,6 +3,7 @@ package ru.lod_misis.ithappened.Activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -54,36 +55,24 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     int trackingPosition;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_history_for_tracking);
         ButterKnife.bind(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_hitroy_for_tracking));
 
         ItHappenedApplication.getAppComponent().inject(this);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
 
         Intent intent = getIntent();
 
-
         trackingId = UUID.fromString(intent.getStringExtra("id"));
-
         thisTrackingV1 = trackingsCollection.GetTracking(trackingId);
-        actionBar.setTitle(thisTrackingV1.GetTrackingName());
 
         eventV1s = trackingsCollection.getEventCollection(trackingId);
 
         for (int i = 0; i < eventV1s.size(); i++) {
-            if (eventV1s.get(i).GetStatus()) {
+            if ( eventV1s.get(i).GetStatus() ) {
                 eventV1s.remove(i);
             }
         }
@@ -91,27 +80,41 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         List<EventV1> visibleEventV1s = new ArrayList<>();
 
         for (int i = 0; i < eventV1s.size(); i++) {
-            if (!eventV1s.get(i).GetStatus()) {
+            if ( !eventV1s.get(i).GetStatus() ) {
                 visibleEventV1s.add(eventV1s.get(i));
             }
         }
 
-        if (visibleEventV1s.size() != 0) {
+        if ( visibleEventV1s.size() != 0 ) {
             hintForEvents.setVisibility(View.INVISIBLE);
         }
 
         setTitle(thisTrackingV1.GetTrackingName());
 
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsAdpt = new EventsAdapter(visibleEventV1s, this, 0);
+        eventsAdpt = new EventsAdapter(visibleEventV1s , this , 0);
         eventsRecycler.setAdapter(eventsAdpt);
+    }
+
+    private void setupActionBar () {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(thisTrackingV1.GetTrackingName());
+    }
+
+    @Override
+    public void onResume () {
+        super.onResume();
+
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_hitroy_for_tracking));
 
         addNewEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
 
-                Intent intent = new Intent(getApplicationContext(), AddNewEventActivity.class);
-                intent.putExtra("trackingId", thisTrackingV1.GetTrackingID().toString());
+                Intent intent = new Intent(getApplicationContext() , AddNewEventActivity.class);
+                intent.putExtra("trackingId" , thisTrackingV1.GetTrackingID().toString());
 
                 YandexMetrica.reportEvent(getString(R.string.metrica_user_press_button_add_event));
 
@@ -122,20 +125,20 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestart() {
+    protected void onRestart () {
         super.onRestart();
         recreate();
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause () {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history_for_tracking));
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch ( item.getItemId() ) {
             case android.R.id.home:
                 this.finish();
                 return true;
