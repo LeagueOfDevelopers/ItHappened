@@ -93,6 +93,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     CardView trackingsPickerBtn;
+    @Inject
     TrackingService trackingService;
     TextView hintForEventsHistory;
     TextView hintForSpinner;
