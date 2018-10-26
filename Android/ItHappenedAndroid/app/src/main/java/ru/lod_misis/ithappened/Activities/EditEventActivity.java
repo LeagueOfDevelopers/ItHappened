@@ -263,14 +263,14 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         dateControl.setText(format.format(date));
 
         if (scale != TrackingCustomization.None && scaleName != null) {
-            scaleType.setText(trackingV1.getScaleName());
+            scaleType.setText(scaleName);
         }
 
         if ((scale == TrackingCustomization.Optional
                 || scale == TrackingCustomization.Required) && scaleValue != null) {
             scaleControl.setText(StringParse.parseDouble(scaleValue));
-            if (trackingV1.getScaleName() != null) {
-                if (trackingV1.getScaleName().length() >= 3) {
+            if (scaleName != null) {
+                if (scaleName.length() >= 3) {
                     scaleType.setText(scaleName.substring(0, 2));
                 } else {
                     scaleType.setText(scaleName);
