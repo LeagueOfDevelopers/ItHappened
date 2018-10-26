@@ -13,7 +13,7 @@ import ru.lod_misis.ithappened.Presenters.EventDetailsPresenterImpl;
 public class EventDetailsModule {
 
     @Provides
-    public EventDetailsContract.EventDetailsPresenter provideEventDetailsPresenter(SharedPreferences service, InMemoryFactRepository factRepository){
+    public EventDetailsContract.EventDetailsPresenter provideEventDetailsPresenter(TrackingService service, InMemoryFactRepository factRepository){
         return new EventDetailsPresenterImpl(service, factRepository);
     }
 
