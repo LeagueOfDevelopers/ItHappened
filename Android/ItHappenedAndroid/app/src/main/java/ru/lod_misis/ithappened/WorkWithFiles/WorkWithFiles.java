@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 
+import javax.inject.Inject;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 

@@ -209,7 +209,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                         }
                     }
                 });
-
                 dialog.show();
             }
         });
@@ -308,7 +307,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         if ((trackingV1.GetPhotoCustomization() == TrackingCustomization.Optional
                 || trackingV1.GetPhotoCustomization() == TrackingCustomization.Required)) {
             workWithFIles = new WorkWithFiles(getApplication(), this);
-            photo.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
+            this.photo.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
         }
 
     }
