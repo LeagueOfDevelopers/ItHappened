@@ -599,9 +599,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         }
         if (averangeTime * 2 < oneDay) {
             //createJobSheduler(oneDay);
-            createJobSheduler(BuildConfig.TEST_PUSH);
+            createJobSheduler(Long.valueOf(BuildConfig.TEST_PUSH));
         } else {
-            createJobSheduler(BuildConfig.TEST_PUSH);
+            createJobSheduler(Long.valueOf(BuildConfig.TEST_PUSH));
         }
     }
 

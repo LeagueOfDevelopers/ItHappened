@@ -151,7 +151,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
-
+        eventsHistoryPresenter.onViewAttach(this);
         eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
                 dateF,
                 dateT,
