@@ -1,9 +1,7 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -92,7 +90,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         setTitle(thisTrackingV1.GetTrackingName());
 
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsAdpt = new EventsAdapter(visibleEventV1s , this , 0,trackingsCollection);
+        eventsAdpt = new EventsAdapter(visibleEventV1s , this , 0 , trackingsCollection);
         eventsRecycler.setAdapter(eventsAdpt);
     }
 
