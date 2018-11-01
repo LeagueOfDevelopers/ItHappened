@@ -1,14 +1,12 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,30 +21,31 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Presenters.EditTrackingContract;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
-public class EditTrackingActivity extends AppCompatActivity {
+public class EditTrackingActivity extends AppCompatActivity implements EditTrackingContract.EditTrackingView {
 
-    ITrackingRepository trackingRepository;
-    TrackingService service;
+    @Inject
     InMemoryFactRepository factRepository;
+    @Inject
+    FactCalculator factCalculator;
+
+    @Inject
+    EditTrackingContract.EditTrackingPresenter editTrackingPresenter;
 
     @BindView(R.id.editTitleOfTracking)
     EditText trackingName;
-
     @BindView(R.id.ratingTextEnabled)
     TextView ratingEnabled;
     @BindView(R.id.commentTextEnabled)
@@ -55,6 +54,8 @@ public class EditTrackingActivity extends AppCompatActivity {
     TextView scaleEnabled;
     @BindView(R.id.geopositionTextEnabled)
     TextView geopositionEnabled;
+    @BindView(R.id.photoTextEnabled)
+    TextView photoEnabled;
 
     @BindView(R.id.colorPicker)
     CardView colorPickerButton;
@@ -89,6 +90,14 @@ public class EditTrackingActivity extends AppCompatActivity {
     @BindView(R.id.geopositionBackColorDoubleCheck)
     LinearLayout geopositionRequired;
 
+    @BindView(R.id.photoBackColorDont)
+    LinearLayout photoDont;
+    @BindView(R.id.photoBackColorCheck)
+    LinearLayout photoOptional;
+    @BindView(R.id.photoBackColorDoubleCheck)
+    LinearLayout photoRequired;
+
+
     @BindView(R.id.ratingBackImageDont)
     ImageView ratingDontImage;
     @BindView(R.id.ratingBackImageCheck)
@@ -117,6 +126,13 @@ public class EditTrackingActivity extends AppCompatActivity {
     @BindView(R.id.geopositionBackImageDoubleCheck)
     ImageView geopositionRequiredImage;
 
+    @BindView(R.id.photoBackImageDont)
+    ImageView photoDontImage;
+    @BindView(R.id.photoBackImageCheck)
+    ImageView photoOptionalImage;
+    @BindView(R.id.photoBackImageDoubleCheck)
+    ImageView photoRequiredImage;
+
     String trackingColor;
 
     @BindView(R.id.scaleTypeContainer)
@@ -136,14 +152,21 @@ public class EditTrackingActivity extends AppCompatActivity {
     int stateForText;
     int stateForRating;
     int stateForGeoposition;
+    int stateForPhoto;
 
-    TrackingCustomization geoposition;
+    TrackingCustomization geoposition = TrackingCustomization.None;
+    TrackingCustomization rating = TrackingCustomization.None;
+    TrackingCustomization comment = TrackingCustomization.None;
+    TrackingCustomization scale = TrackingCustomization.None;
+    TrackingCustomization photo = TrackingCustomization.None;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
+        ItHappenedApplication.getAppComponent().inject(this);
+        editTrackingPresenter.onViewAttached(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_tracking));
 
@@ -156,18 +179,9 @@ public class EditTrackingActivity extends AppCompatActivity {
 
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
+        editTrackingPresenter.setTrackingId(trackingId);
 
-        service = new TrackingService(sharedPreferences.getString("UserId", ""), trackingRepository);
-
-        editableTrackingV1 = trackingRepository.GetTracking(trackingId);
+        editableTrackingV1 = editTrackingPresenter.getTrackingState();
 
         trackingName.setText(editableTrackingV1.GetTrackingName());
 
@@ -176,7 +190,7 @@ public class EditTrackingActivity extends AppCompatActivity {
         final SpectrumDialog.Builder colorPickerDialogBuilder = new SpectrumDialog.Builder(getApplicationContext());
         colorPickerDialogBuilder.setTitle("Выберите цвет для отслеживания")
                 .setColors(getApplicationContext().getResources().getIntArray(R.array.second_palette))
-                .setSelectedColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()))
+                .setSelectedColor(Integer.parseInt(editableTrackingV1.getColor()))
                 .setDismissOnColorSelected(false)
                 .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override
@@ -189,7 +203,7 @@ public class EditTrackingActivity extends AppCompatActivity {
                     }
                 });
 
-        colorPickerText.setTextColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()));
+        colorPickerText.setTextColor(Integer.parseInt(editableTrackingV1.getColor()));
 
         colorPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,6 +256,14 @@ public class EditTrackingActivity extends AppCompatActivity {
                 geopositionOptional,
                 geopositionRequired,
                 geopositionEnabled);
+        stateForPhoto = calculateState(editableTrackingV1.GetPhotoCustomization(),
+                photoDontImage,
+                photoOptionalImage,
+                photoRequiredImage,
+                photoDont,
+                photoOptional,
+                photoRequired,
+                photoEnabled);
 
 
         ratingDont.setOnClickListener(new View.OnClickListener() {
@@ -429,98 +451,53 @@ public class EditTrackingActivity extends AppCompatActivity {
             }
         });
 
+        photoDont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                photoEnabled.setText("не надо");
+                photoDontImage.setImageResource(R.drawable.active_dont);
+                photoOptionalImage.setImageResource(R.drawable.not_active_check);
+                photoRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                photoOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForPhoto = 0;
+            }
+        });
+
+        photoOptional.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoEnabled.setText("не обязательно");
+                photoDontImage.setImageResource(R.drawable.not_active_dont);
+                photoOptionalImage.setImageResource(R.drawable.active_check);
+                photoRequiredImage.setImageResource(R.drawable.not_active_double_chek);
+                photoOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                photoRequired.setBackgroundColor(Color.parseColor("#ffffff"));
+                stateForPhoto = 1;
+            }
+        });
+
+
+        photoRequired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoEnabled.setText("обязательно");
+                photoDontImage.setImageResource(R.drawable.not_active_dont);
+                photoOptionalImage.setImageResource(R.drawable.not_active_check);
+                photoRequiredImage.setImageResource(R.drawable.active_double_check);
+                photoOptional.setBackgroundColor(Color.parseColor("#ffffff"));
+                photoRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                stateForPhoto = 2;
+            }
+        });
+
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    trackingColor = "" + colorPickerText.getCurrentTextColor();
-                    String trackingTitle = trackingName.getText().toString().trim();
-
-                    TrackingCustomization rating = TrackingCustomization.None;
-                    TrackingCustomization comment = TrackingCustomization.None;
-                    TrackingCustomization scale = TrackingCustomization.None;
-
-                    String scaleNumb = null;
-
-                    switch (stateForRating) {
-                        case 0:
-                            rating = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            rating = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            rating = TrackingCustomization.Required;
-                            break;
-                        default:
-                            break;
-                    }
-
-
-                    switch (stateForText) {
-                        case 0:
-                            comment = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            comment = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            comment = TrackingCustomization.Required;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    switch (stateForScale) {
-                        case 0:
-                            scale = TrackingCustomization.None;
-                            break;
-                        case 1:
-                            scale = TrackingCustomization.Optional;
-                            break;
-                        case 2:
-                            scale = TrackingCustomization.Required;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
-                            (scaleType.getText().toString().isEmpty()
-                                    || scaleType.getText().toString().trim().isEmpty())) {
-                        Toast.makeText(getApplicationContext(), "Введите единицу измерения шкалы", Toast.LENGTH_SHORT).show();
-                    } else {
-                        if (scale != TrackingCustomization.None) {
-                            scaleNumb = scaleType.getText().toString().trim();
-                        }
-                        service.EditTracking(trackingId, scale, rating, comment, geoposition, trackingTitle, scaleNumb, trackingColor);
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        YandexMetrica.reportEvent(getString(R.string.metrica_edit_tracking));
-                        Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
-                        startActivity(intent);
-                    }
-                }
+                editTrackingPresenter.onEditClick();
             }
         });
 
@@ -546,6 +523,131 @@ public class EditTrackingActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_tracking));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        editTrackingPresenter.onViewDettached();
+    }
+
+    @Override
+    public void showError(String error) {
+        Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void completeEdit() {
+        factCalculator.calculateFactsForAddNewEventActivity(trackingId);
+        YandexMetrica.reportEvent(getString(R.string.metrica_edit_tracking));
+        Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public String getEditTrackingName() {
+        return trackingName.getText().toString().trim();
+    }
+
+    @Override
+    public TrackingCustomization getCommentCustomization() {
+        switch (stateForText) {
+            case 0:
+                comment = TrackingCustomization.None;
+                break;
+            case 1:
+                comment = TrackingCustomization.Optional;
+                break;
+            case 2:
+                comment = TrackingCustomization.Required;
+                break;
+            default:
+                break;
+        }
+        return comment;
+    }
+
+    @Override
+    public TrackingCustomization getRatingCustomization() {
+        switch (stateForRating) {
+            case 0:
+                rating = TrackingCustomization.None;
+                break;
+            case 1:
+                rating = TrackingCustomization.Optional;
+                break;
+            case 2:
+                rating = TrackingCustomization.Required;
+                break;
+            default:
+                break;
+        }
+        return rating;
+    }
+
+    @Override
+    public TrackingCustomization getScaleCustomization() {
+        switch (stateForScale) {
+            case 0:
+                scale = TrackingCustomization.None;
+                break;
+            case 1:
+                scale = TrackingCustomization.Optional;
+                break;
+            case 2:
+                scale = TrackingCustomization.Required;
+                break;
+            default:
+                break;
+        }
+        return scale;
+    }
+
+    @Override
+    public TrackingCustomization getPhotoCustomization() {
+        switch (stateForPhoto) {
+            case 0:
+                photo = TrackingCustomization.None;
+                break;
+            case 1:
+                photo = TrackingCustomization.Optional;
+                break;
+            case 2:
+                photo = TrackingCustomization.Required;
+                break;
+            default:
+                break;
+        }
+        return photo;
+    }
+
+    @Override
+    public TrackingCustomization getGeopositionCustomization() {
+        switch (stateForGeoposition) {
+            case 0:
+                geoposition = TrackingCustomization.None;
+                break;
+            case 1:
+                geoposition = TrackingCustomization.Optional;
+                break;
+            case 2:
+                geoposition = TrackingCustomization.Required;
+                break;
+            default:
+                break;
+        }
+        return geoposition;
+    }
+
+    @Override
+    public String getScaleName() {
+        return scaleType.getText().toString().trim();
+    }
+
+    @Override
+    public String getTrackingColor() {
+        return String.valueOf(colorPickerText.getCurrentTextColor());
     }
 
     private int calculateState(TrackingCustomization customization,

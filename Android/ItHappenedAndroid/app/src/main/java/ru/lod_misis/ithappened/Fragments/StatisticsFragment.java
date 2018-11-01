@@ -3,7 +3,6 @@ package ru.lod_misis.ithappened.Fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -27,17 +26,18 @@ import com.yandex.metrica.YandexMetrica;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Presenters.StatisticsContract;
 import ru.lod_misis.ithappened.Presenters.StatisticsInteractorImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.StatisticsAdapter;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 
 
@@ -50,7 +50,9 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
 
     RecyclerView allTrackingsRecycler;
 
+    @Inject
     InMemoryFactRepository factRepository;
+    @Inject
     StatisticsContract.StatisticsInteractor statisticsInteractor;
 
     TextView hint;
@@ -62,8 +64,7 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
     FloatingActionButton recountBtn;
 
     List<String> titles = new ArrayList<>();
-
-    ITrackingRepository trackingCollection;
+    @Inject
     TrackingService service;
     List<TrackingV1> allTrackingV1s = new ArrayList<>();
 
@@ -73,6 +74,7 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_statistics));
+        ItHappenedApplication.getAppComponent().inject(this);
         return inflater.inflate(ru.lod_misis.ithappened.R.layout.fragment_statistics, null);
 
     }
@@ -84,16 +86,6 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
 
         allTrackingV1s = new ArrayList<>();
         titles = new ArrayList<>();
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        }
-        service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
         titles.add("Общая статистика");
         for (TrackingV1 trackingV1 : service.GetTrackingCollection()) {
             if (!trackingV1.GetStatus()) {
@@ -102,9 +94,6 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
             }
         }
 
-        StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
-        trackingCollection = StaticInMemoryRepository.getInstance();
-        service = new TrackingService(getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""), trackingCollection);
         titles = new ArrayList<>();
         allTrackingV1s = new ArrayList<>();
         titles.add("Общая статистика");
@@ -143,7 +132,7 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
         recountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                statisticsInteractor.loadingFacts(trackingCollection);
+                statisticsInteractor.loadingFacts(service);
             }
         });
 
@@ -199,9 +188,6 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
             if (position == 0) {
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.all_statistics_layout, null);
-                StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences(
-                        "MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", ""));
-                ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
                 facts = factRepository.getAllTrackingsFactCollection();
                 statisticsInteractor = new StatisticsInteractorImpl(getActivity(), factRepository);
 
@@ -217,11 +203,6 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
 
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.one_tracking_statistics_layout, null);
-                StaticInMemoryRepository.setUserId(getActivity().getSharedPreferences(
-                        "MAIN_KEYS",
-                        Context.MODE_PRIVATE).getString("UserId", ""));
-                ITrackingRepository trackingCollection = StaticInMemoryRepository.getInstance();
-
                 facts = factRepository.getOneTrackingFactCollection(allTrackingV1s.get(position - 1).GetTrackingID());
 
 

@@ -15,10 +15,10 @@
     <string name="synchronisation">Синхронизация</string>
 
     <string-array name="toggle_array">
-    <item>Обязательно</item>
-    <item>Необязательно</item>
-    <item>Не выбрано</item>
-</string-array>
+        <item>Обязательно</item>
+        <item>Необязательно</item>
+        <item>Не выбрано</item>
+    </string-array>
 
     <string name="hint_for_addnewtracking_button">Your title</string>
     <string name="metrica_add_event">Пользователь добавил событие</string>
@@ -50,4 +50,7 @@
     <string name="metrica_user_logout">Пользователь вышел из профиля</string>
     <string name="metrica_delete_tracking">Пользователь удалил отслеживание</string>
     <string name="metrica_user_login">Пользователь привязал аккаунт к google</string>
+    <string name="title_dialog_for_photo">Загрузить фотографию</string>
+    <string name="confirm_add_geoposition">Подтвердить</string>
+    <string name="add_geoposition">Добавить геометку</string>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,148 +13,145 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/outer_margin">
+            android:layout_margin="@dimen/outer_margin"
+            android:paddingBottom="16dp">
 
             <LinearLayout
+                android:id="@+id/commentEventContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/commentEventContainer"
-                android:paddingTop="@dimen/inner_margin_between_components"
-                >
+                android:paddingTop="@dimen/inner_margin_between_components">
 
                 <TextView
+                    android:id="@+id/commentAccess"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/commentAccess"
-                    android:text = "Комментарий"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
+                    android:text="Комментарий"
+                    android:textSize="@dimen/text_size" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/inner_margin_between_components"
                     android:minHeight="40dp"
-                    app:cardUseCompatPadding="true"
                     app:cardBackgroundColor="#ffffff"
-                    android:layout_marginTop="@dimen/inner_margin_between_components">
+                    app:cardUseCompatPadding="true">
 
                     <EditText
                         android:id="@+id/eventCommentControl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="40dp"
                         android:background="@drawable/custom_edit_text"
                         android:hint="Ваш комментарий"
-                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:minHeight="40dp"
+                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                         android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                        android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
+                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:paddingTop="@dimen/padding_up_and_down_for_texts" />
                 </android.support.v7.widget.CardView>
             </LinearLayout>
 
 
             <LinearLayout
-                android:paddingTop="@dimen/inner_margin_between_components"
-                android:layout_below="@id/commentEventContainer"
+                android:id="@+id/scaleEventContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/commentEventContainer"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
                 android:orientation="vertical"
-                android:id="@+id/scaleEventContainer"
-                android:layout_marginTop="@dimen/inner_margin_between_components">
+                android:paddingTop="@dimen/inner_margin_between_components">
 
                 <TextView
+                    android:id="@+id/scaleAccess"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text = "Количество"
-                    android:id="@+id/scaleAccess"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
                     android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                    />
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:text="Количество"
+                    android:textSize="@dimen/text_size" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    app:cardUseCompatPadding="true"
                     android:layout_marginTop="@dimen/inner_margin_between_components"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
-                    >
+                    android:minHeight="40dp"
+                    app:cardUseCompatPadding="true">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                    <EditText
-                        android:id="@+id/eventScaleControl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:minHeight="40dp"
-                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                        android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                        android:background="@drawable/custom_edit_text"
-                        android:hint="1000"
+                        <EditText
+                            android:id="@+id/eventScaleControl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/custom_edit_text"
+                            android:hint="1000"
+                            android:minHeight="40dp"
+                            android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                            android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                            android:paddingTop="@dimen/padding_up_and_down_for_texts"
 
-                        />
+                            />
 
                         <TextView
+                            android:id="@+id/scaleTypeAccess"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                            android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                            android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                            android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                            android:gravity="center_vertical"
-                            android:id="@+id/scaleTypeAccess"
                             android:layout_toRightOf="@id/eventScaleControl"
                             android:background="@drawable/custom_edit_text"
-                            android:text="Шкала"
+                            android:gravity="center_vertical"
                             android:minHeight="40dp"
-                            />
+                            android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                            android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                            android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                            android:text="Шкала" />
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>
             </LinearLayout>
 
 
             <LinearLayout
+                android:id="@+id/ratingEventContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/scaleEventContainer"
-                android:id="@+id/ratingEventContainer"
-                android:paddingTop="@dimen/inner_margin_between_components"
-                android:layout_marginTop="@dimen/inner_margin_between_components">
+                android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/inner_margin_between_components">
 
                 <TextView
+                    android:id="@+id/ratingAccess"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text = "Рейтинг"
-                    android:id="@+id/ratingAccess"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
+                    android:text="Рейтинг"
+                    android:textSize="@dimen/text_size" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    app:cardUseCompatPadding="true"
                     android:layout_marginTop="@dimen/inner_margin_between_components"
                     android:background="@drawable/custom_edit_text"
+                    android:elevation="40dp"
+                    android:minHeight="40dp"
                     app:cardBackgroundColor="#ffffff"
-                    android:elevation="40dp">
+                    app:cardUseCompatPadding="true">
 
 
                     <RatingBar
@@ -172,54 +169,55 @@
 
 
             <LinearLayout
+                android:id="@+id/dateEventContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/ratingEventContainer"
-                android:id="@+id/dateEventContainer"
-                android:paddingTop="@dimen/inner_margin_between_components"
-                android:layout_marginTop="@dimen/inner_margin_between_components">
+                android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/inner_margin_between_components">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text = "Дата"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
+                    android:text="Дата"
+                    android:textSize="@dimen/text_size" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    app:cardUseCompatPadding="true"
                     android:layout_below="@+id/titleHint"
                     android:layout_marginTop="@dimen/inner_margin_between_components"
-                    android:background="@drawable/custom_edit_text">
+                    android:background="@drawable/custom_edit_text"
+                    android:minHeight="40dp"
+                    app:cardUseCompatPadding="true">
 
                     <Button
                         android:id="@+id/eventDateControl"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:text="Дата"
-                        android:textColor="#a9a9a9"
                         android:background="@drawable/custom_edit_text"
-                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                         android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
                         android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                        android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
+                        android:text="Дата"
+                        android:textColor="#a9a9a9" />
                 </android.support.v7.widget.CardView>
             </LinearLayout>
+
             <LinearLayout
+                android:id="@+id/geopositionEventContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/dateEventContainer"
-                android:id="@+id/geopositionEventContainer"
-                android:paddingTop="@dimen/inner_margin_between_components"
-                android:layout_marginTop="@dimen/inner_margin_between_components">
+                android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/inner_margin_between_components">
 
                 <TextView
                     android:id="@+id/geopositionAccess"
@@ -230,21 +228,59 @@
                     android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
                     android:text="Геопозиция"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/text_size" />
 
-                <fragment
-                    android:id="@+id/map"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                <com.rey.material.widget.TextView
+                    android:id="@+id/adress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/inner_margin_between_components"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="@string/add_geoposition"
+                    android:textSize="@dimen/text_size"
+                    tool:text="@tools:sample/lorem/random" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/photoEventContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/geopositionEventContainer"
+                android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/inner_margin_between_components">
+
+                <TextView
+                    android:id="@+id/photoAccess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:text="Фотография"
+                    android:textSize="@dimen/text_size" />
+
+                <ImageView
+                    android:id="@+id/photo"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    />
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_add_a_photo_black_24dp" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarForPhoto"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"></ProgressBar>
             </LinearLayout>
 
 
-
-</RelativeLayout>
+        </RelativeLayout>
     </ScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,25 +1,30 @@
 package ru.lod_misis.ithappened.Activities;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -34,44 +39,41 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Presenters.EditEventContract;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
+import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 
-public class EditEventActivity extends AppCompatActivity {
+public class EditEventActivity extends AppCompatActivity implements EditEventContract.EditEventView {
 
-    TrackingService trackingService;
-    InMemoryFactRepository factRepository;
-    ITrackingRepository trackingCollection;
+    @Inject
+    EditEventContract.EditEventPresenter presenter;
 
     int commentState;
     int scaleState;
     int ratingState;
     int geopositionState;
+    int photoState;
 
     UUID trackingId;
     UUID eventId;
@@ -84,6 +86,8 @@ public class EditEventActivity extends AppCompatActivity {
     LinearLayout ratingContainer;
     @BindView(R.id.geopositionEventContainerEdit)
     LinearLayout geopositionContainer;
+    @BindView(R.id.photoEventContainerEdit)
+    LinearLayout photoContainer;
 
     @BindView(R.id.commentAccessEdit)
     TextView commentAccess;
@@ -93,6 +97,8 @@ public class EditEventActivity extends AppCompatActivity {
     TextView ratingAccess;
     @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
+    @BindView(R.id.photoAccessEdit)
+    TextView photoAccess;
 
     @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
@@ -108,6 +114,13 @@ public class EditEventActivity extends AppCompatActivity {
     @BindView(R.id.editEvent)
     Button addEvent;
 
+    IWorkWithFIles workWithFIles;
+    String photoPath;
+    @BindView(R.id.photoEdit)
+    ImageView photo;
+    AlertDialog.Builder dialog;
+    Boolean flagPhoto = false;
+
     TrackingV1 trackingV1;
     EventV1 eventV1;
 
@@ -118,7 +131,10 @@ public class EditEventActivity extends AppCompatActivity {
     Double latitude = null;
     Double longitude = null;
 
+    String uriPhotoFromCamera;
+
     Context context;
+    Activity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,35 +143,22 @@ public class EditEventActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         context = this;
+        activity = this;
+
+        ItHappenedApplication.getAppComponent().inject(this);
+        presenter.onViewAttached(this);
+        presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")),
+                UUID.fromString(getIntent().getStringExtra("eventId")));
+        presenter.onViewCreated();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingCollection = StaticInMemoryRepository.getInstance();
-        }
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), trackingCollection);
-
-        factRepository = StaticFactRepository.getInstance();
-
-        trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
-        eventId = UUID.fromString(getIntent().getStringExtra("eventId"));
-
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
-
-
-        trackingV1 = trackingCollection.GetTracking(trackingId);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -163,55 +166,6 @@ public class EditEventActivity extends AppCompatActivity {
         actionBar.setTitle(trackingV1.GetTrackingName());
 
         eventV1 = trackingV1.GetEvent(eventId);
-
-        commentState = calculateState(trackingV1.GetCommentCustomization());
-        ratingState = calculateState(trackingV1.GetRatingCustomization());
-        scaleState = calculateState(trackingV1.GetScaleCustomization());
-        geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
-
-        calculateUX(commentContainer, commentAccess, commentState);
-        calculateUX(ratingContainer, ratingAccess, ratingState);
-        calculateUX(scaleContainer, scaleAccess, scaleState);
-        calculateUX(geopositionContainer, geopositionAccess, geopositionState);
-
-        if (trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null) {
-            scaleType.setText(trackingV1.getScaleName());
-        }
-
-        Date thisDate = eventV1.GetEventDate();
-
-        Locale loc = new Locale("ru");
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
-        format.setTimeZone(TimeZone.getDefault());
-
-        if ((trackingV1.GetScaleCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetScaleCustomization() == TrackingCustomization.Required) && eventV1.GetScale() != null) {
-            scaleControl.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue()));
-            if (trackingV1.getScaleName() != null) {
-                if (trackingV1.getScaleName().length() >= 3) {
-                    scaleType.setText(trackingV1.getScaleName().substring(0, 2));
-                } else {
-                    scaleType.setText(trackingV1.getScaleName());
-                }
-            }
-        }
-
-        if ((trackingV1.GetRatingCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetRatingCustomization() == TrackingCustomization.Required) && eventV1.GetRating() != null) {
-            ratingControl.setRating(eventV1.GetRating().getRating() / 2.0f);
-        }
-
-        if ((trackingV1.GetCommentCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetCommentCustomization() == TrackingCustomization.Required) && eventV1.GetComment() != null) {
-            commentControl.setText(eventV1.GetComment());
-        }
-        if ((trackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional
-                || trackingV1.GetGeopositionCustomization() == TrackingCustomization.Required)) {
-            mapInit();
-        }
-
-
-        dateControl.setText(format.format(thisDate).toString());
 
 
         dateControl.setOnClickListener(new View.OnClickListener() {
@@ -226,111 +180,32 @@ public class EditEventActivity extends AppCompatActivity {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean commentFlag = true;
-                boolean scaleFlag = true;
-                boolean ratingFlag = true;
-                boolean geopositionFlag = true;
-
-                if (commentState == 2 && commentControl.getText().toString().isEmpty()) {
-                    commentFlag = false;
-                }
-
-                if (ratingState == 2 && ratingControl.getRating() == 0) {
-                    ratingFlag = false;
-                }
-
-                if (scaleState == 2 && scaleControl.getText().toString().isEmpty()) {
-                    scaleFlag = false;
-                }
-                if (geopositionState == 2 && (latitude == null || longitude == null)) {
-                    geopositionFlag = false;
-                }
-
-                String comment = null;
-                Double scale = null;
-                Rating rating = null;
-
-
-                if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
-                    if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
-                        comment = commentControl.getText().toString().trim();
-                    }
-                    if (!(ratingControl.getRating() == 0)) {
-                        rating = new Rating((int) (ratingControl.getRating() * 2));
-                    }
-                    if (!scaleControl.getText().toString().isEmpty()) {
-                        try {
-                            scale = Double.parseDouble(scaleControl.getText().toString());
-                            Date eventDate = null;
-                            Locale locale = new Locale("ru");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                            simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                            try {
-                                eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                presenter.addEventClick(commentState, ratingState, scaleState, geopositionState);
+            }
+        });
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                workWithFIles = new WorkWithFiles(getApplication(), context);
+                dialog = new AlertDialog.Builder(context);
+                dialog.setTitle(R.string.title_dialog_for_photo);
+                dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i) {
+                            case 0: {
+                                pickGallery();
+                                break;
                             }
-                            trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
-                            YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                            factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                    .subscribeOn(Schedulers.computation())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Fact>() {
-                                        @Override
-                                        public void call(Fact fact) {
-                                            Log.d("Statistics", "calculate");
-                                        }
-                                    });
-                            Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                            finishActivity();
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "Введите число", Toast.LENGTH_SHORT).show();
+                            case 1: {
+                                pickCamera();
+                                break;
+                            }
                         }
-                    } else {
-                        Date eventDate = null;
-                        Locale locale = new Locale("ru");
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                        try {
-                            eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        trackingService.EditEvent(trackingId, eventId, scale, rating, comment, latitude, longitude, eventDate);
-                        YandexMetrica.reportEvent(getString(R.string.metrica_edit_event));
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingCollection.GetTrackingCollection(), trackingId)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        factRepository.calculateAllTrackingsFacts(trackingCollection.GetTrackingCollection())
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Fact>() {
-                                    @Override
-                                    public void call(Fact fact) {
-                                        Log.d("Statistics", "calculate");
-                                    }
-                                });
-                        Toast.makeText(getApplicationContext(), "Событие изменено", Toast.LENGTH_SHORT).show();
-                        finishActivity();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Заполните поля с *", Toast.LENGTH_SHORT).show();
-                }
+                });
+
+                dialog.show();
             }
         });
 
@@ -346,6 +221,73 @@ public class EditEventActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void showEditResult() {
+        finish();
+    }
+
+    @Override
+    public void onViewCreated(TrackingCustomization comment,
+                              TrackingCustomization rating,
+                              TrackingCustomization scale,
+                              TrackingCustomization photo,
+                              TrackingCustomization geoposition,
+                              Date date,
+                              String commentValue,
+                              Double scaleValue,
+                              Rating ratingValue,
+                              String scaleName) {
+
+        commentState = calculateState(comment);
+        ratingState = calculateState(rating);
+        scaleState = calculateState(scale);
+        geopositionState = calculateState(geoposition);
+        photoState = calculateState(photo);
+
+        calculateContainerState(commentContainer, commentAccess, commentState);
+        calculateContainerState(ratingContainer, ratingAccess, ratingState);
+        calculateContainerState(scaleContainer, scaleAccess, scaleState);
+        calculateContainerState(geopositionContainer, geopositionAccess, geopositionState);
+        calculateContainerState(photoContainer, photoAccess, photoState);
+
+        Locale loc = new Locale("ru");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format.setTimeZone(TimeZone.getDefault());
+
+        dateControl.setText(format.format(date));
+
+        if (scale != TrackingCustomization.None && scaleName != null) {
+            scaleType.setText(trackingV1.getScaleName());
+        }
+
+        if ((scale == TrackingCustomization.Optional
+                || scale == TrackingCustomization.Required) && scaleValue != null) {
+            scaleControl.setText(StringParse.parseDouble(scaleValue));
+            if (trackingV1.getScaleName() != null) {
+                if (trackingV1.getScaleName().length() >= 3) {
+                    scaleType.setText(scaleName.substring(0, 2));
+                } else {
+                    scaleType.setText(scaleName);
+                }
+            }
+        }
+
+        if ((rating == TrackingCustomization.Optional
+                || rating == TrackingCustomization.Required) && ratingValue != null) {
+            ratingControl.setRating(ratingValue.getRating() / 2.0f);
+        }
+
+        if ((comment == TrackingCustomization.Optional
+                || comment == TrackingCustomization.Required) && commentValue != null) {
+            commentControl.setText(commentValue);
+        }
+        if ((geoposition == TrackingCustomization.Optional
+                || geoposition == TrackingCustomization.Required)) {
+            mapInit();
+        }
+
     }
 
     @Override
@@ -373,11 +315,61 @@ public class EditEventActivity extends AppCompatActivity {
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_event));
     }
 
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public String getComment() {
+        return commentControl.getText().toString();
+    }
+
+    @Override
+    public Double getScale() {
+        if (!scaleControl.getText().toString().isEmpty())
+            return Double.parseDouble(scaleControl.getText().toString());
+        return null;
+    }
+
+    @Override
+    public Rating getRating() {
+        if (!(ratingControl.getRating() == 0)) {
+            return new Rating((int) (ratingControl.getRating() * 2));
+        }
+        return null;
+    }
+
+    @Override
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    @Override
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    @Override
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    @Override
+    public String getDate() {
+        return dateControl.getText().toString();
+    }
+
+    @Override
+    public void reportEvent(int resourceId) {
+        YandexMetrica.reportEvent(getString(resourceId));
+    }
+
     private void finishActivity() {
         this.finish();
     }
 
-    private void calculateUX(LinearLayout container, TextView access, int state) {
+    private void calculateContainerState(LinearLayout container, TextView access, int state) {
         switch (state) {
             case 0:
                 container.setVisibility(View.GONE);
@@ -454,9 +446,48 @@ public class EditEventActivity extends AppCompatActivity {
         cameraUpdate = CameraUpdateFactory.newCameraPosition(
                 new CameraPosition.Builder()
                         .target(new LatLng(latitude, longitude))
-                        .zoom(5)
+                        .zoom(8)
                         .build()
         );
         map.moveCamera(cameraUpdate);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =((((" + "\n" + "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (requestCode == 1) {
+            Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
+            photoPath = workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
+            flagPhoto = true;
+        }
+        if (requestCode == 2) {
+            Picasso.get().load(data.getData()).into(photo);
+            photoPath = workWithFIles.saveBitmap(data.getData());
+            flagPhoto = true;
+        }
+    }
+
+    private void pickCamera() {
+        if (workWithFIles != null) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            uriPhotoFromCamera = workWithFIles.generateFileUri(1).toString();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, workWithFIles.generateFileUri(1));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivityForResult(intent, 1);
+        }
+    }
+
+    private void pickGallery() {
+        if (workWithFIles != null) {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            if (intent.resolveActivity(activity.getPackageManager()) != null) {
+                activity.startActivityForResult(intent, 2);
+            }
+        }
     }
 }

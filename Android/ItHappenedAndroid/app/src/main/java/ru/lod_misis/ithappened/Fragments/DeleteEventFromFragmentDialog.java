@@ -3,9 +3,7 @@ package ru.lod_misis.ithappened.Fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,13 +12,13 @@ import android.widget.Toast;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -30,37 +28,30 @@ import rx.schedulers.Schedulers;
  * Created by Пользователь on 10.02.2018.
  */
 
-public class DeleteEventFromFragmentDiaolog extends DialogFragment {
+public class DeleteEventFromFragmentDialog extends DialogFragment {
+
+    @Inject
     InMemoryFactRepository factRepository;
+    @Inject
+    TrackingService trackingService;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        ItHappenedApplication.getAppComponent().inject(this);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Вы болше не сможете восстановить это событие!")
                 .setTitle("Вы действительно хотите удалить это событие?")
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        factRepository = StaticFactRepository.getInstance();
                         Bundle bundle = getArguments();
                         UUID trackingId = UUID.fromString(bundle.getString("trackingId"));
                         UUID eventId = UUID.fromString(bundle.getString("eventId"));
 
-                        ITrackingRepository collection;
 
-                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS",Context.MODE_PRIVATE);
-
-                        if(sharedPreferences.getString("LastId","").isEmpty()) {
-                            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-                            collection = StaticInMemoryRepository.getInstance();
-                        }else{
-                            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-                            collection = StaticInMemoryRepository.getInstance();
-                        }
-                        TrackingService trackingSercvice = new TrackingService("testUser", collection);
-
-                        trackingSercvice.RemoveEvent(eventId);
-                        factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
+                        trackingService.RemoveEvent(eventId);
+                        factRepository.onChangeCalculateOneTrackingFacts(trackingService.GetTrackingCollection(), trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {
@@ -69,7 +60,7 @@ public class DeleteEventFromFragmentDiaolog extends DialogFragment {
                                         Log.d("Statistics", "calculateOneTrackingFact");
                                     }
                                 });
-                        factRepository.calculateAllTrackingsFacts(collection.GetTrackingCollection())
+                        factRepository.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {

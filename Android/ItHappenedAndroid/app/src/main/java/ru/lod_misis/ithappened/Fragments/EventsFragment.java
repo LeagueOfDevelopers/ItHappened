@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -40,6 +38,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -47,17 +47,17 @@ import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
-import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.Recyclers.PagonationScrollListener;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
 
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
 
+    @Inject
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
 
     List<EventV1> eventsForAdapter = new ArrayList<>();
@@ -103,7 +103,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     TextView trackingsPickerText;
     ProgressBar progressBar;
 
-
+    @Inject
     ITrackingRepository collection;
     private LinearLayoutManager manager;
     private boolean isFilteredCancel = false;
@@ -124,6 +124,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
+
+        ItHappenedApplication.getAppComponent().inject(this);
 
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
@@ -149,17 +151,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
-        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            collection = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            collection = StaticInMemoryRepository.getInstance();
-        }
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
-        eventsHistoryPresenter = new EventsHistoryPresenterImpl(collection, trackingService, getActivity(), this);
 
         eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
                 dateF,

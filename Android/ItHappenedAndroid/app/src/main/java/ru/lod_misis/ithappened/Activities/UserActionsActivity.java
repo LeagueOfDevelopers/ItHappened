@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -38,6 +39,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -48,32 +51,15 @@ import ru.lod_misis.ithappened.Fragments.EventsFragment;
 import ru.lod_misis.ithappened.Fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.Fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.Fragments.TrackingsFragment;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.UserActionContract;
 import ru.lod_misis.ithappened.Presenters.UserActionPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import ru.lod_misis.ithappened.Statistics.FactCalculator;
 import rx.Subscription;
 
 public class UserActionsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ConnectionReciverListener, UserActionContract.UserActionView {
-
-    private DrawerLayout mDrawerLayout;
-
-    boolean isTrackingHistory = true;
-    boolean isEventsHistory = false;
-    boolean isStatistics = false;
-    boolean isProfileSettings = false;
-    boolean connectionToken = false;
-
-    MenuItem syncItem;
-
-    UserActionPresenterImpl userActionPresenter;
-
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
 
     private final static String G_PLUS_SCOPE =
             "oauth2:https://www.googleapis.com/auth/plus.me";
@@ -83,412 +69,407 @@ public class UserActionsActivity extends AppCompatActivity
             "https://www.googleapis.com/auth/userinfo.email";
     private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE + " " + EMAIL_SCOPE;
     private static final String TAG = "SignIn";
-
-    private boolean isTokenFailed = false;
-
-    ITrackingRepository trackingRepository;
+    boolean isTrackingHistory = true;
+    boolean isEventsHistory = false;
+    boolean isStatistics = false;
+    boolean isProfileSettings = false;
+    boolean connectionToken = false;
+    MenuItem syncItem;
+    @Inject
+    UserActionPresenterImpl userActionPresenter;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
     TextView userNick;
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
+    @Inject
     FactCalculator factCalculator;
     CircleImageView urlUser;
     ProfileSettingsFragment profileStgsFrg;
     ProgressBar syncPB;
     TextView lable;
+    @Inject
     SharedPreferences sharedPreferences;
     Subscription mainSync;
     TextView loginButton;
+    private DrawerLayout mDrawerLayout;
+    private boolean isTokenFailed = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tracking);
-        ButterKnife.bind(this);
-        Fabric.with(this, new Crashlytics());
+    protected void onCreate ( Bundle savedInstanceState ) {
+        super.onCreate ( savedInstanceState );
+        setContentView ( R.layout.activity_tracking );
+        ButterKnife.bind ( this );
+        Fabric.with ( this , new Crashlytics () );
+        ItHappenedApplication.getAppComponent ().inject ( this );
+        userActionPresenter.attachView ( this );
+        mDrawerLayout = findViewById ( R.id.drawer_layout );
+        Toolbar toolbar = findViewById ( R.id.toolbar );
+        toolbar.setTitleTextColor ( Color.parseColor ( "#ffffff" ) );
+        toolbar.hideOverflowMenu ();
+        setSupportActionBar ( toolbar );
+        DrawerLayout drawer = findViewById ( R.id.drawer_layout );
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle (
+                this , drawer , toolbar , R.string.navigation_drawer_open , R.string.navigation_drawer_close );
+        drawer.setDrawerListener ( toggle );
+        toggle.syncState ();
+        navigationView = findViewById ( R.id.nav_view );
+        connectionToken = ConnectionReciver.isConnected ();
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
-        toolbar.hideOverflowMenu();
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        if ( sharedPreferences.getString ( "UserId" , "" ).isEmpty () ) {
+            SharedPreferences.Editor editor = sharedPreferences.edit ();
+            editor.putString ( "UserId" , "Offline" );
+            editor.putString ( "Nick" , "Offline" );
+            editor.commit ();
+        }
 
-        connectionToken = ConnectionReciver.isConnected();
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId",""));
-
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("Offline", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
+        if ( !sharedPreferences.getString ( "UserId" , "" ).equals ( "Offline" ) && connectionToken ) {
+            isTokenFailed = userActionPresenter.updateToken ();
         } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
-        userActionPresenter = new UserActionPresenterImpl(this, this, sharedPreferences, trackingRepository);
-
-        factCalculator = new FactCalculator(trackingRepository);
-
-        if(sharedPreferences.getString("UserId", "").isEmpty()){
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("UserId", "Offline");
-            editor.putString("Nick", "Offline");
-            editor.commit();
+            navigationView.getMenu ().getItem ( 3 ).setVisible ( false );
+            navigationView.setNavigationItemSelectedListener ( this );
         }
 
-        if(!sharedPreferences.getString("UserId", "").equals("Offline")&&connectionToken){
-            isTokenFailed = userActionPresenter.updateToken();
-        }else{
-            navigationView.getMenu().getItem(3).setVisible(false);
-            navigationView.setNavigationItemSelectedListener(this);
-        }
+        navigationView.setNavigationItemSelectedListener ( this );
 
-        navigationView.setNavigationItemSelectedListener(this);
+        trackFrg = new TrackingsFragment ();
+        fTrans = getFragmentManager ().beginTransaction ();
+        fTrans.replace ( R.id.trackingsFrg , trackFrg ).addToBackStack ( null );
+        fTrans.commit ();
 
-        trackFrg = new TrackingsFragment();
-        fTrans = getFragmentManager().beginTransaction();
-        fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
-        fTrans.commit();
+        syncPB = findViewById ( R.id.syncPB );
+        layoutFrg = findViewById ( R.id.trackingsFrg );
 
-        syncPB = (ProgressBar) findViewById(R.id.syncPB);
-        layoutFrg = (FrameLayout) findViewById(R.id.trackingsFrg);
-
-        if(sharedPreferences.getString("LastId","").isEmpty()) {
-            StaticInMemoryRepository.setInstance(getApplicationContext(),
-                    sharedPreferences.getString("UserId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }else{
-            StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("LastId", ""));
-            trackingRepository = StaticInMemoryRepository.getInstance();
-        }
-
-        factCalculator.calculateFacts();
+        factCalculator.calculateFacts ();
 
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+    public void onBackPressed () {
+        DrawerLayout drawer = ( DrawerLayout ) findViewById ( R.id.drawer_layout );
+        if ( drawer.isDrawerOpen ( GravityCompat.START ) ) {
+            drawer.closeDrawer ( GravityCompat.START );
         } else {
-            if (!isTrackingHistory) {
+            if ( !isTrackingHistory ) {
                 isTrackingHistory = true;
                 isEventsHistory = false;
                 isProfileSettings = false;
                 isStatistics = false;
-                setTitle("Что произошло?");
-                fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
-                fTrans.commit();
+                setTitle ( "Что произошло?" );
+                fTrans = getFragmentManager ().beginTransaction ();
+                fTrans.replace ( R.id.trackingsFrg , trackFrg ).addToBackStack ( null );
+                fTrans.commit ();
             }
         }
     }
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected ( MenuItem item ) {
+        int id = item.getItemId ();
+        return super.onOptionsItemSelected ( item );
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        userNick = (TextView) findViewById(R.id.userNickname);
-        userNick.setText(sharedPreferences.getString("Nick",""));
-        loginButton = (TextView) findViewById(R.id.loginButton);
-        urlUser = (CircleImageView) findViewById(R.id.imageView);
-        lable = (TextView) findViewById(R.id.menuTitle);
-        if(!sharedPreferences.getString("UserId", "").equals("Offline")) {
-            loginButton.setVisibility(View.GONE);
-            new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
-        }else{
-            loginButton.setVisibility(View.VISIBLE);
-            lable.setVisibility(View.GONE);
-            userNick.setVisibility(View.GONE);
-            urlUser.setVisibility(View.GONE);
+    public boolean onCreateOptionsMenu ( Menu menu ) {
+        ViewTreeObserver vto = navigationView.getViewTreeObserver ();
+        vto.addOnGlobalLayoutListener
+                ( new ViewTreeObserver.OnGlobalLayoutListener () {
+                    @Override
+                    public void onGlobalLayout () {
+                        sharedPreferences = getApplicationContext ().getSharedPreferences ( "MAIN_KEYS" , Context.MODE_PRIVATE );
+                        userNick = ( TextView ) findViewById ( R.id.userNickname );
+                        userNick.setText ( sharedPreferences.getString ( "Nick" , "" ) );
+                        loginButton = ( TextView ) findViewById ( R.id.loginButton );
+                        urlUser = ( CircleImageView ) findViewById ( R.id.imageView );
+                        lable = ( TextView ) findViewById ( R.id.menuTitle );
+                        if ( !sharedPreferences.getString ( "UserId" , "" ).equals ( "Offline" ) ) {
+                            loginButton.setVisibility ( View.GONE );
+                            new DownLoadImageTask ( urlUser ).execute ( sharedPreferences.getString ( "Url" , "" ) );
+                        } else {
+                            loginButton.setVisibility ( View.VISIBLE );
+                            lable.setVisibility ( View.GONE );
+                            userNick.setVisibility ( View.GONE );
+                            urlUser.setVisibility ( View.GONE );
 
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    userActionPresenter.getGoogleToken();
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                }
-            });
-        }
+                            loginButton.setOnClickListener ( new View.OnClickListener () {
+                                @Override
+                                public void onClick ( View view ) {
+                                    userActionPresenter.getGoogleToken ();
+                                    DrawerLayout drawer = ( DrawerLayout ) findViewById ( R.id.drawer_layout );
+                                    drawer.closeDrawer ( GravityCompat.START );
+                                }
+                            } );
+                        }
 
+                    }
+                } );
         return true;
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(final MenuItem item) {
+    public boolean onNavigationItemSelected ( final MenuItem item ) {
 
-        int id = item.getItemId();
+        int id = item.getItemId ();
 
-        if(id == R.id.my_events){
-            item.setCheckable(false);
-            if(!isTrackingHistory) {
+        if ( id == R.id.my_events ) {
+            item.setCheckable ( false );
+            if ( !isTrackingHistory ) {
 
                 isTrackingHistory = true;
                 isEventsHistory = false;
                 isProfileSettings = false;
                 isStatistics = false;
 
-                TrackingsFragment newTrackFrg = new TrackingsFragment();
+                TrackingsFragment newTrackFrg = new TrackingsFragment ();
 
 
-                fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg, newTrackFrg).addToBackStack(null);
-                fTrans.commit();
+                fTrans = getFragmentManager ().beginTransaction ();
+                fTrans.replace ( R.id.trackingsFrg , newTrackFrg ).addToBackStack ( null );
+                fTrans.commit ();
 
-                setTitle("Что произошло?");
+                setTitle ( "Что произошло?" );
             }
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                drawer.closeDrawer(GravityCompat.START);
+            DrawerLayout drawer = ( DrawerLayout ) findViewById ( R.id.drawer_layout );
+            drawer.closeDrawer ( GravityCompat.START );
 
         }
 
-        if (id == R.id.events_history) {
-            item.setCheckable(false);
+        if ( id == R.id.events_history ) {
+            item.setCheckable ( false );
 
-            if(!isEventsHistory) {
-                setTitle("История событий");
+            if ( !isEventsHistory ) {
+                setTitle ( "История событий" );
                 isTrackingHistory = false;
                 isEventsHistory = true;
                 isProfileSettings = false;
                 isStatistics = false;
 
-                EventsFragment eventsFrg = new EventsFragment();
-                fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg, eventsFrg, "EVENTS_HISTORY").addToBackStack(null);
-                fTrans.commit();
+                EventsFragment eventsFrg = new EventsFragment ();
+                fTrans = getFragmentManager ().beginTransaction ();
+                fTrans.replace ( R.id.trackingsFrg , eventsFrg , "EVENTS_HISTORY" ).addToBackStack ( null );
+                fTrans.commit ();
             }
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
+            DrawerLayout drawer = ( DrawerLayout ) findViewById ( R.id.drawer_layout );
+            drawer.closeDrawer ( GravityCompat.START );
         }
 
-        if(id == R.id.statistics){
-            item.setCheckable(false);
-            setTitle("Статистика");
-            if(!isStatistics) {
-                StatisticsFragment statFrg = new StatisticsFragment();
+        if ( id == R.id.statistics ) {
+            item.setCheckable ( false );
+            setTitle ( "Статистика" );
+            if ( !isStatistics ) {
+                StatisticsFragment statFrg = new StatisticsFragment ();
 
                 isTrackingHistory = false;
                 isEventsHistory = false;
                 isProfileSettings = false;
                 isStatistics = true;
 
-                fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
-                fTrans.commit();
+                fTrans = getFragmentManager ().beginTransaction ();
+                fTrans.replace ( R.id.trackingsFrg , statFrg ).addToBackStack ( null );
+                fTrans.commit ();
             }
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
+            DrawerLayout drawer = ( DrawerLayout ) findViewById ( R.id.drawer_layout );
+            drawer.closeDrawer ( GravityCompat.START );
         }
 
-        if(id == R.id.synchronisation){
+        if ( id == R.id.synchronisation ) {
             syncItem = item;
-            item.setCheckable(false);
-            if(getApplicationContext().getSharedPreferences("MAIN_KEYS",Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")){
-                Toast.makeText(getApplicationContext(),"Привяжите аккаунт к GOOGLE для синхронизации", Toast.LENGTH_SHORT).show();
-            }else {
-                userActionPresenter.syncronization();
+            item.setCheckable ( false );
+            if ( getApplicationContext ().getSharedPreferences ( "MAIN_KEYS" , Context.MODE_PRIVATE ).getString ( "UserId" , "" ).equals ( "Offline" ) ) {
+                Toast.makeText ( getApplicationContext () , "Привяжите аккаунт к GOOGLE для синхронизации" , Toast.LENGTH_SHORT ).show ();
+            } else {
+                userActionPresenter.syncronization ();
             }
         }
 
-           if(id == R.id.proile_settings){
-               item.setCheckable(false);
-               String userId = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", "");
-               if(userId.equals("Offline")){
-                   item.setVisible(false);
-                   DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                   drawer.closeDrawer(GravityCompat.START);
-               }else {
+        if ( id == R.id.proile_settings ) {
+            item.setCheckable ( false );
+            String userId = getSharedPreferences ( "MAIN_KEYS" , MODE_PRIVATE ).getString ( "UserId" , "" );
+            if ( userId.equals ( "Offline" ) ) {
+                item.setVisible ( false );
+                DrawerLayout drawer = ( DrawerLayout ) findViewById ( R.id.drawer_layout );
+                drawer.closeDrawer ( GravityCompat.START );
+            } else {
 
-                   if(!isProfileSettings) {
+                if ( !isProfileSettings ) {
 
-                       isTrackingHistory = false;
-                       isEventsHistory = false;
-                       isProfileSettings = true;
-                       isStatistics = false;
+                    isTrackingHistory = false;
+                    isEventsHistory = false;
+                    isProfileSettings = true;
+                    isStatistics = false;
 
-                       profileStgsFrg = new ProfileSettingsFragment();
-                       fTrans = getFragmentManager().beginTransaction();
-                       fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
-                       fTrans.commit();
-                   }
-                   DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                   drawer.closeDrawer(GravityCompat.START);
-               }
+                    profileStgsFrg = new ProfileSettingsFragment ();
+                    fTrans = getFragmentManager ().beginTransaction ();
+                    fTrans.replace ( R.id.trackingsFrg , profileStgsFrg ).addToBackStack ( null );
+                    fTrans.commit ();
+                }
+                DrawerLayout drawer = ( DrawerLayout ) findViewById ( R.id.drawer_layout );
+                drawer.closeDrawer ( GravityCompat.START );
+            }
 
-           }
+        }
         return true;
     }
 
 
     @Override
-    public void stopMenuAnimation() {
-        syncItem.setActionView(null);
+    public void stopMenuAnimation () {
+        syncItem.setActionView ( null );
     }
 
     @Override
-    public void startMenuAnimation() {
-        final Animation animationRotateCenter = AnimationUtils.loadAnimation(
-                this, R.anim.rotate);
-        syncItem.setActionView(new ProgressBar(this));
-        syncItem.getActionView().postDelayed(new Runnable() {
+    public void startMenuAnimation () {
+        final Animation animationRotateCenter = AnimationUtils.loadAnimation (
+                this , R.anim.rotate );
+        syncItem.setActionView ( new ProgressBar ( this ) );
+        syncItem.getActionView ().postDelayed ( new Runnable () {
 
             @Override
-            public void run() {
+            public void run () {
             }
-        }, 1000);
+        } , 1000 );
     }
 
 
-     @Override
-     public void showLoading(){
-        layoutFrg.setVisibility(View.INVISIBLE);
-        syncPB.setVisibility(View.VISIBLE);
+    @Override
+    public void showLoading () {
+        layoutFrg.setVisibility ( View.INVISIBLE );
+        syncPB.setVisibility ( View.VISIBLE );
     }
 
     @Override
-     public void hideLoading(){
-        layoutFrg.setVisibility(View.VISIBLE);
-        syncPB.setVisibility(View.INVISIBLE);
+    public void hideLoading () {
+        layoutFrg.setVisibility ( View.VISIBLE );
+        syncPB.setVisibility ( View.INVISIBLE );
     }
 
     @Override
-    public void finishActivity() {
-        finish();
+    public void finishActivity () {
+        finish ();
     }
 
     @Override
-    public void startActivity() {
-        startActivity(getIntent());
+    public void startActivity () {
+        startActivity ( getIntent () );
     }
 
     @Override
-    public void showMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    public void showMessage ( String message ) {
+        Toast.makeText ( getApplicationContext () , message , Toast.LENGTH_SHORT ).show ();
     }
 
-    public void onActivityResult(final int requestCode, final int resultCode,
-                                 final Intent data){
+    public void onActivityResult ( final int requestCode , final int resultCode ,
+                                   final Intent data ) {
 
 
-        if (requestCode == 228 && resultCode == RESULT_OK) {
-            showLoading();
-            final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        if ( requestCode == 228 && resultCode == RESULT_OK ) {
+            showLoading ();
+            final String accountName = data.getStringExtra ( AccountManager.KEY_ACCOUNT_NAME );
 
-            AsyncTask<Void, Void, String> getToken = new AsyncTask<Void, Void, String>() {
+            AsyncTask <Void, Void, String> getToken = new AsyncTask <Void, Void, String> () {
                 @Override
-                protected String doInBackground(Void... params) {
+                protected String doInBackground ( Void... params ) {
 
                     String idToken = "";
 
                     try {
-                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName,
-                                SCOPES);
+                        idToken = GoogleAuthUtil.getToken ( getApplicationContext () , accountName , SCOPES );
                         return idToken;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
-                        startActivityForResult(userAuthEx.getIntent(), 228);
+                        startActivityForResult ( userAuthEx.getIntent () , 228 );
                     } catch (IOException ioEx) {
-                        Log.e(TAG, "IOException");
-                        this.cancel(true);
-                        hideLoading();
-                        Toast.makeText(getApplicationContext(),"IOException",Toast.LENGTH_SHORT).show();
+                        Log.e ( TAG , "IOException" );
+                        this.cancel ( true );
+                        hideLoading ();
+                        Toast.makeText ( getApplicationContext () , "IOException" , Toast.LENGTH_SHORT ).show ();
                     } catch (GoogleAuthException fatalAuthEx) {
-                        this.cancel(true);
-                        hideLoading();
-                        Log.e(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
-                        Toast.makeText(getApplicationContext(),"Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        this.cancel ( true );
+                        hideLoading ();
+                        Log.e ( TAG , "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage () );
+                        Toast.makeText ( getApplicationContext () , "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage () , Toast.LENGTH_SHORT ).show ();
                     }
                     return idToken;
                 }
 
                 @Override
-                protected void onPostExecute(String idToken) {
-                    userActionPresenter.registrate(idToken);
+                protected void onPostExecute ( String idToken ) {
+                    userActionPresenter.registrate ( idToken );
                 }
             };
 
-            getToken.execute(null, null, null);
+            getToken.execute ( null , null , null );
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onResume () {
+        super.onResume ();
 
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        final IntentFilter intentFilter = new IntentFilter ();
+        intentFilter.addAction ( ConnectivityManager.CONNECTIVITY_ACTION );
 
-        ConnectionReciver connectivityReceiver = new ConnectionReciver();
-        registerReceiver(connectivityReceiver, intentFilter);
-
-        ItHappenedApplication.getInstance().setConnectionListener(this);
+        ConnectionReciver connectivityReceiver = new ConnectionReciver ();
+        registerReceiver ( connectivityReceiver , intentFilter );
+        ItHappenedApplication.getInstance ().setConnectionListener ( this );
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if(mainSync!=null)
-            mainSync.unsubscribe();
+    protected void onStop () {
+        super.onStop ();
+        if ( mainSync != null )
+            mainSync.unsubscribe ();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        userActionPresenter.onDestroy();
+    protected void onDestroy () {
+        super.onDestroy ();
+        userActionPresenter.dettachView ();
     }
 
-    public void cancelLogout(){}
+    public void cancelLogout () {
+    }
 
     @Override
-    public void onNetworkConnectionChanged(boolean isConnected) {
+    public void onNetworkConnectionChanged ( boolean isConnected ) {
 
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences ( "MAIN_KEYS" , Context.MODE_PRIVATE );
 
-        if(!sharedPreferences.getString("UserId","").equals("Offline")) {
+        if ( !sharedPreferences.getString ( "UserId" , "" ).equals ( "Offline" ) ) {
 
-            navigationView.getMenu().getItem(4).setEnabled(isConnected);
-            navigationView.setNavigationItemSelectedListener(this);
+            navigationView.getMenu ().getItem ( 4 ).setEnabled ( isConnected );
+            navigationView.setNavigationItemSelectedListener ( this );
         }
 
     }
 
 
-    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
+    private class DownLoadImageTask extends AsyncTask <String, Void, Bitmap> {
         CircleImageView imageView;
 
-        public DownLoadImageTask(CircleImageView imageView){
+        public DownLoadImageTask ( CircleImageView imageView ) {
             this.imageView = imageView;
         }
 
-        protected Bitmap doInBackground(String...urls){
+        protected Bitmap doInBackground ( String... urls ) {
             String urlOfImage = urls[0];
             Bitmap logo = null;
-            try{
-                InputStream is = new URL(urlOfImage).openStream();
-                logo = BitmapFactory.decodeStream(is);
-            }catch(Exception e){
-                e.printStackTrace();
+            try {
+                InputStream is = new URL ( urlOfImage ).openStream ();
+                logo = BitmapFactory.decodeStream ( is );
+            } catch (Exception e) {
+                e.printStackTrace ();
             }
             return logo;
         }
 
 
-
-        protected void onPostExecute(Bitmap result){
-            imageView.setImageBitmap(result);
+        protected void onPostExecute ( Bitmap result ) {
+            imageView.setImageBitmap ( result );
         }
     }
 

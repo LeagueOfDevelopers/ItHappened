@@ -10,22 +10,30 @@ import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 
 public interface EventsHistoryContract {
-    interface EventsHistoryView{
+    interface EventsHistoryView {
 
         void showEvents(List<EventV1> eventV1s);
+
         void cancelFilters();
+
         void showLoading(boolean isLoading);
 
 
     }
 
-    interface EventsHistoryPresenter{
+    interface EventsHistoryPresenter {
+
+        void onViewAttach(EventsHistoryView view);
 
         void filterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
                           Comparison scaleComparison, Double scale,
                           Comparison ratingComparison, Rating rating, int startPosition, int endPosition);
+
         void cancleFilters();
+
         String prepareDataForDialog(List<TrackingV1> trackings, List<String> strings, List<UUID> uuids, List<Boolean> selectedItem);
+
+        void onViewDettach();
 
     }
 }

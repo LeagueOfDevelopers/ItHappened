@@ -13,8 +13,10 @@ public interface ProfileSettingsFragmentContract {
     }
 
     interface ProfileSettingsFragmentPresenter{
+        void onViewAttach(ProfileSettingsFragmentView view);
         void logout();
         void cancelLogout();
+        void onViewDettach();
     }
 
 }

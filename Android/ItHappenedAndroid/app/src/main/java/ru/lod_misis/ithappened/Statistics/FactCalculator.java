@@ -2,6 +2,10 @@ package ru.lod_misis.ithappened.Statistics;
 
 import android.util.Log;
 
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
@@ -42,6 +46,26 @@ public class FactCalculator {
                     @Override
                     public void call(Fact fact) {
                         Log.d("Statistics", "calculateOneTrackingFact");
+                    }
+                });
+    }
+    public void calculateFactsForAddNewEventActivity(UUID trackingId){
+        factRepository.onChangeCalculateOneTrackingFacts(trackingRepository.GetTrackingCollection(), trackingId)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculate");
+                    }
+                });
+        factRepository.calculateAllTrackingsFacts(trackingRepository.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("Statistics", "calculate");
                     }
                 });
     }
