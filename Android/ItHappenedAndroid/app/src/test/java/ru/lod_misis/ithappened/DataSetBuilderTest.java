@@ -5,14 +5,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribution;
+import ru.lod_misis.ithappened.Domain.Models.EventV1;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Builders.DataSetBuilder;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.DataSet;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.Sequence;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Trends.EventsTimeDistribution;
 
 public class DataSetBuilderTest {
 

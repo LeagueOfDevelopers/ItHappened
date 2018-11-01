@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
 
-        jcenter(){
+        jcenter() {
             url "http://jcenter.bintray.com"
 
         }
@@ -26,7 +26,7 @@ apply plugin: 'java'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'me.tatarka.retrolambda'
 
- 
+
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     mavenCentral()
@@ -46,7 +46,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
-        maven{ url "https://maven.google.com" }
+        maven { url "https://maven.google.com" }
         jcenter()
         google()
     }

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.Sequence;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.SequenceWork.SequenceAnalyzer;
 
 public class SequenceAnalyzerTest {
 

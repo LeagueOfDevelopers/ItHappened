@@ -15,7 +15,7 @@
         android:required="true" />
 
     <application
-        android:name=".Retrofit.ItHappenedApplication"
+        android:name=".UI.ItHappenedApplication"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".ConnectionReciver"
+            android:name=".UI.ConnectionReciver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -51,7 +51,7 @@
         </provider>
 
         <activity
-            android:name=".Activities.UserActionsActivity"
+            android:name=".UI.Activities.UserActionsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -62,44 +62,44 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.AddNewTrackingActivity"
+            android:name=".UI.Activities.AddNewTrackingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyBack" />
         <activity
-            android:name=".Activities.AddNewEventActivity"
+            android:name=".UI.Activities.AddNewEventActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyBack" />
         <activity
-            android:name=".Activities.EventDetailsActivity"
+            android:name=".UI.Activities.EventDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyBack" />
         <activity
-            android:name=".Activities.EditEventActivity"
+            android:name=".UI.Activities.EditEventActivity"
             android:label="Изменить событие"
             android:theme="@style/Theme.MyBack" />
         <activity
-            android:name=".Activities.EditTrackingActivity"
+            android:name=".UI.Activities.EditTrackingActivity"
             android:theme="@style/Theme.MyBack" />
         <activity
-            android:name=".Activities.EventsForTrackingActivity"
+            android:name=".UI.Activities.EventsForTrackingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyBack" />
         <activity
-            android:name=".Activities.EventsRefActivity"
+            android:name=".UI.Activities.EventsRefActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyBack" />
 
         <service
-            android:name=".MyGeopositionService"
+            android:name=".UI.background.MyGeopositionService"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".NotificationJobService"
+            android:name=".UI.background.NotificationJobService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE"></service>
 
-        <activity android:name=".Activities.MapActivity.MapActivity">
+        <activity android:name=".UI.Activities.MapActivity.MapActivity">
         </activity>
     </application>
 

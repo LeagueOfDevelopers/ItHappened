@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Presenters.UserActionContract;
-import ru.lod_misis.ithappened.Presenters.UserActionPresenterImpl;
+import ru.lod_misis.ithappened.Data.Repositories.ITrackingRepository;
+import ru.lod_misis.ithappened.UI.Presenters.UserActionContract;
+import ru.lod_misis.ithappened.UI.Presenters.UserActionPresenterImpl;
 
 @Module(includes = {MainModule.class})
 public class UserActionModule {
