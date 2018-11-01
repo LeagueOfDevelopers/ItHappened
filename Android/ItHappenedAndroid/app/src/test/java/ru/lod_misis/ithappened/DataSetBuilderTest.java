@@ -22,7 +22,7 @@ public class DataSetBuilderTest {
         DataSet<Integer> intDS = DataSetBuilder.BuildBooleanDataset(eventSet.get(0), eventSet.get(1), 1);
         DataSet<Double> doubleDS = DataSetBuilder.BuildDoubleDataSet(eventSet.get(0), eventSet.get(1), 1);
 
-        Assert.assertEquals(intDS.Length(), 9);
+        Assert.assertEquals(intDS.Length(), 10);
         Assert.assertEquals(doubleDS.Length(), 9);
     }
 
