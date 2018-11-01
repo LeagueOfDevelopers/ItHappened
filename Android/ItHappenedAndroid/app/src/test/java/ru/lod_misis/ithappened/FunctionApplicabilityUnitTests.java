@@ -29,12 +29,16 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
                trackingV1.AddEvent(eventV1First);
         trackingV1.AddEvent(eventV1Second);
@@ -55,6 +59,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
         TrackingV1 secondTrackingV1 = new TrackingV1(
@@ -64,16 +69,23 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
-        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
         trackingV1.AddEvent(eventV1Second);
@@ -99,6 +111,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
         TrackingV1 secondTrackingV1 = new TrackingV1(
@@ -107,6 +120,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Optional,
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
+                TrackingCustomization.None,
                 TrackingCustomization.None,
                 "",
                 "");
@@ -127,6 +141,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
         TrackingV1 secondTrackingV1 = new TrackingV1(
@@ -136,16 +151,23 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
-        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
         trackingV1.AddEvent(eventV1Second);
@@ -171,6 +193,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
         TrackingV1 secondTrackingV1 = new TrackingV1(
@@ -180,13 +203,17 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
-        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -208,6 +235,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
@@ -223,10 +251,12 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -242,10 +272,12 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -260,6 +292,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
+                TrackingCustomization.None,
                 TrackingCustomization.None,
                 "",
                 "");
@@ -276,10 +309,12 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -296,11 +331,16 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, new Rating(4), "122", 0., 0.);
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, new Rating(5), "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, new Rating(4),
+                "122", null, null, "");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, new Rating(5),
+                "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
         trackingV1.AddEvent(eventV1Second);
@@ -318,10 +358,12 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -336,6 +378,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
+                TrackingCustomization.None,
                 TrackingCustomization.None,
                 "",
                 "");
@@ -352,10 +395,12 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -372,11 +417,16 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, 10.0, new Rating(4), "122", 0., 0.);
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, -15.4, new Rating(5), "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, 10.0, new Rating(4),
+                "122", null, null, "");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, -15.4, new Rating(5),
+                "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
         trackingV1.AddEvent(eventV1Second);
@@ -395,10 +445,13 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null,
+                "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -413,6 +466,7 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
+                TrackingCustomization.None,
                 TrackingCustomization.None,
                 "",
                 "");
@@ -429,10 +483,12 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Optional,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
 
@@ -449,11 +505,16 @@ public class FunctionApplicabilityUnitTests {
                 TrackingCustomization.Required,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, 10.0, new Rating(4), "122", 0., 0.);
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, -15.4, new Rating(5), "122", 0., 0.);
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, 10.0, new Rating(4),
+                "122", null, null, "");
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, -15.4, new Rating(5),
+                "122", null, null, "");
 
         trackingV1.AddEvent(eventV1First);
         trackingV1.AddEvent(eventV1Second);

@@ -98,6 +98,7 @@ public class DescriptionBuilderUnitTest {
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "scale", "");
         Integer[] dates = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 7, 10, 11, 12, 14, 16, 25, 2, 2, 2, 2, 2, 2, 2, 2};
         for (int i = 0; i < 12; i++) {
@@ -125,6 +126,7 @@ public class DescriptionBuilderUnitTest {
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "scale", "");
         Random rand = new Random();
         for (int i = 0; i < 100; i++) {
@@ -142,6 +144,7 @@ public class DescriptionBuilderUnitTest {
         TrackingV1 tracking = new TrackingV1(trackingName,
                 UUID.randomUUID(),
                 TrackingCustomization.Required,
+                TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,

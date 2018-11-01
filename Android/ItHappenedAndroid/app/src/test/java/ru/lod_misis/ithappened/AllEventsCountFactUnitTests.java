@@ -32,6 +32,7 @@ public class AllEventsCountFactUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
         TrackingV1 secondTrackingV1 = new TrackingV1(
@@ -41,10 +42,13 @@ public class AllEventsCountFactUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
-        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
         trackingV1.AddEvent(eventV1);
         secondTrackingV1.AddEvent(secondEventV1);
 
@@ -66,6 +70,7 @@ public class AllEventsCountFactUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
         TrackingV1 secondTrackingV1 = new TrackingV1(
@@ -75,10 +80,13 @@ public class AllEventsCountFactUnitTests {
                 TrackingCustomization.None,
                 TrackingCustomization.Required,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "",
                 "");
-        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
-        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(), evDate, null, null, "122", 0., 0.);
+        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+                evDate, null, null, "122", null, null, "");
         trackingV1.AddEvent(eventV1);
         secondTrackingV1.AddEvent(secondEventV1);
 
@@ -88,6 +96,6 @@ public class AllEventsCountFactUnitTests {
 
         AllEventsCountFact fact = new AllEventsCountFact(trackingV1Collection);
         fact.calculateData();
-        Assert.assertEquals(fact.textDescription(), "У вас произошло уже <b>2</b> событий!");
+        Assert.assertEquals(fact.textDescription(), "У вас произошло уже <b>2</b> события!");
     }
 }

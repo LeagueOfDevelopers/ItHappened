@@ -14,7 +14,9 @@ import io.realm.annotations.PrimaryKey;
 
 public class EventV1 extends RealmObject
 {
-    public EventV1(UUID eventId, UUID trackingID, Date date, Double scale, Rating rating, String comment,Double lotitude,Double longitude,String photo)
+    public EventV1(UUID eventId, UUID trackingID, Date date,
+                   Double scale, Rating rating, String comment,
+                   Double lotitude,Double longitude,String photo)
     {
         this.eventId = eventId.toString();
         this.dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
