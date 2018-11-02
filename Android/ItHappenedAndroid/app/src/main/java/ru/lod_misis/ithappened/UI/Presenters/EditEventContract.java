@@ -28,21 +28,15 @@ public interface EditEventContract {
                            String title,
                            String scaleName);
 
-        String getComment();
-        Double getScale();
-        Rating getRating();
-        Double getLongitude();
-        Double getLatitude();
-        String getPhotoPath();
-        String getDate();
         void reportEvent(int resourceId);
+        void addEvent();
     }
 
     interface EditEventPresenter {
 
         void onViewAttached(EditEventView view);
 
-        void addEventClick(int commentState, int ratingState, int scaleState, int geopositionState);
+        void addEventClick();
 
         void onViewCreated();
 

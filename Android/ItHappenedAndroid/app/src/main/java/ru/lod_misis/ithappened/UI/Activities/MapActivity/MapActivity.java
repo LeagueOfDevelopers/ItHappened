@@ -16,7 +16,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
-import java.security.PublicKey;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,15 +25,16 @@ import ru.lod_misis.ithappened.R;
 public class MapActivity extends AppCompatActivity {
     public static int MAP_ACTIVITY_REQUEST_CODE = 555;
     static Location location;
+    @BindView(R.id.addGeoposition)
+    Button addGeoposition;
     private SupportMapFragment supportMapFragment;
     private Integer flag;
-    @BindView(R.id.addGeoposition)
-    private Button addGeoposition;
     private CommonMethodForMapAlgorithm algorithm;
 
-    public static void toMapActivity (Activity activity) {
+    public static void toMapActivity (Activity activity , int code) {
         Intent intent = new Intent(activity , MapActivity.class);
-        activity.startActivityForResult(new Intent("MapActivity") , MAP_ACTIVITY_REQUEST_CODE);
+        intent.putExtra("code",code);
+        activity.startActivityForResult(intent , MAP_ACTIVITY_REQUEST_CODE);
     }
 
     @Override
@@ -42,6 +42,7 @@ public class MapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         ButterKnife.bind(this);
+        createAndInitMap();
         addGeoposition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -55,7 +56,7 @@ public class MapActivity extends AppCompatActivity {
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady (GoogleMap googleMap) {
-
+                int flag=getIntent().getIntExtra("code",-1);
                 if ( ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
 
                 } else {
@@ -70,6 +71,7 @@ public class MapActivity extends AppCompatActivity {
                         case 3: {
                             algorithm = new MapMethodForEditGeoposition(Double.valueOf(getIntent().getStringExtra("latitude")) , Double.valueOf(getIntent().getStringExtra("longitude")));
                         }
+                        default:new Exception();
                     }
                     algorithm.commonAbstractMethodForMap(googleMap);
                 }

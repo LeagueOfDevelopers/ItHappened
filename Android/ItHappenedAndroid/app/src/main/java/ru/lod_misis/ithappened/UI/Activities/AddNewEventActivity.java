@@ -150,6 +150,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     Activity activity;
 
     boolean flagPhoto = false;
+    boolean flagGeoposition = false;
 
     String uriPhotoFromCamera;
     @Inject
@@ -185,7 +186,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 if ( ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
                     addNewEventPresenter.requestPermission(1);
                 }
-                MapActivity.toMapActivity(activity);
+                MapActivity.toMapActivity(activity , 1);
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
@@ -402,7 +403,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         if ( scaleState == 2 && scaleControl.getText().toString().isEmpty() ) {
             scaleFlag = false;
         }
-        if ( geopositionState == 2 && (latitude == null || longitude == null) ) {
+        if ( geopositionState == 2 && !flagGeoposition ) {
             geopositionFlag = false;
         }
         if ( photoState == 2 && photoPath == null ) {
@@ -528,8 +529,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             flagPhoto = true;
 
         }
-        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE )
+        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE ) {
             address.setText(data.getStringExtra("location"));
+            flagGeoposition=true;
+        }
 
     }
 

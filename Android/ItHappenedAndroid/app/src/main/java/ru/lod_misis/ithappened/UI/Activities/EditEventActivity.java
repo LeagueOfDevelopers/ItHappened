@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -41,10 +42,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
 import ru.lod_misis.ithappened.Domain.Models.Rating;
 import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
 import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractor;
 import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.Domain.Statistics.Facts.StringParse;
@@ -112,9 +111,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     ImageView photo;
     AlertDialog.Builder dialog;
     Boolean flagPhoto = false;
-
-    TrackingV1 trackingV1;
-    EventV1 eventV1;
+    Boolean flagGeoposition = false;
 
     LocationManager locationManager;
     Double latitude = null;
@@ -158,13 +155,13 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                MapActivity.toMapActivity(activity);
+                MapActivity.toMapActivity(activity , 3);
             }
         });
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                presenter.addEventClick(commentState , ratingState , scaleState , geopositionState);
+                presenter.addEventClick();
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
@@ -330,48 +327,90 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    public String getComment () {
-        return commentControl.getText().toString();
-    }
-
-    @Override
-    public Double getScale () {
-        if ( !scaleControl.getText().toString().isEmpty() )
-            return Double.parseDouble(scaleControl.getText().toString());
-        return null;
-    }
-
-    @Override
-    public Rating getRating () {
-        if ( !(ratingControl.getRating() == 0) ) {
-            return new Rating(( int ) (ratingControl.getRating() * 2));
-        }
-        return null;
-    }
-
-    @Override
-    public Double getLongitude () {
-        return longitude;
-    }
-
-    @Override
-    public Double getLatitude () {
-        return latitude;
-    }
-
-    @Override
-    public String getPhotoPath () {
-        return photoPath;
-    }
-
-    @Override
-    public String getDate () {
-        return dateControl.getText().toString();
-    }
-
-    @Override
     public void reportEvent (int resourceId) {
         YandexMetrica.reportEvent(getString(resourceId));
+    }
+
+    @Override
+    public void addEvent () {
+        boolean commentFlag = true;
+        boolean scaleFlag = true;
+        boolean ratingFlag = true;
+        boolean geopositionFlag = true;
+
+        if (commentState == 2 && view.getComment().isEmpty()) {
+            commentFlag = false;
+        }
+
+        if (ratingState == 2 && view.getRating().getRating() == 0) {
+            ratingFlag = false;
+        }
+
+        if (scaleState == 2 && view.getScale() != null) {
+            scaleFlag = false;
+        }
+
+        if (geopositionState == 2 && ) {
+            geopositionFlag = false;
+        }
+
+        String comment = null;
+        Double scale = null;
+        Rating rating = null;
+        Date eventDate = null;
+
+
+        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
+            if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
+                comment = commentControl.getText().toString().trim();
+            }
+            if (!(rating == null)) {
+                rating = new Rating((int) (rating.getRating()));
+            }
+            if (scale != null) {
+                try {
+                    scale = scale;
+                    Locale locale = new Locale("ru");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                    simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                    try {
+                        eventDate = simpleDateFormat.parse();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    showMessage("Событие изменено");
+                    showEditResult();
+                } catch (Exception e) {
+                    showMessage("Введите число");
+                }
+            } else {
+
+                Locale locale = new Locale("ru");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                try {
+                    eventDate = simpleDateFormat.parse(getDate());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                showMessage("Событие изменено");
+                showEditResult();
+
+            }
+            trackingService.EditEvent(trackingId,
+                    eventId,
+                    scale,
+                    rating,
+                    comment,
+                    latitude,
+                    longitude,
+                    photoPath,
+                    eventDate);
+            reportEvent(R.string.metrica_edit_event);
+            factCalculator.calculateFacts();
+        } else {
+            showMessage("Заполните поля с *");
+        }
     }
 
     private void finishActivity () {
@@ -397,7 +436,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     protected void onActivityResult (int requestCode , int resultCode , Intent data) {
         super.onActivityResult(requestCode , resultCode , data);
         if ( resultCode != RESULT_OK ) {
-            Toast.makeText(getApplicationContext() , "Упс,что-то пошло не так =((((" + "\n" + "Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext() , "Упс,что-то пошло не так =((((" , Toast.LENGTH_SHORT).show();
             return;
         }
         if ( requestCode == 1 ) {
@@ -410,8 +449,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             photoPath = workWithFIles.saveBitmap(data.getData());
             flagPhoto = true;
         }
-        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE )
+        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE ) {
             adress.setText(data.getStringExtra("location"));
+            flagGeoposition = true;
+        }
     }
 
     private void pickCamera () {

@@ -122,7 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                MapActivity.toMapActivity(activity);
+                MapActivity.toMapActivity(activity , 2);
             }
         });
         deleteEvent.setOnClickListener(new View.OnClickListener() {
