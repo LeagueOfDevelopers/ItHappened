@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditTrackingActivity.java
 import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
 import ru.lod_misis.ithappened.Data.Repositories.InMemoryFactRepository;
@@ -33,6 +34,16 @@ import ru.lod_misis.ithappened.UI.Presenters.EditTrackingContract;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Domain.Statistics.FactCalculator;
 import ru.lod_misis.ithappened.UI.ItHappenedApplication;
+=======
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
+import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
+import ru.lod_misis.ithappened.Presenters.EditTrackingContract;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
+import ru.lod_misis.ithappened.Statistics.FactCalculator;
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditTrackingActivity.java
 
 public class EditTrackingActivity extends AppCompatActivity implements EditTrackingContract.EditTrackingView {
 
@@ -161,7 +172,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     TrackingCustomization photo = TrackingCustomization.None;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
@@ -194,9 +205,9 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 .setDismissOnColorSelected(false)
                 .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override
-                    public void onColorSelected(boolean b, int i) {
-                        if (b) {
-                            Toast.makeText(getApplicationContext(), Integer.toHexString(i) + "", Toast.LENGTH_SHORT).show();
+                    public void onColorSelected (boolean b , int i) {
+                        if ( b ) {
+                            Toast.makeText(getApplicationContext() , Integer.toHexString(i) + "" , Toast.LENGTH_SHORT).show();
                             colorPickerDialogBuilder.setSelectedColor(i);
                             colorPickerText.setTextColor(i);
                         }
@@ -207,13 +218,13 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         colorPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 SpectrumDialog dialog = colorPickerDialogBuilder.build();
-                dialog.show(getSupportFragmentManager(), "Tag");
+                dialog.show(getSupportFragmentManager() , "Tag");
             }
         });
 
-        if (editableTrackingV1.GetScaleCustomization() == TrackingCustomization.None) {
+        if ( editableTrackingV1.GetScaleCustomization() == TrackingCustomization.None ) {
             visbilityScaleTypeHint.setVisibility(View.GONE);
             visibilityScaleType.setVisibility(View.GONE);
             scaleType.setVisibility(View.GONE);
@@ -224,51 +235,51 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
             scaleType.setText(editableTrackingV1.getScaleName());
         }
 
-        stateForRating = calculateState(editableTrackingV1.GetRatingCustomization(),
-                ratingDontImage,
-                ratingOptionalImage,
-                ratingRequiredImage,
-                ratingDont,
-                ratingOptional,
-                ratingRequired,
+        stateForRating = calculateState(editableTrackingV1.GetRatingCustomization() ,
+                ratingDontImage ,
+                ratingOptionalImage ,
+                ratingRequiredImage ,
+                ratingDont ,
+                ratingOptional ,
+                ratingRequired ,
                 ratingEnabled);
-        stateForText = calculateState(editableTrackingV1.GetCommentCustomization(),
-                commentDontImage,
-                commentOptionalImage,
-                commentRequiredImage,
-                commentDont,
-                commentOptional,
-                commentRequired,
+        stateForText = calculateState(editableTrackingV1.GetCommentCustomization() ,
+                commentDontImage ,
+                commentOptionalImage ,
+                commentRequiredImage ,
+                commentDont ,
+                commentOptional ,
+                commentRequired ,
                 commentEnabled);
-        stateForScale = calculateState(editableTrackingV1.GetScaleCustomization(),
-                scaleDontImage,
-                scaleOptionalImage,
-                scaleRequiredImage,
-                scaleDont,
-                scaleOptional,
-                scaleRequired,
+        stateForScale = calculateState(editableTrackingV1.GetScaleCustomization() ,
+                scaleDontImage ,
+                scaleOptionalImage ,
+                scaleRequiredImage ,
+                scaleDont ,
+                scaleOptional ,
+                scaleRequired ,
                 scaleEnabled);
-        stateForGeoposition = calculateState(editableTrackingV1.GetGeopositionCustomization(),
-                geopositionDontImage,
-                geopositionOptionalImage,
-                geopositionRequiredImage,
-                geopositionDont,
-                geopositionOptional,
-                geopositionRequired,
+        stateForGeoposition = calculateState(editableTrackingV1.GetGeopositionCustomization() ,
+                geopositionDontImage ,
+                geopositionOptionalImage ,
+                geopositionRequiredImage ,
+                geopositionDont ,
+                geopositionOptional ,
+                geopositionRequired ,
                 geopositionEnabled);
-        stateForPhoto = calculateState(editableTrackingV1.GetPhotoCustomization(),
-                photoDontImage,
-                photoOptionalImage,
-                photoRequiredImage,
-                photoDont,
-                photoOptional,
-                photoRequired,
+        stateForPhoto = calculateState(editableTrackingV1.GetPhotoCustomization() ,
+                photoDontImage ,
+                photoOptionalImage ,
+                photoRequiredImage ,
+                photoDont ,
+                photoOptional ,
+                photoRequired ,
                 photoEnabled);
 
 
         ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 ratingDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 ratingEnabled.setText("не надо");
                 ratingDontImage.setImageResource(R.drawable.active_dont);
@@ -282,7 +293,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         ratingOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("не обязательно");
                 ratingDontImage.setImageResource(R.drawable.not_active_dont);
@@ -297,7 +308,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         ratingRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("обязательно");
                 ratingDontImage.setImageResource(R.drawable.not_active_dont);
@@ -312,7 +323,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         commentDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 commentEnabled.setText("не надо");
                 commentDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 commentDontImage.setImageResource(R.drawable.active_dont);
@@ -326,7 +337,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         commentOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 commentEnabled.setText("не обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 commentDontImage.setImageResource(R.drawable.not_active_dont);
@@ -341,7 +352,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         commentRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 commentEnabled.setText("обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 commentDontImage.setImageResource(R.drawable.not_active_dont);
@@ -356,7 +367,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         scaleDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 scaleEnabled.setText("не надо");
                 scaleDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 scaleDontImage.setImageResource(R.drawable.active_dont);
@@ -374,7 +385,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         scaleOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 scaleEnabled.setText("не обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleDontImage.setImageResource(R.drawable.not_active_dont);
@@ -393,7 +404,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         scaleRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 scaleEnabled.setText("обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleDontImage.setImageResource(R.drawable.not_active_dont);
@@ -410,7 +421,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         });
         geopositionDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 geopositionDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 geopositionEnabled.setText("не надо");
                 geopositionDontImage.setImageResource(R.drawable.active_dont);
@@ -424,7 +435,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         geopositionOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionEnabled.setText("не обязательно");
                 geopositionDontImage.setImageResource(R.drawable.not_active_dont);
@@ -439,7 +450,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         geopositionRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionEnabled.setText("обязательно");
                 geopositionDontImage.setImageResource(R.drawable.not_active_dont);
@@ -453,7 +464,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         photoDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 photoDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 photoEnabled.setText("не надо");
                 photoDontImage.setImageResource(R.drawable.active_dont);
@@ -467,7 +478,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         photoOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 photoEnabled.setText("не обязательно");
                 photoDontImage.setImageResource(R.drawable.not_active_dont);
@@ -482,7 +493,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         photoRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 photoEnabled.setText("обязательно");
                 photoDontImage.setImageResource(R.drawable.not_active_dont);
@@ -496,7 +507,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 editTrackingPresenter.onEditClick();
             }
         });
@@ -504,8 +515,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch ( item.getItemId() ) {
             case android.R.id.home:
                 this.finish();
                 return true;
@@ -515,44 +526,44 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     }
 
     @Override
-    protected void onPostResume() {
+    protected void onPostResume () {
         super.onPostResume();
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause () {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_tracking));
     }
 
     @Override
-    protected void onStop() {
+    protected void onStop () {
         super.onStop();
         editTrackingPresenter.onViewDettached();
     }
 
     @Override
-    public void showError(String error) {
-        Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
+    public void showError (String error) {
+        Toast.makeText(getBaseContext() , error , Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void completeEdit() {
+    public void completeEdit () {
         factCalculator.calculateFactsForAddNewEventActivity(trackingId);
         YandexMetrica.reportEvent(getString(R.string.metrica_edit_tracking));
-        Toast.makeText(getApplicationContext(), "Отслеживание изменено", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
+        Toast.makeText(getApplicationContext() , "Отслеживание изменено" , Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext() , UserActionsActivity.class);
         startActivity(intent);
     }
 
     @Override
-    public String getEditTrackingName() {
+    public String getEditTrackingName () {
         return trackingName.getText().toString().trim();
     }
 
     @Override
-    public TrackingCustomization getCommentCustomization() {
-        switch (stateForText) {
+    public TrackingCustomization getCommentCustomization () {
+        switch ( stateForText ) {
             case 0:
                 comment = TrackingCustomization.None;
                 break;
@@ -569,8 +580,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     }
 
     @Override
-    public TrackingCustomization getRatingCustomization() {
-        switch (stateForRating) {
+    public TrackingCustomization getRatingCustomization () {
+        switch ( stateForRating ) {
             case 0:
                 rating = TrackingCustomization.None;
                 break;
@@ -587,8 +598,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     }
 
     @Override
-    public TrackingCustomization getScaleCustomization() {
-        switch (stateForScale) {
+    public TrackingCustomization getScaleCustomization () {
+        switch ( stateForScale ) {
             case 0:
                 scale = TrackingCustomization.None;
                 break;
@@ -605,8 +616,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     }
 
     @Override
-    public TrackingCustomization getPhotoCustomization() {
-        switch (stateForPhoto) {
+    public TrackingCustomization getPhotoCustomization () {
+        switch ( stateForPhoto ) {
             case 0:
                 photo = TrackingCustomization.None;
                 break;
@@ -623,8 +634,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     }
 
     @Override
-    public TrackingCustomization getGeopositionCustomization() {
-        switch (stateForGeoposition) {
+    public TrackingCustomization getGeopositionCustomization () {
+        switch ( stateForGeoposition ) {
             case 0:
                 geoposition = TrackingCustomization.None;
                 break;
@@ -641,25 +652,25 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     }
 
     @Override
-    public String getScaleName() {
+    public String getScaleName () {
         return scaleType.getText().toString().trim();
     }
 
     @Override
-    public String getTrackingColor() {
+    public String getTrackingColor () {
         return String.valueOf(colorPickerText.getCurrentTextColor());
     }
 
-    private int calculateState(TrackingCustomization customization,
-                               ImageView dontImg,
-                               ImageView checkImg,
-                               ImageView doubleCheckImg,
-                               LinearLayout dont,
-                               LinearLayout check,
-                               LinearLayout doubleCheck,
-                               TextView hint
+    private int calculateState (TrackingCustomization customization ,
+                                ImageView dontImg ,
+                                ImageView checkImg ,
+                                ImageView doubleCheckImg ,
+                                LinearLayout dont ,
+                                LinearLayout check ,
+                                LinearLayout doubleCheck ,
+                                TextView hint
     ) {
-        switch (customization) {
+        switch ( customization ) {
             case None:
                 hint.setText("не надо");
                 dont.setBackgroundColor(getResources().getColor(R.color.dont));

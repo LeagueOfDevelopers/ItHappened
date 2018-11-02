@@ -63,7 +63,7 @@ public class MapActivity extends AppCompatActivity {
         trackingId = getIntent().getStringExtra("trackingId");
         flag = Integer.valueOf(getIntent().getStringExtra("isCreateOrShow"));
         if (flag != 0) {
-            location=getLastKnownLocation();
+            location = getLastKnownLocation();
             createAndInitMap();
         } else {
             new Exception();
@@ -75,6 +75,9 @@ public class MapActivity extends AppCompatActivity {
                     addGeoposition();
                 if (flag == 2)
                     backToEventDetails();
+                if (flag == 3) {
+
+                }
                 finish();
             }
         });
@@ -104,10 +107,17 @@ public class MapActivity extends AppCompatActivity {
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    if (flag == 1) {
-                        algorithm = new MapMethodForAddGeoposition();
-                    } else {
-                        algorithm = new MapMethodForDetails(Double.valueOf(getIntent().getStringExtra("latitude")), Double.valueOf(getIntent().getStringExtra("longitude")));
+                    switch (flag) {
+                        case 1: {
+                            algorithm = new MapMethodForAddGeoposition();
+                            break;
+                        }
+                        case 2: {
+                            algorithm = new MapMethodForDetails(Double.valueOf(getIntent().getStringExtra("latitude")), Double.valueOf(getIntent().getStringExtra("longitude")));
+                        }
+                        case 3: {
+                            algorithm = new MapMethodForEditGeoposition(Double.valueOf(getIntent().getStringExtra("latitude")), Double.valueOf(getIntent().getStringExtra("longitude")));
+                        }
                     }
                     algorithm.commonAbstractMethodForMap(googleMap);
                 }

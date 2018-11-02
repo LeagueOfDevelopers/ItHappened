@@ -20,7 +20,7 @@ public class MyGeopositionService extends Service {
         public void onLocationChanged(Location location) {
             if (location != null) {
                 myLocation = location;
-                Log.d("Bla","Bla");
+                Log.d("GeopositionWork","It's true");
             }
         }
 

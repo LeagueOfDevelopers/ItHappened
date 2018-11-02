@@ -16,14 +16,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
@@ -33,6 +25,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,15 +70,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     TextView dateValue;
     @BindView(R.id.dateValueNulls)
     TextView dateValueNulls;
-    //@BindView(R.id.adress)
+    @BindView(R.id.adress)
     TextView adress;
     @BindView(R.id.ratingValue)
     RatingBar ratingValue;
 
     @BindView(R.id.geoposition_title)
     TextView geoposition_title;
-    SupportMapFragment supportMapFragment;
-    GoogleMap map;
 
     @BindView(R.id.photo_title)
     TextView photo_title;
@@ -93,8 +85,12 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     Double lotitude;
     Double longitude;
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
     PhotoInteractor workWithFIles;
 
+=======
+    IWorkWithFIles workWithFIles;
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
     TrackingV1 thisTrackingV1;
     EventV1 thisEventV1;
     Date thisDate;
@@ -103,6 +99,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     Intent intent;
 
     Activity activity;
+    @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
 
     @Override
@@ -120,12 +117,16 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         eventDetailsPresenter.attachView(this ,
                 UUID.fromString(getIntent().getStringExtra("trackingId")) ,
                 UUID.fromString(getIntent().getStringExtra("eventId")));
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
 
     }
 
     @Override
     protected void onStart () {
         super.onStart();
+=======
+        eventDetailsPresenter.init();
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -152,6 +153,10 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         });
     }
 
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
+=======
+
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
     public void okClicked () {
         eventDetailsPresenter.okClicked();
 
@@ -198,9 +203,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void startConfigurationView () {
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
         supportMapFragment = ( SupportMapFragment ) getSupportFragmentManager().findFragmentById(R.id.map);
         showOrNotNullCard();
 
+=======
+        showOrNotNullCard();
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
         if ( thisEventV1.GetRating() != null ) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
@@ -251,6 +260,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 e.printStackTrace();
             }
 
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
 
             supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
@@ -268,12 +278,18 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                     map.moveCamera(cameraUpdate);
                 }
             });
+=======
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
         } else {
-            getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
+            adress.setVisibility(View.GONE);
             geoposition_title.setVisibility(View.GONE);
         }
         if ( thisEventV1.getPhoto() != null ) {
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
             workWithFIles = new PhotoInteractorImpl(this);
+=======
+            workWithFIles = new WorkWithFiles(getApplication() , this);
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
             photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
             nullsCard.setVisibility(View.GONE);
 

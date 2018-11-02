@@ -29,7 +29,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     @Override
     public void init() {
         if (isViewAttached()) {
-            //eventDetailsView.startedConfiguration(collection, trackingId, eventId);
+            eventDetailsView.startedConfiguration(trackingSercvice, trackingId, eventId);
             eventDetailsView.startConfigurationView();
         }
 

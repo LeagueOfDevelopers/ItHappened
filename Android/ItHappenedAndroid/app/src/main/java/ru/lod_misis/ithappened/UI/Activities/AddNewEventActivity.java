@@ -13,8 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -39,7 +37,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
@@ -57,6 +54,19 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/AddNewEventActivity.java
+=======
+import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
+import ru.lod_misis.ithappened.AllId;
+import ru.lod_misis.ithappened.BuildConfig;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
+import ru.lod_misis.ithappened.MyGeopositionService;
+import ru.lod_misis.ithappened.NotificationJobService;
+import ru.lod_misis.ithappened.Presenters.AddNewEventContract;
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/AddNewEventActivity.java
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.UI.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.UI.ItHappenedApplication;
@@ -149,17 +159,12 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     ImageView photo;
     AlertDialog.Builder dialog;
 
-    LocationManager locationManager;
-    Marker marker;
-
     TrackingV1 trackingV1;
 
     Context context;
     Activity activity;
 
     boolean flagPhoto = false;
-
-    Location mYlocation;
 
     String uriPhotoFromCamera;
     @Inject
@@ -204,7 +209,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/AddNewEventActivity.java
                 workWithFIles = new PhotoInteractorImpl(context);
+=======
+                workWithFIles = new WorkWithFiles(getApplication() , context);
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/AddNewEventActivity.java
                 dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
                 dialog.setItems(new String[]{"Галлерея" , "Фото"} , new DialogInterface.OnClickListener() {
@@ -590,7 +599,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     private void planningNotification () {
         Long averangeTime = null;
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/AddNewEventActivity.java
         Long oneDay = Long.valueOf(60 * 60 * 60 * 24);
+=======
+        Long oneDay = Long.valueOf(1000 * 60 * 60 * 24);
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/AddNewEventActivity.java
         if ( trackingV1.GetEventHistory().size() < 10 ) {
             return;
         }
@@ -598,10 +611,19 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         if ( averangeTime == null ) {
             return;
         }
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/AddNewEventActivity.java
         if ( averangeTime * 2 < oneDay ) {
             createJobSheduler(Long.valueOf(1000 * 60 * 60 * 24));
+=======
+        if ( BuildConfig.DEBUG ) {
+            createJobSheduler(Long.valueOf(BuildConfig.TEST_PUSH));
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/AddNewEventActivity.java
         } else {
-            createJobSheduler(averangeTime * 2);
+            if ( averangeTime * 2 < oneDay ) {
+                createJobSheduler(oneDay);
+            } else {
+                createJobSheduler(averangeTime * 2);
+            }
         }
     }
 

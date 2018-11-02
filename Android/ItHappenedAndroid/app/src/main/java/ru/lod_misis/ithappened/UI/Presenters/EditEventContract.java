@@ -22,6 +22,10 @@ public interface EditEventContract {
                            String commentValue,
                            Double scaleValue,
                            Rating ratingValue,
+                           Double longitude,
+                           Double latitude,
+                           String photoPath,
+                           String title,
                            String scaleName);
 
         String getComment();

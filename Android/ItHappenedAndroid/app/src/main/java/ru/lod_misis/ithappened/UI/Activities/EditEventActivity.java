@@ -1,6 +1,5 @@
 package ru.lod_misis.ithappened.UI.Activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -8,14 +7,12 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
@@ -30,19 +27,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -52,6 +42,16 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
+=======
+import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
+import ru.lod_misis.ithappened.Domain.EventV1;
+import ru.lod_misis.ithappened.Domain.Rating;
+import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
+import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
+import ru.lod_misis.ithappened.Presenters.EditEventContract;
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.UI.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.UI.ItHappenedApplication;
@@ -99,6 +99,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TextView geopositionAccess;
     @BindView(R.id.photoAccessEdit)
     TextView photoAccess;
+    @BindView(R.id.adress)
+    TextView adress;
 
     @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
@@ -124,9 +126,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TrackingV1 trackingV1;
     EventV1 eventV1;
 
-    SupportMapFragment supportMapFragment;
-    GoogleMap map;
-    Marker marker;
+
     LocationManager locationManager;
     Double latitude = null;
     Double longitude = null;
@@ -149,24 +149,20 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         presenter.onViewAttached(this);
         presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")) ,
                 UUID.fromString(getIntent().getStringExtra("eventId")));
+
         presenter.onViewCreated();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
         locationManager = ( LocationManager ) getSystemService(LOCATION_SERVICE);
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
         supportMapFragment = ( SupportMapFragment ) getSupportFragmentManager().findFragmentById(R.id.map);
 
+=======
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(trackingV1.GetTrackingName());
-
-        eventV1 = trackingV1.GetEvent(eventId);
-
 
         dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,9 +170,23 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateControl);
                 picker.show(fragmentManager , "from");
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
+=======
             }
         });
-
+        adress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                ArrayList<String> fields = new ArrayList<>();
+                fields.add("3");
+                fields.add(trackingV1.GetTrackingID().toString());
+                fields.add(eventId.toString());
+                fields.add(eventV1.getLotitude().toString());
+                fields.add(eventV1.getLongitude().toString());
+                MapActivity.toMapActivity(activity , fields);
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
+            }
+        });
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -186,7 +196,11 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
                 workWithFIles = new PhotoInteractorImpl(context);
+=======
+                workWithFIles = new WorkWithFiles(getApplication() , context);
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
                 dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
                 dialog.setItems(new String[]{"Галлерея" , "Фото"} , new DialogInterface.OnClickListener() {
@@ -204,11 +218,17 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                         }
                     }
                 });
-
                 dialog.show();
             }
         });
 
+    }
+
+    private void initToolbar (String title) {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(title);
     }
 
 
@@ -238,7 +258,16 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                                String commentValue ,
                                Double scaleValue ,
                                Rating ratingValue ,
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
                                String scaleName) {
+=======
+                               Double longitude ,
+                               Double latitude ,
+                               String photoPath ,
+                               String title ,
+                               String scaleName) {
+        initToolbar(title);
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
 
         commentState = calculateState(comment);
         ratingState = calculateState(rating);
@@ -259,14 +288,23 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         dateControl.setText(format.format(date));
 
         if ( scale != TrackingCustomization.None && scaleName != null ) {
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
             scaleType.setText(trackingV1.getScaleName());
+=======
+            scaleType.setText(scaleName);
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
         }
 
         if ( (scale == TrackingCustomization.Optional
                 || scale == TrackingCustomization.Required) && scaleValue != null ) {
             scaleControl.setText(StringParse.parseDouble(scaleValue));
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
             if ( trackingV1.getScaleName() != null ) {
                 if ( trackingV1.getScaleName().length() >= 3 ) {
+=======
+            if ( scaleName != null ) {
+                if ( scaleName.length() >= 3 ) {
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
                     scaleType.setText(scaleName.substring(0 , 2));
                 } else {
                     scaleType.setText(scaleName);
@@ -283,9 +321,27 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 || comment == TrackingCustomization.Required) && commentValue != null ) {
             commentControl.setText(commentValue);
         }
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
         if ( (geoposition == TrackingCustomization.Optional
                 || geoposition == TrackingCustomization.Required) ) {
             mapInit();
+=======
+
+        if ( (geoposition == TrackingCustomization.Optional
+                || geoposition == TrackingCustomization.Required) ) {
+            if ( longitude != null && latitude != null ) {
+                try {
+                    adress.setText(getAddress(latitude , longitude));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if ( (photo == TrackingCustomization.Optional
+                || photo == TrackingCustomization.Required) ) {
+            workWithFIles = new WorkWithFiles(getApplication() , this);
+            this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
         }
 
     }
@@ -384,6 +440,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
     }
 
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
     private void mapInit () {
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -451,6 +508,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         );
         map.moveCamera(cameraUpdate);
     }
+=======
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
 
     @Override
     protected void onActivityResult (int requestCode , int resultCode , Intent data) {
@@ -489,5 +548,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 activity.startActivityForResult(intent , 2);
             }
         }
+    }
+
+    private String getAddress (Double latitude , Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this , Locale.getDefault());
+        return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
     }
 }

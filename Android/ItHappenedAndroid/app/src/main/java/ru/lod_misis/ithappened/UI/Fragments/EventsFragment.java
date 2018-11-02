@@ -93,6 +93,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     CardView trackingsPickerBtn;
+    @Inject
     TrackingService trackingService;
     TextView hintForEventsHistory;
     TextView hintForSpinner;
@@ -300,7 +301,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             });
         } else {
             trackingsPickerText.setText("Отслеживания отсутствуют");
-            //hintForSpinner.setVisibility(View.VISIBLE);
+            hintForSpinner.setVisibility(View.VISIBLE);
         }
 
 
@@ -371,7 +372,12 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
 
+<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Fragments/EventsFragment.java
       /*  eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
+=======
+        /*Это надо полюбому переделать!
+        eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
+>>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Fragments/EventsFragment.java
             @Override
             protected void loadMoreItems() {
                 isScrolling = true;
@@ -475,10 +481,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         if (eventsForAdapter.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1,collection);
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1,collection);
             eventsAdpt.notifyDataSetChanged();
         }
         if (eventsAdpt != null) {
@@ -494,7 +500,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             if (refreshedEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1,collection));
         }
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -503,21 +509,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     @Override
     public void onResume() {
         super.onResume();
-        if (eventsAdpt != null) {
-            List<EventV1> adapterEvents = eventsAdpt.getEventV1s();
-            ArrayList<EventV1> refreshedEvents = new ArrayList<>();
-            if (adapterEvents != null)
-                for (EventV1 event : adapterEvents) {
-                    collection.GetTracking(event.GetTrackingId());
-                    EventV1 addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
-                    if (!addAbleEvent.GetStatus())
-                        refreshedEvents.add(addAbleEvent);
-                }
-            if (refreshedEvents.size() == 0) {
-                hintForEventsHistory.setVisibility(View.VISIBLE);
-            }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
-        }
+
     }
 
 
