@@ -82,7 +82,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     @BindView(R.id.photo)
     ImageView photo;
 
-    Double lotitude;
+    Double latitude;
     Double longitude;
     PhotoInteractor workWithFIles;
     TrackingV1 thisTrackingV1;
@@ -122,7 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                MapActivity.toMapActivity(activity , 2);
+                MapActivity.toMapActivity(activity , 2,latitude,longitude);
             }
         });
         deleteEvent.setOnClickListener(new View.OnClickListener() {
@@ -220,12 +220,12 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         }
         if ( thisEventV1.getLongitude() != null && thisEventV1.getLotitude() != null ) {
 
-            this.lotitude = thisEventV1.getLotitude();
+            this.latitude = thisEventV1.getLotitude();
             this.longitude = thisEventV1.getLongitude();
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             try {
-                adress.setText(getAddress(this.lotitude , this.longitude));
+                adress.setText(getAddress(this.latitude , this.longitude));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -315,7 +315,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     protected void onActivityResult (int requestCode , int resultCode , Intent data) {
         if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE )
             if ( resultCode == RESULT_OK )
-                adress.setText(data.getData().toString());
+
         super.onActivityResult(requestCode , resultCode , data);
     }
 }

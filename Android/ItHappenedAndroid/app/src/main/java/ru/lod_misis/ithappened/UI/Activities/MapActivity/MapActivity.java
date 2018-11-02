@@ -31,9 +31,11 @@ public class MapActivity extends AppCompatActivity {
     private Integer flag;
     private CommonMethodForMapAlgorithm algorithm;
 
-    public static void toMapActivity (Activity activity , int code) {
+    public static void toMapActivity (Activity activity , int code , double latitude , double longitude) {
         Intent intent = new Intent(activity , MapActivity.class);
-        intent.putExtra("code",code);
+        intent.putExtra("code" , code);
+        intent.putExtra("latitude" , latitude);
+        intent.putExtra("longitude" , longitude);
         activity.startActivityForResult(intent , MAP_ACTIVITY_REQUEST_CODE);
     }
 
@@ -56,7 +58,7 @@ public class MapActivity extends AppCompatActivity {
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady (GoogleMap googleMap) {
-                int flag=getIntent().getIntExtra("code",-1);
+                int flag = getIntent().getIntExtra("code" , -1);
                 if ( ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
 
                 } else {
@@ -66,12 +68,13 @@ public class MapActivity extends AppCompatActivity {
                             break;
                         }
                         case 2: {
-                            algorithm = new MapMethodForDetails(Double.valueOf(getIntent().getStringExtra("latitude")) , Double.valueOf(getIntent().getStringExtra("longitude")));
+                            algorithm = new MapMethodForDetails(getIntent().getDoubleExtra("latitude" , 0) , getIntent().getDoubleExtra("longitude" , 0));
                         }
                         case 3: {
-                            algorithm = new MapMethodForEditGeoposition(Double.valueOf(getIntent().getStringExtra("latitude")) , Double.valueOf(getIntent().getStringExtra("longitude")));
+                            algorithm = new MapMethodForEditGeoposition(getIntent().getDoubleExtra("latitude" , 0) , getIntent().getDoubleExtra("longitude" , 0));
                         }
-                        default:new Exception();
+                        default:
+                            new Exception();
                     }
                     algorithm.commonAbstractMethodForMap(googleMap);
                 }

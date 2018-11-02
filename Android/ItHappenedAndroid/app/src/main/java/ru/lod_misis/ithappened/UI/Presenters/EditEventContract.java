@@ -43,6 +43,9 @@ public interface EditEventContract {
         void setIdentificators(UUID trackingId, UUID eventId);
 
         void onViewDettached();
+
+        void finish(Double scale,Rating rating,String comment,
+                    Double latitude,Double longitude,String photoPath,Date eventDate);
     }
 
 }

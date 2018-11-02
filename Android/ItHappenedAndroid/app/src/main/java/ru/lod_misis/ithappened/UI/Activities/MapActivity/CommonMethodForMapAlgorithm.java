@@ -63,14 +63,13 @@ public abstract class CommonMethodForMapAlgorithm {
     }
 
     public void returnData (Activity activity) {
-        try {
-            Intent data = new Intent();
-            data.putExtra("location" , getAddress(location , activity));
-            activity.setResult(Activity.RESULT_OK , data);
-            activity.finish();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        Intent data = new Intent();
+        data.putExtra("latitude" , location.latitude);
+        data.putExtra("longitude",location.longitude);
+        activity.setResult(Activity.RESULT_OK , data);
+        activity.finish();
+
     }
 
     private void initMap () {
@@ -93,10 +92,5 @@ public abstract class CommonMethodForMapAlgorithm {
 
     public LatLng getLocation () {
         return location;
-    }
-
-    private String getAddress (LatLng location , Activity activity) throws IOException {
-        Geocoder geocoder = new Geocoder(activity , Locale.getDefault());
-        return geocoder.getFromLocation(location.latitude , location.longitude , 1).get(0).getAddressLine(0);
     }
 }

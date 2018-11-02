@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -36,9 +37,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -186,7 +189,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 if ( ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
                     addNewEventPresenter.requestPermission(1);
                 }
-                MapActivity.toMapActivity(activity , 1);
+                MapActivity.toMapActivity(activity , 1 , 0 , 0);
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
@@ -530,8 +533,14 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
         }
         if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE ) {
-            address.setText(data.getStringExtra("location"));
-            flagGeoposition=true;
+            latitude = data.getDoubleExtra("latitude" , 0);
+            longitude = data.getDoubleExtra("longitude" , 0);
+            try {
+                address.setText(getAddress(latitude,longitude));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            flagGeoposition = true;
         }
 
     }
@@ -599,6 +608,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         JobScheduler jobScheduler =
                 ( JobScheduler ) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(jobBuilder.build());
+    }
+
+    private String getAddress (Double latitude , Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this , Locale.getDefault());
+        return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
     }
 }
 

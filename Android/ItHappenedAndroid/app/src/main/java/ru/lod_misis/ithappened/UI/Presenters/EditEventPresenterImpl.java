@@ -41,6 +41,21 @@ public class EditEventPresenterImpl implements EditEventContract.EditEventPresen
     }
 
     @Override
+    public void finish (Double scale,Rating rating,String comment,
+                        Double latitude,Double longitude,String photoPath,Date eventDate) {
+        trackingService.EditEvent(trackingId,
+                eventId,
+                scale,
+                rating,
+                comment,
+                latitude,
+                longitude,
+                photoPath,
+                eventDate);
+        factCalculator.calculateFacts();
+    }
+
+    @Override
     public void addEventClick() {
         view.addEvent();
     }

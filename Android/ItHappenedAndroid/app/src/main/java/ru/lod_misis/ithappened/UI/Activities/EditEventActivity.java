@@ -155,7 +155,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                MapActivity.toMapActivity(activity , 3);
+                MapActivity.toMapActivity(activity , 3,latitude,longitude);
             }
         });
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -237,6 +237,9 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         scaleState = calculateState(scale);
         geopositionState = calculateState(geoposition);
         photoState = calculateState(photo);
+
+        this.latitude=latitude;
+        this.longitude=longitude;
 
         calculateContainerState(commentContainer , commentAccess , commentState);
         calculateContainerState(ratingContainer , ratingAccess , ratingState);
@@ -338,19 +341,19 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         boolean ratingFlag = true;
         boolean geopositionFlag = true;
 
-        if (commentState == 2 && view.getComment().isEmpty()) {
+        if ( commentState == 2 && commentControl.getText().toString().isEmpty() ) {
             commentFlag = false;
         }
 
-        if (ratingState == 2 && view.getRating().getRating() == 0) {
+        if ( ratingState == 2 && ratingControl.getRating() == 0 ) {
             ratingFlag = false;
         }
 
-        if (scaleState == 2 && view.getScale() != null) {
+        if ( scaleState == 2 && scaleControl.getText().toString() != null ) {
             scaleFlag = false;
         }
 
-        if (geopositionState == 2 && ) {
+        if ( geopositionState == 2 && !flagGeoposition ) {
             geopositionFlag = false;
         }
 
@@ -360,21 +363,21 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         Date eventDate = null;
 
 
-        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag) {
-            if (!commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty()) {
+        if ( commentFlag && ratingFlag && scaleFlag && geopositionFlag ) {
+            if ( !commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty() ) {
                 comment = commentControl.getText().toString().trim();
             }
-            if (!(rating == null)) {
-                rating = new Rating((int) (rating.getRating()));
+            if ( !(rating == null) ) {
+                rating = new Rating(( int ) (rating.getRating()));
             }
-            if (scale != null) {
+            if ( scale != null ) {
                 try {
                     scale = scale;
                     Locale locale = new Locale("ru");
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
                     simpleDateFormat.setTimeZone(TimeZone.getDefault());
                     try {
-                        eventDate = simpleDateFormat.parse();
+                        eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -386,10 +389,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             } else {
 
                 Locale locale = new Locale("ru");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
                 simpleDateFormat.setTimeZone(TimeZone.getDefault());
                 try {
-                    eventDate = simpleDateFormat.parse(getDate());
+                    eventDate = simpleDateFormat.parse(dateControl.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -397,17 +400,9 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 showEditResult();
 
             }
-            trackingService.EditEvent(trackingId,
-                    eventId,
-                    scale,
-                    rating,
-                    comment,
-                    latitude,
-                    longitude,
-                    photoPath,
-                    eventDate);
+            presenter.finish(scale , rating , comment ,
+                    latitude , longitude , photoPath , eventDate);
             reportEvent(R.string.metrica_edit_event);
-            factCalculator.calculateFacts();
         } else {
             showMessage("Заполните поля с *");
         }
@@ -450,7 +445,13 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             flagPhoto = true;
         }
         if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE ) {
-            adress.setText(data.getStringExtra("location"));
+            latitude = data.getDoubleExtra("latitude" , 0);
+            longitude = data.getDoubleExtra("longitude" , 0);
+            try {
+                adress.setText(getAddress(latitude,longitude));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             flagGeoposition = true;
         }
     }
