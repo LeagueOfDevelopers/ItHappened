@@ -2,9 +2,9 @@ package ru.lod_misis.ithappened.di.modules;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Presenters.EditTrackingContract;
-import ru.lod_misis.ithappened.Presenters.EditTrackingPresenterImpl;
+import ru.lod_misis.ithappened.Domain.TrackingService;
+import ru.lod_misis.ithappened.UI.Presenters.EditTrackingContract;
+import ru.lod_misis.ithappened.UI.Presenters.EditTrackingPresenterImpl;
 
 @Module
 public class EditTrackingModule {

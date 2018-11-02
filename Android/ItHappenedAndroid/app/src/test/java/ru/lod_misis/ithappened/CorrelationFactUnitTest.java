@@ -1,27 +1,23 @@
 package ru.lod_misis.ithappened;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import io.realm.RealmList;
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
+import ru.lod_misis.ithappened.Domain.Models.EventV1;
+import ru.lod_misis.ithappened.Domain.Models.Rating;
+import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.DataSet;
 
 public class CorrelationFactUnitTest {
 

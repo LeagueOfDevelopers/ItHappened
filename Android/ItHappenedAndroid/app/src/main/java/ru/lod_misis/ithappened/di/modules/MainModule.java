@@ -7,11 +7,11 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
-import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.Domain.TrackingService;
+import ru.lod_misis.ithappened.Data.Repositories.ITrackingRepository;
+import ru.lod_misis.ithappened.Data.Repositories.InMemoryFactRepository;
+import ru.lod_misis.ithappened.Data.Repositories.TrackingRepository;
+import ru.lod_misis.ithappened.Domain.Statistics.FactCalculator;
 
 @Module
 public class MainModule {
