@@ -1,6 +1,5 @@
 package ru.lod_misis.ithappened.Activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -8,14 +7,12 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
@@ -30,19 +27,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -52,6 +42,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
@@ -99,6 +90,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TextView geopositionAccess;
     @BindView(R.id.photoAccessEdit)
     TextView photoAccess;
+    @BindView(R.id.adress)
+    TextView adress;
 
     @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
@@ -124,9 +117,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TrackingV1 trackingV1;
     EventV1 eventV1;
 
-    SupportMapFragment supportMapFragment;
-    GoogleMap map;
-    Marker marker;
+
     LocationManager locationManager;
     Double latitude = null;
     Double longitude = null;
@@ -137,7 +128,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     Activity activity;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
         ButterKnife.bind(this);
@@ -147,52 +138,54 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
         ItHappenedApplication.getAppComponent().inject(this);
         presenter.onViewAttached(this);
-        presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")),
+        presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")) ,
                 UUID.fromString(getIntent().getStringExtra("eventId")));
+
         presenter.onViewCreated();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
+        locationManager = ( LocationManager ) getSystemService(LOCATION_SERVICE);
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(trackingV1.GetTrackingName());
-
-        eventV1 = trackingV1.GetEvent(eventId);
-
-
         dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateControl);
-                picker.show(fragmentManager, "from");
+                picker.show(fragmentManager , "from");
             }
         });
-
+        adress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                ArrayList<String> fields = new ArrayList<>();
+                fields.add("3");
+                fields.add(trackingV1.GetTrackingID().toString());
+                fields.add(eventId.toString());
+                fields.add(eventV1.getLotitude().toString());
+                fields.add(eventV1.getLongitude().toString());
+                MapActivity.toMapActivity(activity , fields);
+            }
+        });
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                presenter.addEventClick(commentState, ratingState, scaleState, geopositionState);
+            public void onClick (View view) {
+                presenter.addEventClick(commentState , ratingState , scaleState , geopositionState);
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                workWithFIles = new WorkWithFiles(getApplication(), context);
+            public void onClick (View view) {
+                workWithFIles = new WorkWithFiles(getApplication() , context);
                 dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
-                dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
+                dialog.setItems(new String[]{"Галлерея" , "Фото"} , new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i) {
+                    public void onClick (DialogInterface dialogInterface , int i) {
+                        switch ( i ) {
                             case 0: {
                                 pickGallery();
                                 break;
@@ -204,17 +197,23 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                         }
                     }
                 });
-
                 dialog.show();
             }
         });
 
     }
 
+    private void initToolbar (String title) {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(title);
+    }
+
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch ( item.getItemId() ) {
             case android.R.id.home:
                 this.finish();
                 return true;
@@ -224,21 +223,26 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    public void showEditResult() {
+    public void showEditResult () {
         finish();
     }
 
     @Override
-    public void onViewCreated(TrackingCustomization comment,
-                              TrackingCustomization rating,
-                              TrackingCustomization scale,
-                              TrackingCustomization photo,
-                              TrackingCustomization geoposition,
-                              Date date,
-                              String commentValue,
-                              Double scaleValue,
-                              Rating ratingValue,
-                              String scaleName) {
+    public void onViewCreated (TrackingCustomization comment ,
+                               TrackingCustomization rating ,
+                               TrackingCustomization scale ,
+                               TrackingCustomization photo ,
+                               TrackingCustomization geoposition ,
+                               Date date ,
+                               String commentValue ,
+                               Double scaleValue ,
+                               Rating ratingValue ,
+                               Double longitude ,
+                               Double latitude ,
+                               String photoPath ,
+                               String title ,
+                               String scaleName) {
+        initToolbar(title);
 
         commentState = calculateState(comment);
         ratingState = calculateState(rating);
@@ -246,57 +250,69 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         geopositionState = calculateState(geoposition);
         photoState = calculateState(photo);
 
-        calculateContainerState(commentContainer, commentAccess, commentState);
-        calculateContainerState(ratingContainer, ratingAccess, ratingState);
-        calculateContainerState(scaleContainer, scaleAccess, scaleState);
-        calculateContainerState(geopositionContainer, geopositionAccess, geopositionState);
-        calculateContainerState(photoContainer, photoAccess, photoState);
+        calculateContainerState(commentContainer , commentAccess , commentState);
+        calculateContainerState(ratingContainer , ratingAccess , ratingState);
+        calculateContainerState(scaleContainer , scaleAccess , scaleState);
+        calculateContainerState(geopositionContainer , geopositionAccess , geopositionState);
+        calculateContainerState(photoContainer , photoAccess , photoState);
 
         Locale loc = new Locale("ru");
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm" , loc);
         format.setTimeZone(TimeZone.getDefault());
 
         dateControl.setText(format.format(date));
 
-        if (scale != TrackingCustomization.None && scaleName != null) {
-            scaleType.setText(trackingV1.getScaleName());
+        if ( scale != TrackingCustomization.None && scaleName != null ) {
+            scaleType.setText(scaleName);
         }
 
-        if ((scale == TrackingCustomization.Optional
-                || scale == TrackingCustomization.Required) && scaleValue != null) {
+        if ( (scale == TrackingCustomization.Optional
+                || scale == TrackingCustomization.Required) && scaleValue != null ) {
             scaleControl.setText(StringParse.parseDouble(scaleValue));
-            if (trackingV1.getScaleName() != null) {
-                if (trackingV1.getScaleName().length() >= 3) {
-                    scaleType.setText(scaleName.substring(0, 2));
+            if ( scaleName != null ) {
+                if ( scaleName.length() >= 3 ) {
+                    scaleType.setText(scaleName.substring(0 , 2));
                 } else {
                     scaleType.setText(scaleName);
                 }
             }
         }
 
-        if ((rating == TrackingCustomization.Optional
-                || rating == TrackingCustomization.Required) && ratingValue != null) {
+        if ( (rating == TrackingCustomization.Optional
+                || rating == TrackingCustomization.Required) && ratingValue != null ) {
             ratingControl.setRating(ratingValue.getRating() / 2.0f);
         }
 
-        if ((comment == TrackingCustomization.Optional
-                || comment == TrackingCustomization.Required) && commentValue != null) {
+        if ( (comment == TrackingCustomization.Optional
+                || comment == TrackingCustomization.Required) && commentValue != null ) {
             commentControl.setText(commentValue);
         }
-        if ((geoposition == TrackingCustomization.Optional
-                || geoposition == TrackingCustomization.Required)) {
-            mapInit();
+
+        if ( (geoposition == TrackingCustomization.Optional
+                || geoposition == TrackingCustomization.Required) ) {
+            if ( longitude != null && latitude != null ) {
+                try {
+                    adress.setText(getAddress(latitude , longitude));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if ( (photo == TrackingCustomization.Optional
+                || photo == TrackingCustomization.Required) ) {
+            workWithFIles = new WorkWithFiles(getApplication() , this);
+            this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
         }
 
     }
 
     @Override
-    protected void onPostResume() {
+    protected void onPostResume () {
         super.onPostResume();
     }
 
-    private int calculateState(TrackingCustomization customization) {
-        switch (customization) {
+    private int calculateState (TrackingCustomization customization) {
+        switch ( customization ) {
             case None:
                 return 0;
             case Optional:
@@ -310,67 +326,67 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause () {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_event));
     }
 
     @Override
-    public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    public void showMessage (String message) {
+        Toast.makeText(this , message , Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public String getComment() {
+    public String getComment () {
         return commentControl.getText().toString();
     }
 
     @Override
-    public Double getScale() {
-        if (!scaleControl.getText().toString().isEmpty())
+    public Double getScale () {
+        if ( !scaleControl.getText().toString().isEmpty() )
             return Double.parseDouble(scaleControl.getText().toString());
         return null;
     }
 
     @Override
-    public Rating getRating() {
-        if (!(ratingControl.getRating() == 0)) {
-            return new Rating((int) (ratingControl.getRating() * 2));
+    public Rating getRating () {
+        if ( !(ratingControl.getRating() == 0) ) {
+            return new Rating(( int ) (ratingControl.getRating() * 2));
         }
         return null;
     }
 
     @Override
-    public Double getLongitude() {
+    public Double getLongitude () {
         return longitude;
     }
 
     @Override
-    public Double getLatitude() {
+    public Double getLatitude () {
         return latitude;
     }
 
     @Override
-    public String getPhotoPath() {
+    public String getPhotoPath () {
         return photoPath;
     }
 
     @Override
-    public String getDate() {
+    public String getDate () {
         return dateControl.getText().toString();
     }
 
     @Override
-    public void reportEvent(int resourceId) {
+    public void reportEvent (int resourceId) {
         YandexMetrica.reportEvent(getString(resourceId));
     }
 
-    private void finishActivity() {
+    private void finishActivity () {
         this.finish();
     }
 
-    private void calculateContainerState(LinearLayout container, TextView access, int state) {
-        switch (state) {
+    private void calculateContainerState (LinearLayout container , TextView access , int state) {
+        switch ( state ) {
             case 0:
                 container.setVisibility(View.GONE);
                 break;
@@ -384,110 +400,48 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
     }
 
-    private void mapInit() {
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                map = googleMap;
-                map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                if (eventV1.getLotitude() != null && eventV1.getLongitude() != null) {
-                    marker = map.addMarker(new MarkerOptions().position(new LatLng(eventV1.getLotitude(), eventV1.getLongitude())));
-                    moveCamera(eventV1.getLotitude(), eventV1.getLongitude());
-                } else {
-                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
-                    moveCamera(location.getLatitude(), location.getLongitude());
-
-                }
-                marker.setDraggable(true);
-
-
-                map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDrag(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDragEnd(Marker marker) {
-                        latitude = marker.getPosition().latitude;
-                        longitude = marker.getPosition().longitude;
-                    }
-                });
-                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        marker.setPosition(latLng);
-                        latitude = latLng.latitude;
-                        longitude = latLng.longitude;
-                    }
-                });
-            }
-        });
-    }
-
-    private void moveCamera(Double latitude, Double longitude) {
-        CameraUpdate cameraUpdate;
-        cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                new CameraPosition.Builder()
-                        .target(new LatLng(latitude, longitude))
-                        .zoom(8)
-                        .build()
-        );
-        map.moveCamera(cameraUpdate);
-    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK) {
-            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =((((" + "\n" + "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
+    protected void onActivityResult (int requestCode , int resultCode , Intent data) {
+        super.onActivityResult(requestCode , resultCode , data);
+        if ( resultCode != RESULT_OK ) {
+            Toast.makeText(getApplicationContext() , "Упс,что-то пошло не так =((((" + "\n" + "Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
             return;
         }
-        if (requestCode == 1) {
+        if ( requestCode == 1 ) {
             Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
             photoPath = workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
             flagPhoto = true;
         }
-        if (requestCode == 2) {
+        if ( requestCode == 2 ) {
             Picasso.get().load(data.getData()).into(photo);
             photoPath = workWithFIles.saveBitmap(data.getData());
             flagPhoto = true;
         }
     }
 
-    private void pickCamera() {
-        if (workWithFIles != null) {
+    private void pickCamera () {
+        if ( workWithFIles != null ) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             uriPhotoFromCamera = workWithFIles.generateFileUri(1).toString();
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, workWithFIles.generateFileUri(1));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT , workWithFIles.generateFileUri(1));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            activity.startActivityForResult(intent, 1);
+            activity.startActivityForResult(intent , 1);
         }
     }
 
-    private void pickGallery() {
-        if (workWithFIles != null) {
+    private void pickGallery () {
+        if ( workWithFIles != null ) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
-            if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                activity.startActivityForResult(intent, 2);
+            if ( intent.resolveActivity(activity.getPackageManager()) != null ) {
+                activity.startActivityForResult(intent , 2);
             }
         }
+    }
+
+    private String getAddress (Double latitude , Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this , Locale.getDefault());
+        return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
     }
 }

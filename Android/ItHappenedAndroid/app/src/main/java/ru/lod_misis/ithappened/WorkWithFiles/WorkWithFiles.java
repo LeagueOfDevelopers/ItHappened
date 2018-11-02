@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 
+import javax.inject.Inject;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
@@ -32,6 +34,7 @@ public class WorkWithFiles implements IWorkWithFIles {
     Context context;
     String uriPhotoFromCamera;
 
+    @Inject
     public WorkWithFiles(Application application, Context context){
         this.application=application;
         this.context=context;
