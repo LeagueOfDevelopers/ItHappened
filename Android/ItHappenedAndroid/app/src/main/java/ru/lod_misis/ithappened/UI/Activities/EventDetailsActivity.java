@@ -20,7 +20,6 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -30,11 +29,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.UI.Activities.MapActivity.MapActivity;
-import ru.lod_misis.ithappened.UI.Fragments.DeleteEventDialog;
-import ru.lod_misis.ithappened.UI.ItHappenedApplication;
-import ru.lod_misis.ithappened.UI.Presenters.EventDetailsContract;
 import ru.lod_misis.ithappened.Domain.Models.EventV1;
 import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
 import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
@@ -42,6 +36,11 @@ import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractor;
 import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.Domain.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.Domain.TrackingService;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.UI.Activities.MapActivity.MapActivity;
+import ru.lod_misis.ithappened.UI.Fragments.DeleteEventDialog;
+import ru.lod_misis.ithappened.UI.ItHappenedApplication;
+import ru.lod_misis.ithappened.UI.Presenters.EventDetailsContract;
 
 public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
     @BindView(R.id.editEventButton)
@@ -123,13 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                ArrayList<String> fields = new ArrayList<>();
-                fields.add("2");
-                fields.add(intent.getStringExtra("trackingId"));
-                fields.add(intent.getStringExtra("eventId"));
-                fields.add(lotitude.toString());
-                fields.add(longitude.toString());
-                MapActivity.toMapActivity(activity , fields);
+                MapActivity.toMapActivity(activity);
             }
         });
         deleteEvent.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +133,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         });
     }
 
-   public void okClicked () {
+    public void okClicked () {
         eventDetailsPresenter.okClicked();
 
         YandexMetrica.reportEvent("Пользователь удалил событие");
@@ -316,5 +309,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     private String getAddress (Double latitude , Double longitude) throws IOException {
         Geocoder geocoder = new Geocoder(this , Locale.getDefault());
         return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode , int resultCode , Intent data) {
+        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE )
+            if ( resultCode == RESULT_OK )
+                adress.setText(data.getData().toString());
+        super.onActivityResult(requestCode , resultCode , data);
     }
 }

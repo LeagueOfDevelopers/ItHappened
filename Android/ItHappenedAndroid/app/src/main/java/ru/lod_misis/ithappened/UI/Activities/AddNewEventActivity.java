@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,10 +39,8 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -55,6 +52,12 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.BuildConfig;
+import ru.lod_misis.ithappened.Domain.Models.EventV1;
+import ru.lod_misis.ithappened.Domain.Models.Rating;
+import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
+import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractor;
+import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.UI.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.UI.ItHappenedApplication;
@@ -62,12 +65,6 @@ import ru.lod_misis.ithappened.UI.Presenters.AddNewEventContract;
 import ru.lod_misis.ithappened.UI.background.AllId;
 import ru.lod_misis.ithappened.UI.background.MyGeopositionService;
 import ru.lod_misis.ithappened.UI.background.NotificationJobService;
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Models.Rating;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
-import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractor;
-import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractorImpl;
 
 
 public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AddNewEventContract.AddNewEventView {
@@ -188,10 +185,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 if ( ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
                     addNewEventPresenter.requestPermission(1);
                 }
-                ArrayList<String> fields = new ArrayList<>();
-                fields.add("1");
-                fields.add(trackingId.toString());
-                MapActivity.toMapActivity(activity , fields);
+                MapActivity.toMapActivity(activity);
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
@@ -365,18 +359,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     public void startedConfiguration (UUID trackingId , TrackingV1 trackingV1) {
 
         eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        if ( getIntent().getStringExtra("longitude") != null && getIntent().getStringExtra("latitude") != null ) {
-            try {
-                longitude = Double.valueOf(getIntent().getStringExtra("longitude"));
-                latitude = Double.valueOf(getIntent().getStringExtra("latitude"));
-                String address = getAddress(latitude , longitude);
-                this.address.setText(address);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            this.address.setText(R.string.add_geoposition);
-        }
+        this.address.setText(R.string.add_geoposition);
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
@@ -545,6 +528,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             flagPhoto = true;
 
         }
+        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE )
+            address.setText(data.getStringExtra("location"));
 
     }
 
@@ -611,11 +596,6 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         JobScheduler jobScheduler =
                 ( JobScheduler ) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(jobBuilder.build());
-    }
-
-    private String getAddress (Double latitude , Double longitude) throws IOException {
-        Geocoder geocoder = new Geocoder(this , Locale.getDefault());
-        return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
     }
 }
 

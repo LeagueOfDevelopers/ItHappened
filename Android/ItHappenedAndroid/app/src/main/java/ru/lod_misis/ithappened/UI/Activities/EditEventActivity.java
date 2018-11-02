@@ -32,7 +32,6 @@ import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -42,11 +41,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.UI.Activities.MapActivity.MapActivity;
-import ru.lod_misis.ithappened.UI.Fragments.DatePickerFragment;
-import ru.lod_misis.ithappened.UI.ItHappenedApplication;
-import ru.lod_misis.ithappened.UI.Presenters.EditEventContract;
 import ru.lod_misis.ithappened.Domain.Models.EventV1;
 import ru.lod_misis.ithappened.Domain.Models.Rating;
 import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
@@ -54,6 +48,11 @@ import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
 import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractor;
 import ru.lod_misis.ithappened.Domain.PhotoInteractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.Domain.Statistics.Facts.StringParse;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.UI.Activities.MapActivity.MapActivity;
+import ru.lod_misis.ithappened.UI.Fragments.DatePickerFragment;
+import ru.lod_misis.ithappened.UI.ItHappenedApplication;
+import ru.lod_misis.ithappened.UI.Presenters.EditEventContract;
 
 public class EditEventActivity extends AppCompatActivity implements EditEventContract.EditEventView {
 
@@ -117,7 +116,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TrackingV1 trackingV1;
     EventV1 eventV1;
 
-
     LocationManager locationManager;
     Double latitude = null;
     Double longitude = null;
@@ -160,13 +158,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                ArrayList<String> fields = new ArrayList<>();
-                fields.add("3");
-                fields.add(trackingV1.GetTrackingID().toString());
-                fields.add(eventId.toString());
-                fields.add(eventV1.getLotitude().toString());
-                fields.add(eventV1.getLongitude().toString());
-                MapActivity.toMapActivity(activity , fields);
+                MapActivity.toMapActivity(activity);
             }
         });
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -303,7 +295,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 || photo == TrackingCustomization.Required) ) {
             workWithFIles = new PhotoInteractorImpl(this);
             this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
-       }
+        }
 
     }
 
@@ -401,8 +393,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
     }
 
-
-
     @Override
     protected void onActivityResult (int requestCode , int resultCode , Intent data) {
         super.onActivityResult(requestCode , resultCode , data);
@@ -420,6 +410,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             photoPath = workWithFIles.saveBitmap(data.getData());
             flagPhoto = true;
         }
+        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE )
+            adress.setText(data.getStringExtra("location"));
     }
 
     private void pickCamera () {

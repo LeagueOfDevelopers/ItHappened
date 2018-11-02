@@ -21,8 +21,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
-import ru.lod_misis.ithappened.Data.Retrofit.ItHappenedApi;
 import ru.lod_misis.ithappened.Data.Repositories.ITrackingRepository;
+import ru.lod_misis.ithappened.Data.Retrofit.ItHappenedApi;
 import ru.lod_misis.ithappened.UI.background.MyGeopositionService;
 import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
 import ru.lod_misis.ithappened.di.components.MainComponent;
@@ -39,47 +39,54 @@ public class ItHappenedApplication extends Application {
     private static ItHappenedApplication mInstance;
     private final String API_KEY = "18db6cc1-8c43-408e-8298-a8f3b04bb595";
     boolean isFirts = false;
+    @Inject
+    ITrackingRepository repository;
     private Retrofit retrofit;
 
-    public static synchronized ItHappenedApplication getInstance() {
+    public static synchronized ItHappenedApplication getInstance () {
         return mInstance;
     }
 
-    @Inject
-    ITrackingRepository repository;
+    public static MainComponent getAppComponent () {
+        return appComponent;
+    }
 
-    public String getAPI_KEY() {
+    public static ItHappenedApi getApi () {
+        return itHappenedApi;
+    }
+
+    public String getAPI_KEY () {
         return API_KEY;
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate () {
         super.onCreate();
         mInstance = this;
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            stopService(new Intent(this, MyGeopositionService.class));
+        if ( ActivityCompat.checkSelfPermission(getApplicationContext() , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext() , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            stopService(new Intent(this , MyGeopositionService.class));
         } else {
-            stopService(new Intent(this, MyGeopositionService.class));
-            startService(new Intent(this, MyGeopositionService.class));
+            stopService(new Intent(this , MyGeopositionService.class));
+            startService(new Intent(this , MyGeopositionService.class));
         }
         appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
         appComponent.inject(this);
         repository.configureRealm();
         YandexMetricaConfig.Builder metrikaBuilder = YandexMetricaConfig.newConfigBuilder(API_KEY);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-        String lastId = sharedPreferences.getString("lastId", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE);
+        String lastId = sharedPreferences.getString("lastId" , "");
 
-        if (lastId.isEmpty()) {
+        if ( lastId.isEmpty() ) {
             isFirts = true;
         }
 
-        if (!isFirts) {
+        if ( !isFirts ) {
             metrikaBuilder.handleFirstActivationAsUpdate(true);
         }
         YandexMetricaConfig extendedConfig = metrikaBuilder.build();
 
-        YandexMetrica.activate(getApplicationContext(), extendedConfig);
+        YandexMetrica.activate(getApplicationContext() , extendedConfig);
 
         YandexMetrica.enableActivityAutoTracking(this);
 
@@ -104,15 +111,7 @@ public class ItHappenedApplication extends Application {
 
     }
 
-    public void setConnectionListener(ConnectionReciver.ConnectionReciverListener listener) {
+    public void setConnectionListener (ConnectionReciver.ConnectionReciverListener listener) {
         ConnectionReciver.connectionReciverListener = listener;
-    }
-
-    public static MainComponent getAppComponent() {
-        return appComponent;
-    }
-
-    public static ItHappenedApi getApi() {
-        return itHappenedApi;
     }
 }

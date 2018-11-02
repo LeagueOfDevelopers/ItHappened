@@ -1,8 +1,8 @@
 package ru.lod_misis.ithappened.UI.Activities.MapActivity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.location.LocationManager;
+import android.content.Intent;
+import android.location.Geocoder;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -12,56 +12,68 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.Locale;
+
 public abstract class CommonMethodForMapAlgorithm {
     GoogleMap map;
     LatLng location;
     Marker marker;
 
-    public void commonAbstractMethodForMap(GoogleMap googleMap) {
+    public void commonAbstractMethodForMap (GoogleMap googleMap) {
         this.map = googleMap;
         location = initStartedLocation();
         initMap();
-        if (isAddGeopositionOrNot())
+        if ( isAddGeopositionOrNot() )
             setAllListenersIfNeedIt();
     }
 
-    abstract public LatLng initStartedLocation();
+    abstract public LatLng initStartedLocation ();
 
-    public void setAllListenersIfNeedIt() {
+    public void setAllListenersIfNeedIt () {
         marker.setDraggable(true);
         map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
-            public void onMarkerDragStart(Marker marker) {
+            public void onMarkerDragStart (Marker marker) {
 
             }
 
             @Override
-            public void onMarkerDrag(Marker marker) {
+            public void onMarkerDrag (Marker marker) {
 
             }
 
             @Override
-            public void onMarkerDragEnd(Marker marker) {
-                location = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+            public void onMarkerDragEnd (Marker marker) {
+                location = new LatLng(marker.getPosition().latitude , marker.getPosition().longitude);
             }
         });
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                if (marker == null) {
+            public void onMapClick (LatLng latLng) {
+                if ( marker == null ) {
                     marker = map.addMarker(new MarkerOptions().position(latLng));
                     marker.setDraggable(true);
                 } else {
                     marker.setPosition(latLng);
                 }
-                location = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+                location = new LatLng(marker.getPosition().latitude , marker.getPosition().longitude);
             }
         });
     }
 
-    ;
+    public void returnData (Activity activity) {
+        try {
+            Intent data = new Intent();
+            data.putExtra("location" , getAddress(location , activity));
+            activity.setResult(Activity.RESULT_OK , data);
+            activity.finish();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    private void initMap() {
+    private void initMap () {
         CameraUpdate cameraUpdate;
         map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         marker = map.addMarker(new MarkerOptions().position(location));
@@ -75,11 +87,16 @@ public abstract class CommonMethodForMapAlgorithm {
         map.moveCamera(cameraUpdate);
     }
 
-    public Boolean isAddGeopositionOrNot() {
+    public Boolean isAddGeopositionOrNot () {
         return true;
     }
 
-    public LatLng getLocation() {
+    public LatLng getLocation () {
         return location;
+    }
+
+    private String getAddress (LatLng location , Activity activity) throws IOException {
+        Geocoder geocoder = new Geocoder(activity , Locale.getDefault());
+        return geocoder.getFromLocation(location.latitude , location.longitude , 1).get(0).getAddressLine(0);
     }
 }
