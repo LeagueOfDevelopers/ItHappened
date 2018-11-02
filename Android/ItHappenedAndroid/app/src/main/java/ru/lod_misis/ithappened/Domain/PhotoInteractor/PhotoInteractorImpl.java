@@ -13,32 +13,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Domain/PhotoInteractor/PhotoInteractorImpl.java
-public class PhotoInteractorImpl implements PhotoInteractor {
-=======
-
 import javax.inject.Inject;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
-public class WorkWithFiles implements IWorkWithFIles {
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/WorkWithFiles/WorkWithFiles.java
+public class PhotoInteractorImpl implements PhotoInteractor {
     final int TYPE_PHOTO = 1;
     final int TYPE_VIDEO = 2;
     Context context;
     String uriPhotoFromCamera;
 
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Domain/PhotoInteractor/PhotoInteractorImpl.java
-    public PhotoInteractorImpl (Context context) {
-        this.context = context;
-=======
+
     @Inject
-    public WorkWithFiles(Application application, Context context){
-        this.application=application;
+    public PhotoInteractorImpl( Context context){
         this.context=context;
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/WorkWithFiles/WorkWithFiles.java
     }
 
     @Override

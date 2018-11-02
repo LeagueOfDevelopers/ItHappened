@@ -14,22 +14,13 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Fragments/DeleteEventFromFragmentDialog.java
+import ru.lod_misis.ithappened.Data.Repositories.ITrackingRepository;
 import ru.lod_misis.ithappened.Domain.TrackingService;
 import ru.lod_misis.ithappened.Domain.Models.EventV1;
 import ru.lod_misis.ithappened.Data.Repositories.InMemoryFactRepository;
 import ru.lod_misis.ithappened.UI.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.UI.ItHappenedApplication;
 import ru.lod_misis.ithappened.Domain.Statistics.Facts.Fact;
-=======
-import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
-import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Fragments/DeleteEventFromFragmentDialog.java
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;

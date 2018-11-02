@@ -23,15 +23,12 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Recyclers/EventsAdapter.java
+import ru.lod_misis.ithappened.Data.Repositories.ITrackingRepository;
 import ru.lod_misis.ithappened.Domain.Models.EventV1;
-=======
-import ru.lod_misis.ithappened.Activities.EventDetailsActivity;
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Recyclers/EventsAdapter.java
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
+import ru.lod_misis.ithappened.UI.Activities.EventDetailsActivity;
+
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
     ITrackingRepository trackingRepository;

@@ -25,25 +25,15 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditTrackingActivity.java
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
 import ru.lod_misis.ithappened.Data.Repositories.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Data.Repositories.StaticFactRepository;
-import ru.lod_misis.ithappened.UI.Presenters.EditTrackingContract;
-import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Statistics.FactCalculator;
-import ru.lod_misis.ithappened.UI.ItHappenedApplication;
-=======
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
-import ru.lod_misis.ithappened.Presenters.EditTrackingContract;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.Statistics.FactCalculator;
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditTrackingActivity.java
+import ru.lod_misis.ithappened.UI.ItHappenedApplication;
+import ru.lod_misis.ithappened.UI.Presenters.EditTrackingContract;
+
 
 public class EditTrackingActivity extends AppCompatActivity implements EditTrackingContract.EditTrackingView {
 

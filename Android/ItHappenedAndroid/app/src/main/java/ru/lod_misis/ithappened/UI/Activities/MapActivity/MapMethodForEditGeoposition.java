@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened.Activities.MapActivity;
+package ru.lod_misis.ithappened.UI.Activities.MapActivity;
 
 import com.google.android.gms.maps.model.LatLng;
 

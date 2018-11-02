@@ -372,12 +372,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
 
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Fragments/EventsFragment.java
-      /*  eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
-=======
+
         /*Это надо полюбому переделать!
         eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Fragments/EventsFragment.java
+
             @Override
             protected void loadMoreItems() {
                 isScrolling = true;

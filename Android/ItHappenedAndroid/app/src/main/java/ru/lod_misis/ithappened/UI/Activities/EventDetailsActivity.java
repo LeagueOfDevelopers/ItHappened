@@ -85,12 +85,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     Double lotitude;
     Double longitude;
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
     PhotoInteractor workWithFIles;
-
-=======
-    IWorkWithFIles workWithFIles;
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
     TrackingV1 thisTrackingV1;
     EventV1 thisEventV1;
     Date thisDate;
@@ -117,16 +112,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         eventDetailsPresenter.attachView(this ,
                 UUID.fromString(getIntent().getStringExtra("trackingId")) ,
                 UUID.fromString(getIntent().getStringExtra("eventId")));
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
 
-    }
-
-    @Override
-    protected void onStart () {
-        super.onStart();
-=======
         eventDetailsPresenter.init();
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -153,11 +140,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         });
     }
 
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
-=======
-
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
-    public void okClicked () {
+   public void okClicked () {
         eventDetailsPresenter.okClicked();
 
         YandexMetrica.reportEvent("Пользователь удалил событие");
@@ -203,13 +186,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void startConfigurationView () {
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
-        supportMapFragment = ( SupportMapFragment ) getSupportFragmentManager().findFragmentById(R.id.map);
         showOrNotNullCard();
-
-=======
-        showOrNotNullCard();
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
         if ( thisEventV1.GetRating() != null ) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
@@ -260,36 +237,12 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 e.printStackTrace();
             }
 
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
-
-            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady (GoogleMap googleMap) {
-                    CameraUpdate cameraUpdate;
-                    map = googleMap;
-                    map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude , longitude)));
-                    cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition.Builder()
-                                    .target(new LatLng(lotitude , longitude))
-                                    .zoom(15)
-                                    .build()
-                    );
-                    map.moveCamera(cameraUpdate);
-                }
-            });
-=======
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
         } else {
             adress.setVisibility(View.GONE);
             geoposition_title.setVisibility(View.GONE);
         }
         if ( thisEventV1.getPhoto() != null ) {
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EventDetailsActivity.java
             workWithFIles = new PhotoInteractorImpl(this);
-=======
-            workWithFIles = new WorkWithFiles(getApplication() , this);
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EventDetailsActivity.java
             photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
             nullsCard.setVisibility(View.GONE);
 

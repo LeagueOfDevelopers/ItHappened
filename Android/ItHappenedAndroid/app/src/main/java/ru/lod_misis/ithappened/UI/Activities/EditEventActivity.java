@@ -42,17 +42,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-=======
-import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Fragments.DatePickerFragment;
-import ru.lod_misis.ithappened.Presenters.EditEventContract;
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.UI.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.UI.Fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.UI.ItHappenedApplication;
 import ru.lod_misis.ithappened.UI.Presenters.EditEventContract;
@@ -155,12 +146,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
         locationManager = ( LocationManager ) getSystemService(LOCATION_SERVICE);
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-        supportMapFragment = ( SupportMapFragment ) getSupportFragmentManager().findFragmentById(R.id.map);
-
-=======
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
-
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
 
@@ -170,8 +155,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateControl);
                 picker.show(fragmentManager , "from");
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-=======
             }
         });
         adress.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +167,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 fields.add(eventV1.getLotitude().toString());
                 fields.add(eventV1.getLongitude().toString());
                 MapActivity.toMapActivity(activity , fields);
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
             }
         });
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -196,11 +178,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
                 workWithFIles = new PhotoInteractorImpl(context);
-=======
-                workWithFIles = new WorkWithFiles(getApplication() , context);
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
                 dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
                 dialog.setItems(new String[]{"Галлерея" , "Фото"} , new DialogInterface.OnClickListener() {
@@ -258,16 +236,12 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                                String commentValue ,
                                Double scaleValue ,
                                Rating ratingValue ,
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-                               String scaleName) {
-=======
                                Double longitude ,
                                Double latitude ,
                                String photoPath ,
                                String title ,
                                String scaleName) {
         initToolbar(title);
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
 
         commentState = calculateState(comment);
         ratingState = calculateState(rating);
@@ -288,23 +262,16 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         dateControl.setText(format.format(date));
 
         if ( scale != TrackingCustomization.None && scaleName != null ) {
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-            scaleType.setText(trackingV1.getScaleName());
-=======
+
             scaleType.setText(scaleName);
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
         }
 
         if ( (scale == TrackingCustomization.Optional
                 || scale == TrackingCustomization.Required) && scaleValue != null ) {
             scaleControl.setText(StringParse.parseDouble(scaleValue));
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-            if ( trackingV1.getScaleName() != null ) {
-                if ( trackingV1.getScaleName().length() >= 3 ) {
-=======
+
             if ( scaleName != null ) {
                 if ( scaleName.length() >= 3 ) {
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
                     scaleType.setText(scaleName.substring(0 , 2));
                 } else {
                     scaleType.setText(scaleName);
@@ -321,11 +288,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 || comment == TrackingCustomization.Required) && commentValue != null ) {
             commentControl.setText(commentValue);
         }
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-        if ( (geoposition == TrackingCustomization.Optional
-                || geoposition == TrackingCustomization.Required) ) {
-            mapInit();
-=======
 
         if ( (geoposition == TrackingCustomization.Optional
                 || geoposition == TrackingCustomization.Required) ) {
@@ -339,10 +301,9 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
         if ( (photo == TrackingCustomization.Optional
                 || photo == TrackingCustomization.Required) ) {
-            workWithFIles = new WorkWithFiles(getApplication() , this);
+            workWithFIles = new PhotoInteractorImpl(this);
             this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
-        }
+       }
 
     }
 
@@ -440,76 +401,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
     }
 
-<<<<<<< HEAD:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/UI/Activities/EditEventActivity.java
-    private void mapInit () {
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady (GoogleMap googleMap) {
-                map = googleMap;
-                map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                if ( eventV1.getLotitude() != null && eventV1.getLongitude() != null ) {
-                    marker = map.addMarker(new MarkerOptions().position(new LatLng(eventV1.getLotitude() , eventV1.getLongitude())));
-                    moveCamera(eventV1.getLotitude() , eventV1.getLongitude());
-                } else {
-                    if ( ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    marker = map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude() , location.getLongitude())));
-                    moveCamera(location.getLatitude() , location.getLongitude());
 
-                }
-                marker.setDraggable(true);
-
-
-                map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart (Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDrag (Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDragEnd (Marker marker) {
-                        latitude = marker.getPosition().latitude;
-                        longitude = marker.getPosition().longitude;
-                    }
-                });
-                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick (LatLng latLng) {
-                        marker.setPosition(latLng);
-                        latitude = latLng.latitude;
-                        longitude = latLng.longitude;
-                    }
-                });
-            }
-        });
-    }
-
-    private void moveCamera (Double latitude , Double longitude) {
-        CameraUpdate cameraUpdate;
-        cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                new CameraPosition.Builder()
-                        .target(new LatLng(latitude , longitude))
-                        .zoom(8)
-                        .build()
-        );
-        map.moveCamera(cameraUpdate);
-    }
-=======
->>>>>>> fix_old_problems_branch:Android/ItHappenedAndroid/app/src/main/java/ru/lod_misis/ithappened/Activities/EditEventActivity.java
 
     @Override
     protected void onActivityResult (int requestCode , int resultCode , Intent data) {
