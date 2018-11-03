@@ -1,20 +1,14 @@
 package ru.lod_misis.ithappened;
 
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import io.realm.RealmList;
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCountFact;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
+import ru.lod_misis.ithappened.Domain.Models.EventV1;
+import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
 
 public class DayWithLargestEventCountFactUnitTest {
 

@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
+import ru.lod_misis.ithappened.Domain.Models.EventV1;
+import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
+import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.AllEventsCountFact;
 
 /**
  * Created by Пользователь on 15.03.2018.

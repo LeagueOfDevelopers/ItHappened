@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Presenters.ProfileSettingsFragmentContract;
-import ru.lod_misis.ithappened.Presenters.ProfileSettingsFragmentPresenterImpl;
+import ru.lod_misis.ithappened.UI.Presenters.ProfileSettingsFragmentContract;
+import ru.lod_misis.ithappened.UI.Presenters.ProfileSettingsFragmentPresenterImpl;
 
 @Module(includes = MainModule.class)
 public class ProfileSettingsModule {

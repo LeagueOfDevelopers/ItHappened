@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,80 +15,77 @@
             android:layout_margin="@dimen/outer_margin">
 
             <LinearLayout
+                android:id="@+id/commentEventContainerEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/commentEventContainerEdit"
-                android:paddingBottom="@dimen/padding_up_down_for_cards"
-                >
+                android:paddingBottom="@dimen/padding_up_down_for_cards">
 
                 <TextView
+                    android:id="@+id/commentAccessEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/commentAccessEdit"
-                    android:text = "Комментарий"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                    />
+                    android:text="Комментарий"
+                    android:textSize="16sp" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-
                     android:layout_below="@id/commentAccessEdit"
-                    app:cardUseCompatPadding="true"
+
                     android:layout_marginTop="5dp"
-                    app:cardBackgroundColor="#ffffff">
+                    android:minHeight="40dp"
+                    app:cardBackgroundColor="#ffffff"
+                    app:cardUseCompatPadding="true">
 
                     <EditText
                         android:id="@+id/eventCommentControlEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="40dp"
-                        android:textSize="16sp"
                         android:background="@drawable/custom_edit_text"
                         android:hint="Ваш комментарий"
-                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:minHeight="40dp"
                         android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                         android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                        android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
+                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                        android:textSize="16sp" />
                 </android.support.v7.widget.CardView>
             </LinearLayout>
 
 
             <LinearLayout
-                android:layout_below="@id/commentEventContainerEdit"
+                android:id="@+id/scaleEventContainerEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/commentEventContainerEdit"
                 android:orientation="vertical"
-                android:id="@+id/scaleEventContainerEdit"
                 android:paddingBottom="@dimen/padding_up_down_for_cards">
 
                 <TextView
+                    android:id="@+id/scaleAccessEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text = "Количество"
-                    android:id="@+id/scaleAccessEdit"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                    />
+                    android:text="Количество"
+                    android:textSize="16sp" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    app:cardUseCompatPadding="true"
                     android:layout_marginTop="@dimen/inner_margin_between_components"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
-                    android:paddingBottom="10dp">
+                    android:minHeight="40dp"
+                    android:paddingBottom="10dp"
+                    app:cardUseCompatPadding="true">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -101,24 +97,24 @@
                             android:layout_height="40dp"
                             android:background="@drawable/custom_edit_text"
                             android:hint="1000"
-                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
                             android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                             android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
                             android:paddingBottom="@dimen/padding_up_and_down_for_texts" />
 
                         <TextView
+                            android:id="@+id/scaleTypeAccessEdit"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                           android:gravity="center_vertical"
-                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                            android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                            android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                            android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                            android:minHeight="40dp"
-                            android:id="@+id/scaleTypeAccessEdit"
                             android:layout_toRightOf="@id/eventScaleControlEdit"
                             android:background="@drawable/custom_edit_text"
+                            android:gravity="center_vertical"
+                            android:minHeight="40dp"
+                            android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                            android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                            android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                             android:text="Шкала"
                             android:textSize="16sp" />
                     </RelativeLayout>
@@ -127,34 +123,34 @@
 
 
             <LinearLayout
+                android:id="@+id/ratingEventContainerEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/scaleEventContainerEdit"
-                android:id="@+id/ratingEventContainerEdit"
+                android:orientation="vertical"
                 android:paddingBottom="@dimen/padding_up_down_for_cards">
 
                 <TextView
+                    android:id="@+id/ratingAccessEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text = "Рейтинг"
-                    android:id="@+id/ratingAccessEdit"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:text="Рейтинг"
+                    android:textSize="16sp" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    app:cardUseCompatPadding="true"
                     android:layout_marginTop="@dimen/inner_margin_between_components"
                     android:background="#FFFFFF"
                     android:elevation="40dp"
+                    android:minHeight="40dp"
                     android:paddingBottom="@dimen/padding_up_down_for_cards"
-                    app:cardBackgroundColor="#ffffff">
+                    app:cardBackgroundColor="#ffffff"
+                    app:cardUseCompatPadding="true">
 
 
                     <RatingBar
@@ -172,90 +168,93 @@
 
 
             <LinearLayout
+                android:id="@+id/dateEventContainerEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/ratingEventContainerEdit"
-                android:id="@+id/dateEventContainerEdit"
+                android:orientation="vertical"
                 android:paddingBottom="@dimen/padding_up_down_for_cards">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text = "Дата"
-                    android:textSize="16sp"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"/>
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:text="Дата"
+                    android:textSize="16sp" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    app:cardUseCompatPadding="true"
                     android:layout_marginTop="@dimen/inner_margin_between_components"
                     android:background="@drawable/custom_edit_text"
                     android:elevation="40dp"
-                    android:paddingBottom="@dimen/padding_up_down_for_cards">
+                    android:minHeight="40dp"
+                    android:paddingBottom="@dimen/padding_up_down_for_cards"
+                    app:cardUseCompatPadding="true">
 
                     <Button
                         android:id="@+id/eventDateControlEdit"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:background="@drawable/custom_edit_text"
                         android:text="Дата"
                         android:textAlignment="inherit"
-                        android:textColor="#a9a9a9"
-                        android:background="@drawable/custom_edit_text" />
+                        android:textColor="#a9a9a9" />
                 </android.support.v7.widget.CardView>
             </LinearLayout>
+
             <LinearLayout
+                android:id="@+id/geopositionEventContainerEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/dateEventContainerEdit"
-                android:id="@+id/geopositionEventContainerEdit"
-                android:paddingTop="@dimen/inner_margin_between_components"
-                android:layout_marginTop="@dimen/inner_margin_between_components">
+                android:layout_marginTop="@dimen/inner_margin_between_components"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/inner_margin_between_components">
 
                 <TextView
                     android:id="@+id/geopositionAccess"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     android:text="Геопозиция"
                     android:textSize="16sp" />
 
-                <fragment
-                    android:id="@+id/map"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"
-                    android:layout_marginTop="@dimen/inner_margin_between_components"
+                <TextView
+                    android:id="@+id/adress"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/inner_margin_between_components"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="@string/add_geoposition"
+                    android:textSize="@dimen/text_size" />
 
             </LinearLayout>
+
             <LinearLayout
+                android:id="@+id/photoEventContainerEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/geopositionEventContainerEdit"
-                android:id="@+id/photoEventContainerEdit"
-                android:paddingTop="@dimen/inner_margin_between_components"
                 android:layout_marginTop="@dimen/inner_margin_between_components"
-                >
+                android:orientation="vertical"
+                android:paddingTop="@dimen/inner_margin_between_components">
 
                 <TextView
                     android:id="@+id/photoAccessEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
                     android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
                     android:text="Фотография"
                     android:textSize="16sp" />
 
@@ -264,22 +263,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_add_a_photo_black_24dp"/>
+                    android:layout_marginBottom="@dimen/outer_margin"
+                    android:src="@drawable/ic_add_a_photo_black_24dp" />
 
                 <ProgressBar
                     android:id="@+id/progressBarForPhotoEdit"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
-                    android:visibility="gone">
-                </ProgressBar>
+                    android:visibility="gone"></ProgressBar>
             </LinearLayout>
-
-
 
 
         </RelativeLayout>
     </ScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

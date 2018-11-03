@@ -4,13 +4,12 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Date;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongestBreakFact;
+import ru.lod_misis.ithappened.Domain.Models.EventV1;
+import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
+import ru.lod_misis.ithappened.Domain.Statistics.Facts.OneTrackingStatistcs.LongestBreakFact;
 
 public class LongestBreakFactUnitTest {
 
