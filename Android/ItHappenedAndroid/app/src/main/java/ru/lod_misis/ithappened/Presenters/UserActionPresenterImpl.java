@@ -8,9 +8,10 @@ import android.util.Log;
 import com.google.android.gms.common.AccountPicker;
 import com.yandex.metrica.YandexMetrica;
 
-import java.sql.Date;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.Activities.UserActionsActivity;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
@@ -19,9 +20,7 @@ import ru.lod_misis.ithappened.Models.RefreshModel;
 import ru.lod_misis.ithappened.Models.RegistrationResponse;
 import ru.lod_misis.ithappened.Models.SynchronizationRequest;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -34,8 +33,8 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     ITrackingRepository repository;
     boolean isTokenFailed = false;
 
-    public UserActionPresenterImpl(UserActionContract.UserActionView userActionView,
-                                   Context context,
+    @Inject
+    public UserActionPresenterImpl(Context context,
                                    SharedPreferences sharedPreferences,
                                    ITrackingRepository repository) {
         this.userActionView = userActionView;
@@ -58,6 +57,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
         Log.e(TAG, "Токен получен");
 
+        //TODO выпилить
         ItHappenedApplication.getApi().SignUp(idToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -77,8 +77,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                                    editor.commit();
 
                                    if (!lastId.equals(sharedPreferences.getString("UserId", ""))) {
-                                       StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-                                       repository = StaticInMemoryRepository.getInstance();
+                                       repository.setUserId(sharedPreferences.getString("UserId", ""));
                                    }
 
                                    SynchronizationRequest synchronizationRequest = new SynchronizationRequest(registrationResponse.getUserNickname(),
@@ -131,15 +130,11 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
     }
 
     @Override
-    public void onDestroy() {
-        userActionView = null;
-    }
-
-    @Override
     public void syncronization() {
 
         userActionView.startMenuAnimation();
 
+        //TODO выпилить
         ItHappenedApplication.getApi()
                 .Refresh(sharedPreferences.getString("refreshToken", ""))
                 .subscribeOn(Schedulers.io())
@@ -154,7 +149,7 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
 
                                    final SynchronizationRequest synchronizationRequest = new SynchronizationRequest(sharedPreferences.getString("Nick", ""),
                                            new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
-                                           StaticInMemoryRepository.getInstance().GetTrackingCollection());
+                                           repository.GetTrackingCollection());
 
                                    ItHappenedApplication.
                                            getApi().
@@ -196,9 +191,9 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                             }
                         });
 
-        /*final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("kennytmb.3run@gmail.com",
+        final SynchronizationRequest synchronizationRequest = new SynchronizationRequest("kennytmb.3run@gmail.com",
                 new java.util.Date(sharedPreferences.getLong("NickDate", 0)),
-                StaticInMemoryRepository.getInstance().GetTrackingCollection());
+                repository.GetTrackingCollection());
 
         ItHappenedApplication
                 .getApi().
@@ -210,7 +205,17 @@ public class UserActionPresenterImpl implements UserActionContract.UserActionPre
                     public void call(SynchronizationRequest synchronizationRequest) {
 
                     }
-                });*/
+                });
+    }
+
+    @Override
+    public void attachView(UserActionContract.UserActionView view) {
+        userActionView = view;
+    }
+
+    @Override
+    public void dettachView() {
+        userActionView = null;
     }
 
     @Override

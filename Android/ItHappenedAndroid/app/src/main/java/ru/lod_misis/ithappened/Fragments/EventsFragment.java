@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -40,6 +38,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.Comparison;
 import ru.lod_misis.ithappened.Domain.EventV1;
@@ -47,17 +47,17 @@ import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventsHistoryContract;
-import ru.lod_misis.ithappened.Presenters.EventsHistoryPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.Recyclers.PagonationScrollListener;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
 
     RecyclerView eventsRecycler;
     EventsAdapter eventsAdpt;
 
+    @Inject
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
 
     List<EventV1> eventsForAdapter = new ArrayList<>();
@@ -93,6 +93,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     CardView trackingsPickerBtn;
+    @Inject
     TrackingService trackingService;
     TextView hintForEventsHistory;
     TextView hintForSpinner;
@@ -103,7 +104,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     TextView trackingsPickerText;
     ProgressBar progressBar;
 
-
+    @Inject
     ITrackingRepository collection;
     private LinearLayoutManager manager;
     private boolean isFilteredCancel = false;
@@ -124,6 +125,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
+
+        ItHappenedApplication.getAppComponent().inject(this);
 
         dateFrom = (Button) view.findViewById(R.id.dateFromButton);
         dateTo = (Button) view.findViewById(R.id.dateToButton);
@@ -149,18 +152,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
-        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-
-        if (sharedPreferences.getString("LastId", "").isEmpty()) {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("UserId", ""));
-            collection = StaticInMemoryRepository.getInstance();
-        } else {
-            StaticInMemoryRepository.setUserId(sharedPreferences.getString("LastId", ""));
-            collection = StaticInMemoryRepository.getInstance();
-        }
-        trackingService = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
-        eventsHistoryPresenter = new EventsHistoryPresenterImpl(collection, trackingService, getActivity(), this);
-
+        eventsHistoryPresenter.onViewAttach(this);
         eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
                 dateF,
                 dateT,
@@ -310,7 +302,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             });
         } else {
             trackingsPickerText.setText("Отслеживания отсутствуют");
-            //hintForSpinner.setVisibility(View.VISIBLE);
+            hintForSpinner.setVisibility(View.VISIBLE);
         }
 
 
@@ -381,6 +373,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
 
 
+        /*Это надо полюбому переделать!
         eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
             @Override
             protected void loadMoreItems() {
@@ -417,7 +410,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             public boolean isLastPage() {
                 return isLastPage;
             }
-        });
+        });*/
 
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -485,10 +478,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         if (eventsForAdapter.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1,collection);
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1);
+            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1,collection);
             eventsAdpt.notifyDataSetChanged();
         }
         if (eventsAdpt != null) {
@@ -504,7 +497,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             if (refreshedEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1,collection));
         }
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -513,21 +506,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     @Override
     public void onResume() {
         super.onResume();
-        if (eventsAdpt != null) {
-            List<EventV1> adapterEvents = eventsAdpt.getEventV1s();
-            ArrayList<EventV1> refreshedEvents = new ArrayList<>();
-            if (adapterEvents != null)
-                for (EventV1 event : adapterEvents) {
-                    collection.GetTracking(event.GetTrackingId());
-                    EventV1 addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
-                    if (!addAbleEvent.GetStatus())
-                        refreshedEvents.add(addAbleEvent);
-                }
-            if (refreshedEvents.size() == 0) {
-                hintForEventsHistory.setVisibility(View.VISIBLE);
-            }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1));
-        }
+
     }
 
 

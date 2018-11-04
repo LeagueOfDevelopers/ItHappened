@@ -15,10 +15,10 @@
     <string name="synchronisation">Синхронизация</string>
 
     <string-array name="toggle_array">
-    <item>Обязательно</item>
-    <item>Необязательно</item>
-    <item>Не выбрано</item>
-</string-array>
+        <item>Обязательно</item>
+        <item>Необязательно</item>
+        <item>Не выбрано</item>
+    </string-array>
 
     <string name="hint_for_addnewtracking_button">Your title</string>
     <string name="metrica_add_event">Пользователь добавил событие</string>
@@ -68,5 +68,9 @@
     <string name="metrica_user_returns_to_application_after_day">Пользователь вернулся в приложение спустя день</string>
     <string name="metrica_user_returns_to_application_after_week">Пользователь вернулся в приложение спустя неделю</string>
     <string name="metrica_user_returns_to_application_after_month">Пользователь вернулся в приложение спустя месяц</string>
+    <string name="metrica_user_use_address_button">Пользователь использовал просмотр адреса</string>
+    <string name="metrica_user_add_address_to_event">Пользователь добавил координаты к эвенту</string>
     <string name="title_dialog_for_photo">Загрузить фотографию</string>
+    <string name="confirm_add_geoposition">Подтвердить</string>
+    <string name="add_geoposition">Добавить геометку</string>
 </resources>

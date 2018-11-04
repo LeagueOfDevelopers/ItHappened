@@ -1,7 +1,8 @@
 package ru.lod_misis.ithappened.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -15,19 +16,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.yandex.metrica.YandexMetrica;
 
 import org.joda.time.DateTime;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -35,17 +30,19 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
+import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Fragments.DeleteEventDialog;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Presenters.EventDetailsContract;
-import ru.lod_misis.ithappened.Presenters.EventDetailsPresenterImpl;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.StaticInMemoryRepository;
+import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
@@ -79,13 +76,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     TextView dateValue;
     @BindView(R.id.dateValueNulls)
     TextView dateValueNulls;
+    @BindView(R.id.adress)
+    TextView adress;
     @BindView(R.id.ratingValue)
     RatingBar ratingValue;
 
     @BindView(R.id.geoposition_title)
     TextView geoposition_title;
-    SupportMapFragment supportMapFragment;
-    GoogleMap map;
 
     @BindView(R.id.photo_title)
     TextView photo_title;
@@ -95,13 +92,10 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     Double lotitude;
     Double longitude;
     IWorkWithFIles workWithFIles;
-
     TrackingV1 thisTrackingV1;
     EventV1 thisEventV1;
     Date thisDate;
     SimpleDateFormat format;
-
-    SharedPreferences sharedPreferences;
 
     Intent intent;
 
@@ -109,44 +103,55 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
     private DateTime UserOpenAnActivityDateTime;
 
+    Activity activity;
+    @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
         intent = getIntent();
         ButterKnife.bind(this);
+        activity = this;
+
+        ItHappenedApplication.getAppComponent().inject(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
-        sharedPreferences = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE);
 
-        StaticInMemoryRepository.setInstance(getApplicationContext(), sharedPreferences.getString("UserId", ""));
-
-        eventDetailsPresenter = new EventDetailsPresenterImpl(sharedPreferences,intent);
-        eventDetailsPresenter.attachView(this);
+        eventDetailsPresenter.attachView(this ,
+                UUID.fromString(getIntent().getStringExtra("trackingId")) ,
+                UUID.fromString(getIntent().getStringExtra("eventId")));
         eventDetailsPresenter.init();
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 eventDetailsPresenter.editEvent();
             }
         });
-
+        adress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                YandexMetrica.reportEvent(getString(R.string.metrica_user_use_address_button));
+                ArrayList<String> fields = new ArrayList<>();
+                fields.add("2");
+                fields.add(intent.getStringExtra("trackingId"));
+                fields.add(intent.getStringExtra("eventId"));
+                fields.add(lotitude.toString());
+                fields.add(longitude.toString());
+                MapActivity.toMapActivity(activity , fields);
+            }
+        });
         deleteEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 eventDetailsPresenter.deleteEvent();
             }
         });
     }
 
-    public void okClicked() {
+
+    public void okClicked () {
         eventDetailsPresenter.okClicked();
         YandexMetrica.reportEvent("Пользователь удалил событие");
     }
@@ -163,15 +168,15 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
     }
 
-    public void cancelClicked() {
+
+    public void cancelClicked () {
         eventDetailsPresenter.canselClicked();
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause () {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_details));
         Map<String, Object> activityVisitTimeBorders = new HashMap<>();
@@ -187,8 +192,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch ( item.getItemId() ) {
             case android.R.id.home:
                 this.finish();
                 android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -200,151 +205,142 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     }
 
     @Override
-    protected void onRestart() {
+    protected void onRestart () {
         super.onRestart();
         recreate();
     }
 
     @Override
-    public void startConfigurationView() {
-        supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+    public void startConfigurationView () {
         showOrNotNullCard();
-
-        if(thisEventV1.GetRating()!=null) {
+        if ( thisEventV1.GetRating() != null ) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
-        }else {
+            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+        } else {
             ratingValue.setVisibility(View.GONE);
         }
         dateValue.setText(format.format(thisDate));
 
-        if(thisEventV1.GetRating()!=null) {
+        if ( thisEventV1.GetRating() != null ) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating()/2.0f);
-        }else {
+            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+        } else {
             ratingValue.setVisibility(View.GONE);
         }
 
-        if(thisEventV1.GetComment()!=null) {
+        if ( thisEventV1.GetComment() != null ) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             commentValue.setVisibility(View.VISIBLE);
             commentValue.setText(thisEventV1.GetComment());
-        }else {
+        } else {
             commentValue.setVisibility(View.GONE);
             commentHint.setVisibility(View.GONE);
         }
 
-        if(thisEventV1.GetScale()!=null) {
+        if ( thisEventV1.GetScale() != null ) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue())+" "+ thisTrackingV1.getScaleName());
-        }else {
+            scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue()) + " " + thisTrackingV1.getScaleName());
+        } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);
         }
-        if(thisEventV1.getLongitude()!=null &&thisEventV1.getLotitude()!=null){
+        if ( thisEventV1.getLongitude() != null && thisEventV1.getLotitude() != null ) {
 
-            this.lotitude=thisEventV1.getLotitude();
-            this.longitude=thisEventV1.getLongitude();
+            this.lotitude = thisEventV1.getLotitude();
+            this.longitude = thisEventV1.getLongitude();
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
+            try {
+                adress.setText(getAddress(this.lotitude , this.longitude));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-
-            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    CameraUpdate cameraUpdate;
-                    map=googleMap;
-                    map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                    map.addMarker(new MarkerOptions().position(new LatLng(lotitude,longitude)));
-                    cameraUpdate= CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition.Builder()
-                                    .target(new LatLng(lotitude,longitude))
-                                    .zoom(15)
-                                    .build()
-                    );
-                    map.moveCamera(cameraUpdate);
-                }
-            });
-        }else{
-            getSupportFragmentManager().beginTransaction().hide(supportMapFragment).commit();
+        } else {
+            adress.setVisibility(View.GONE);
             geoposition_title.setVisibility(View.GONE);
         }
-        if(thisEventV1.getPhoto()!=null){
-            workWithFIles=new WorkWithFiles(getApplication(),this);
+        if ( thisEventV1.getPhoto() != null ) {
+            workWithFIles = new WorkWithFiles(getApplication() , this);
             photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
             nullsCard.setVisibility(View.GONE);
 
-        }else{
+        } else {
             photo_title.setVisibility(View.GONE);
             photo.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void startedConfiguration(ITrackingRepository collection,UUID trackingId, UUID eventId) {
-
-        setTitle(collection.GetTracking(trackingId).GetTrackingName());
-        this.eventId=eventId;
-        this.trackingId=trackingId;
-        thisEventV1 = collection.GetTracking(trackingId).GetEvent(eventId);
-        thisTrackingV1 = collection.GetTracking(trackingId);
+    public void startedConfiguration (TrackingService collection , UUID trackingId , UUID eventId) {
+        setTitle(collection.GetTrackingById(trackingId).GetTrackingName());
+        this.eventId = eventId;
+        this.trackingId = trackingId;
+        thisEventV1 = collection.GetTrackingById(trackingId).GetEvent(eventId);
+        thisTrackingV1 = collection.GetTrackingById(trackingId);
         thisEventV1 = thisTrackingV1.GetEvent(eventId);
         thisDate = thisEventV1.GetEventDate();
 
         Locale loc = new Locale("ru");
-        format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
+        format = new SimpleDateFormat("dd.MM.yyyy HH:mm" , loc);
         format.setTimeZone(TimeZone.getDefault());
     }
 
     @Override
-    public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    public void showMessage (String message) {
+        Toast.makeText(this , message , Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void finishDetailsEventActivity() {
+    public void finishDetailsEventActivity () {
         eventDetailsPresenter.detachView();
         finish();
 
     }
 
     @Override
-    public void deleteEvent() {
+    public void deleteEvent () {
         DeleteEventDialog delete = new DeleteEventDialog();
-        delete.show(getFragmentManager(), "DeleteEvent");
+        delete.show(getFragmentManager() , "DeleteEvent");
     }
 
     @Override
-    public void editEvent() {
-        Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
-        intent.putExtra("eventId", eventId.toString());
-        intent.putExtra("trackingId", trackingId.toString());
+    public void editEvent () {
+        Intent intent = new Intent(getApplicationContext() , EditEventActivity.class);
+        intent.putExtra("eventId" , eventId.toString());
+        intent.putExtra("trackingId" , trackingId.toString());
         startActivity(intent);
         eventDetailsPresenter.detachView();
     }
-    private void showOrNotNullCard(){
-        if ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetScaleCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetRatingCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetGeopositionCustomization()==TrackingCustomization.None
-                && thisTrackingV1.GetPhotoCustomization()==TrackingCustomization.None)
+
+    private void showOrNotNullCard () {
+        if ( (thisTrackingV1.GetCommentCustomization() == TrackingCustomization.None
+                && thisTrackingV1.GetScaleCustomization() == TrackingCustomization.None
+                && thisTrackingV1.GetRatingCustomization() == TrackingCustomization.None
+                && thisTrackingV1.GetGeopositionCustomization() == TrackingCustomization.None
+                && thisTrackingV1.GetPhotoCustomization() == TrackingCustomization.None)
                 ||
-                ((thisTrackingV1.GetCommentCustomization()==TrackingCustomization.Optional&& thisEventV1.GetComment()==null)
-                        &&(thisTrackingV1.GetScaleCustomization()==TrackingCustomization.Optional&& thisEventV1.GetScale()==null)
-                        &&(thisTrackingV1.GetRatingCustomization()==TrackingCustomization.Optional&& thisEventV1.GetRating()==null)
-                        &&(thisTrackingV1.GetGeopositionCustomization()==TrackingCustomization.Optional&& thisEventV1.getLongitude()==null && thisEventV1.getLotitude()==null)
-                        &&(thisTrackingV1.GetPhotoCustomization()==TrackingCustomization.Optional&& thisEventV1.getPhoto()==null)
+                ((thisTrackingV1.GetCommentCustomization() == TrackingCustomization.Optional && thisEventV1.GetComment() == null)
+                        && (thisTrackingV1.GetScaleCustomization() == TrackingCustomization.Optional && thisEventV1.GetScale() == null)
+                        && (thisTrackingV1.GetRatingCustomization() == TrackingCustomization.Optional && thisEventV1.GetRating() == null)
+                        && (thisTrackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional && thisEventV1.getLongitude() == null && thisEventV1.getLotitude() == null)
+                        && (thisTrackingV1.GetPhotoCustomization() == TrackingCustomization.Optional && thisEventV1.getPhoto() == null)
                 )
-                ){
+                ) {
             valuesCard.setVisibility(View.GONE);
             nullsCard.setVisibility(View.VISIBLE);
         }
+    }
+
+    private String getAddress (Double latitude , Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this , Locale.getDefault());
+        return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
     }
 }

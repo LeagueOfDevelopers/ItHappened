@@ -6,12 +6,13 @@ import android.util.Log;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.Application.TrackingService;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
 import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
 import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Utils.UserDataUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -21,39 +22,38 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     InMemoryFactRepository factRepository;
     UUID trackingId;
     UUID eventId;
-    ITrackingRepository collection;
     TrackingService trackingSercvice;
-    public EventDetailsPresenterImpl(SharedPreferences sharedPreferences, Intent intent){
-        factRepository = StaticFactRepository.getInstance();
-        collection= UserDataUtils.setUserDataSet(sharedPreferences);
-        factRepository = StaticFactRepository.getInstance();
-        collection= UserDataUtils.setUserDataSet(sharedPreferences);
-        trackingSercvice = new TrackingService(sharedPreferences.getString("UserId", ""), collection);
-        trackingId = UUID.fromString(intent.getStringExtra("trackingId"));
-        eventId = UUID.fromString(intent.getStringExtra("eventId"));
+
+    @Inject
+    public EventDetailsPresenterImpl(TrackingService trackingSercvice,InMemoryFactRepository factRepository) {
+        this.trackingSercvice = trackingSercvice;
+        this.factRepository = factRepository;
     }
+
     @Override
     public void init() {
-        if(isViewAttached()){
-            eventDetailsView.startedConfiguration(collection,trackingId,eventId);
+        if (isViewAttached()) {
+            eventDetailsView.startedConfiguration(trackingSercvice, trackingId, eventId);
             eventDetailsView.startConfigurationView();
         }
 
     }
 
     @Override
-    public void attachView(EventDetailsContract.EventDetailsView eventDetailsView) {
-       this.eventDetailsView=eventDetailsView;
+    public void attachView(EventDetailsContract.EventDetailsView eventDetailsView, UUID trackingId, UUID eventId) {
+        this.eventDetailsView = eventDetailsView;
+        this.trackingId = trackingId;
+        this.eventId = eventId;
     }
 
     @Override
     public void detachView() {
-        eventDetailsView=null;
+        eventDetailsView = null;
     }
 
     @Override
     public void deleteEvent() {
-        if(isViewAttached()){
+        if (isViewAttached()) {
             eventDetailsView.deleteEvent();
         }
     }
@@ -61,7 +61,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     @Override
     public void okClicked() {
         trackingSercvice.RemoveEvent(eventId);
-        factRepository.onChangeCalculateOneTrackingFacts(collection.GetTrackingCollection(), trackingId)
+        factRepository.onChangeCalculateOneTrackingFacts(trackingSercvice.GetTrackingCollection(), trackingId)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
@@ -70,7 +70,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
                         Log.d("Statistics", "calculateOneTrackingFact");
                     }
                 });
-        factRepository.calculateAllTrackingsFacts(collection.GetTrackingCollection())
+        factRepository.calculateAllTrackingsFacts(trackingSercvice.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
@@ -90,20 +90,20 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
 
     @Override
     public void editEvent() {
-        if(isViewAttached()){
+        if (isViewAttached()) {
             eventDetailsView.editEvent();
         }
     }
 
     @Override
     public void beforeFinish() {
-        if(isViewAttached()){
+        if (isViewAttached()) {
             eventDetailsView.finishDetailsEventActivity();
         }
     }
 
     @Override
     public Boolean isViewAttached() {
-        return eventDetailsView!=null;
+        return eventDetailsView != null;
     }
 }
