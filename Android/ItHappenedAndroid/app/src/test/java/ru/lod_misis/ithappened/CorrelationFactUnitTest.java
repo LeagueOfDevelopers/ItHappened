@@ -228,7 +228,7 @@ public class CorrelationFactUnitTest {
         tracking.setRatingCustomization(TrackingCustomization.None);
         for (int i = 0; i < n; i++) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 2) {
                 event.setScale(null);
             } else {
@@ -250,7 +250,7 @@ public class CorrelationFactUnitTest {
         tracking.setRatingCustomization(TrackingCustomization.Optional);
         for (int i = 0; i < n; i++) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 2) {
                 event.setRating(null);
             }
@@ -273,7 +273,7 @@ public class CorrelationFactUnitTest {
         tracking.setRatingCustomization(TrackingCustomization.None);
         for (int i = 0; i < n; i++) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             event.setEventDate(DateTime.now().minus(Math.abs(r.nextInt())).toDate());
             tracking.addEvent(event);
         }

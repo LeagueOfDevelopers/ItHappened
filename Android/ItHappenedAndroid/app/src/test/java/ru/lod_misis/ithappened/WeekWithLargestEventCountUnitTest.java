@@ -42,7 +42,7 @@ public class WeekWithLargestEventCountUnitTest {
             Date date = new DateTime(2018, 7, day, 0, 0).toDate();
             EventV1 e = new EventV1();
             e.setEventDate(date);
-            e.setEventId(id.toString());
+            e.setEventId(id);
             t.addEvent(e);
         }
         return t;

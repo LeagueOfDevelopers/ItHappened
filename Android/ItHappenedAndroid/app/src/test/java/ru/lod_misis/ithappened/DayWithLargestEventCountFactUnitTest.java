@@ -38,7 +38,7 @@ public class DayWithLargestEventCountFactUnitTest {
             Date date = new DateTime(2000, 1, days[day], 0, 0).toDate();
             EventV1 e = new EventV1();
             e.setEventDate(date);
-            e.setEventId(id.toString());
+            e.setEventId(id);
             t.addEvent(e);
         }
         for (int day = 11; day < days.length; day++) {
@@ -46,7 +46,7 @@ public class DayWithLargestEventCountFactUnitTest {
             Date date = new DateTime(2019, 1, days[day], 0, 0).toDate();
             EventV1 e = new EventV1();
             e.setEventDate(date);
-            e.setEventId(id.toString());
+            e.setEventId(id);
             t.addEvent(e);
         }
         return t;

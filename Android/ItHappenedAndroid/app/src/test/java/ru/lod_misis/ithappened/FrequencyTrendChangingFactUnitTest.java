@@ -59,7 +59,7 @@ public class FrequencyTrendChangingFactUnitTest {
         tracking.setGeopositionCustomization(TrackingCustomization.None);
         for (int day: dates) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             event.setEventDate(DateTime.now().minusDays(day).toDate());
             tracking.addEvent(event);
         }
@@ -77,7 +77,7 @@ public class FrequencyTrendChangingFactUnitTest {
         tracking.setGeopositionCustomization(TrackingCustomization.None);
         for (int i = 0; i < eventCount; i++) {
             EventV1 e = new EventV1();
-            e.setEventId(UUID.randomUUID().toString());
+            e.setEventId(UUID.randomUUID());
             e.setEventDate(new DateTime(2017 + r.nextInt(1000) / 365, r.nextInt(12) + 1, r.nextInt(27) + 1, 0, 0).toDate());
             tracking.addEvent(e);
         }

@@ -11,8 +11,9 @@ import io.realm.RealmObject;
 
 public class Rating extends RealmObject {
     public Rating(Integer ratingValue) {
-        if (ratingValue > 10 || ratingValue < 1)
-            throw new IndexOutOfBoundsException("Value of scale out of range");
+        if (ratingValue != null)
+            if (ratingValue > 10 || ratingValue < 1)
+                throw new IndexOutOfBoundsException("Value of scale out of range");
         rating = ratingValue;
     }
 

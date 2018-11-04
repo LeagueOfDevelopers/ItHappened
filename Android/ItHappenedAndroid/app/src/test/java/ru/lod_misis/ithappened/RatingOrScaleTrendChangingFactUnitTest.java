@@ -67,7 +67,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
         tracking.setRatingCustomization(TrackingCustomization.Optional);
         for (int i = 0; i < eventCount; i++) {
             EventV1 e = new EventV1();
-            e.setEventId(UUID.randomUUID().toString());
+            e.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 1) {
                 Rating rating = new Rating();
                 rating.setRating(r.nextInt(10));
@@ -92,7 +92,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
         tracking.setRatingCustomization(TrackingCustomization.None);
         for (int i = 0; i < eventCount; i++) {
             EventV1 e = new EventV1();
-            e.setEventId(UUID.randomUUID().toString());
+            e.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 1) {
                 e.setScale(r.nextDouble() * 1000);
             }
