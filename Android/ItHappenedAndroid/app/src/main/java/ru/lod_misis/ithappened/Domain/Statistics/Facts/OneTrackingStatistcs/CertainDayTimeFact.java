@@ -24,7 +24,7 @@ public class CertainDayTimeFact extends Fact{
 
     public CertainDayTimeFact(TrackingV1 trackingV1) {
             this.trackingV1 = trackingV1;
-            trackingId = trackingV1.GetTrackingID();
+            trackingId = trackingV1.getTrackingId();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class CertainDayTimeFact extends Fact{
         illustartion = new IllustartionModel(IllustrationType.PIE);
         List<EventV1> eventV1Collection = new ArrayList<>();
 
-        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
+        for(EventV1 eventV1 : trackingV1.getEventHistory()){
             if (!eventV1.isDeleted())
                 eventV1Collection.add(eventV1);
         }
@@ -43,7 +43,7 @@ public class CertainDayTimeFact extends Fact{
         modelList = new ArrayList<>();
 
         for(EventV1 eventV1 : eventV1Collection){
-            c.setTime(eventV1.GetEventDate());
+            c.setTime(eventV1.getEventDate());
             int hour = c.get(Calendar.HOUR_OF_DAY);
             if (hour < 6) eventCount[0]++;
             else if (hour<12) eventCount[1]++;

@@ -33,7 +33,7 @@
         android:textColor="@color/colorPrimaryDark"/>
 
     <android.support.design.widget.FloatingActionButton
-        app:layout_behavior="ru.lod_misis.ithappened.ButtonsEffects.FAB_Float_on_Scroll"
+        app:layout_behavior="ru.lod_misis.ithappened.UI.ButtonsEffects.FAB_Float_on_Scroll"
         android:id="@+id/addNewEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

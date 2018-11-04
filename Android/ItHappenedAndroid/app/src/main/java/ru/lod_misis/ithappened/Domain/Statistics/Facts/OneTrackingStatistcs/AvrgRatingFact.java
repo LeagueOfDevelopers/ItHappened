@@ -18,14 +18,14 @@ public class AvrgRatingFact extends Fact {
     Double priority;
 
     public AvrgRatingFact(TrackingV1 trackingV1){
-        trackingId = trackingV1.GetTrackingID();
+        trackingId = trackingV1.getTrackingId();
         this.trackingV1 = trackingV1;
     }
 
     public Double getAvrgValue(){
 
-        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
-            if(!eventV1.GetStatus()){
+        for(EventV1 eventV1 : trackingV1.getEventHistory()){
+            if(!eventV1.isDeleted()){
                 eventV1Collection.add(eventV1);
             }
         }
@@ -34,8 +34,8 @@ public class AvrgRatingFact extends Fact {
         int count = 0;
 
         for(EventV1 eventV1 : eventV1Collection){
-            if(eventV1.GetRating() != null){
-                sumValue+= eventV1.GetRating().GetRatingValue();
+            if(eventV1.getRating() != null){
+                sumValue+= eventV1.getRating().getRating();
                 count++;
             }
         }

@@ -40,7 +40,7 @@ public class InMemoryFactRepository {
         oneTrackingFactCollection.removeAll(factCollectionCheck);
 
         for (TrackingV1 trackingV1 : trackingV1Collection) {
-            if (trackingV1.GetTrackingID().equals(trackingId))
+            if (trackingV1.getTrackingId().equals(trackingId))
                 changedTrackingV1 = trackingV1;
         }
 

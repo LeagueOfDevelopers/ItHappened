@@ -38,7 +38,7 @@ public class FrequencyTrendChangingFactUnitTest {
 //                System.out.print(descr + "\n");
 //            }
 //            System.out.print("Test " + i + " finished\n");
-//            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
+//            System.out.print("Data set length: " + tracking.getEventCollection().size() + "\n");
 //            if (fact == null) {
 //                System.out.print("Fact is null\n");
 //            }
@@ -51,17 +51,17 @@ public class FrequencyTrendChangingFactUnitTest {
     private TrackingV1 GenerateTracking() {
         int[] dates = {1, 3, 5, 6, 8, 9, 12, 13, 14, 15, 16, 17, 18, 18, 18};
         TrackingV1 tracking = new TrackingV1();
-        tracking.setEventV1Collection(new RealmList<EventV1>());
-        tracking.SetTrackingID(UUID.randomUUID());
-        tracking.SetScaleCustomization(TrackingCustomization.None);
-        tracking.SetCommentCustomization(TrackingCustomization.None);
-        tracking.SetRatingCustomization(TrackingCustomization.None);
-        tracking.SetGeopositionCustomization(TrackingCustomization.None);
+        tracking.setEventCollection(new RealmList<EventV1>());
+        tracking.setTrackingId(UUID.randomUUID());
+        tracking.setScaleCustomization(TrackingCustomization.None);
+        tracking.setCommentCustomization(TrackingCustomization.None);
+        tracking.setRatingCustomization(TrackingCustomization.None);
+        tracking.setGeopositionCustomization(TrackingCustomization.None);
         for (int day: dates) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             event.setEventDate(DateTime.now().minusDays(day).toDate());
-            tracking.AddEvent(event);
+            tracking.addEvent(event);
         }
         return tracking;
     }
@@ -69,17 +69,17 @@ public class FrequencyTrendChangingFactUnitTest {
     private TrackingV1 GenerateRandomTracking(Random r) {
         int eventCount = r.nextInt(1000);
         TrackingV1 tracking = new TrackingV1();
-        tracking.setEventV1Collection(new RealmList<EventV1>());
-        tracking.SetTrackingID(UUID.randomUUID());
-        tracking.SetScaleCustomization(TrackingCustomization.None);
-        tracking.SetCommentCustomization(TrackingCustomization.None);
-        tracking.SetRatingCustomization(TrackingCustomization.None);
-        tracking.SetGeopositionCustomization(TrackingCustomization.None);
+        tracking.setEventCollection(new RealmList<EventV1>());
+        tracking.setTrackingId(UUID.randomUUID());
+        tracking.setScaleCustomization(TrackingCustomization.None);
+        tracking.setCommentCustomization(TrackingCustomization.None);
+        tracking.setRatingCustomization(TrackingCustomization.None);
+        tracking.setGeopositionCustomization(TrackingCustomization.None);
         for (int i = 0; i < eventCount; i++) {
             EventV1 e = new EventV1();
-            e.setEventId(UUID.randomUUID().toString());
+            e.setEventId(UUID.randomUUID());
             e.setEventDate(new DateTime(2017 + r.nextInt(1000) / 365, r.nextInt(12) + 1, r.nextInt(27) + 1, 0, 0).toDate());
-            tracking.AddEvent(e);
+            tracking.addEvent(e);
         }
         return tracking;
     }

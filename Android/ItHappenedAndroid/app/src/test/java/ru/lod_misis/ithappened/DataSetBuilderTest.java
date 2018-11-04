@@ -40,7 +40,7 @@ public class DataSetBuilderTest {
         List<EventV1> events = new ArrayList<>();
         for (int i = 1; i < 100; i++) {
             EventV1 e = new EventV1();
-            e.SetEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1, 0, 0).toDate());
+            e.setEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1, 0, 0).toDate());
             events.add(e);
         }
         return events;
@@ -52,14 +52,14 @@ public class DataSetBuilderTest {
         List<EventV1> events2 = new ArrayList<>();
         for (int i = 1; i <= count; i += 2) {
             EventV1 event = new EventV1();
-            event.EditDate(new DateTime(2000, 1, i, 0, 0).toDate());
-            event.EditScale((double)i * 100);
+            event.editDate(new DateTime(2000, 1, i, 0, 0).toDate());
+            event.editScale((double)i * 100);
             events1.add(event);
         }
         for (int i = 2; i <= count; i += 2) {
             EventV1 event = new EventV1();
-            event.EditDate(new DateTime(2000, 1, i, 0, 0).toDate());
-            event.EditScale((double)i * 100);
+            event.editDate(new DateTime(2000, 1, i, 0, 0).toDate());
+            event.editScale((double)i * 100);
             events2.add(event);
         }
         result.add(events1);

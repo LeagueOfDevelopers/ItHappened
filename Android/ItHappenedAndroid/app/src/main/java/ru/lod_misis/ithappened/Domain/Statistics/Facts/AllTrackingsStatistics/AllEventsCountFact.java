@@ -26,7 +26,7 @@ public class AllEventsCountFact extends Fact {
     @Override
     public void calculateData() {
         for (TrackingV1 trackingV1 : trackingV1Collection) {
-            for (EventV1 eventV1 : trackingV1.getEventV1Collection()) {
+            for (EventV1 eventV1 : trackingV1.getEventCollection()) {
                 if (!eventV1.isDeleted()) eventCount++;
             }
         }

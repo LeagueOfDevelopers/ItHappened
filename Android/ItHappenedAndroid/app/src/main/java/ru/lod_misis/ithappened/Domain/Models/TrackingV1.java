@@ -25,19 +25,18 @@ public class TrackingV1 extends RealmObject {
                       TrackingCustomization geoposition,
                       TrackingCustomization photo,
                       String scaleName,
-                      String color)
-    {
+                      String color) {
         this.color = color;
         this.trackingName = trackingName;
-        SetScaleCustomization(scale);
-        SetRatingCustomization(rating);
-        SetCommentCustomization(comment);
-        SetGeopositionCustomization(geoposition);
-        SetPhotoCustomization(photo);
+        setScaleCustomization(scale);
+        setRatingCustomization(rating);
+        setCommentCustomization(comment);
+        setGeopositionCustomization(geoposition);
+        setPhotoCustomization(photo);
         this.trackingId = trackingId.toString();
         trackingDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         dateOfChange = trackingDate;
-        eventV1Collection = new RealmList<>();
+        eventCollection = new RealmList<>();
         this.scaleName = scaleName;
     }
 
@@ -49,98 +48,84 @@ public class TrackingV1 extends RealmObject {
                       TrackingCustomization geoposition,
                       TrackingCustomization photo,
                       Date trackingDate,
-                      List<EventV1> eventV1Collection,
+                      List<EventV1> eventCollection,
                       boolean status, Date changeDate,
-                      String scaleName, String color)
-    {
+                      String scaleName, String color) {
         this.color = color;
         this.trackingName = trackingName;
-        SetScaleCustomization(scale);
-        SetRatingCustomization(rating);
-        SetCommentCustomization(comment);
-        SetGeopositionCustomization(geoposition);
-        SetPhotoCustomization(photo);
+        setScaleCustomization(scale);
+        setRatingCustomization(rating);
+        setCommentCustomization(comment);
+        setGeopositionCustomization(geoposition);
+        setPhotoCustomization(photo);
         this.trackingId = trackingId.toString();
         this.trackingDate = trackingDate;
-        this.eventV1Collection = new RealmList<>();
-        this.eventV1Collection.addAll(eventV1Collection);
+        this.eventCollection = new RealmList<>();
+        this.eventCollection.addAll(eventCollection);
         dateOfChange = changeDate;
         isDeleted = status;
         this.scaleName = scaleName;
     }
 
-    public TrackingV1(){
+    public TrackingV1() {
     }
 
-    public TrackingV1(Tracking tracking){
+    public TrackingV1(Tracking tracking) {
         this.color = "-5658199";
         this.trackingName = tracking.trackingName;
-        SetScaleCustomization(TrackingCustomization.valueOf(tracking.scale));
-        SetRatingCustomization(TrackingCustomization.valueOf(tracking.rating));
-        SetCommentCustomization(TrackingCustomization.valueOf(tracking.comment));
+        setScaleCustomization(TrackingCustomization.valueOf(tracking.scale));
+        setRatingCustomization(TrackingCustomization.valueOf(tracking.rating));
+        setCommentCustomization(TrackingCustomization.valueOf(tracking.comment));
         this.trackingId = tracking.trackingId;
         this.trackingDate = tracking.trackingDate;
-        eventV1Collection = new RealmList<>();
-        for (Event ev: tracking.eventCollection) {
-            eventV1Collection.add(new EventV1(ev));
+        eventCollection = new RealmList<>();
+        for (Event ev : tracking.eventCollection) {
+            eventCollection.add(new EventV1(ev));
         }
         dateOfChange = tracking.dateOfChange;
         isDeleted = tracking.isDeleted;
         this.scaleName = tracking.scaleName;
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public void AddEvent (EventV1 newEventV1)
-    {
-        CustomizationCheck(newEventV1.getScale(), GetScaleCustomization());
-        CustomizationCheck(newEventV1.getRating(), GetRatingCustomization());
-        CustomizationCheck(newEventV1.getComment(), GetCommentCustomization());
-        CustomizationCheck(newEventV1.getLotitude(), GetGeopositionCustomization());
-        CustomizationCheck(newEventV1.getLongitude(), GetGeopositionCustomization());
-        eventV1Collection.add(newEventV1);
+    public void addEvent(EventV1 newEventV1) {
+        customizationCheck(newEventV1.getScale(), getScaleCustomization());
+        customizationCheck(newEventV1.getRating(), getRatingCustomization());
+        customizationCheck(newEventV1.getComment(), getCommentCustomization());
+        customizationCheck(newEventV1.getLotitude(), getGeopositionCustomization());
+        customizationCheck(newEventV1.getLongitude(), getGeopositionCustomization());
+        eventCollection.add(newEventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
-    public void RemoveEvent (UUID eventID)
-    {
+    public void removeEvent(UUID eventID) {
         Integer deletionEvent = null;
-        Integer i=0;
-        for (EventV1 eventV1 : eventV1Collection) {
-            if (eventV1.GetEventId().equals(eventID))
-                deletionEvent =i;
+        Integer i = 0;
+        for (EventV1 eventV1 : eventCollection) {
+            if (eventV1.getEventId().equals(eventID))
+                deletionEvent = i;
             i++;
         }
         if (deletionEvent == null)
-            throw new IllegalArgumentException ("EventV1 with such id dosn't exist");
-        EventV1 eventV1 = eventV1Collection.get(deletionEvent);
-        eventV1.RemoveEvent();
-        eventV1Collection.set(deletionEvent, eventV1);
+            throw new IllegalArgumentException("EventV1 with such id dosn't exist");
+        EventV1 eventV1 = eventCollection.get(deletionEvent);
+        eventV1.removeEvent();
+        eventCollection.set(deletionEvent, eventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
-    public void EditEvent(UUID eventId,
+    public void editEvent(UUID eventId,
                           Double newScale,
                           Rating newRating,
                           String newComment,
                           Double newLotitude,
                           Double newLongitude,
                           String newPhoto,
-                          Date newDate)
-    {
+                          Date newDate) {
         EventV1 editedEventV1 = null;
         int index = 0;
         boolean contains = false;
-        for (EventV1 eventV1 : eventV1Collection)
-        {
-            if (eventV1.GetEventId().equals(eventId))
-            {
+        for (EventV1 eventV1 : eventCollection) {
+            if (eventV1.getEventId().equals(eventId)) {
                 contains = true;
                 editedEventV1 = eventV1;
                 break;
@@ -149,66 +134,89 @@ public class TrackingV1 extends RealmObject {
         }
         if (!contains)
             throw new IllegalArgumentException("EventV1 with such id doesn't exist");
-        if (ChangesCheck(newScale, GetScaleCustomization()))
-            editedEventV1.EditScale(newScale);
-        if (ChangesCheck(newRating, GetRatingCustomization()))
-            editedEventV1.EditValueOfRating(newRating);
-        if (ChangesCheck(newComment, GetCommentCustomization()))
-            editedEventV1.EditComment(newComment);
-        if (ChangesCheck(newLotitude, GetGeopositionCustomization())&&ChangesCheck(newLongitude, GetGeopositionCustomization()))
-            editedEventV1.EditGeoposition(newLotitude,newLongitude);
-        if (ChangesCheck(newPhoto, GetPhotoCustomization()))
-            editedEventV1.EditPhoto(newPhoto);
-        if (newDate!=null)
-            editedEventV1.EditDate(newDate);
-        eventV1Collection.set(index, editedEventV1);
+        if (changesCheck(newScale, getScaleCustomization()))
+            editedEventV1.editScale(newScale);
+        if (changesCheck(newRating, getRatingCustomization()))
+            editedEventV1.editValueOfRating(newRating);
+        if (changesCheck(newComment, getCommentCustomization()))
+            editedEventV1.editComment(newComment);
+        if (changesCheck(newLotitude, getGeopositionCustomization()) && changesCheck(newLongitude, getGeopositionCustomization()))
+            editedEventV1.editGeoposition(newLotitude, newLongitude);
+        if (changesCheck(newPhoto, getPhotoCustomization()))
+            editedEventV1.editPhoto(newPhoto);
+        if (newDate != null)
+            editedEventV1.editDate(newDate);
+        eventCollection.set(index, editedEventV1);
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
-    public void EditTracking(TrackingCustomization editedScale,
+    public void editTracking(TrackingCustomization editedScale,
                              TrackingCustomization editedRating,
                              TrackingCustomization editedComment,
                              TrackingCustomization editedGeoposition,
                              TrackingCustomization editedPhoto,
                              String editedTrackingName,
-                             String scaleName, String color)
-    {
-        if(scaleName != null)
+                             String scaleName, String color) {
+        if (scaleName != null)
             setScaleName(scaleName);
         if (color != null)
             this.color = color;
         if (editedScale != null)
-            SetScaleCustomization(editedScale);
+            setScaleCustomization(editedScale);
         if (editedRating != null)
-            SetRatingCustomization(editedRating);
+            setRatingCustomization(editedRating);
         if (editedComment != null)
-            SetCommentCustomization(editedComment);
+            setCommentCustomization(editedComment);
         if (editedGeoposition != null)
-            SetGeopositionCustomization(editedGeoposition);
+            setGeopositionCustomization(editedGeoposition);
         if (editedPhoto != null)
-            SetPhotoCustomization(editedPhoto);
+            setPhotoCustomization(editedPhoto);
         if (editedTrackingName != null)
             trackingName = editedTrackingName;
         if (color != null) this.color = color;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
-    private boolean ChangesCheck(Object value, TrackingCustomization customization)
-    {
+    private boolean changesCheck(Object value, TrackingCustomization customization) {
         return value != null && customization != TrackingCustomization.None;
     }
 
-    private void CustomizationCheck(Object value, TrackingCustomization customization)
-    {
-        if (value == null && customization == TrackingCustomization.Required)
-        {
+    private void customizationCheck(Object value, TrackingCustomization customization) {
+        if (value == null && customization == TrackingCustomization.Required) {
             throw new IllegalArgumentException("Non-optional parameters can not be empty");
         }
 
-        if (value != null && customization == TrackingCustomization.None)
-        {
+        if (value != null && customization == TrackingCustomization.None) {
             throw new IllegalArgumentException("None customizations can not take a value");
         }
+    }
+
+    public EventV1 getEvent(UUID eventId) {
+        for (EventV1 item : eventCollection) {
+            if (item.getEventId().equals(eventId))
+                return item;
+        }
+        throw new IllegalArgumentException("EventV1 with such ID doesn't exist");
+    }
+
+    public void deleteTracking() {
+        isDeleted = true;
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        for (EventV1 eventV1 : eventCollection) {
+            eventV1.removeEvent();
+        }
+    }
+
+    public List<EventV1> getEventHistory() {
+        if (eventCollection != null) {
+            Collections.sort(eventCollection, new Comparator<EventV1>() {
+                @Override
+                public int compare(EventV1 eventV1, EventV1 t1) {
+                    return t1.getEventDate().compareTo(eventV1.getEventDate());
+                }
+            });
+        }
+        return eventCollection;
     }
 
     public String getTrackingName() {
@@ -219,12 +227,12 @@ public class TrackingV1 extends RealmObject {
         this.trackingName = trackingName;
     }
 
-    public String getTrackingId() {
-        return trackingId;
+    public void setTrackingId(UUID id) {
+        trackingId = id.toString();
     }
 
-    public void setTrackingId(String trackingId) {
-        this.trackingId = trackingId;
+    public UUID getTrackingId() {
+        return UUID.fromString(trackingId);
     }
 
     public Date getTrackingDate() {
@@ -235,36 +243,44 @@ public class TrackingV1 extends RealmObject {
         this.trackingDate = trackingDate;
     }
 
-    public String getScale() {
-        return scale;
+    public void setScaleCustomization(TrackingCustomization scl) {
+        scale = scl.toString();
     }
 
-    public void setScale(String scale) {
-        this.scale = scale;
+    public TrackingCustomization getScaleCustomization() {
+        return TrackingCustomization.valueOf(scale);
     }
 
-    public String getRating() {
-        return rating;
+    public void setCommentCustomization(TrackingCustomization comm) {
+        comment = comm.toString();
     }
 
-    public void setRating(String rating) {
-        this.rating = rating;
+    public TrackingCustomization getCommentCustomization() {
+        return TrackingCustomization.valueOf(comment);
     }
 
-    public String getComment() {
-        return comment;
+    public void setRatingCustomization(TrackingCustomization rat) {
+        rating = rat.toString();
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public TrackingCustomization getRatingCustomization() {
+        return TrackingCustomization.valueOf(rating);
     }
 
-    public RealmList<EventV1> getEventV1Collection() {
-        return eventV1Collection;
+    public void setGeopositionCustomization(TrackingCustomization geo) {
+        geoposition = geo.toString();
     }
 
-    public void setEventV1Collection(RealmList<EventV1> eventV1Collection) {
-        this.eventV1Collection = eventV1Collection;
+    public TrackingCustomization getGeopositionCustomization() {
+        return TrackingCustomization.valueOf(geoposition);
+    }
+
+    public void setPhotoCustomization(TrackingCustomization phot) {
+        photo = phot.toString();
+    }
+
+    public TrackingCustomization getPhotoCustomization() {
+        return TrackingCustomization.valueOf(photo);
     }
 
     public Date getDateOfChange() {
@@ -275,70 +291,37 @@ public class TrackingV1 extends RealmObject {
         this.dateOfChange = dateOfChange;
     }
 
+    public boolean setDeleted() {
+        return isDeleted;
+    }
+
     public boolean isDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+    public void setScaleName(String name) {
+        scaleName = name;
     }
 
-    public EventV1 GetEvent(UUID eventId)
-    {
-        for (EventV1 item: eventV1Collection) {
-            if (item.GetEventId().equals(eventId))
-                return item;
-        }
-        throw new IllegalArgumentException("EventV1 with such ID doesn't exist");
+    public String getScaleName() {
+        return scaleName;
     }
 
-    public void DeleteTracking()
-    {
-        isDeleted = true;
-        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        for (EventV1 eventV1 : eventV1Collection) {
-            eventV1.RemoveEvent();
-        }
+    public RealmList<EventV1> getEventCollection() {
+        return eventCollection;
     }
 
-    public String GetTrackingName() {return trackingName;}
-    public UUID GetTrackingID() {return UUID.fromString(trackingId);}
-    public Date GetTrackingDate () {return trackingDate;}
-    public List<EventV1> GetEventHistory() {
-        if(eventV1Collection!=null) {
-            Collections.sort(eventV1Collection, new Comparator<EventV1>() {
-                @Override
-                public int compare(EventV1 eventV1, EventV1 t1) {
-                    return t1.GetEventDate().compareTo(eventV1.GetEventDate());
-                }
-            });
-        }
-        return eventV1Collection;
+    public void setEventCollection(RealmList<EventV1> eventV1Collection) {
+        this.eventCollection = eventV1Collection;
     }
-    public TrackingCustomization GetScaleCustomization(){ return TrackingCustomization.valueOf(scale);}
-    public TrackingCustomization GetCommentCustomization(){ return TrackingCustomization.valueOf(comment);}
-    public TrackingCustomization GetRatingCustomization(){ return TrackingCustomization.valueOf(rating);}
-    public TrackingCustomization GetGeopositionCustomization(){ return TrackingCustomization.valueOf(geoposition);}
-    public TrackingCustomization GetPhotoCustomization(){ return TrackingCustomization.valueOf(photo);}
-    public Date GetDateOfChange() {return dateOfChange; }
-    public boolean GetStatus() { return isDeleted; }
-    public String getScaleName() { return scaleName; }
 
-    public void SetTrackingName(String name) { trackingName = name;}
-    public void SetTrackingID(UUID id) { trackingId = id.toString();}
-    public void SetTrackingDate (Date date) { trackingDate = date;}
-    public void SetEventCollection(List<EventV1> eventV1List) {
-        eventV1Collection = new RealmList<>();
-        eventV1Collection.addAll(eventV1List);
+    public String getColor() {
+        return color;
     }
-    public void SetScaleCustomization(TrackingCustomization scl){  scale = scl.toString();}
-    public void SetCommentCustomization(TrackingCustomization comm){ comment = comm.toString();}
-    public void SetRatingCustomization(TrackingCustomization rat){ rating = rat.toString();}
-    public void SetGeopositionCustomization(TrackingCustomization geo){ geoposition = geo.toString();}
-    public void SetPhotoCustomization(TrackingCustomization phot){ photo = phot.toString();}
-    public void SetDateOfChange(Date date) { dateOfChange = date; }
-    public void SetStatus(boolean status) { isDeleted = status; }
-    public void setScaleName(String name) {scaleName = name;}
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
 
     @Expose
@@ -365,7 +348,7 @@ public class TrackingV1 extends RealmObject {
     private String photo;
     @Expose
     @SerializedName("eventCollection")
-    private RealmList<EventV1> eventV1Collection;
+    private RealmList<EventV1> eventCollection;
     @Expose
     private Date dateOfChange;
     @Expose

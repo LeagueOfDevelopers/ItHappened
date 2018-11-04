@@ -12,30 +12,28 @@ import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
-public class EventV1 extends RealmObject
-{
+public class EventV1 extends RealmObject {
     public EventV1(UUID eventId, UUID trackingID, Date date,
                    Double scale, Rating rating, String comment,
-                   Double lotitude,Double longitude,String photo)
-    {
+                   Double lotitude, Double longitude, String photo) {
         this.eventId = eventId.toString();
         this.dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
-        this.longitude=longitude;
-        this.lotitude=lotitude;
-        this.photo=photo;
+        this.longitude = longitude;
+        this.lotitude = lotitude;
+        this.photo = photo;
         this.trackingId = trackingID.toString();
         this.eventDate = date;
     }
 
-    public EventV1(Event event){
+    public EventV1(Event event) {
         this.eventId = event.eventId;
         this.eventDate = event.eventDate;
         this.scale = event.scale;
-        if(event.rating != null)
-            this.rating = new Rating(event.rating.GetRatingValue());
+        if (event.rating != null)
+            this.rating = new Rating(event.rating.getRating());
         else
             this.rating = null;
         this.comment = event.comment;
@@ -44,122 +42,124 @@ public class EventV1 extends RealmObject
         isDeleted = event.isDeleted;
     }
 
-    public EventV1(){}
+    public EventV1() {
+    }
 
     public EventV1(UUID eventId, UUID trackingID, Date eventDate,
-                   Double scale, Rating rating, String comment,Double lotitude,Double longitude,String photo,
-                   boolean status, Date changeDate)
-    {
+                   Double scale, Rating rating, String comment, Double lotitude, Double longitude, String photo,
+                   boolean status, Date changeDate) {
         this.eventId = eventId.toString();
         this.eventDate = eventDate;
         this.scale = scale;
         this.rating = rating;
         this.comment = comment;
-        this.lotitude=lotitude;
-        this.longitude=longitude;
-        this.photo=photo;
+        this.lotitude = lotitude;
+        this.longitude = longitude;
+        this.photo = photo;
         this.trackingId = trackingID.toString();
         dateOfChange = changeDate;
         isDeleted = status;
     }
 
-    public void EditDate(Date newDate) {
+    public void editDate(Date newDate) {
         eventDate = newDate;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
-    public void EditScale(Double scale) {
+    public void editScale(Double scale) {
         this.scale = scale;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
-    public void EditValueOfRating(Rating rating){
+
+    public void editValueOfRating(Rating rating) {
         this.rating = rating;
-        dateOfChange =Calendar.getInstance(TimeZone.getDefault()).getTime();
+        dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
-    public void EditComment(String comment) {
+
+    public void editComment(String comment) {
         this.comment = comment;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
-    public void EditGeoposition(Double lotitude,Double longitude) {
-        this.lotitude=lotitude;
-        this.longitude=longitude;
+
+    public void editGeoposition(Double lotitude, Double longitude) {
+        this.lotitude = lotitude;
+        this.longitude = longitude;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
-    public void EditPhoto(String photo) {
+
+    public void editPhoto(String photo) {
         this.photo = photo;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
-    public void RemoveEvent()
-    {
+
+    public void removeEvent() {
         isDeleted = true;
         dateOfChange = Calendar.getInstance(TimeZone.getDefault()).getTime();
     }
 
 
-    public Date GetEventDate() {return eventDate;}
-    public UUID GetEventId() {return UUID.fromString(eventId);}
-    public Double GetScale() {return scale;}
-    public Rating GetRating() {return rating;}
-    public String GetComment() {return comment;}
-    public UUID GetTrackingId() { return UUID.fromString(trackingId); }
-    public Date GetDateOfChange() {return dateOfChange; }
-    public boolean GetStatus() { return isDeleted; }
-
-    public void SetEventDate(Date date) { eventDate = date ;}
-    public void SetEventId(UUID id) { eventId = id.toString(); }
-    public void SetScale(Double scl) { scale = scl;}
-    public void SetRating(Rating  rtng) { rating = rtng; }
-    public void SetComment(String comm) { comment = comm; }
-    public void SetTrackingId(UUID id) { trackingId = id.toString(); }
-    public void SetDateOfChange(Date date) { dateOfChange = date; }
-    public void SetStatus(boolean status) { isDeleted = status; }
-
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
-
-    public String getTrackingId() {
-        return trackingId;
-    }
-
-    public void setTrackingId(String trackingId) {
-        this.trackingId = trackingId;
-    }
-
     public Date getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Date eventDate) {
-        this.eventDate = eventDate;
+    public void setEventDate(Date date) {
+        eventDate = date;
+    }
+
+    public UUID getEventId() {
+        return UUID.fromString(eventId);
+    }
+
+    public void setEventId(UUID id) {
+        eventId = id.toString();
     }
 
     public Double getScale() {
         return scale;
     }
 
-    public void setScale(Double scale) {
-        this.scale = scale;
+    public void setScale(Double scl) {
+        scale = scl;
     }
 
     public Rating getRating() {
         return rating;
     }
 
-    public void setRating(Rating rating) {
-        this.rating = rating;
+    public void setRating(Rating rtng) {
+        rating = rtng;
     }
 
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComment(String comm) {
+        comment = comm;
+    }
+
+    public UUID getTrackingId() {
+        return UUID.fromString(trackingId);
+    }
+
+    public void setTrackingId(UUID id) {
+        trackingId = id.toString();
+    }
+
+    public Date getDateOfChange() {
+        return dateOfChange;
+    }
+
+    public void setDateOfChange(Date date) {
+        dateOfChange = date;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public Double getLotitude() {
@@ -184,22 +184,6 @@ public class EventV1 extends RealmObject
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public Date getDateOfChange() {
-        return dateOfChange;
-    }
-
-    public void setDateOfChange(Date dateOfChange) {
-        this.dateOfChange = dateOfChange;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     @Expose

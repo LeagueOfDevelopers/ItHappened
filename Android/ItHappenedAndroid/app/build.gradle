@@ -48,6 +48,7 @@ android {
     buildTypes {
         release {
             buildConfigField "String", "SERVER_URL", '"http://85.143.104.47:1080/"'
+            buildConfigField "Integer", "TEST_PUSH", '5*1000*60'
             signingConfig signingConfigs.release
             resValue "integer", "app_version", "${defaultConfig.versionCode}"
             ext.betaDistributionGroupAliases = "testers"

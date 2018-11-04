@@ -26,12 +26,12 @@ public class RatingTrendChangingFact extends Fact {
 
     public RatingTrendChangingFact(TrackingV1 tracking) {
         TrackingName = tracking.getTrackingName();
-        trackingId = tracking.GetTrackingID();
+        trackingId = tracking.getTrackingId();
         Events = new ArrayList<>();
         NewAverage = 0.0;
-        Events = SelectNotDeletedEventsWithRatingInThePast(tracking.getEventV1Collection());
+        Events = SelectNotDeletedEventsWithRatingInThePast(tracking.getEventCollection());
         for (EventV1 e: Events) {
-            NewAverage += e.GetRating().getRating();
+            NewAverage += e.getRating().getRating();
         }
         Events = SortEventsByDate(Events);
         NewAverage = NewAverage / Events.size();
@@ -102,7 +102,7 @@ public class RatingTrendChangingFact extends Fact {
         else {
             mean = values.Slice(0, trendData).Mean();
         }
-        PointOfChange = new TrendChangingPoint(mean, Events.get(trendData).GetEventDate());
+        PointOfChange = new TrendChangingPoint(mean, Events.get(trendData).getEventDate());
     }
 
     private List<EventV1> SortEventsByDate(List<EventV1> events) {
@@ -110,7 +110,7 @@ public class RatingTrendChangingFact extends Fact {
         Collections.sort(copy, new Comparator<EventV1>() {
             @Override
             public int compare(EventV1 event, EventV1 t1) {
-                return event.GetEventDate().compareTo(t1.GetEventDate());
+                return event.getEventDate().compareTo(t1.getEventDate());
             }
         });
         return copy;

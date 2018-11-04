@@ -79,8 +79,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.BinaryCorrelationFactApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Binary correlation\n");
-            System.out.print("Data set 1 size: " + trackingV1_1.getEventV1Collection().size() + "\n");
-            System.out.print("Data set 2 size: " + trackingV1_2.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
+            System.out.print("Data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");
@@ -108,8 +108,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.ScaleCorrelationFactApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Scale correlation\n");
-            System.out.print("Data set 1 size: " + trackingV1_1.getEventV1Collection().size() + "\n");
-            System.out.print("Data set 2 size: " + trackingV1_2.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
+            System.out.print("Data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");
@@ -137,8 +137,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.MultinomialCorrelationApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Rating correlation\n");
-            System.out.print("Data set 1 size: " + trackingV1_1.getEventV1Collection().size() + "\n");
-            System.out.print("Data set 2 size: " + trackingV1_2.getEventV1Collection().size() + "\n");
+            System.out.print("Data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
+            System.out.print("Data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");
@@ -221,21 +221,21 @@ public class CorrelationFactUnitTest {
     private TrackingV1 InitializeRandomScaleTracking(Random r, int bound) {
         int n = r.nextInt(bound);
         TrackingV1 tracking = new TrackingV1();
-        tracking.setEventV1Collection(new RealmList<EventV1>());
-        tracking.SetTrackingID(UUID.randomUUID());
-        tracking.SetScaleCustomization(TrackingCustomization.Optional);
-        tracking.SetCommentCustomization(TrackingCustomization.None);
-        tracking.SetRatingCustomization(TrackingCustomization.None);
+        tracking.setEventCollection(new RealmList<EventV1>());
+        tracking.setTrackingId(UUID.randomUUID());
+        tracking.setScaleCustomization(TrackingCustomization.Optional);
+        tracking.setCommentCustomization(TrackingCustomization.None);
+        tracking.setRatingCustomization(TrackingCustomization.None);
         for (int i = 0; i < n; i++) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 2) {
                 event.setScale(null);
             } else {
                 event.setScale(r.nextDouble());
             }
             event.setEventDate(DateTime.now().minus(Math.abs(r.nextInt())).toDate());
-            tracking.AddEvent(event);
+            tracking.addEvent(event);
         }
         return tracking;
     }
@@ -243,14 +243,14 @@ public class CorrelationFactUnitTest {
     private TrackingV1 InitializeRandomRatingTracking(Random r, int bound) {
         int n = r.nextInt(bound);
         TrackingV1 tracking = new TrackingV1();
-        tracking.setEventV1Collection(new RealmList<EventV1>());
-        tracking.SetTrackingID(UUID.randomUUID());
-        tracking.SetScaleCustomization(TrackingCustomization.None);
-        tracking.SetCommentCustomization(TrackingCustomization.None);
-        tracking.SetRatingCustomization(TrackingCustomization.Optional);
+        tracking.setEventCollection(new RealmList<EventV1>());
+        tracking.setTrackingId(UUID.randomUUID());
+        tracking.setScaleCustomization(TrackingCustomization.None);
+        tracking.setCommentCustomization(TrackingCustomization.None);
+        tracking.setRatingCustomization(TrackingCustomization.Optional);
         for (int i = 0; i < n; i++) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 2) {
                 event.setRating(null);
             }
@@ -258,7 +258,7 @@ public class CorrelationFactUnitTest {
                 event.setRating(new Rating(Math.abs(r.nextInt()) % 10 + 1));
             }
             event.setEventDate(DateTime.now().minus(Math.abs(r.nextInt())).toDate());
-            tracking.AddEvent(event);
+            tracking.addEvent(event);
         }
         return tracking;
     }
@@ -266,16 +266,16 @@ public class CorrelationFactUnitTest {
     private TrackingV1 InitializeRandomFrequencyTracking(Random r, int bound) {
         int n = r.nextInt(bound);
         TrackingV1 tracking = new TrackingV1();
-        tracking.setEventV1Collection(new RealmList<EventV1>());
-        tracking.SetTrackingID(UUID.randomUUID());
-        tracking.SetScaleCustomization(TrackingCustomization.None);
-        tracking.SetCommentCustomization(TrackingCustomization.None);
-        tracking.SetRatingCustomization(TrackingCustomization.None);
+        tracking.setEventCollection(new RealmList<EventV1>());
+        tracking.setTrackingId(UUID.randomUUID());
+        tracking.setScaleCustomization(TrackingCustomization.None);
+        tracking.setCommentCustomization(TrackingCustomization.None);
+        tracking.setRatingCustomization(TrackingCustomization.None);
         for (int i = 0; i < n; i++) {
             EventV1 event = new EventV1();
-            event.setEventId(UUID.randomUUID().toString());
+            event.setEventId(UUID.randomUUID());
             event.setEventDate(DateTime.now().minus(Math.abs(r.nextInt())).toDate());
-            tracking.AddEvent(event);
+            tracking.addEvent(event);
         }
         return tracking;
     }

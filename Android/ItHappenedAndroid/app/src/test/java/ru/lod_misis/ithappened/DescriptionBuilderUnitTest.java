@@ -103,17 +103,17 @@ public class DescriptionBuilderUnitTest {
         for (int i = 0; i < 12; i++) {
             EventV1 event = new EventV1();
             DateTime date = new DateTime(2018, 1, dates[i], 10, 0);
-            event.SetEventDate(date.toDate());
-            event.SetEventId(UUID.randomUUID());
-            tracking.AddEvent(event);
+            event.setEventDate(date.toDate());
+            event.setEventId(UUID.randomUUID());
+            tracking.addEvent(event);
         }
         // Тест на то, что события из будующего будут проигнорированы
         for (int i = 12; i < dates.length; i++) {
             EventV1 event = new EventV1();
             DateTime date = new DateTime(2019, 1, dates[i], 10, 0);
-            event.SetEventDate(date.toDate());
-            event.SetEventId(UUID.randomUUID());
-            tracking.AddEvent(event);
+            event.setEventDate(date.toDate());
+            event.setEventId(UUID.randomUUID());
+            tracking.addEvent(event);
         }
         return tracking;
     }
@@ -130,10 +130,10 @@ public class DescriptionBuilderUnitTest {
         Random rand = new Random();
         for (int i = 0; i < 100; i++) {
             EventV1 event = new EventV1();
-            event.SetScale((double)rand.nextInt(10 + i) + i);
-            event.SetEventDate(new DateTime(2000, i / 30 + 3, i % 30 + 1, 0, 0).toDate());
-            event.SetEventId(UUID.randomUUID());
-            tracking.AddEvent(event);
+            event.setScale((double)rand.nextInt(10 + i) + i);
+            event.setEventDate(new DateTime(2000, i / 30 + 3, i % 30 + 1, 0, 0).toDate());
+            event.setEventId(UUID.randomUUID());
+            tracking.addEvent(event);
         }
         return tracking;
     }
@@ -150,9 +150,9 @@ public class DescriptionBuilderUnitTest {
                 scaleName, "");
         for (int i = 0; i < data.size(); i++) {
             EventV1 event = new EventV1();
-            event.SetScale(data.get(i));
+            event.setScale(data.get(i));
             event.setEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1 + dayseed, 0, 0).toDate());
-            tracking.AddEvent(event);
+            tracking.addEvent(event);
         }
         return tracking;
     }

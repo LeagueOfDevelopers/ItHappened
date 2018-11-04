@@ -211,8 +211,8 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.Vi
                             IllustartionModel illustration = fact.getIllustration();
                             EventV1 eventV1 = illustration.getEventV1Ref();
                             Intent intent = new Intent(context, EventDetailsActivity.class);
-                            intent.putExtra("trackingId", eventV1.GetTrackingId().toString());
-                            intent.putExtra("eventId", eventV1.GetEventId().toString());
+                            intent.putExtra("trackingId", eventV1.getTrackingId().toString());
+                            intent.putExtra("eventId", eventV1.getEventId().toString());
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         }

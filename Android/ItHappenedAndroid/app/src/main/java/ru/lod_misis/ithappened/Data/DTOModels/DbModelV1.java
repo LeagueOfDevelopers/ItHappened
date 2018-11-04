@@ -9,21 +9,21 @@ import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
 import ru.lod_misis.ithappened.Domain.Models.Tracking;
 
 public class DbModelV1 extends RealmObject {
-    private RealmList<TrackingV1> trackingV1Collection;
+    private RealmList<TrackingV1> trackingCollection;
     @PrimaryKey
     private String userId;
 
-    public DbModelV1(List<TrackingV1> trackingV1Collection, String userId) {
-        this.trackingV1Collection =  new RealmList<>();
-        this.trackingV1Collection.addAll(trackingV1Collection);
+    public DbModelV1(List<TrackingV1> trackingCollection, String userId) {
+        this.trackingCollection =  new RealmList<>();
+        this.trackingCollection.addAll(trackingCollection);
         this.userId = userId;
     }
 
 
     public DbModelV1(DbModel dbModel){
-        this.trackingV1Collection =  new RealmList<>();
+        this.trackingCollection =  new RealmList<>();
         for (Tracking tracking : dbModel.trackingCollection) {
-            this.trackingV1Collection.add(new TrackingV1(tracking));
+            this.trackingCollection.add(new TrackingV1(tracking));
         }
         this.userId = dbModel.userId;
     }
@@ -31,12 +31,12 @@ public class DbModelV1 extends RealmObject {
     public DbModelV1(){
     }
 
-    public RealmList<TrackingV1> getTrackingV1Collection() {
-        return trackingV1Collection;
+    public RealmList<TrackingV1> getTrackingCollection() {
+        return trackingCollection;
     }
 
-    public void setTrackingV1Collection(RealmList<TrackingV1> trackingV1Collection) {
-        this.trackingV1Collection = trackingV1Collection;
+    public void setTrackingCollection(RealmList<TrackingV1> trackingCollection) {
+        this.trackingCollection = trackingCollection;
     }
 
     public String getUserId() {

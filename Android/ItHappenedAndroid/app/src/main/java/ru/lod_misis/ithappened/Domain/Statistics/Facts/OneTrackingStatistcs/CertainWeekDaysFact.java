@@ -19,7 +19,7 @@ public class CertainWeekDaysFact extends Fact {
     private List<WeekDaysFactModel> modelList = new ArrayList<>();
 
     public CertainWeekDaysFact(TrackingV1 trackingV1) {
-        trackingId = trackingV1.GetTrackingID();
+        trackingId = trackingV1.getTrackingId();
         this.trackingV1 = trackingV1;
     }
 
@@ -27,7 +27,7 @@ public class CertainWeekDaysFact extends Fact {
     public void calculateData() {
         List<EventV1> eventV1Collection = new ArrayList<>();
 
-        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
+        for(EventV1 eventV1 : trackingV1.getEventHistory()){
             if(!eventV1.isDeleted()) eventV1Collection.add(eventV1);
         }
 
@@ -38,7 +38,7 @@ public class CertainWeekDaysFact extends Fact {
             Calendar c = Calendar.getInstance();
             int eventCount = 0;
             for (EventV1 eventV1 : eventV1Collection) {
-                c.setTime(eventV1.GetEventDate());
+                c.setTime(eventV1.getEventDate());
                 if(c.get(Calendar.DAY_OF_WEEK) == i)
                     eventCount++;
             }

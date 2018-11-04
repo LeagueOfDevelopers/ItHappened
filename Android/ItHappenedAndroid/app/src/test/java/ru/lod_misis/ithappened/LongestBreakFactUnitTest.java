@@ -26,9 +26,9 @@ public class LongestBreakFactUnitTest {
         Integer[] days = {1, 2, 2, 3, 3, 4, 5, 5, 20};
         for (int i = 0; i < 9; i++) {
             EventV1 event = new EventV1();
-            event.SetEventId(UUID.randomUUID());
-            event.SetEventDate(new DateTime(2000, 1, days[i], 0, 0).toDate());
-            tracking1.AddEvent(event);
+            event.setEventId(UUID.randomUUID());
+            event.setEventDate(new DateTime(2000, 1, days[i], 0, 0).toDate());
+            tracking1.addEvent(event);
         }
         LongestBreakFact fact = new LongestBreakFact(tracking1);
         fact.calculateData();

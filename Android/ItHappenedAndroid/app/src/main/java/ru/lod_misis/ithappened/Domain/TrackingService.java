@@ -40,7 +40,7 @@ public class TrackingService {
                              String color)
     {
         TrackingV1 tracking = trackingCollection.GetTracking(trackingId);
-        tracking.EditTracking(editedCounter, editedScale, editedComment,editedGeoposition,
+        tracking.editTracking(editedCounter, editedScale, editedComment,editedGeoposition,
                 editedPhoto, editedTrackingName, scaleName, color);
 
         trackingCollection.editTracking(tracking);
@@ -56,11 +56,11 @@ public class TrackingService {
                           Date newDate)
     {
         EventV1 event = trackingCollection.getEvent(eventId);
-        event.EditScale(newScale);
-        event.EditComment(newComment);
-        event.EditValueOfRating(newRating);
-        event.EditGeoposition(newLotitude, newLongitude);
-        event.EditPhoto(newPhoto);
+        event.editScale(newScale);
+        event.editComment(newComment);
+        event.editValueOfRating(newRating);
+        event.editGeoposition(newLotitude, newLongitude);
+        event.editPhoto(newPhoto);
         trackingCollection.editEvent(event);
     }
 

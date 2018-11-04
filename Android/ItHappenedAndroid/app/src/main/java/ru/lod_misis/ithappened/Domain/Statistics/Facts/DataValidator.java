@@ -13,31 +13,31 @@ public class DataValidator {
     public boolean CheckTrackingForBinaryData(TrackingV1 tracking, int limitEventCount) {
         return tracking != null
                 && !tracking.isDeleted()
-                && tracking.GetEventHistory() != null
-                && CheckEventsForNotDeletedAndDate(tracking.GetEventHistory(), limitEventCount);
+                && tracking.getEventHistory() != null
+                && CheckEventsForNotDeletedAndDate(tracking.getEventHistory(), limitEventCount);
     }
 
     public boolean CheckTrackingForScaleData(TrackingV1 tracking, int limitEventCount) {
         return tracking != null
                 && !tracking.isDeleted()
-                && tracking.GetEventHistory() != null
-                && tracking.GetScaleCustomization() != TrackingCustomization.None
-                && CheckScaleEventCollection(tracking.GetEventHistory(), limitEventCount);
+                && tracking.getEventHistory() != null
+                && tracking.getScaleCustomization() != TrackingCustomization.None
+                && CheckScaleEventCollection(tracking.getEventHistory(), limitEventCount);
     }
 
     public boolean CheckTrackingForRatingData(TrackingV1 tracking, int limitEventCount) {
         return tracking != null
                 && !tracking.isDeleted()
-                && tracking.GetEventHistory() != null
-                && tracking.GetRatingCustomization() != TrackingCustomization.None
-                && CheckRatingEventCollection(tracking.GetEventHistory(), limitEventCount);
+                && tracking.getEventHistory() != null
+                && tracking.getRatingCustomization() != TrackingCustomization.None
+                && CheckRatingEventCollection(tracking.getEventHistory(), limitEventCount);
     }
 
     public boolean CheckScaleEventCollection(List<EventV1> events, int eventCountLimit) {
         int count = 0;
         for (EventV1 e: events) {
             if (!e.isDeleted()
-                    && e.GetScale() != null
+                    && e.getScale() != null
                     && new DateTime(e.getEventDate()).isBefore(DateTime.now())) {
                 count++;
             }
@@ -49,7 +49,7 @@ public class DataValidator {
         int count = 0;
         for (EventV1 e: events) {
             if (!e.isDeleted()
-                    && e.GetRating() != null
+                    && e.getRating() != null
                     && new DateTime(e.getEventDate()).isBefore(DateTime.now())) {
                 count++;
             }

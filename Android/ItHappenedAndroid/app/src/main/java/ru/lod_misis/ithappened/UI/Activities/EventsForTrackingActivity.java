@@ -60,8 +60,6 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         ItHappenedApplication.getAppComponent().inject(this);
 
-        setupActionBar();
-
         Intent intent = getIntent();
 
         trackingId = UUID.fromString(intent.getStringExtra("id"));
@@ -69,8 +67,10 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         eventV1s = trackingsCollection.getEventCollection(trackingId);
 
+        setupActionBar();
+
         for (int i = 0; i < eventV1s.size(); i++) {
-            if ( eventV1s.get(i).GetStatus() ) {
+            if ( eventV1s.get(i).isDeleted() ) {
                 eventV1s.remove(i);
             }
         }
@@ -78,7 +78,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         List<EventV1> visibleEventV1s = new ArrayList<>();
 
         for (int i = 0; i < eventV1s.size(); i++) {
-            if ( !eventV1s.get(i).GetStatus() ) {
+            if ( !eventV1s.get(i).isDeleted() ) {
                 visibleEventV1s.add(eventV1s.get(i));
             }
         }
@@ -87,7 +87,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
             hintForEvents.setVisibility(View.INVISIBLE);
         }
 
-        setTitle(thisTrackingV1.GetTrackingName());
+        setTitle(thisTrackingV1.getTrackingName());
 
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
         eventsAdpt = new EventsAdapter(visibleEventV1s , this , 0 , trackingsCollection);
@@ -98,7 +98,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(thisTrackingV1.GetTrackingName());
+        actionBar.setTitle(thisTrackingV1.getTrackingName());
     }
 
     @Override
@@ -112,7 +112,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
             public void onClick (View view) {
 
                 Intent intent = new Intent(getApplicationContext() , AddNewEventActivity.class);
-                intent.putExtra("trackingId" , thisTrackingV1.GetTrackingID().toString());
+                intent.putExtra("trackingId" , thisTrackingV1.getTrackingId().toString());
 
                 YandexMetrica.reportEvent(getString(R.string.metrica_user_press_button_add_event));
 

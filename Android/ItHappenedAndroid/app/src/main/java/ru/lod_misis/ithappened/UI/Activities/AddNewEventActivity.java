@@ -37,7 +37,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
@@ -350,7 +349,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
         initToolbar();
 
-        if ( trackingV1.GetScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null ) {
+        if ( trackingV1.getScaleCustomization() != TrackingCustomization.None && trackingV1.getScaleName() != null ) {
             scaleType.setText(trackingV1.getScaleName());
         }
 
@@ -451,9 +450,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
 
             }
-            jobId = AllId.addNewValue(trackingV1.GetTrackingID());
+            jobId = AllId.addNewValue(trackingV1.getTrackingId());
             JobScheduler jobScheduler = ( JobScheduler ) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.cancel(trackingV1.GetEventHistory().size() - 1);
+            jobScheduler.cancel(trackingV1.getEventHistory().size() - 1);
             planningNotification();
         } else {
             showMessage("Заполните поля с *");
@@ -462,11 +461,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     private void calculateState () {
-        commentState = calculateState(trackingV1.GetCommentCustomization());
-        ratingState = calculateState(trackingV1.GetRatingCustomization());
-        scaleState = calculateState(trackingV1.GetScaleCustomization());
-        geopositionState = calculateState(trackingV1.GetGeopositionCustomization());
-        photoState = calculateState(trackingV1.GetPhotoCustomization());
+        commentState = calculateState(trackingV1.getCommentCustomization());
+        ratingState = calculateState(trackingV1.getRatingCustomization());
+        scaleState = calculateState(trackingV1.getScaleCustomization());
+        geopositionState = calculateState(trackingV1.getGeopositionCustomization());
+        photoState = calculateState(trackingV1.getPhotoCustomization());
     }
 
     private void calculateUx () {
@@ -481,7 +480,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(trackingV1.GetTrackingName());
+        actionBar.setTitle(trackingV1.getTrackingName());
     }
 
     private void initDate () {
@@ -569,11 +568,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     private Long calculateAverangeTime (TrackingV1 trackingV1) {
         int eventCount = 0;
         Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        for (EventV1 eventV1 : trackingV1.GetEventHistory()) {
+        for (EventV1 eventV1 : trackingV1.getEventHistory()) {
             if ( !eventV1.isDeleted() ) {
                 eventCount++;
-                if ( eventV1.GetEventDate().before(dateOfFirstEvent) )
-                    dateOfFirstEvent = eventV1.GetEventDate();
+                if ( eventV1.getEventDate().before(dateOfFirstEvent) )
+                    dateOfFirstEvent = eventV1.getEventDate();
             }
         }
         return (new Date().getTime() - dateOfFirstEvent.getTime()) / eventCount;
@@ -582,7 +581,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     private void planningNotification () {
         Long averangeTime = null;
         Long oneDay = Long.valueOf(1000 * 60 * 60 * 24);
-        if ( trackingV1.GetEventHistory().size() < 10 ) {
+        if ( trackingV1.getEventHistory().size() < 10 ) {
             return;
         }
         averangeTime = calculateAverangeTime(trackingV1);

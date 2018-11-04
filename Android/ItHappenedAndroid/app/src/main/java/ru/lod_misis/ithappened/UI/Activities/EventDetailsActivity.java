@@ -180,40 +180,40 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     @Override
     public void startConfigurationView () {
         showOrNotNullCard();
-        if ( thisEventV1.GetRating() != null ) {
+        if ( thisEventV1.getRating() != null ) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+            ratingValue.setRating(thisEventV1.getRating().getRating() / 2.0f);
         } else {
             ratingValue.setVisibility(View.GONE);
         }
         dateValue.setText(format.format(thisDate));
 
-        if ( thisEventV1.GetRating() != null ) {
+        if ( thisEventV1.getRating() != null ) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
-            ratingValue.setRating(thisEventV1.GetRating().getRating() / 2.0f);
+            ratingValue.setRating(thisEventV1.getRating().getRating() / 2.0f);
         } else {
             ratingValue.setVisibility(View.GONE);
         }
 
-        if ( thisEventV1.GetComment() != null ) {
+        if ( thisEventV1.getComment() != null ) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             commentValue.setVisibility(View.VISIBLE);
-            commentValue.setText(thisEventV1.GetComment());
+            commentValue.setText(thisEventV1.getComment());
         } else {
             commentValue.setVisibility(View.GONE);
             commentHint.setVisibility(View.GONE);
         }
 
-        if ( thisEventV1.GetScale() != null ) {
+        if ( thisEventV1.getScale() != null ) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.GetScale().doubleValue()) + " " + thisTrackingV1.getScaleName());
+            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale().doubleValue()) + " " + thisTrackingV1.getScaleName());
         } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);
@@ -247,13 +247,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void startedConfiguration (TrackingService collection , UUID trackingId , UUID eventId) {
-        setTitle(collection.GetTrackingById(trackingId).GetTrackingName());
+        setTitle(collection.GetTrackingById(trackingId).getTrackingName());
         this.eventId = eventId;
         this.trackingId = trackingId;
-        thisEventV1 = collection.GetTrackingById(trackingId).GetEvent(eventId);
+        thisEventV1 = collection.GetTrackingById(trackingId).getEvent(eventId);
         thisTrackingV1 = collection.GetTrackingById(trackingId);
-        thisEventV1 = thisTrackingV1.GetEvent(eventId);
-        thisDate = thisEventV1.GetEventDate();
+        thisEventV1 = thisTrackingV1.getEvent(eventId);
+        thisDate = thisEventV1.getEventDate();
 
         Locale loc = new Locale("ru");
         format = new SimpleDateFormat("dd.MM.yyyy HH:mm" , loc);
@@ -288,17 +288,17 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     }
 
     private void showOrNotNullCard () {
-        if ( (thisTrackingV1.GetCommentCustomization() == TrackingCustomization.None
-                && thisTrackingV1.GetScaleCustomization() == TrackingCustomization.None
-                && thisTrackingV1.GetRatingCustomization() == TrackingCustomization.None
-                && thisTrackingV1.GetGeopositionCustomization() == TrackingCustomization.None
-                && thisTrackingV1.GetPhotoCustomization() == TrackingCustomization.None)
+        if ( (thisTrackingV1.getCommentCustomization() == TrackingCustomization.None
+                && thisTrackingV1.getScaleCustomization() == TrackingCustomization.None
+                && thisTrackingV1.getRatingCustomization() == TrackingCustomization.None
+                && thisTrackingV1.getGeopositionCustomization() == TrackingCustomization.None
+                && thisTrackingV1.getPhotoCustomization() == TrackingCustomization.None)
                 ||
-                ((thisTrackingV1.GetCommentCustomization() == TrackingCustomization.Optional && thisEventV1.GetComment() == null)
-                        && (thisTrackingV1.GetScaleCustomization() == TrackingCustomization.Optional && thisEventV1.GetScale() == null)
-                        && (thisTrackingV1.GetRatingCustomization() == TrackingCustomization.Optional && thisEventV1.GetRating() == null)
-                        && (thisTrackingV1.GetGeopositionCustomization() == TrackingCustomization.Optional && thisEventV1.getLongitude() == null && thisEventV1.getLotitude() == null)
-                        && (thisTrackingV1.GetPhotoCustomization() == TrackingCustomization.Optional && thisEventV1.getPhoto() == null)
+                ((thisTrackingV1.getCommentCustomization() == TrackingCustomization.Optional && thisEventV1.getComment() == null)
+                        && (thisTrackingV1.getScaleCustomization() == TrackingCustomization.Optional && thisEventV1.getScale() == null)
+                        && (thisTrackingV1.getRatingCustomization() == TrackingCustomization.Optional && thisEventV1.getRating() == null)
+                        && (thisTrackingV1.getGeopositionCustomization() == TrackingCustomization.Optional && thisEventV1.getLongitude() == null && thisEventV1.getLotitude() == null)
+                        && (thisTrackingV1.getPhotoCustomization() == TrackingCustomization.Optional && thisEventV1.getPhoto() == null)
                 )
                 ) {
             valuesCard.setVisibility(View.GONE);

@@ -25,15 +25,15 @@ public class WorstEvent extends Fact {
     public WorstEvent(TrackingV1 trackingV1)
     {
         this.trackingV1 = trackingV1;
-        this.trackingId = trackingV1.GetTrackingID();
+        this.trackingId = trackingV1.getTrackingId();
         eventV1Collection = new ArrayList<>();
     }
 
     @Override
     public void calculateData() {
 
-        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
-            if(!eventV1.GetStatus() && eventV1.GetRating()!=null){
+        for(EventV1 eventV1 : trackingV1.getEventHistory()){
+            if(!eventV1.isDeleted() && eventV1.getRating()!=null){
                 eventV1Collection.add(eventV1);
             }
         }
@@ -42,8 +42,8 @@ public class WorstEvent extends Fact {
 
         for(EventV1 eventV1 : eventV1Collection)
         {
-            if (worstEventV1.GetRating().getRating() > eventV1.GetRating().getRating()
-                    && worstEventV1.GetEventDate().after(eventV1.GetEventDate()))
+            if (worstEventV1.getRating().getRating() > eventV1.getRating().getRating()
+                    && worstEventV1.getEventDate().after(eventV1.getEventDate()))
                 worstEventV1 = eventV1;
         }
 
@@ -55,7 +55,7 @@ public class WorstEvent extends Fact {
 
     @Override
     public void calculatePriority() {
-        priority = 10.0 - worstEventV1.GetRating().getRating();
+        priority = 10.0 - worstEventV1.getRating().getRating();
     }
 
     @Override
@@ -66,12 +66,12 @@ public class WorstEvent extends Fact {
 
         String toReturn = String.format("Событие <b>%s</b> с самым низким рейтингом <b>%s</b> произошло <b>%s</b>, ",
                 trackingV1.getTrackingName(),
-                decimalFormat.format(worstEventV1.GetRating().getRating()/2.0),
-                format.format(worstEventV1.GetEventDate()));
+                decimalFormat.format(worstEventV1.getRating().getRating()/2.0),
+                format.format(worstEventV1.getEventDate()));
 
-        if (worstEventV1.GetComment() == null) return toReturn;
+        if (worstEventV1.getComment() == null) return toReturn;
 
-        return String.format(toReturn, " с комментарием <b>%s</b>", worstEventV1.GetComment());
+        return String.format(toReturn, " с комментарием <b>%s</b>", worstEventV1.getComment());
     }
 
     public EventV1 getWorstEventV1() { return worstEventV1; }

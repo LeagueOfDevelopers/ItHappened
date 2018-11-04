@@ -47,7 +47,7 @@ public class ProfileSettingsFragmentPresenterImpl implements ProfileSettingsFrag
                                            .subscribe(new Action1<SynchronizationRequest>() {
                                                @Override
                                                public void call(SynchronizationRequest request) {
-                                                   saveDataToDb(request.getTrackingV1Collection());
+                                                   saveDataToDb(request.getTrackingCollection());
                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
                                                    String lastId = sharedPreferences.getString("UserId", "");
                                                    editor.clear();

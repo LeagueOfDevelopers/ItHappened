@@ -16,7 +16,7 @@ public class TrackingEventsCountFact extends Fact {
 
     public TrackingEventsCountFact(TrackingV1 trackingV1)
     {
-        trackingId = trackingV1.GetTrackingID();
+        trackingId = trackingV1.getTrackingId();
         this.trackingV1 = trackingV1;
         eventCount = 0;
     }
@@ -25,7 +25,7 @@ public class TrackingEventsCountFact extends Fact {
     @Override
     public void calculateData() {
 
-        for (EventV1 eventV1 : trackingV1.getEventV1Collection()) {
+        for (EventV1 eventV1 : trackingV1.getEventCollection()) {
             if (!eventV1.isDeleted()) eventCount++;
         }
         calculatePriority();

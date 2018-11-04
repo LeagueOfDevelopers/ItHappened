@@ -25,7 +25,7 @@ public class WeekWithLargestEventCountFact extends Fact {
         Events = new ArrayList<>();
         for (TrackingV1 t: trackings) {
             if (t.isDeleted()) continue;
-            for (EventV1 e: t.getEventV1Collection()) {
+            for (EventV1 e: t.getEventCollection()) {
                 if (e.isDeleted()) continue;
                 Events.add(e);
             }
@@ -63,18 +63,18 @@ public class WeekWithLargestEventCountFact extends Fact {
     private void FindWeekWithLargestEventCount() {
         List<TimeSpanEventData> counts = new ArrayList<>();
         for (EventV1 e: Events) {
-            DateTime date = new DateTime(e.GetEventDate());
+            DateTime date = new DateTime(e.getEventDate());
             boolean weekFound = false;
             for (TimeSpanEventData d: counts) {
                 if (d.IsItThisWeek(date)) {
                     weekFound = true;
-                    d.CountIncrement(e.GetEventId());
+                    d.CountIncrement(e.getEventId());
                     break;
                 }
             }
             if (!weekFound) {
                 TimeSpanEventData data = new TimeSpanEventData(date);
-                data.CountIncrement(e.GetEventId());
+                data.CountIncrement(e.getEventId());
                 counts.add(data);
             }
         }
@@ -92,7 +92,7 @@ public class WeekWithLargestEventCountFact extends Fact {
         Collections.sort(copy, new Comparator<EventV1>() {
             @Override
             public int compare(EventV1 event, EventV1 t1) {
-                return event.GetEventDate().compareTo(t1.GetEventDate());
+                return event.getEventDate().compareTo(t1.getEventDate());
             }
         });
         return copy;

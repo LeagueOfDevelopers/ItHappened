@@ -49,7 +49,6 @@ import ru.lod_misis.ithappened.Data.Repositories.ITrackingRepository;
 import ru.lod_misis.ithappened.UI.Presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.UI.Recyclers.EventsAdapter;
-import ru.lod_misis.ithappened.UI.Recyclers.PagonationScrollListener;
 import ru.lod_misis.ithappened.UI.ItHappenedApplication;
 
 public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
@@ -490,9 +489,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             ArrayList<EventV1> refreshedEvents = new ArrayList<>();
             if (adapterEvents != null)
                 for (EventV1 event : adapterEvents) {
-                    collection.GetTracking(event.GetTrackingId());
-                    EventV1 addAbleEvent = collection.GetTracking(event.GetTrackingId()).GetEvent(event.GetEventId());
-                    if (!addAbleEvent.GetStatus())
+                    collection.GetTracking(event.getTrackingId());
+                    EventV1 addAbleEvent = collection.GetTracking(event.getTrackingId()).getEvent(event.getEventId());
+                    if (!addAbleEvent.isDeleted())
                         refreshedEvents.add(addAbleEvent);
                 }
             if (refreshedEvents.size() == 0) {
@@ -560,8 +559,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     private void setUuidsCollection(List<UUID> uuids) {
         for (int i = 0; i < trackingService.GetTrackingCollection().size(); i++) {
-            if (!trackingService.GetTrackingCollection().get(i).GetStatus()) {
-                uuids.add(trackingService.GetTrackingCollection().get(i).GetTrackingID());
+            if (!trackingService.GetTrackingCollection().get(i).setDeleted()) {
+                uuids.add(trackingService.GetTrackingCollection().get(i).getTrackingId());
             }
         }
     }

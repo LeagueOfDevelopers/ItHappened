@@ -135,11 +135,12 @@ public class UserActionsActivity extends AppCompatActivity
 
         trackFrg = new TrackingsFragment();
         fTrans = getFragmentManager().beginTransaction();
+        layoutFrg = findViewById(R.id.trackingsFrg);
         fTrans.replace(R.id.trackingsFrg , trackFrg).addToBackStack(null);
         fTrans.commit();
 
         syncPB = findViewById(R.id.syncPB);
-        layoutFrg = findViewById(R.id.trackingsFrg);
+
 
         factCalculator.calculateFacts();
 

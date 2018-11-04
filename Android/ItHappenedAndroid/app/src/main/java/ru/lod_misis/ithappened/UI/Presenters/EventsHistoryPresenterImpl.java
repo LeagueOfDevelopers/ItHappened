@@ -116,9 +116,9 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
         String allText = "";
 
         for (int i = 0; i < trackings.size(); i++) {
-            if ( !trackings.get(i).GetStatus() ) {
-                strings.add(trackings.get(i).GetTrackingName());
-                idCollection.add(trackings.get(i).GetTrackingID());
+            if ( !trackings.get(i).setDeleted() ) {
+                strings.add(trackings.get(i).getTrackingName());
+                idCollection.add(trackings.get(i).getTrackingId());
                 selectedItems.add(true);
             }
         }

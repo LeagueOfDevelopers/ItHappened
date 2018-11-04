@@ -57,9 +57,9 @@ public class TrackingRepository implements ITrackingRepository {
                 .equalTo("userId", userId).findFirst();
 
         if (model == null) return new ArrayList<>();
-        if (model.getTrackingV1Collection() == null) return new ArrayList<>();
+        if (model.getTrackingCollection() == null) return new ArrayList<>();
 
-        List<TrackingV1> trackingV1Collection = model.getTrackingV1Collection().where()
+        List<TrackingV1> trackingV1Collection = model.getTrackingCollection().where()
                 .equalTo("isDeleted", false)
                 .findAllSorted("dateOfChange", Sort.DESCENDING);
 
@@ -72,7 +72,7 @@ public class TrackingRepository implements ITrackingRepository {
         boolean contains = false;
 
         if (realm.where(TrackingV1.class)
-                .equalTo("trackingId", trackingV1.getTrackingId()).findFirst() != null)
+                .equalTo("trackingId", trackingV1.getTrackingId().toString()).findFirst() != null)
             contains = true;
 
         DbModelV1 model = realm.where(DbModelV1.class)
@@ -84,7 +84,7 @@ public class TrackingRepository implements ITrackingRepository {
         }
 
         if (!contains) {
-            model.getTrackingV1Collection().add(trackingV1);
+            model.getTrackingCollection().add(trackingV1);
             realm.copyToRealmOrUpdate(model);
         } else throw new IllegalArgumentException("TrackingV1 with such ID already exists");
 
@@ -99,7 +99,7 @@ public class TrackingRepository implements ITrackingRepository {
             throw new IllegalArgumentException("TrackingV1 with such ID doesn't exists");
 
         realm.beginTransaction();
-        trackingV1.AddEvent(newEventV1);
+        trackingV1.addEvent(newEventV1);
 
         realm.commitTransaction();
     }
@@ -116,11 +116,11 @@ public class TrackingRepository implements ITrackingRepository {
 
     public void editEvent(EventV1 event) {
         if (realm.where(TrackingV1.class)
-                .equalTo("trackingId", event.GetTrackingId().toString()).findFirst() == null)
+                .equalTo("trackingId", event.getTrackingId().toString()).findFirst() == null)
             throw new IllegalArgumentException("Tracking with such ID doesn't exists");
 
         if (realm.where(EventV1.class)
-                .equalTo("eventId", event.GetEventId().toString()).findFirst() == null)
+                .equalTo("eventId", event.getEventId().toString()).findFirst() == null)
             throw new IllegalArgumentException("Event with such ID doesn't exists");
 
         realm.beginTransaction();
@@ -130,7 +130,7 @@ public class TrackingRepository implements ITrackingRepository {
 
     public void editTracking(TrackingV1 tracking) {
         TrackingV1 trackingV1 = realm.where(TrackingV1.class)
-                .equalTo("trackingId", tracking.getTrackingId()).findFirst();
+                .equalTo("trackingId", tracking.getTrackingId().toString()).findFirst();
 
         if (trackingV1 == null)
             throw new IllegalArgumentException("TrackingV1 with such ID doesn't exists");
@@ -148,7 +148,7 @@ public class TrackingRepository implements ITrackingRepository {
             throw new IllegalArgumentException("TrackingV1 with such ID doesn't exists");
 
         realm.beginTransaction();
-        trackingV1.DeleteTracking();
+        trackingV1.deleteTracking();
         realm.commitTransaction();
     }
 
@@ -174,14 +174,14 @@ public class TrackingRepository implements ITrackingRepository {
         DbModelV1 dbModel = realm.where(DbModelV1.class).equalTo("userId", userId).findFirst();
 
         if (dbModel == null) return new ArrayList<>();
-        if (dbModel.getTrackingV1Collection() == null) return new ArrayList<>();
+        if (dbModel.getTrackingCollection() == null) return new ArrayList<>();
 
-        RealmResults<TrackingV1> trackingResult = dbModel.getTrackingV1Collection().where().
+        RealmResults<TrackingV1> trackingResult = dbModel.getTrackingCollection().where().
                 equalTo("isDeleted", false).findAll();
         String[] idArray = new String[trackingResult.size()];
 
         for (int i =0; i<trackingResult.size(); i++) {
-            idArray[i] = trackingResult.get(i).getTrackingId();
+            idArray[i] = trackingResult.get(i).getTrackingId().toString();
         }
 
         RealmResults<EventV1> events = realm.where(EventV1.class)
@@ -219,10 +219,10 @@ public class TrackingRepository implements ITrackingRepository {
         if (ratingComparison != null && rating != null) {
             List<EventV1> filteredEventV1s = new ArrayList<>();
             for (EventV1 eventV1 : eventsToReturn) {
-                if (eventV1.GetRating() != null)
+                if (eventV1.getRating() != null)
                     if (CompareValues(ratingComparison,
-                            eventV1.GetRating().GetRatingValue().doubleValue(),
-                            rating.GetRatingValue().doubleValue()))
+                            eventV1.getRating().getRating().doubleValue(),
+                            rating.getRating().doubleValue()))
                         filteredEventV1s.add(eventV1);
             }
 
@@ -250,7 +250,7 @@ public class TrackingRepository implements ITrackingRepository {
         realm.beginTransaction();
         List<EventV1> collection = realm.where(TrackingV1.class)
                 .equalTo("trackingId", trackingId.toString()).findFirst()
-                .GetEventHistory();
+                .getEventHistory();
         realm.commitTransaction();
 
         return realm.copyFromRealm(collection);

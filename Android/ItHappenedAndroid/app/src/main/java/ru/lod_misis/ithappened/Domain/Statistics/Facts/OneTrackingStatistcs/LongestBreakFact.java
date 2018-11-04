@@ -22,8 +22,8 @@ public class LongestBreakFact extends Fact {
 
     public LongestBreakFact(TrackingV1 tracking) {
         TrackingName = tracking.getTrackingName();
-        trackingId = tracking.GetTrackingID();
-        Events = SelectNotDeletedEventsInThePast(tracking.getEventV1Collection());
+        trackingId = tracking.getTrackingId();
+        Events = SelectNotDeletedEventsInThePast(tracking.getEventCollection());
     }
 
     public BreakData getLongestBreak() {
@@ -70,10 +70,10 @@ public class LongestBreakFact extends Fact {
             long delta = copy.get(i + 1).getEventDate().getTime() - copy.get(i).getEventDate().getTime();
             if (delta > maxInterval) {
                 BreakData point = new BreakData(
-                        copy.get(i).GetEventDate(),
-                        copy.get(i + 1).GetEventDate(),
-                        copy.get(i).GetEventId(),
-                        copy.get(i + 1).GetEventId());
+                        copy.get(i).getEventDate(),
+                        copy.get(i + 1).getEventDate(),
+                        copy.get(i).getEventId(),
+                        copy.get(i + 1).getEventId());
                 if (IsBreakSignificant(point)) {
                     data = point;
                     maxInterval = delta;
@@ -88,8 +88,8 @@ public class LongestBreakFact extends Fact {
         Duration tripleAverange = Duration.ZERO;
         boolean IsSignificant = true;
         for (int i = 0; i < copy.size() - 1; i++) {
-            tripleAverange = tripleAverange.plus((copy.get(i + 1).GetEventDate().getTime() -
-                    copy.get(i).GetEventDate().getTime()) * 3 / (copy.size() - 1));
+            tripleAverange = tripleAverange.plus((copy.get(i + 1).getEventDate().getTime() -
+                    copy.get(i).getEventDate().getTime()) * 3 / (copy.size() - 1));
         }
         if (tripleAverange.isLongerThan(dataToCheck.getDuration())) IsSignificant = false;
         if (new DateTime().minusDays(7).isBefore(dataToCheck.getSecondEventDate().getTime())) {
@@ -108,7 +108,7 @@ public class LongestBreakFact extends Fact {
         Collections.sort(copy, new Comparator<EventV1>() {
             @Override
             public int compare(EventV1 event, EventV1 t1) {
-                return event.GetEventDate().compareTo(t1.GetEventDate());
+                return event.getEventDate().compareTo(t1.getEventDate());
             }
         });
         return copy;
