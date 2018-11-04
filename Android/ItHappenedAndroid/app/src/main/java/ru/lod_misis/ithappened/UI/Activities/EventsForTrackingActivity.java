@@ -60,14 +60,14 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
         ItHappenedApplication.getAppComponent().inject(this);
 
-        setupActionBar();
-
         Intent intent = getIntent();
 
         trackingId = UUID.fromString(intent.getStringExtra("id"));
         thisTrackingV1 = trackingsCollection.GetTracking(trackingId);
 
         eventV1s = trackingsCollection.getEventCollection(trackingId);
+
+        setupActionBar();
 
         for (int i = 0; i < eventV1s.size(); i++) {
             if ( eventV1s.get(i).isDeleted() ) {
