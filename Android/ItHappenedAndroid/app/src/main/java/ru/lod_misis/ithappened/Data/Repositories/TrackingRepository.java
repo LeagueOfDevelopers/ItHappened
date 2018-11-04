@@ -57,9 +57,9 @@ public class TrackingRepository implements ITrackingRepository {
                 .equalTo("userId", userId).findFirst();
 
         if (model == null) return new ArrayList<>();
-        if (model.getTrackingV1Collection() == null) return new ArrayList<>();
+        if (model.getTrackingCollection() == null) return new ArrayList<>();
 
-        List<TrackingV1> trackingV1Collection = model.getTrackingV1Collection().where()
+        List<TrackingV1> trackingV1Collection = model.getTrackingCollection().where()
                 .equalTo("isDeleted", false)
                 .findAllSorted("dateOfChange", Sort.DESCENDING);
 
@@ -84,7 +84,7 @@ public class TrackingRepository implements ITrackingRepository {
         }
 
         if (!contains) {
-            model.getTrackingV1Collection().add(trackingV1);
+            model.getTrackingCollection().add(trackingV1);
             realm.copyToRealmOrUpdate(model);
         } else throw new IllegalArgumentException("TrackingV1 with such ID already exists");
 
@@ -174,9 +174,9 @@ public class TrackingRepository implements ITrackingRepository {
         DbModelV1 dbModel = realm.where(DbModelV1.class).equalTo("userId", userId).findFirst();
 
         if (dbModel == null) return new ArrayList<>();
-        if (dbModel.getTrackingV1Collection() == null) return new ArrayList<>();
+        if (dbModel.getTrackingCollection() == null) return new ArrayList<>();
 
-        RealmResults<TrackingV1> trackingResult = dbModel.getTrackingV1Collection().where().
+        RealmResults<TrackingV1> trackingResult = dbModel.getTrackingCollection().where().
                 equalTo("isDeleted", false).findAll();
         String[] idArray = new String[trackingResult.size()];
 
