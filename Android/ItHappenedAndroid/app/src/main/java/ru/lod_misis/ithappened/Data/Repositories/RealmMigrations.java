@@ -46,11 +46,11 @@ public class RealmMigrations implements RealmMigration {
             newTrackingSchema.addField("dateOfChange", Date.class);
             newTrackingSchema.addField("trackingDate", Date.class);
             newTrackingSchema.addField("isDeleted", boolean.class);
-            newTrackingSchema.addRealmListField("eventV1Collection", newEventSchema);
+            newTrackingSchema.addRealmListField("eventCollection", newEventSchema);
 
 
             newDbModelSchema.addField("userId", String.class).addPrimaryKey("userId");
-            newDbModelSchema.addRealmListField("trackingV1Collection", newTrackingSchema);
+            newDbModelSchema.addRealmListField("trackingCollection", newTrackingSchema);
 
             oldVersion++;
         }
