@@ -11,21 +11,21 @@ public class MostFrequentEventFactUnitTests {
         TrackingV1 tracking = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
         TrackingV1 secondTracking = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
 
-        EventV1 eventFirst = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
-        EventV1 eventSecond = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
-        EventV1 eventThird = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
+        EventV1 eventFirst = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
+        EventV1 eventSecond = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
+        EventV1 eventThird = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
 
-        EventV1 secondEventFirst = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
-        EventV1 secondEventSecond = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
-        EventV1 secondEventThird = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
+        EventV1 secondEventFirst = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
+        EventV1 secondEventSecond = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
+        EventV1 secondEventThird = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
 
-        tracking.AddEvent(eventFirst);
-        tracking.AddEvent(eventSecond);
-        tracking.AddEvent(eventThird);
+        tracking.addEvent(eventFirst);
+        tracking.addEvent(eventSecond);
+        tracking.addEvent(eventThird);
 
-        secondTracking.AddEvent(secondEventFirst);
-        secondTracking.AddEvent(secondEventSecond);
-        secondTracking.AddEvent(secondEventThird);
+        secondTracking.addEvent(secondEventFirst);
+        secondTracking.addEvent(secondEventSecond);
+        secondTracking.addEvent(secondEventThird);
 
         List<TrackingV1> trackingList = new ArrayList<>();
         trackingList.add(tracking);
@@ -45,51 +45,51 @@ public class MostFrequentEventFactUnitTests {
         TrackingV1 tracking = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
         TrackingV1 secondTracking = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
 
-        EventV1 eventFirst = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
+        EventV1 eventFirst = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
         Date date = new Date();
         date.setDate(15);
         date.setMonth(03);
         date.setYear(2018-1900);
-        eventFirst.EditDate(date);
-        EventV1 eventSecond = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
+        eventFirst.editDate(date);
+        EventV1 eventSecond = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
         date = new Date();
         date.setDate(15);
         date.setMonth(03);
         date.setYear(2018-1900);
-        eventSecond.EditDate(date);
-        EventV1 eventThird = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
+        eventSecond.editDate(date);
+        EventV1 eventThird = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
         date = new Date();
         date.setDate(15);
         date.setMonth(03);
         date.setYear(2018-1900);
-        eventThird.EditDate(date);
+        eventThird.editDate(date);
 
-        EventV1 secondEventFirst = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
+        EventV1 secondEventFirst = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
         date = new Date();
         date.setDate(15);
         date.setMonth(03);
         date.setYear(2018-1900);
-        secondEventFirst.EditDate(date);
-        EventV1 secondEventSecond = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
+        secondEventFirst.editDate(date);
+        EventV1 secondEventSecond = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
         date = new Date();
         date.setDate(15);
         date.setMonth(03);
         date.setYear(2018-1900);
-        secondEventSecond.EditDate(date);
-        EventV1 secondEventThird = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
+        secondEventSecond.editDate(date);
+        EventV1 secondEventThird = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
         date = new Date();
         date.setDate(15);
         date.setMonth(03);
         date.setYear(2018-1900);
-        secondEventThird.EditDate(date);
+        secondEventThird.editDate(date);
 
-        tracking.AddEvent(eventFirst);
-        tracking.AddEvent(eventSecond);
-        tracking.AddEvent(eventThird);
+        tracking.addEvent(eventFirst);
+        tracking.addEvent(eventSecond);
+        tracking.addEvent(eventThird);
 
-        secondTracking.AddEvent(secondEventFirst);
-        secondTracking.AddEvent(secondEventSecond);
-        secondTracking.AddEvent(secondEventThird);
+        secondTracking.addEvent(secondEventFirst);
+        secondTracking.addEvent(secondEventSecond);
+        secondTracking.addEvent(secondEventThird);
 
         List<TrackingV1> trackingList = new ArrayList<>();
         trackingList.add(tracking);
@@ -109,43 +109,43 @@ public class MostFrequentEventFactUnitTests {
         TrackingV1 tracking = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
         TrackingV1 secondTracking = new TrackingV1("", UUID.randomUUID(), TrackingCustomization.Optional, TrackingCustomization.None, TrackingCustomization.Required);
 
-        EventV1 eventFirst = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
+        EventV1 eventFirst = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
         Calendar.getInstance().set(2018, 3, 15);
         Date date = Calendar.getInstance().getTime();
-        eventFirst.EditDate(date);
+        eventFirst.editDate(date);
 
-        EventV1 eventSecond = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
+        EventV1 eventSecond = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
         Calendar.getInstance().set(2018, 4, 16);
         date = Calendar.getInstance().getTime();
-        eventSecond.EditDate(date);
+        eventSecond.editDate(date);
 
-        EventV1 eventThird = new EventV1(UUID.randomUUID(), tracking.GetTrackingID(), null, null,  "122");
+        EventV1 eventThird = new EventV1(UUID.randomUUID(), tracking.getTrackingId(), null, null,  "122");
         Calendar.getInstance().set(2018, 4, 17);
         date = Calendar.getInstance().getTime();
-        eventThird.EditDate(date);
+        eventThird.editDate(date);
 
-        EventV1 secondEventFirst = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
+        EventV1 secondEventFirst = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
         Calendar.getInstance().set(2010, 10, 1);
         date = Calendar.getInstance().getTime();
-        secondEventFirst.EditDate(date);
+        secondEventFirst.editDate(date);
 
-        EventV1 secondEventSecond = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
+        EventV1 secondEventSecond = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
         Calendar.getInstance().set(2011, 10, 11);
         date = Calendar.getInstance().getTime();
-        secondEventSecond.EditDate(date);
+        secondEventSecond.editDate(date);
 
-        EventV1 secondEventThird = new EventV1(UUID.randomUUID(), secondTracking.GetTrackingID(), null, null,  "122");
+        EventV1 secondEventThird = new EventV1(UUID.randomUUID(), secondTracking.getTrackingId(), null, null,  "122");
         Calendar.getInstance().set(2018, 10, 1);
         date = Calendar.getInstance().getTime();
-        secondEventThird.EditDate(date);
+        secondEventThird.editDate(date);
 
-        tracking.AddEvent(eventFirst);
-        tracking.AddEvent(eventSecond);
-        tracking.AddEvent(eventThird);
+        tracking.addEvent(eventFirst);
+        tracking.addEvent(eventSecond);
+        tracking.addEvent(eventThird);
 
-        secondTracking.AddEvent(secondEventFirst);
-        secondTracking.AddEvent(secondEventSecond);
-        secondTracking.AddEvent(secondEventThird);
+        secondTracking.addEvent(secondEventFirst);
+        secondTracking.addEvent(secondEventSecond);
+        secondTracking.addEvent(secondEventThird);
 
         List<TrackingV1> trackingList = new ArrayList<>();
         trackingList.add(tracking);

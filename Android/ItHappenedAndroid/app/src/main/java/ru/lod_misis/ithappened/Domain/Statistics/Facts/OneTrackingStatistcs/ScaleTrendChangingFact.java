@@ -27,13 +27,13 @@ public class ScaleTrendChangingFact extends Fact {
 
     public ScaleTrendChangingFact(TrackingV1 tracking) {
         ScaleName = tracking.getScaleName();
-        trackingId = tracking.GetTrackingID();
+        trackingId = tracking.getTrackingId();
         TrackingName = tracking.getTrackingName();
         Events = new ArrayList<>();
         NewAverage = 0.0;
-        Events = SelectNotDeletedEventsWithScaleInThePast(tracking.getEventV1Collection());
+        Events = SelectNotDeletedEventsWithScaleInThePast(tracking.getEventCollection());
         for (EventV1 e: Events) {
-            NewAverage += e.GetScale();
+            NewAverage += e.getScale();
         }
         Events = SortEventsByDate(Events);
         NewAverage = NewAverage / Events.size(); // Размер коллекции проверяется в функции применимости
@@ -103,7 +103,7 @@ public class ScaleTrendChangingFact extends Fact {
         else {
             mean = values.Slice(0, trendData).Mean();
         }
-        PointOfChange = new TrendChangingPoint(mean, Events.get(trendData).GetEventDate());
+        PointOfChange = new TrendChangingPoint(mean, Events.get(trendData).getEventDate());
     }
     // Сначала преобразовываем массив эвентов в массив скаляров. Затем вычисляем
     // точку изменения тренда. И наконец создаем обьект класса TrendChangingPoint,
@@ -115,7 +115,7 @@ public class ScaleTrendChangingFact extends Fact {
         Collections.sort(copy, new Comparator<EventV1>() {
             @Override
             public int compare(EventV1 event, EventV1 t1) {
-                return event.GetEventDate().compareTo(t1.GetEventDate());
+                return event.getEventDate().compareTo(t1.getEventDate());
             }
         });
         return copy;

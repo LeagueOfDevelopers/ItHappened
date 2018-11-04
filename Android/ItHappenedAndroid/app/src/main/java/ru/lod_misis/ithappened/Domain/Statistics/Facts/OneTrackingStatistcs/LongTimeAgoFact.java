@@ -24,14 +24,14 @@ public class LongTimeAgoFact extends Fact{
 
     public LongTimeAgoFact(TrackingV1 trackingV1) {
         this.trackingV1 = trackingV1;
-        trackingId = trackingV1.GetTrackingID();
+        trackingId = trackingV1.getTrackingId();
     }
 
     @Override
     public void calculateData() {
 
         List<EventV1> eventV1Collection = new ArrayList<>();
-        for(EventV1 eventV1 : trackingV1.GetEventHistory())
+        for(EventV1 eventV1 : trackingV1.getEventHistory())
         {
             if (!eventV1.isDeleted())
                 eventV1Collection.add(eventV1);
@@ -42,8 +42,8 @@ public class LongTimeAgoFact extends Fact{
 
         for (EventV1 eventV1 : eventV1Collection)
         {
-            if (lastEventDate.before(eventV1.GetEventDate()))
-                lastEventDate = eventV1.GetEventDate();
+            if (lastEventDate.before(eventV1.getEventDate()))
+                lastEventDate = eventV1.getEventDate();
         }
 
         daysSinceLastEvent =

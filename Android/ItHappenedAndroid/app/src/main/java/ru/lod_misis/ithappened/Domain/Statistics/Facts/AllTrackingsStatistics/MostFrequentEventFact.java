@@ -33,13 +33,13 @@ public class MostFrequentEventFact extends Fact {
         for (TrackingV1 trackingV1 : trackingV1Collection) {
             double period;
             int eventCount = 0;
-            List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
+            List<EventV1> eventV1Collection = trackingV1.getEventHistory();
             Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
             for (EventV1 eventV1 : eventV1Collection) {
                 if (!eventV1.isDeleted()) {
                     eventCount++;
-                    if (eventV1.GetEventDate().before(dateOfFirstEvent))
-                        dateOfFirstEvent = eventV1.GetEventDate();
+                    if (eventV1.getEventDate().before(dateOfFirstEvent))
+                        dateOfFirstEvent = eventV1.getEventDate();
                 }
             }
             if (eventCount < 3) period = 0;
@@ -49,7 +49,8 @@ public class MostFrequentEventFact extends Fact {
             }
             Integer color = Integer.parseInt(trackingV1.getColor());
             FrequentEventsFactModel model = new FrequentEventsFactModel
-                    (period, trackingV1.GetTrackingName(), trackingV1.getTrackingId(), Integer.parseInt(trackingV1.getColor()));
+                    (period, trackingV1.getTrackingName(), trackingV1.getTrackingId().toString(),
+                            Integer.parseInt(trackingV1.getColor()));
             periodList.add(model);
         }
 

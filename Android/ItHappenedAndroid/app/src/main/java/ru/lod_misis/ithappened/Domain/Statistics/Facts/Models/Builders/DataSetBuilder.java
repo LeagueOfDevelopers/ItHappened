@@ -33,13 +33,13 @@ public class DataSetBuilder {
         int firstIndex = 0;
         for (int i = 0; i < copy1.size(); i++) {
             for (int j = firstIndex; j < copy2.size(); j++) {
-                if (IsObjectNull(copy1.get(i).GetScale()) || IsObjectNull(copy2.get(j).GetScale())) continue;
+                if (IsObjectNull(copy1.get(i).getScale()) || IsObjectNull(copy2.get(j).getScale())) continue;
                 if (copy1.get(i).getEventDate().before(copy2.get(j).getEventDate())) {
-                    Interval timedelta = new Interval(copy1.get(i).GetEventDate().getTime(),
-                            copy2.get(j).GetEventDate().getTime());
+                    Interval timedelta = new Interval(copy1.get(i).getEventDate().getTime(),
+                            copy2.get(j).getEventDate().getTime());
                     if (timedelta.toDuration().getStandardDays() <= DaysToTrack &&
-                            copy1.get(i).GetScale() != null && copy2.get(j).GetScale() != null) {
-                        data.AddRow(copy1.get(i).GetScale(), copy2.get(j).GetScale());
+                            copy1.get(i).getScale() != null && copy2.get(j).getScale() != null) {
+                        data.AddRow(copy1.get(i).getScale(), copy2.get(j).getScale());
                     }
                     firstIndex = j;
                     break;
@@ -49,13 +49,13 @@ public class DataSetBuilder {
         int secondIndex = 0;
         for (int i = 0; i < copy2.size(); i++) {
             for (int j = secondIndex; j < copy1.size(); j++) {
-                if (IsObjectNull(copy1.get(j).GetScale()) || IsObjectNull(copy2.get(i).GetScale())) continue;
+                if (IsObjectNull(copy1.get(j).getScale()) || IsObjectNull(copy2.get(i).getScale())) continue;
                 if (copy2.get(i).getEventDate().before(copy1.get(j).getEventDate())) {
-                    Interval timeDelta = new Interval(copy2.get(i).GetEventDate().getTime(),
-                            copy1.get(j).GetEventDate().getTime());
+                    Interval timeDelta = new Interval(copy2.get(i).getEventDate().getTime(),
+                            copy1.get(j).getEventDate().getTime());
                     if (timeDelta.toDuration().getStandardDays() <= DaysToTrack &&
-                            copy1.get(j).GetScale() != null && copy2.get(i).GetScale() != null) {
-                        data.AddRow(copy1.get(j).GetScale(), copy2.get(i).GetScale());
+                            copy1.get(j).getScale() != null && copy2.get(i).getScale() != null) {
+                        data.AddRow(copy1.get(j).getScale(), copy2.get(i).getScale());
                     }
                     secondIndex = j;
                     break;
@@ -167,13 +167,13 @@ public class DataSetBuilder {
         int firstIndex = 0;
         for (int i = 0; i < copy1.size(); i++) {
             for (int j = firstIndex; j < copy2.size(); j++) {
-                if (IsObjectNull(copy1.get(i).GetRating()) || IsObjectNull(copy2.get(j).GetRating())) continue;
+                if (IsObjectNull(copy1.get(i).getRating()) || IsObjectNull(copy2.get(j).getRating())) continue;
                 if (copy1.get(i).getEventDate().before(copy2.get(j).getEventDate())) {
-                    Interval timedelta = new Interval(copy1.get(i).GetEventDate().getTime(),
-                            copy2.get(j).GetEventDate().getTime());
+                    Interval timedelta = new Interval(copy1.get(i).getEventDate().getTime(),
+                            copy2.get(j).getEventDate().getTime());
                     if (timedelta.toDuration().getStandardDays() <= DaysToTrack &&
-                            copy1.get(i).GetRating() != null && copy2.get(j).GetRating() != null) {
-                        data.AddRow(copy1.get(i).GetRating().getRating(), copy2.get(j).GetRating().getRating());
+                            copy1.get(i).getRating() != null && copy2.get(j).getRating() != null) {
+                        data.AddRow(copy1.get(i).getRating().getRating(), copy2.get(j).getRating().getRating());
                     }
                     firstIndex = j;
                     break;
@@ -183,13 +183,13 @@ public class DataSetBuilder {
         int secondIndex = 0;
         for (int i = 0; i < copy2.size(); i++) {
             for (int j = secondIndex; j < copy1.size(); j++) {
-                if (IsObjectNull(copy1.get(j).GetRating()) || IsObjectNull(copy2.get(i).GetRating())) continue;
+                if (IsObjectNull(copy1.get(j).getRating()) || IsObjectNull(copy2.get(i).getRating())) continue;
                 if (copy2.get(i).getEventDate().before(copy1.get(j).getEventDate())) {
-                    Interval timedelta = new Interval(copy2.get(i).GetEventDate().getTime(),
-                            copy1.get(j).GetEventDate().getTime());
+                    Interval timedelta = new Interval(copy2.get(i).getEventDate().getTime(),
+                            copy1.get(j).getEventDate().getTime());
                     if (timedelta.toDuration().getStandardDays() <= DaysToTrack &&
-                            copy1.get(j).GetRating() != null && copy2.get(i).GetRating() != null) {
-                        data.AddRow(copy1.get(j).GetRating().getRating(), copy2.get(i).GetRating().getRating());
+                            copy1.get(j).getRating() != null && copy2.get(i).getRating() != null) {
+                        data.AddRow(copy1.get(j).getRating().getRating(), copy2.get(i).getRating().getRating());
                     }
                     secondIndex = j;
                     break;
@@ -274,8 +274,8 @@ public class DataSetBuilder {
     public static Sequence BuildScaleSequence(List<EventV1> events) {
         List<Double> result = new ArrayList<>();
         for (EventV1 e: events) {
-            if (e.GetScale() != null && !e.isDeleted())
-                result.add(e.GetScale());
+            if (e.getScale() != null && !e.isDeleted())
+                result.add(e.getScale());
         }
         return new Sequence(result);
     }
@@ -283,8 +283,8 @@ public class DataSetBuilder {
     public static Sequence BuildRatingSequence(List<EventV1> events) {
         List<Double> result = new ArrayList<>();
         for (EventV1 e: events) {
-            if (e.GetRating() != null)
-                result.add((double)e.GetRating().GetRatingValue());
+            if (e.getRating() != null)
+                result.add((double)e.getRating().getRating());
         }
         return new Sequence(result);
     }
@@ -298,9 +298,9 @@ public class DataSetBuilder {
         // Правая граница - это текущая дата,
         // но dateDelta - это среднее время между эвентами,
         // поэтому вычисляем его через дату последнего эвента
-        long leftBorder = copy.get(0).GetEventDate().getTime();
+        long leftBorder = copy.get(0).getEventDate().getTime();
         long rightBorder = DateTime.now().toDate().getTime();
-        long lastEventDate = copy.get(copy.size() - 1).GetEventDate().getTime();
+        long lastEventDate = copy.get(copy.size() - 1).getEventDate().getTime();
         long dateDelta = (lastEventDate - leftBorder) / (events.size() - 1);
 
         // Создаем новый обьект, который будет хранить данные

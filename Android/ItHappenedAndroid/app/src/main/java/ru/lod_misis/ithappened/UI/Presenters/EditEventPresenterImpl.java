@@ -1,10 +1,6 @@
 package ru.lod_misis.ithappened.UI.Presenters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -12,7 +8,6 @@ import javax.inject.Inject;
 import ru.lod_misis.ithappened.Domain.TrackingService;
 import ru.lod_misis.ithappened.Domain.Models.Rating;
 import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
-import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Domain.Statistics.FactCalculator;
 
 public class EditEventPresenterImpl implements EditEventContract.EditEventPresenter {
@@ -63,19 +58,19 @@ public class EditEventPresenterImpl implements EditEventContract.EditEventPresen
     @Override
     public void onViewCreated() {
         TrackingV1 tracking = trackingService.GetTrackingById(trackingId);
-        view.onViewCreated(tracking.GetCommentCustomization(),
-                tracking.GetRatingCustomization(),
-                tracking.GetScaleCustomization(),
-                tracking.GetPhotoCustomization(),
-                tracking.GetGeopositionCustomization(),
-                tracking.GetEvent(eventId).GetEventDate(),
-                tracking.GetEvent(eventId).GetComment(),
-                tracking.GetEvent(eventId).GetScale(),
-                tracking.GetEvent(eventId).GetRating(),
-                tracking.GetEvent(eventId).getLongitude(),
-                tracking.GetEvent(eventId).getLotitude(),
-                tracking.GetEvent(eventId).getPhoto(),
-                tracking.GetTrackingName(),
+        view.onViewCreated(tracking.getCommentCustomization(),
+                tracking.getRatingCustomization(),
+                tracking.getScaleCustomization(),
+                tracking.getPhotoCustomization(),
+                tracking.getGeopositionCustomization(),
+                tracking.getEvent(eventId).getEventDate(),
+                tracking.getEvent(eventId).getComment(),
+                tracking.getEvent(eventId).getScale(),
+                tracking.getEvent(eventId).getRating(),
+                tracking.getEvent(eventId).getLongitude(),
+                tracking.getEvent(eventId).getLotitude(),
+                tracking.getEvent(eventId).getPhoto(),
+                tracking.getTrackingName(),
                 tracking.getScaleName());
     }
 

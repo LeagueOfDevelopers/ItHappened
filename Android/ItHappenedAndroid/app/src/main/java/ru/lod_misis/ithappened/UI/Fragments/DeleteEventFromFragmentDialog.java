@@ -75,7 +75,7 @@ public class DeleteEventFromFragmentDialog extends DialogFragment {
                         EventsFragment eventsFragment = ( EventsFragment ) getActivity().getFragmentManager().findFragmentByTag("EVENTS_HISTORY");
                         List<EventV1> eventV1s = eventsFragment.eventsAdpt.getEventV1s();
                         for (int i = 0; i < eventV1s.size(); i++) {
-                            if ( eventV1s.get(i).GetEventId().equals(eventId) ) {
+                            if ( eventV1s.get(i).getEventId().equals(eventId) ) {
                                 eventV1s.remove(i);
                                 break;
                             }

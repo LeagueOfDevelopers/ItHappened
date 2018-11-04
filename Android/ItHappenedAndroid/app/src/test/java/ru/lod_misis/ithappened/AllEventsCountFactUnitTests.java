@@ -45,12 +45,12 @@ public class AllEventsCountFactUnitTests {
                 TrackingCustomization.None,
                 "",
                 "");
-        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        trackingV1.AddEvent(eventV1);
-        secondTrackingV1.AddEvent(secondEventV1);
+        trackingV1.addEvent(eventV1);
+        secondTrackingV1.addEvent(secondEventV1);
 
         List<TrackingV1> trackingV1Collection = new ArrayList<>();
         trackingV1Collection.add(trackingV1);
@@ -83,12 +83,12 @@ public class AllEventsCountFactUnitTests {
                 TrackingCustomization.None,
                 "",
                 "");
-        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1 = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+        EventV1 secondEventV1 = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        trackingV1.AddEvent(eventV1);
-        secondTrackingV1.AddEvent(secondEventV1);
+        trackingV1.addEvent(eventV1);
+        secondTrackingV1.addEvent(secondEventV1);
 
         List<TrackingV1> trackingV1Collection = new ArrayList<>();
         trackingV1Collection.add(trackingV1);

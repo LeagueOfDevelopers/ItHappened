@@ -43,7 +43,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         this.eventV1s = eventV1s;
         deletedEventV1 = new ArrayList<>();
         for (EventV1 eventV1 : deletedEventV1) {
-            if ( eventV1.GetStatus() )
+            if ( eventV1.isDeleted() )
                 deletedEventV1.add(eventV1);
         }
         if ( eventV1s != null )
@@ -65,7 +65,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         this.eventV1s.clear();
         for (EventV1 eventV1 : eventV1s) {
-            if ( !eventV1.GetStatus() ) {
+            if ( !eventV1.isDeleted() ) {
                 this.eventV1s.add(eventV1);
             }
         }
@@ -84,33 +84,33 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE);
 
-        UUID trackingId = eventV1.GetTrackingId();
+        UUID trackingId = eventV1.getTrackingId();
 
         holder.trackingColor.setCardBackgroundColor(Integer.parseInt(trackingRepository.GetTracking(trackingId).getColor()));
 
-        if ( eventV1.GetComment() != null && state == 0 ) {
-            holder.trackingTitle.setText(eventV1.GetComment());
+        if ( eventV1.getComment() != null && state == 0 ) {
+            holder.trackingTitle.setText(eventV1.getComment());
         } else {
-            holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).GetTrackingName());
+            holder.trackingTitle.setText(trackingRepository.GetTracking(trackingId).getTrackingName());
         }
 
-        if ( eventV1.GetScale() != null && trackingRepository.GetTracking(trackingId).getScaleName() != null ) {
+        if ( eventV1.getScale() != null && trackingRepository.GetTracking(trackingId).getScaleName() != null ) {
             String type = trackingRepository.GetTracking(trackingId).getScaleName();
             if ( type != null ) {
                 holder.scaleValue.setVisibility(View.VISIBLE);
-                if ( type.length() >= 10 && eventV1.GetScale() > 1000000 && eventV1.GetRating() != null ) {
-                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue()) + " " + type.substring(0 , 3) + ".");
+                if ( type.length() >= 10 && eventV1.getScale() > 1000000 && eventV1.getRating() != null ) {
+                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.getScale().doubleValue()) + " " + type.substring(0 , 3) + ".");
                 } else {
-                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.GetScale().doubleValue()) + " " + type);
+                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.getScale().doubleValue()) + " " + type);
                 }
             }
         } else {
             holder.scaleValue.setVisibility(View.GONE);
         }
 
-        if ( eventV1.GetRating() != null ) {
+        if ( eventV1.getRating() != null ) {
             DecimalFormat format = new DecimalFormat("#.#");
-            holder.ratingValue.setText(format.format(eventV1.GetRating().getRating() / 2.0f) + "");
+            holder.ratingValue.setText(format.format(eventV1.getRating().getRating() / 2.0f) + "");
             holder.starIcon.setVisibility(View.VISIBLE);
             holder.ratingValue.setVisibility(View.VISIBLE);
         } else {
@@ -124,14 +124,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick (View view) {
                 Intent intent = new Intent(context , EventDetailsActivity.class);
-                intent.putExtra("trackingId" , eventV1.GetTrackingId().toString());
-                intent.putExtra("eventId" , eventV1.GetEventId().toString());
+                intent.putExtra("trackingId" , eventV1.getTrackingId().toString());
+                intent.putExtra("eventId" , eventV1.getEventId().toString());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });
 
-        Date eventDate = eventV1.GetEventDate();
+        Date eventDate = eventV1.getEventDate();
 
         Locale loc = new Locale("ru");
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm" , loc);

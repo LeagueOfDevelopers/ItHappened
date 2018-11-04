@@ -28,15 +28,15 @@ public class BestEvent extends Fact {
     public BestEvent(TrackingV1 trackingV1)
     {
         this.trackingV1 = trackingV1;
-        this.trackingId = trackingV1.GetTrackingID();
+        this.trackingId = trackingV1.getTrackingId();
         eventV1Collection = new ArrayList<>();
     }
 
     @Override
     public void calculateData() {
 
-        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
-            if(!eventV1.GetStatus() && eventV1.GetRating()!=null){
+        for(EventV1 eventV1 : trackingV1.getEventHistory()){
+            if(!eventV1.isDeleted() && eventV1.getRating()!=null){
                 eventV1Collection.add(eventV1);
             }
         }
@@ -47,10 +47,10 @@ public class BestEvent extends Fact {
 
         for(EventV1 eventV1 : eventV1Collection)
         {
-            Date bestTime = eventV1.GetEventDate();
-            if (bestEventV1.GetRating().getRating() <= eventV1.GetRating().getRating()
+            Date bestTime = eventV1.getEventDate();
+            if (bestEventV1.getRating().getRating() <= eventV1.getRating().getRating()
                     && 7.0 < ((double)(curDateTime.getTime() - bestTime.getTime())/1000/60/60/24)
-                    && bestEventV1.GetEventDate().after(eventV1.GetEventDate()))
+                    && bestEventV1.getEventDate().after(eventV1.getEventDate()))
                 bestEventV1 = eventV1;
         }
 
@@ -62,7 +62,7 @@ public class BestEvent extends Fact {
 
     @Override
     public void calculatePriority() {
-        priority = (double) bestEventV1.GetRating().getRating();
+        priority = (double) bestEventV1.getRating().getRating();
     }
 
     @Override
@@ -73,12 +73,12 @@ public class BestEvent extends Fact {
 
         String toReturn = String.format("Событие <b>%s</b> с самым высоким рейтингом <b>%s</b> произошло <b>%s</b>,",
                         trackingV1.getTrackingName(),
-                decimalFormat.format(bestEventV1.GetRating().getRating()/2.0),
-                format.format(bestEventV1.GetEventDate()));
+                decimalFormat.format(bestEventV1.getRating().getRating()/2.0),
+                format.format(bestEventV1.getEventDate()));
 
-        if (bestEventV1.GetComment() == null) return toReturn;
+        if (bestEventV1.getComment() == null) return toReturn;
 
-        return String.format(toReturn, " с комментарием <b>%s</b>", bestEventV1.GetComment());
+        return String.format(toReturn, " с комментарием <b>%s</b>", bestEventV1.getComment());
     }
 
     public EventV1 getBestEventV1() { return bestEventV1; }

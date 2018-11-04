@@ -28,11 +28,11 @@ public class FrequencyTrendChangingFact extends Fact {
     private Interval LastInterval;
 
     public FrequencyTrendChangingFact(TrackingV1 tracking){
-        trackingId = tracking.GetTrackingID();
+        trackingId = tracking.getTrackingId();
         TrackingName = tracking.getTrackingName();
         Events = new ArrayList<>();
         NewAverage = 0.0;
-        Events = SelectNotDeletedEventsInThePast(tracking.getEventV1Collection());
+        Events = SelectNotDeletedEventsInThePast(tracking.getEventCollection());
         SortEventCollectionByTime(Events);
     }
 

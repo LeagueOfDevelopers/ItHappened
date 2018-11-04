@@ -20,14 +20,14 @@ public class AvrgScaleFact extends Fact {
     Double averageValue;
 
     public AvrgScaleFact(TrackingV1 trackingV1){
-        trackingId = trackingV1.GetTrackingID();
+        trackingId = trackingV1.getTrackingId();
         this.trackingV1 = trackingV1;
     }
 
     public Double getAvrgValue(){
 
-        for(EventV1 eventV1 : trackingV1.GetEventHistory()){
-            if(!eventV1.GetStatus()){
+        for(EventV1 eventV1 : trackingV1.getEventHistory()){
+            if(!eventV1.isDeleted()){
                 eventV1Collection.add(eventV1);
             }
         }
@@ -36,8 +36,8 @@ public class AvrgScaleFact extends Fact {
         int count = 0;
 
         for(EventV1 eventV1 : eventV1Collection){
-            if(eventV1.GetScale() != null){
-                sumValue+= eventV1.GetScale();
+            if(eventV1.getScale() != null){
+                sumValue+= eventV1.getScale();
                 count++;
             }
         }

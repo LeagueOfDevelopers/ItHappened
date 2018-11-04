@@ -33,16 +33,16 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-               trackingV1.AddEvent(eventV1First);
-        trackingV1.AddEvent(eventV1Second);
-        trackingV1.AddEvent(eventV1Third);
+               trackingV1.addEvent(eventV1First);
+        trackingV1.addEvent(eventV1Second);
+        trackingV1.addEvent(eventV1Third);
 
         List<TrackingV1> trackingV1List = new ArrayList<>();
         trackingV1List.add(trackingV1);
@@ -73,27 +73,27 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
-                evDate, null, null, "122", null, null, "");
-
-        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
-                evDate, null, null, "122", null, null, "");
-        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
-                evDate, null, null, "122", null, null, "");
-        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
-        trackingV1.AddEvent(eventV1Second);
-        trackingV1.AddEvent(eventV1Third);
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
+                evDate, null, null, "122", null, null, "");
 
-        secondTrackingV1.AddEvent(secondEventV1First);
-        secondTrackingV1.AddEvent(secondEventV1Second);
-        secondTrackingV1.AddEvent(secondEventV1Third);
+        trackingV1.addEvent(eventV1First);
+        trackingV1.addEvent(eventV1Second);
+        trackingV1.addEvent(eventV1Third);
+
+        secondTrackingV1.addEvent(secondEventV1First);
+        secondTrackingV1.addEvent(secondEventV1Second);
+        secondTrackingV1.addEvent(secondEventV1Third);
 
         List<TrackingV1> trackingV1List = new ArrayList<>();
         trackingV1List.add(trackingV1);
@@ -155,27 +155,27 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
-                evDate, null, null, "122", null, null, "");
-
-        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
-                evDate, null, null, "122", null, null, "");
-        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
-                evDate, null, null, "122", null, null, "");
-        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+        EventV1 eventV1Third = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
-        trackingV1.AddEvent(eventV1Second);
-        trackingV1.AddEvent(eventV1Third);
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
+                evDate, null, null, "122", null, null, "");
+        EventV1 secondEventV1Third = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
+                evDate, null, null, "122", null, null, "");
 
-        secondTrackingV1.AddEvent(secondEventV1First);
-        secondTrackingV1.AddEvent(secondEventV1Second);
-        secondTrackingV1.AddEvent(secondEventV1Third);
+        trackingV1.addEvent(eventV1First);
+        trackingV1.addEvent(eventV1Second);
+        trackingV1.addEvent(eventV1Third);
+
+        secondTrackingV1.addEvent(secondEventV1First);
+        secondTrackingV1.addEvent(secondEventV1Second);
+        secondTrackingV1.addEvent(secondEventV1Third);
 
         List<TrackingV1> trackingV1List = new ArrayList<>();
         trackingV1List.add(trackingV1);
@@ -207,18 +207,18 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+        EventV1 secondEventV1First = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
-        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.GetTrackingID(),
+        EventV1 secondEventV1Second = new EventV1(UUID.randomUUID(), secondTrackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
-        secondTrackingV1.AddEvent(secondEventV1First);
-        secondTrackingV1.AddEvent(secondEventV1Second);
+        secondTrackingV1.addEvent(secondEventV1First);
+        secondTrackingV1.addEvent(secondEventV1Second);
 
         List<TrackingV1> trackingV1List = new ArrayList<>();
         trackingV1List.add(trackingV1);
@@ -255,10 +255,10 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
         Assert.assertNotEquals(FunctionApplicability.trackingEventsCountApplicability(trackingV1), null);
     }
@@ -276,10 +276,10 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
         Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -313,10 +313,10 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
         Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -335,15 +335,15 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, new Rating(4),
                 "122", null, null, "");
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, new Rating(5),
                 "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
-        trackingV1.AddEvent(eventV1Second);
+        trackingV1.addEvent(eventV1First);
+        trackingV1.addEvent(eventV1Second);
 
         Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -362,10 +362,10 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
         Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -399,10 +399,10 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
         Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -421,15 +421,15 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, 10.0, new Rating(4),
                 "122", null, null, "");
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, -15.4, new Rating(5),
                 "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
-        trackingV1.AddEvent(eventV1Second);
+        trackingV1.addEvent(eventV1First);
+        trackingV1.addEvent(eventV1Second);
 
         Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -449,11 +449,11 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null,
                 "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
         Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -487,10 +487,10 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, null, null, "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
+        trackingV1.addEvent(eventV1First);
 
         Assert.assertEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }
@@ -509,15 +509,15 @@ public class FunctionApplicabilityUnitTests {
                 "",
                 "");
 
-        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1First = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, 10.0, new Rating(4),
                 "122", null, null, "");
-        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.GetTrackingID(),
+        EventV1 eventV1Second = new EventV1(UUID.randomUUID(), trackingV1.getTrackingId(),
                 evDate, -15.4, new Rating(5),
                 "122", null, null, "");
 
-        trackingV1.AddEvent(eventV1First);
-        trackingV1.AddEvent(eventV1Second);
+        trackingV1.addEvent(eventV1First);
+        trackingV1.addEvent(eventV1Second);
 
         Assert.assertNotEquals(FunctionApplicability.avrgRatingApplicability(trackingV1), null);
     }

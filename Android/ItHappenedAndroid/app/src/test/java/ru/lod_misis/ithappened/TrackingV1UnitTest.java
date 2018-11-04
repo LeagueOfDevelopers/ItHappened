@@ -38,9 +38,9 @@ public class TrackingV1UnitTest {
                 photoCustomization, "", "");
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(),
                 evDate,1.1, null, null, null, null, "");
-        trackingV1.AddEvent(newEventV1);
+        trackingV1.addEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.getEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -67,9 +67,9 @@ public class TrackingV1UnitTest {
 
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(),
                 evDate, 1.1, null, null, null, null, "");
-        trackingV1.AddEvent(newEventV1);
+        trackingV1.addEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.getEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -102,7 +102,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -135,7 +135,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -169,7 +169,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -201,9 +201,9 @@ public class TrackingV1UnitTest {
 
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(),
                 evDate, null, rating, null, null, null, "");
-        trackingV1.AddEvent(newEventV1);
+        trackingV1.addEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.getEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -232,9 +232,9 @@ public class TrackingV1UnitTest {
 
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(),
                 evDate, null, rating, null, null, null, "");
-        trackingV1.AddEvent(newEventV1);
+        trackingV1.addEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.getEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -264,7 +264,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -297,7 +297,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -332,7 +332,7 @@ public class TrackingV1UnitTest {
                 evDate, null, rating, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -364,9 +364,9 @@ public class TrackingV1UnitTest {
 
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(),
                 evDate, null, null, comment, null, null, "");
-        trackingV1.AddEvent(newEventV1);
+        trackingV1.addEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.getEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -394,9 +394,9 @@ public class TrackingV1UnitTest {
 
         EventV1 newEventV1 = new EventV1(UUID.randomUUID(), UUID.randomUUID(),
                 evDate, null, null, comment, null, null, "");
-        trackingV1.AddEvent(newEventV1);
+        trackingV1.addEvent(newEventV1);
 
-        List<EventV1> eventV1CollectionInTracking = trackingV1.GetEventHistory();
+        List<EventV1> eventV1CollectionInTracking = trackingV1.getEventHistory();
 
         Assert.assertTrue(eventV1CollectionInTracking.contains(newEventV1));
     }
@@ -426,7 +426,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -459,7 +459,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, null, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -493,7 +493,7 @@ public class TrackingV1UnitTest {
                 evDate, null, null, comment, null, null, "");
 
         try {
-            trackingV1.AddEvent(newEventV1);
+            trackingV1.addEvent(newEventV1);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
@@ -525,10 +525,10 @@ public class TrackingV1UnitTest {
 
         TrackingCustomization newScale = TrackingCustomization.Required;
 
-        trackingV1.EditTracking(newScale, null, null,
+        trackingV1.editTracking(newScale, null, null,
                 null, null, null, null, null);
 
-        Assert.assertEquals(trackingV1.GetScaleCustomization(), TrackingCustomization.Required);
+        Assert.assertEquals(trackingV1.getScaleCustomization(), TrackingCustomization.Required);
     }
 
     @Test
@@ -555,10 +555,10 @@ public class TrackingV1UnitTest {
 
         TrackingCustomization newRating = TrackingCustomization.Required;
 
-        trackingV1.EditTracking(null, newRating, null, null,
+        trackingV1.editTracking(null, newRating, null, null,
                 null, null, null, null);
 
-        Assert.assertEquals(trackingV1.GetRatingCustomization(), TrackingCustomization.Required);
+        Assert.assertEquals(trackingV1.getRatingCustomization(), TrackingCustomization.Required);
     }
 
     @Test
@@ -585,10 +585,10 @@ public class TrackingV1UnitTest {
 
         TrackingCustomization newComment = TrackingCustomization.Required;
 
-        trackingV1.EditTracking(null, null, newComment, null,
+        trackingV1.editTracking(null, null, newComment, null,
                 null, null, null, null);
 
-        Assert.assertEquals(trackingV1.GetCommentCustomization(), TrackingCustomization.Required);
+        Assert.assertEquals(trackingV1.getCommentCustomization(), TrackingCustomization.Required);
     }
 
     @Test
@@ -614,10 +614,10 @@ public class TrackingV1UnitTest {
                 "");
 
         String newName = "new name";
-        trackingV1.EditTracking(null, null, null,
+        trackingV1.editTracking(null, null, null,
                 null, null, newName, null, null);
 
-        Assert.assertEquals(trackingV1.GetTrackingName(), newName);
+        Assert.assertEquals(trackingV1.getTrackingName(), newName);
     }
 
     @Test
@@ -640,10 +640,10 @@ public class TrackingV1UnitTest {
         EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, null, null,
                 null, null, null, "");
 
-        trackingV1.AddEvent(eventV1);
+        trackingV1.addEvent(eventV1);
 
         try {
-            trackingV1.EditEvent(idOfNotExistingEvent, null, null,
+            trackingV1.editEvent(idOfNotExistingEvent, null, null,
                     null, null, null, null, null);
         }
         catch (IllegalArgumentException e)
@@ -674,14 +674,14 @@ public class TrackingV1UnitTest {
         EventV1 eventV1 = new EventV1(eventId, trackingID, evDate, 1.0,
                 null, null, null, null, "");
 
-        trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, 2.0, null, null,
+        trackingV1.addEvent(eventV1);
+        trackingV1.editEvent(eventId, 2.0, null, null,
                 null, null, null, null);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
+        List<EventV1> eventV1Collection = trackingV1.getEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
-        Assert.assertEquals(editedEventV1.GetScale(), newEventCount);
+        Assert.assertEquals(editedEventV1.getScale(), newEventCount);
     }
 
     @Test
@@ -704,14 +704,14 @@ public class TrackingV1UnitTest {
         EventV1 eventV1 = new EventV1(eventId, trackingID, evDate,
                 null, eventRating, null, null, null, "");
 
-        trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, null, newEventRating, null,
+        trackingV1.addEvent(eventV1);
+        trackingV1.editEvent(eventId, null, newEventRating, null,
                 null, null, null, null);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
+        List<EventV1> eventV1Collection = trackingV1.getEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
-        Assert.assertEquals(editedEventV1.GetRating(), newEventRating);
+        Assert.assertEquals(editedEventV1.getRating(), newEventRating);
     }
 
     @Test
@@ -735,14 +735,14 @@ public class TrackingV1UnitTest {
         EventV1 eventV1 = new EventV1(eventId, trackingID, evDate,
                 null, null, eventComment, null, null, "");
 
-        trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, null, null, newEventComment,
+        trackingV1.addEvent(eventV1);
+        trackingV1.editEvent(eventId, null, null, newEventComment,
                 null, null, null, null);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
+        List<EventV1> eventV1Collection = trackingV1.getEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
-        Assert.assertEquals(editedEventV1.GetComment(), newEventComment);
+        Assert.assertEquals(editedEventV1.getComment(), newEventComment);
     }
 
     @Test
@@ -766,13 +766,13 @@ public class TrackingV1UnitTest {
 
         Date newDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
-        trackingV1.AddEvent(eventV1);
-        trackingV1.EditEvent(eventId, null, null, null,
+        trackingV1.addEvent(eventV1);
+        trackingV1.editEvent(eventId, null, null, null,
                 null, null, null, newDate);
 
-        List<EventV1> eventV1Collection = trackingV1.GetEventHistory();
+        List<EventV1> eventV1Collection = trackingV1.getEventHistory();
         EventV1 editedEventV1 = eventV1Collection.get(0);
 
-        Assert.assertEquals(editedEventV1.GetEventDate(), newDate);
+        Assert.assertEquals(editedEventV1.getEventDate(), newDate);
     }
 }

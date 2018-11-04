@@ -25,7 +25,7 @@ public class DayWithLargestEventCountFact extends Fact {
         Events = new ArrayList<>();
         for (TrackingV1 t: trackings) {
             if (t.isDeleted()) continue;
-            for (EventV1 e: t.getEventV1Collection()) {
+            for (EventV1 e: t.getEventCollection()) {
                 if (e.isDeleted()) continue;
                 Events.add(e);
             }
@@ -60,18 +60,18 @@ public class DayWithLargestEventCountFact extends Fact {
     private void CalculateLargestByEventCountDay() {
         List<TimeSpanEventData> counts = new ArrayList<>();
         for (EventV1 e: Events) {
-            DateTime date = new DateTime(e.GetEventDate());
+            DateTime date = new DateTime(e.getEventDate());
             boolean dayFound = false;
             for (TimeSpanEventData d: counts) {
                 if (d.IsItThisDay(date)) {
-                    d.CountIncrement(e.GetEventId());
+                    d.CountIncrement(e.getEventId());
                     dayFound = true;
                     break;
                 }
             }
             if (!dayFound) {
                 TimeSpanEventData data = new TimeSpanEventData(date);
-                data.CountIncrement(e.GetEventId());
+                data.CountIncrement(e.getEventId());
                 counts.add(data);
             }
         }
@@ -107,7 +107,7 @@ public class DayWithLargestEventCountFact extends Fact {
         Collections.sort(copy, new Comparator<EventV1>() {
             @Override
             public int compare(EventV1 event, EventV1 t1) {
-                return t1.GetEventDate().compareTo(event.GetEventDate());
+                return t1.getEventDate().compareTo(event.getEventDate());
             }
         });
         return copy;

@@ -37,7 +37,7 @@ public class NotificationJobService extends JobService {
         Log.i("JOB SERVICE!!!", "JOB SERVICE");
         NotificationCompat.Builder builder = createBulder();
         Intent intent = new Intent(this, AddNewEventActivity.class);
-        intent.putExtra("trackingId", trackingV1.GetTrackingID().toString());
+        intent.putExtra("trackingId", trackingV1.getTrackingId().toString());
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(UserActionsActivity.class);
         stackBuilder.addNextIntent(intent);
@@ -63,7 +63,7 @@ public class NotificationJobService extends JobService {
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)
                 .setTicker("Добавьте событие")
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("Вы давно не добавляли событие \"" + trackingV1.GetTrackingName() + "\",что-то случилось?"));
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("Вы давно не добавляли событие \"" + trackingV1.getTrackingName() + "\",что-то случилось?"));
     }
 
     @Override

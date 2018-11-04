@@ -55,7 +55,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final TrackingV1 trackingV1 = trackingV1s.get(position);
-        holder.trackingTitle.setText(trackingV1.GetTrackingName());
+        holder.trackingTitle.setText(trackingV1.getTrackingName());
         if(trackingV1.getColor()!=null)
             holder.trackingColor.setTriangleBackgroundColor(Integer.parseInt(trackingV1.getColor()));
 
@@ -65,9 +65,9 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
             public void onClick(View view) {
 
                 final TrackingV1 trackingV1 = trackingV1s.get(position);
-                String id = trackingV1.GetTrackingID().toString();
+                String id = trackingV1.getTrackingId().toString();
                 Intent intent = new Intent(context, AddNewEventActivity.class);
-                String trackId = trackingV1.GetTrackingID().toString();
+                String trackId = trackingV1.getTrackingId().toString();
                 intent.putExtra("trackingId", trackId);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
@@ -92,13 +92,13 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
                         switch (id){
                             case R.id.history_for_tracking:
                                 Intent intent = new Intent(context, EventsForTrackingActivity.class);
-                                String trackId = trackingV1.GetTrackingID().toString();
+                                String trackId = trackingV1.getTrackingId().toString();
                                 intent.putExtra("id", trackId);
                                 context.startActivity(intent);
                                 return true;
 
                             case R.id.edit_tracking:
-                                String trackIdForEdit = trackingV1.GetTrackingID().toString();
+                                String trackIdForEdit = trackingV1.getTrackingId().toString();
                                 Intent intent1 = new Intent((Activity) context, EditTrackingActivity.class);
                                 intent1.putExtra("trackingId", trackIdForEdit);
                                 context.startActivity(intent1);
@@ -106,7 +106,7 @@ public class TrackingsAdapter extends RecyclerView.Adapter<TrackingsAdapter.View
 
                             case R.id.delete_tracking:
                                 DeleteTrackingFragment delete = new DeleteTrackingFragment();
-                                delete.setTrackingId(trackingV1.GetTrackingID());
+                                delete.setTrackingId(trackingV1.getTrackingId());
                                 delete.setTrackingsPresenter(trackingsPresenter);
                                 delete.show(((Activity) context).getFragmentManager(), "DeleteEvent");
                                 return true;

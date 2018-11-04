@@ -22,10 +22,10 @@ public class MultinomialCorrelationFact extends Fact {
     private Double Correlation;
 
     public MultinomialCorrelationFact(TrackingV1 tracking1, TrackingV1 tracking2) {
-        FirstTrackingName = tracking1.GetTrackingName();
-        SecondTrackingName = tracking2.GetTrackingName();
-        MultinomialData = DataSetBuilder.BuildMultinomialDataset(tracking1.getEventV1Collection(),
-                tracking2.getEventV1Collection(), DaysToTrack);
+        FirstTrackingName = tracking1.getTrackingName();
+        SecondTrackingName = tracking2.getTrackingName();
+        MultinomialData = DataSetBuilder.BuildMultinomialDataset(tracking1.getEventCollection(),
+                tracking2.getEventCollection(), DaysToTrack);
     }
 
     public MultinomialCorrelationFact(DataSet<Integer> mult) {

@@ -88,8 +88,8 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
         titles = new ArrayList<>();
         titles.add("Общая статистика");
         for (TrackingV1 trackingV1 : service.GetTrackingCollection()) {
-            if (!trackingV1.GetStatus()) {
-                titles.add(trackingV1.GetTrackingName());
+            if (!trackingV1.setDeleted()) {
+                titles.add(trackingV1.getTrackingName());
                 allTrackingV1s.add(trackingV1);
             }
         }
@@ -98,8 +98,8 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
         allTrackingV1s = new ArrayList<>();
         titles.add("Общая статистика");
         for (TrackingV1 trackingV1 : service.GetTrackingCollection()) {
-            if (!trackingV1.GetStatus()) {
-                titles.add(trackingV1.GetTrackingName());
+            if (!trackingV1.setDeleted()) {
+                titles.add(trackingV1.getTrackingName());
                 allTrackingV1s.add(trackingV1);
             }
         }
@@ -203,7 +203,7 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
 
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.one_tracking_statistics_layout, null);
-                facts = factRepository.getOneTrackingFactCollection(allTrackingV1s.get(position - 1).GetTrackingID());
+                facts = factRepository.getOneTrackingFactCollection(allTrackingV1s.get(position - 1).getTrackingId());
 
 
                 Log.e("Size", facts.size() + "");

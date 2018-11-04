@@ -46,7 +46,7 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
         List<TrackingV1> visibleTrackingV1s = new ArrayList<>();
 
         for (int i = 0; i < allTrackingV1s.size(); i++) {
-            if (!allTrackingV1s.get(i).GetStatus()) {
+            if (!allTrackingV1s.get(i).setDeleted()) {
                 visibleTrackingV1s.add(allTrackingV1s.get(i));
             }
         }

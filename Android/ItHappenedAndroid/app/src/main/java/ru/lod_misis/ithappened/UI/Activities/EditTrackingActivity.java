@@ -184,7 +184,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         editableTrackingV1 = editTrackingPresenter.getTrackingState();
 
-        trackingName.setText(editableTrackingV1.GetTrackingName());
+        trackingName.setText(editableTrackingV1.getTrackingName());
 
         addTrackingBtn.setText("Изменить");
 
@@ -214,7 +214,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
             }
         });
 
-        if ( editableTrackingV1.GetScaleCustomization() == TrackingCustomization.None ) {
+        if ( editableTrackingV1.getScaleCustomization() == TrackingCustomization.None ) {
             visbilityScaleTypeHint.setVisibility(View.GONE);
             visibilityScaleType.setVisibility(View.GONE);
             scaleType.setVisibility(View.GONE);
@@ -225,7 +225,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
             scaleType.setText(editableTrackingV1.getScaleName());
         }
 
-        stateForRating = calculateState(editableTrackingV1.GetRatingCustomization() ,
+        stateForRating = calculateState(editableTrackingV1.getRatingCustomization() ,
                 ratingDontImage ,
                 ratingOptionalImage ,
                 ratingRequiredImage ,
@@ -233,7 +233,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 ratingOptional ,
                 ratingRequired ,
                 ratingEnabled);
-        stateForText = calculateState(editableTrackingV1.GetCommentCustomization() ,
+        stateForText = calculateState(editableTrackingV1.getCommentCustomization() ,
                 commentDontImage ,
                 commentOptionalImage ,
                 commentRequiredImage ,
@@ -241,7 +241,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 commentOptional ,
                 commentRequired ,
                 commentEnabled);
-        stateForScale = calculateState(editableTrackingV1.GetScaleCustomization() ,
+        stateForScale = calculateState(editableTrackingV1.getScaleCustomization() ,
                 scaleDontImage ,
                 scaleOptionalImage ,
                 scaleRequiredImage ,
@@ -249,7 +249,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 scaleOptional ,
                 scaleRequired ,
                 scaleEnabled);
-        stateForGeoposition = calculateState(editableTrackingV1.GetGeopositionCustomization() ,
+        stateForGeoposition = calculateState(editableTrackingV1.getGeopositionCustomization() ,
                 geopositionDontImage ,
                 geopositionOptionalImage ,
                 geopositionRequiredImage ,
@@ -257,7 +257,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 geopositionOptional ,
                 geopositionRequired ,
                 geopositionEnabled);
-        stateForPhoto = calculateState(editableTrackingV1.GetPhotoCustomization() ,
+        stateForPhoto = calculateState(editableTrackingV1.getPhotoCustomization() ,
                 photoDontImage ,
                 photoOptionalImage ,
                 photoRequiredImage ,
