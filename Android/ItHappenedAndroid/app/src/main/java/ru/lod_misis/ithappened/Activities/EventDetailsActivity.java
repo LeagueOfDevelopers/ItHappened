@@ -18,11 +18,15 @@ import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -43,8 +47,8 @@ import ru.lod_misis.ithappened.Statistics.Facts.StringParse;
 import ru.lod_misis.ithappened.WorkWithFiles.IWorkWithFIles;
 import ru.lod_misis.ithappened.WorkWithFiles.WorkWithFiles;
 
-public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
 
+public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
 
     @BindView(R.id.editEventButton)
     Button editEvent;
@@ -95,6 +99,10 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     Intent intent;
 
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
+
     Activity activity;
     @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
@@ -124,6 +132,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                YandexMetrica.reportEvent(getString(R.string.metrica_user_use_address_button));
                 ArrayList<String> fields = new ArrayList<>();
                 fields.add("2");
                 fields.add(intent.getStringExtra("trackingId"));
@@ -144,12 +153,17 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     public void okClicked () {
         eventDetailsPresenter.okClicked();
-
         YandexMetrica.reportEvent("Пользователь удалил событие");
     }
 
     @Override
-    protected void onPostResume () {
+    protected void onResume() {
+        super.onResume();
+        UserOpenAnActivityDateTime = DateTime.now();
+    }
+
+    @Override
+    protected void onPostResume() {
         super.onPostResume();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -165,6 +179,16 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     protected void onPause () {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_details));
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_event_details), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_event_details));
     }
 
     @Override

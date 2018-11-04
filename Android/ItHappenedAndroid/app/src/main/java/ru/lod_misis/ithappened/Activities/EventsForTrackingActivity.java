@@ -14,8 +14,12 @@ import android.widget.TextView;
 
 import com.yandex.metrica.YandexMetrica;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -52,15 +56,21 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     TrackingService trackingService;
     int trackingPosition;
 
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
+
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_history_for_tracking);
         ButterKnife.bind(this);
+        UserOpenAnActivityDateTime = DateTime.now();
+        YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_hitroy_for_tracking));
 
-        ItHappenedApplication.getAppComponent().inject(this);
-
-        setupActionBar();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
 
@@ -132,6 +142,16 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     protected void onPause () {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history_for_tracking));
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_events_for_tracking), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_events_for_tracking));
     }
 
     @Override

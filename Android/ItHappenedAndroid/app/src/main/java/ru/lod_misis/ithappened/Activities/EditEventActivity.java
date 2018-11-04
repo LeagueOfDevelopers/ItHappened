@@ -30,11 +30,14 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import org.joda.time.DateTime;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -126,6 +129,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
     Context context;
     Activity activity;
+
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -326,9 +333,25 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    protected void onPause () {
+    protected void onResume() {
+        super.onResume();
+        UserOpenAnActivityDateTime = DateTime.now();
+    }
+
+    @Override
+    protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_event));
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_edit_event), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_edit_event));
     }
 
     @Override

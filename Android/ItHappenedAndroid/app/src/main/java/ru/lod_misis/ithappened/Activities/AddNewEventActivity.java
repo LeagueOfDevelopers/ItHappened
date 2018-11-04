@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,13 +42,18 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -89,7 +96,6 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     int eventDay;
     int eventHour;
     int eventMinuets;
-    int eventSeconds;
 
     boolean timeSetFlag = false;
 
@@ -137,8 +143,6 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     Double latitude = null;
     Double longitude = null;
-    Double myLatitude = null;
-    Double mylongitude = null;
 
 
     IWorkWithFIles workWithFIles;
@@ -158,6 +162,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     @Inject
     AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
     private Integer jobId;
+
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -237,9 +245,25 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    protected void onPause () {
+    protected void onResume() {
+        super.onResume();
+        UserOpenAnActivityDateTime = DateTime.now();
+    }
+
+    @Override
+    protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_from_add_event));
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_add_event), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_add_event));
     }
 
     @Override
@@ -442,8 +466,9 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                     scale = Double.parseDouble(scaleControl.getText().toString().trim());
                     addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID() , trackingId , eventDate , scale , rating , comment , latitude , longitude , photoPath) , trackingId);
                     YandexMetrica.reportEvent("Пользователь добавил событие");
-
-
+                    if (longitude != null && latitude != null) {
+                        YandexMetrica.reportEvent(getString(R.string.metrica_user_add_address_to_event));
+                    }
                 } catch (Exception e) {
                     showMessage("Введите число");
                 }
@@ -567,8 +592,27 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         }
     }
 
+    private Location getLastKnownLocation() {
+        LocationManager mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                addNewEventPresenter.requestPermission(1);
+            }
+            Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
+    }
 
-    private Long calculateAverangeTime (TrackingV1 trackingV1) {
+    private Long calculateAverangeTime(TrackingV1 trackingV1){
         int eventCount = 0;
         Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
         for (EventV1 eventV1 : trackingV1.GetEventHistory()) {
@@ -581,30 +625,27 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         return (new Date().getTime() - dateOfFirstEvent.getTime()) / eventCount;
     }
 
-    private void planningNotification () {
+    private void planningNotification(){
         Long averangeTime = null;
-        Long oneDay = Long.valueOf(1000 * 60 * 60 * 24);
-        if ( trackingV1.GetEventHistory().size() < 10 ) {
+        Long oneDay = Long.valueOf(60*60*60*24);
+        if(trackingV1.GetEventHistory().size() < 10){
             return;
         }
-        averangeTime = calculateAverangeTime(trackingV1);
-        if ( averangeTime == null ) {
+        averangeTime=calculateAverangeTime(trackingV1);
+        if(averangeTime == null){
             return;
         }
-        if ( BuildConfig.DEBUG ) {
-            createJobSheduler(Long.valueOf(BuildConfig.TEST_PUSH));
-        } else {
-            if ( averangeTime * 2 < oneDay ) {
-                createJobSheduler(oneDay);
-            } else {
-                createJobSheduler(averangeTime * 2);
-            }
+        if(averangeTime * 2 < oneDay){
+            createJobSheduler(Long.valueOf(1000*60*60*24));
+        }
+        else{
+            createJobSheduler(averangeTime * 2);
         }
     }
+    private void createJobSheduler(Long time){
+        ComponentName notificationJobServiece = new ComponentName(this,NotificationJobService.class);
+        JobInfo.Builder jobBuilder=new JobInfo.Builder(jobId,notificationJobServiece);
 
-    private void createJobSheduler (Long time) {
-        ComponentName notificationJobServiece = new ComponentName(this , NotificationJobService.class);
-        JobInfo.Builder jobBuilder = new JobInfo.Builder(jobId , notificationJobServiece);
         jobBuilder.setMinimumLatency(time);
         JobScheduler jobScheduler =
                 ( JobScheduler ) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);

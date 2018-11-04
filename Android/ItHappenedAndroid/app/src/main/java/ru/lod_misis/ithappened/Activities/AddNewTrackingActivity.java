@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +27,10 @@ import android.widget.Toast;
 import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
+import org.joda.time.DateTime;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -33,10 +38,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
+import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.StaticFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
 import ru.lod_misis.ithappened.MyGeopositionService;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingContract;
@@ -163,6 +166,11 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
     Context context;
     Activity activity;
+    SharedPreferences sharedPreferences;
+
+    // Время, когда пользователь открыл экран.
+    // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
+    private DateTime UserOpenAnActivityDateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,13 +189,12 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         photoOptional = (LinearLayout) findViewById(R.id.photoBackColorCheck);
         photoRequired = (LinearLayout) findViewById(R.id.photoBackColorDoubleCheck);
 
-        photoDontImage = (ImageView) findViewById(R.id.photoBackImageDont);
-        photoOptionalImage = (ImageView) findViewById(R.id.photoBackImageCheck);
-        photoRequiredImage = (ImageView) findViewById(R.id.photoBackImageDoubleCheck);
+        photoDontImage = findViewById(R.id.photoBackImageDont);
+        photoOptionalImage = findViewById(R.id.photoBackImageCheck);
+        photoRequiredImage = findViewById(R.id.photoBackImageDoubleCheck);
 
 
     }
-
 
     @Override
     protected void onStart() {
@@ -474,9 +481,25 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        UserOpenAnActivityDateTime = DateTime.now();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_from_add_tracking));
+        Map<String, Object> activityVisitTimeBorders = new HashMap<>();
+        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("End time", DateTime.now().toDate());
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_add_tracking), activityVisitTimeBorders);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_add_tracking));
     }
 
     @Override
@@ -585,10 +608,14 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, geoposition, photo, scaleNumb, trackingColor);
                 createTrackingPresenter.saveNewTracking(newTrackingV1);
 
-
+                Map<String, Object> customizationMask = new HashMap<>();
+                customizationMask.put("Scale customization", scale);
+                customizationMask.put("Rating customization", rating);
+                customizationMask.put("Comment customization", comment);
+                customizationMask.put("Photo customization", photo);
+                customizationMask.put("Geoposition customization", geoposition);
+                YandexMetrica.reportEvent(getString(R.string.metrica_user_customization_mask), customizationMask);
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
-
-
             }
         }
     }
