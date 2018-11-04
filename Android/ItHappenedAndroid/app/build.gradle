@@ -15,8 +15,7 @@ android {
         applicationId "ru.lod_misis.ithappened"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 584
-//        getMyVersionCode()
+        versionCode getMyVersionCode()
         versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
