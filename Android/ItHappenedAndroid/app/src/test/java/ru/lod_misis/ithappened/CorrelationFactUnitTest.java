@@ -10,14 +10,14 @@ import java.util.Random;
 import java.util.UUID;
 
 import io.realm.RealmList;
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Models.Rating;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.DataSet;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.Rating;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.BinaryCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.MultinomialCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.ScaleCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.DataSet;
 
 public class CorrelationFactUnitTest {
 
@@ -79,8 +79,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.BinaryCorrelationFactApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Binary correlation\n");
-            System.out.print("Data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
-            System.out.print("Data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
+            System.out.print("data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
+            System.out.print("data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");
@@ -108,8 +108,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.ScaleCorrelationFactApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Scale correlation\n");
-            System.out.print("Data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
-            System.out.print("Data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
+            System.out.print("data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
+            System.out.print("data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");
@@ -137,8 +137,8 @@ public class CorrelationFactUnitTest {
             List<Fact> fact = FunctionApplicability.MultinomialCorrelationApplicability(trackings);
             System.out.print("Test " + i + " passed\n");
             System.out.print("Rating correlation\n");
-            System.out.print("Data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
-            System.out.print("Data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
+            System.out.print("data set 1 size: " + trackingV1_1.getEventCollection().size() + "\n");
+            System.out.print("data set 2 size: " + trackingV1_2.getEventCollection().size() + "\n");
             System.out.print("Computed in " + new Interval(time, DateTime.now()).toDuration().getMillis() + "\n");
             if (fact.size() > 0) {
                 System.out.print(fact.get(0).textDescription() + "\n");

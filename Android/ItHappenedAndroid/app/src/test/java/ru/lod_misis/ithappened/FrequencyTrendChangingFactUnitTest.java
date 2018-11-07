@@ -8,11 +8,11 @@ import java.util.Random;
 import java.util.UUID;
 
 import io.realm.RealmList;
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.FunctionApplicability;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
+import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
+import ru.lod_misis.ithappened.domain.statistics.facts.FunctionApplicability;
 
 public class FrequencyTrendChangingFactUnitTest {
 
@@ -38,7 +38,7 @@ public class FrequencyTrendChangingFactUnitTest {
 //                System.out.print(descr + "\n");
 //            }
 //            System.out.print("Test " + i + " finished\n");
-//            System.out.print("Data set length: " + tracking.getEventCollection().size() + "\n");
+//            System.out.print("data set length: " + tracking.getEventCollection().size() + "\n");
 //            if (fact == null) {
 //                System.out.print("Fact is null\n");
 //            }

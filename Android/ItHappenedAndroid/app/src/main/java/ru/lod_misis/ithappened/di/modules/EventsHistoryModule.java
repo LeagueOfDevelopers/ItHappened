@@ -2,9 +2,9 @@ package ru.lod_misis.ithappened.di.modules;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Domain.TrackingService;
-import ru.lod_misis.ithappened.UI.Presenters.EventsHistoryContract;
-import ru.lod_misis.ithappened.UI.Presenters.EventsHistoryPresenterImpl;
+import ru.lod_misis.ithappened.domain.TrackingService;
+import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
+import ru.lod_misis.ithappened.ui.presenters.EventsHistoryPresenterImpl;
 
 @Module(includes = MainModule.class)
 public class EventsHistoryModule {

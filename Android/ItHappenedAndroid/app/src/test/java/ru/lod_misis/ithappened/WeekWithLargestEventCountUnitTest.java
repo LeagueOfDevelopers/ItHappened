@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.UUID;
 
 import io.realm.RealmList;
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
 
 public class WeekWithLargestEventCountUnitTest {
 

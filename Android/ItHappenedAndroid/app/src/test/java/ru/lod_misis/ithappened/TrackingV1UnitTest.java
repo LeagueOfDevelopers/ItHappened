@@ -11,10 +11,10 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
-import ru.lod_misis.ithappened.Domain.Models.Rating;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
+import ru.lod_misis.ithappened.domain.models.Rating;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 
 public class TrackingV1UnitTest {
 

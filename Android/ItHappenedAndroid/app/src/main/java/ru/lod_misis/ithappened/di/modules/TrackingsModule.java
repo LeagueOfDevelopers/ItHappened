@@ -4,10 +4,10 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Domain.TrackingService;
-import ru.lod_misis.ithappened.UI.Presenters.TrackingsContract;
-import ru.lod_misis.ithappened.UI.Presenters.TrackingsPresenterImpl;
-import ru.lod_misis.ithappened.Domain.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.domain.TrackingService;
+import ru.lod_misis.ithappened.ui.presenters.TrackingsContract;
+import ru.lod_misis.ithappened.ui.presenters.TrackingsPresenterImpl;
+import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
 
 @Module(includes = MainModule.class)
 public class TrackingsModule {

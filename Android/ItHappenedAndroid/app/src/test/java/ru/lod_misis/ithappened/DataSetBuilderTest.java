@@ -7,11 +7,11 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Builders.DataSetBuilder;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.DataSet;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.Sequence;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Trends.EventsTimeDistribution;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.builders.DataSetBuilder;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.DataSet;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.Sequence;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.trends.EventsTimeDistribution;
 
 public class DataSetBuilderTest {
 

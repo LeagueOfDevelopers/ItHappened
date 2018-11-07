@@ -6,10 +6,10 @@ import java.util.Random;
 import java.util.UUID;
 
 import io.realm.RealmList;
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Models.Rating;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.Rating;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
 
 public class RatingOrScaleTrendChangingFactUnitTest {
 
@@ -26,7 +26,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
 //                String descr = fact.textDescription();
 //            }
 //            System.out.print("Test " + i + " finished\n");
-//            System.out.print("Data set length: " + tracking.getEventCollection().size() + "\n");
+//            System.out.print("data set length: " + tracking.getEventCollection().size() + "\n");
 //            if (fact == null) {
 //                System.out.print("Fact is null\n");
 //            }
@@ -48,7 +48,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
 //                String descr = fact.textDescription();
 //            }
 //            System.out.print("Test " + i + " finished\n");
-//            System.out.print("Data set length: " + tracking.getEventCollection().size() + "\n");
+//            System.out.print("data set length: " + tracking.getEventCollection().size() + "\n");
 //            if (fact == null) {
 //                System.out.print("Fact is null\n");
 //            }
