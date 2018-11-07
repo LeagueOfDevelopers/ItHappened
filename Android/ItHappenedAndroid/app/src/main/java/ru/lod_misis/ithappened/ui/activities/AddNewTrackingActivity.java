@@ -1,8 +1,6 @@
 package ru.lod_misis.ithappened.ui.activities;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -41,6 +39,7 @@ import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
 
 public class AddNewTrackingActivity extends AppCompatActivity implements CreateTrackingContract.CreateTrackingView {
 
+    public static final int GEO_REQUEST_CODE = 1;
     @Inject
     CreateTrackingContract.CreateTrackingPresenter createTrackingPresenter;
 
@@ -151,9 +150,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     TrackingCustomization scale;
     TrackingCustomization photo;
     TrackingCustomization geoposition;
-
-    Context context;
-    Activity activity;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -440,8 +436,9 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
             @Override
             public void onClick (View view) {
                 if ( geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required ) {
-                    if ( ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                        createTrackingPresenter.requestPermission(1);
+                    if ( ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                        createTrackingPresenter.requestPermission(GEO_REQUEST_CODE);
                     } else {
                         createTrackingPresenter.createNewTracking();
                     }
@@ -479,7 +476,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         super.onRequestPermissionsResult(requestCode , permissions , grantResults);
         Log.d("RequestPermission" , "ReSPONSEaLL");
         switch ( requestCode ) {
-            case 1: {
+            case GEO_REQUEST_CODE: {
                 if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
                     stopService(new Intent(this , MyGeopositionService.class));
@@ -510,8 +507,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle , UUID.randomUUID() , scale , rating , comment , geoposition , photo , scaleNumb , trackingColor);
                 createTrackingPresenter.saveNewTracking(newTrackingV1);
-
-
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
 
 
@@ -527,7 +522,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     @Override
     public void requestPermissionForGeoposition () {
         Log.d("RequestPermission" , "Request");
-        ActivityCompat.requestPermissions(activity , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , 1);
+        ActivityCompat.requestPermissions(AddNewTrackingActivity.this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , GEO_REQUEST_CODE);
     }
 
     @Override
