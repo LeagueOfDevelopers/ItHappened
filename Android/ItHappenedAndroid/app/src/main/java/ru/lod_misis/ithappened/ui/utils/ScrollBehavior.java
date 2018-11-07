@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened.ui.buttonseffects;
+package ru.lod_misis.ithappened.ui.utils;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
@@ -8,9 +8,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
-public class FAB_Float_on_Scroll extends FloatingActionButton.Behavior {
+public class ScrollBehavior extends FloatingActionButton.Behavior {
 
-    public FAB_Float_on_Scroll(Context context, AttributeSet attrs) {
+    public ScrollBehavior(Context context, AttributeSet attrs) {
         super();
     }
 
