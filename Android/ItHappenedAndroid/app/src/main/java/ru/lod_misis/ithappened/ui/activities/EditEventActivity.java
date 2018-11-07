@@ -42,15 +42,15 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractor;
 import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
-import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.activities.mapactivity.MapActivity;
 import ru.lod_misis.ithappened.ui.fragments.DatePickerFragment;
-import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.presenters.EditEventContract;
 
 public class EditEventActivity extends AppCompatActivity implements EditEventContract.EditEventView {
@@ -111,7 +111,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     ImageView photo;
     AlertDialog.Builder dialog;
     Boolean flagPhoto = false;
-    Boolean flagGeoposition = false;
 
     LocationManager locationManager;
     Double latitude = null;
@@ -294,8 +293,12 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         if ( (photo == TrackingCustomization.Optional
                 || photo == TrackingCustomization.Required) ) {
             workWithFIles = new PhotoInteractorImpl(this);
-            this.photoPath = photoPath;
-            this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
+            if ( photoPath != null ) {
+                this.photoPath = photoPath;
+                this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
+            } else {
+                this.photoPath = "";
+            }
         }
 
     }
@@ -363,7 +366,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         if ( geopositionState == 2 ) {
             geopositionFlag = false;
         }
-        if ( photoState == 2 && !photoPath.isEmpty() )
+        if ( photoState == 2 && photoPath.isEmpty())
             photoFlag = false;
 
         if ( commentFlag && ratingFlag && scaleFlag && geopositionFlag && photoFlag ) {

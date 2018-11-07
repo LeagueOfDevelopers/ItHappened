@@ -30,12 +30,12 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
-import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
 import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
+import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
 
 public class AddNewTrackingActivity extends AppCompatActivity implements CreateTrackingContract.CreateTrackingView {
 
@@ -156,22 +156,10 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
-
         ItHappenedApplication.getAppComponent().inject(this);
 
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
-        photoEnabled = ( TextView ) findViewById(R.id.photoTextEnabled);
-
-        photoDont = ( LinearLayout ) findViewById(R.id.photoBackColorDont);
-        photoOptional = ( LinearLayout ) findViewById(R.id.photoBackColorCheck);
-        photoRequired = ( LinearLayout ) findViewById(R.id.photoBackColorDoubleCheck);
-
-        photoDontImage = ( ImageView ) findViewById(R.id.photoBackImageDont);
-        photoOptionalImage = ( ImageView ) findViewById(R.id.photoBackImageCheck);
-        photoRequiredImage = ( ImageView ) findViewById(R.id.photoBackImageDoubleCheck);
-
-
     }
 
 
@@ -316,7 +304,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 scale = TrackingCustomization.Required;
-
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
@@ -426,7 +413,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         colorPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-
                 SpectrumDialog dialog = colorPickerDialogBuilder.build();
                 dialog.show(getSupportFragmentManager() , "Tag");
             }
@@ -504,12 +490,9 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 if ( scale != TrackingCustomization.None ) {
                     scaleNumb = scaleType.getText().toString().trim();
                 }
-
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle , UUID.randomUUID() , scale , rating , comment , geoposition , photo , scaleNumb , trackingColor);
                 createTrackingPresenter.saveNewTracking(newTrackingV1);
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
-
-
             }
         }
     }
@@ -523,11 +506,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     public void requestPermissionForGeoposition () {
         Log.d("RequestPermission" , "Request");
         ActivityCompat.requestPermissions(AddNewTrackingActivity.this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , GEO_REQUEST_CODE);
-    }
-
-    @Override
-    public void requestPermissionForCamera () {
-
     }
 
     @Override

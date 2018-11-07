@@ -25,12 +25,12 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
 import ru.lod_misis.ithappened.data.repository.StaticFactRepository;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
-import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.presenters.EditTrackingContract;
 
@@ -266,7 +266,6 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 photoRequired ,
                 photoEnabled);
 
-
         ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -419,7 +418,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
-                geoposition = TrackingCustomization.None;
+                stateForGeoposition=0;
             }
         });
 
@@ -433,7 +432,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 geopositionOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
-                geoposition = TrackingCustomization.Optional;
+                stateForGeoposition=1;
             }
         });
 
@@ -448,7 +447,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 geopositionRequiredImage.setImageResource(R.drawable.active_double_check);
                 geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionRequired.setBackgroundColor(getResources().getColor(R.color.required));
-                geoposition = TrackingCustomization.Required;
+                stateForGeoposition=2;
             }
         });
 
