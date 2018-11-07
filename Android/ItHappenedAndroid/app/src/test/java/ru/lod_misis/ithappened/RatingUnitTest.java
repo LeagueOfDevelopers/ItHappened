@@ -1,6 +1,6 @@
 package ru.lod_misis.ithappened;
 
-import ru.lod_misis.ithappened.Domain.Models.Rating;
+import ru.lod_misis.ithappened.domain.models.Rating;
 
 import junit.framework.Assert;
 

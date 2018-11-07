@@ -10,17 +10,17 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.Models.EventV1;
-import ru.lod_misis.ithappened.Domain.Models.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.Models.TrackingV1;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.OneTrackingStatistcs.LongestBreakFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.OneTrackingStatistcs.ScaleTrendChangingFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.Models.Collections.DataSet;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCountFact;
-import ru.lod_misis.ithappened.Domain.Statistics.Facts.AllTrackingsStatistics.WeekWithLargestEventCountFact;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.BinaryCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.MultinomialCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.ScaleCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.onetrackingstatistcs.LongestBreakFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.onetrackingstatistcs.ScaleTrendChangingFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.DataSet;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.DayWithLargestEventCountFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.WeekWithLargestEventCountFact;
 
 public class DescriptionBuilderUnitTest {
 

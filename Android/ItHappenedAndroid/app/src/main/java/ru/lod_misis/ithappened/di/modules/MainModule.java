@@ -7,11 +7,11 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Domain.TrackingService;
-import ru.lod_misis.ithappened.Data.Repositories.ITrackingRepository;
-import ru.lod_misis.ithappened.Data.Repositories.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Data.Repositories.TrackingRepository;
-import ru.lod_misis.ithappened.Domain.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
+import ru.lod_misis.ithappened.data.repository.TrackingDataSourceImpl;
+import ru.lod_misis.ithappened.domain.TrackingService;
+import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
+import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
 
 @Module
 public class MainModule {
@@ -45,8 +45,8 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public ITrackingRepository provideTrackingRepository(Context context, String userId){
-        return new TrackingRepository(context, userId);
+    public TrackingDataSource provideTrackingRepository(Context context, String userId){
+        return new TrackingDataSourceImpl(context, userId);
     }
 
     @Singleton
@@ -57,13 +57,13 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public TrackingService provideTrackingService(ITrackingRepository trackingRepository){
+    public TrackingService provideTrackingService(TrackingDataSource trackingRepository){
         return new TrackingService(trackingRepository);
     }
 
     @Singleton
     @Provides
-    public FactCalculator provideFactCalculator(ITrackingRepository trackingRepository){
+    public FactCalculator provideFactCalculator(TrackingDataSource trackingRepository){
         return new FactCalculator(trackingRepository);
     }
 }
