@@ -23,13 +23,6 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
     }
 
     @Override
-    public void addNewEvent () {
-        if ( isViewAttached() ) {
-            addNewEventView.addNewEvent();
-        }
-    }
-
-    @Override
     public void init (UUID trackingId) {
         if ( isViewAttached() ) {
             addNewEventView.startedConfiguration(trackingRepository.getTracking(trackingId));

@@ -7,8 +7,6 @@ import ru.lod_misis.ithappened.domain.models.TrackingV1;
 
 public interface AddNewEventContract {
     interface AddNewEventView {
-        void addNewEvent ();
-
         void requestPermissionForGeoposition ();
 
         void startConfigurationView ();
@@ -21,7 +19,6 @@ public interface AddNewEventContract {
     }
 
     interface AddNewEventPresenter {
-        void addNewEvent ();
 
         void init (UUID trackingId);
 

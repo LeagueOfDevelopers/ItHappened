@@ -175,7 +175,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                addNewEventPresenter.addNewEvent();
+                addEvent();
             }
         });
         scaleContainer.setOnClickListener(new View.OnClickListener() {
@@ -263,12 +263,6 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 }
             }
         }
-    }
-
-
-    @Override
-    public void addNewEvent () {
-        addEvent();
     }
 
     @Override
