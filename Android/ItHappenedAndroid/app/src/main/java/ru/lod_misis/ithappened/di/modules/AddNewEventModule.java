@@ -13,9 +13,8 @@ public class AddNewEventModule {
 
     @Provides
     public AddNewEventContract.AddNewEventPresenter provieAddNewEventPresenter(TrackingDataSource trackingRepository,
-                                                                               TrackingService trackingService,
-                                                                               FactCalculator factCalculator){
-        return new AddNewEventPresenterImpl(trackingRepository, trackingService, factCalculator);
+                                                                               TrackingService trackingService){
+        return new AddNewEventPresenterImpl(trackingRepository, trackingService);
     }
 
 }
