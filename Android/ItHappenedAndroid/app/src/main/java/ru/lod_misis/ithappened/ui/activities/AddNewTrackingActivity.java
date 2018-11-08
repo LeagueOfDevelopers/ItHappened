@@ -1,8 +1,6 @@
 package ru.lod_misis.ithappened.ui.activities;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -32,15 +30,16 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
-import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
 import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
+import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
 
 public class AddNewTrackingActivity extends AppCompatActivity implements CreateTrackingContract.CreateTrackingView {
 
+    public static final int GEO_REQUEST_CODE = 1;
     @Inject
     CreateTrackingContract.CreateTrackingPresenter createTrackingPresenter;
 
@@ -152,30 +151,15 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     TrackingCustomization photo;
     TrackingCustomization geoposition;
 
-    Context context;
-    Activity activity;
-
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
-
         ItHappenedApplication.getAppComponent().inject(this);
 
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
-        photoEnabled = ( TextView ) findViewById(R.id.photoTextEnabled);
-
-        photoDont = ( LinearLayout ) findViewById(R.id.photoBackColorDont);
-        photoOptional = ( LinearLayout ) findViewById(R.id.photoBackColorCheck);
-        photoRequired = ( LinearLayout ) findViewById(R.id.photoBackColorDoubleCheck);
-
-        photoDontImage = ( ImageView ) findViewById(R.id.photoBackImageDont);
-        photoOptionalImage = ( ImageView ) findViewById(R.id.photoBackImageCheck);
-        photoRequiredImage = ( ImageView ) findViewById(R.id.photoBackImageDoubleCheck);
-
-
     }
 
 
@@ -320,7 +304,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 scale = TrackingCustomization.Required;
-
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
@@ -430,7 +413,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         colorPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-
                 SpectrumDialog dialog = colorPickerDialogBuilder.build();
                 dialog.show(getSupportFragmentManager() , "Tag");
             }
@@ -440,8 +422,9 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
             @Override
             public void onClick (View view) {
                 if ( geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required ) {
-                    if ( ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                        createTrackingPresenter.requestPermission(1);
+                    if ( ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                        createTrackingPresenter.requestPermission(GEO_REQUEST_CODE);
                     } else {
                         createTrackingPresenter.createNewTracking();
                     }
@@ -479,7 +462,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         super.onRequestPermissionsResult(requestCode , permissions , grantResults);
         Log.d("RequestPermission" , "ReSPONSEaLL");
         switch ( requestCode ) {
-            case 1: {
+            case GEO_REQUEST_CODE: {
                 if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
                     stopService(new Intent(this , MyGeopositionService.class));
@@ -507,14 +490,9 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 if ( scale != TrackingCustomization.None ) {
                     scaleNumb = scaleType.getText().toString().trim();
                 }
-
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle , UUID.randomUUID() , scale , rating , comment , geoposition , photo , scaleNumb , trackingColor);
                 createTrackingPresenter.saveNewTracking(newTrackingV1);
-
-
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
-
-
             }
         }
     }
@@ -527,12 +505,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     @Override
     public void requestPermissionForGeoposition () {
         Log.d("RequestPermission" , "Request");
-        ActivityCompat.requestPermissions(activity , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , 1);
-    }
-
-    @Override
-    public void requestPermissionForCamera () {
-
+        ActivityCompat.requestPermissions(AddNewTrackingActivity.this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , GEO_REQUEST_CODE);
     }
 
     @Override

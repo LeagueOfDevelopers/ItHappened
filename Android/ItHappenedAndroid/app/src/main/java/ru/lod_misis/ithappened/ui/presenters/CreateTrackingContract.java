@@ -6,7 +6,6 @@ public interface CreateTrackingContract {
     interface CreateTrackingView{
         void createTracking();
         void requestPermissionForGeoposition();
-        void requestPermissionForCamera();
         void startConfigurationView();
         void satredConfiguration();
         void showMessage(String message);
@@ -20,7 +19,6 @@ public interface CreateTrackingContract {
         void createNewTracking();
         void saveNewTracking(TrackingV1 newTrackingV1);
         void requestPermission(int codePermission);
-
         Boolean isViewAttached();
     }
 }

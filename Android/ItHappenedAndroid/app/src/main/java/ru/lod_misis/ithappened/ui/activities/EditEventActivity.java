@@ -42,15 +42,15 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractor;
 import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
-import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.activities.mapactivity.MapActivity;
 import ru.lod_misis.ithappened.ui.fragments.DatePickerFragment;
-import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.presenters.EditEventContract;
 
 public class EditEventActivity extends AppCompatActivity implements EditEventContract.EditEventView {
@@ -111,7 +111,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     ImageView photo;
     AlertDialog.Builder dialog;
     Boolean flagPhoto = false;
-    Boolean flagGeoposition = false;
 
     LocationManager locationManager;
     Double latitude = null;
@@ -155,7 +154,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                MapActivity.toMapActivity(activity , 3,latitude,longitude);
+                MapActivity.toMapActivity(activity , 3 , latitude , longitude);
             }
         });
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -238,8 +237,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         geopositionState = calculateState(geoposition);
         photoState = calculateState(photo);
 
-        this.latitude=latitude;
-        this.longitude=longitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
 
         calculateContainerState(commentContainer , commentAccess , commentState);
         calculateContainerState(ratingContainer , ratingAccess , ratingState);
@@ -294,7 +293,12 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         if ( (photo == TrackingCustomization.Optional
                 || photo == TrackingCustomization.Required) ) {
             workWithFIles = new PhotoInteractorImpl(this);
-            this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
+            if ( photoPath != null ) {
+                this.photoPath = photoPath;
+                this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
+            } else {
+                this.photoPath = "";
+            }
         }
 
     }
@@ -336,12 +340,18 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
     @Override
     public void addEvent () {
+        String comment = null;
+        Double scale = null;
+        Rating rating = null;
+        Date eventDate;
+
         boolean commentFlag = true;
         boolean scaleFlag = true;
         boolean ratingFlag = true;
         boolean geopositionFlag = true;
+        boolean photoFlag = true;
 
-        if ( commentState == 2 && commentControl.getText().toString().isEmpty() ) {
+        if ( commentState == 2 && commentControl.getText().toString().isEmpty() && commentControl.getText().toString().trim().isEmpty() ) {
             commentFlag = false;
         }
 
@@ -349,63 +359,49 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             ratingFlag = false;
         }
 
-        if ( scaleState == 2 && scaleControl.getText().toString() != null ) {
+        if ( scaleState == 2 && scaleControl.getText().toString().isEmpty() && scaleControl.getText().toString().trim().isEmpty() ) {
             scaleFlag = false;
         }
 
-        if ( geopositionState == 2 && !flagGeoposition ) {
+        if ( geopositionState == 2 ) {
             geopositionFlag = false;
         }
+        if ( photoState == 2 && photoPath.isEmpty())
+            photoFlag = false;
 
-        String comment = null;
-        Double scale = null;
-        Rating rating = null;
-        Date eventDate = null;
-
-
-        if ( commentFlag && ratingFlag && scaleFlag && geopositionFlag ) {
-            if ( !commentControl.getText().toString().isEmpty() && !commentControl.getText().toString().trim().isEmpty() ) {
+        if ( commentFlag && ratingFlag && scaleFlag && geopositionFlag && photoFlag ) {
+            if ( !commentControl.getText().toString().trim().isEmpty() )
                 comment = commentControl.getText().toString().trim();
+            if ( !scaleControl.getText().toString().trim().isEmpty() )
+                scale = Double.valueOf(scaleControl.getText().toString());
+            if ( ratingControl.getRating() != 0f )
+                rating = new Rating(( int ) ratingControl.getRating());
+            try {
+                eventDate = getDate();
+            } catch (ParseException e) {
+                e.printStackTrace();
+                showMessage("У нас неполадки,извиняемся");
+                return;
             }
-            if ( !(rating == null) ) {
-                rating = new Rating(( int ) (rating.getRating()));
-            }
-            if ( scale != null ) {
-                try {
-                    scale = scale;
-                    Locale locale = new Locale("ru");
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
-                    simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                    try {
-                        eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    showMessage("Событие изменено");
-                    showEditResult();
-                } catch (Exception e) {
-                    showMessage("Введите число");
-                }
-            } else {
-
-                Locale locale = new Locale("ru");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
-                simpleDateFormat.setTimeZone(TimeZone.getDefault());
-                try {
-                    eventDate = simpleDateFormat.parse(dateControl.getText().toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                showMessage("Событие изменено");
-                showEditResult();
-
-            }
+            showMessage("Событие изменено");
             presenter.finish(scale , rating , comment ,
                     latitude , longitude , photoPath , eventDate);
             reportEvent(R.string.metrica_edit_event);
+            showEditResult();
         } else {
             showMessage("Заполните поля с *");
         }
+    }
+
+    private Date getDate () throws ParseException {
+
+        Date eventDate = null;
+        Locale locale = new Locale("ru");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
+        simpleDateFormat.setTimeZone(TimeZone.getDefault());
+        eventDate = simpleDateFormat.parse(dateControl.getText().toString());
+        return eventDate;
+
     }
 
     private void finishActivity () {
@@ -448,11 +444,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             latitude = data.getDoubleExtra("latitude" , 0);
             longitude = data.getDoubleExtra("longitude" , 0);
             try {
-                adress.setText(getAddress(latitude,longitude));
+                adress.setText(getAddress(latitude , longitude));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            flagGeoposition = true;
         }
     }
 
