@@ -7,8 +7,8 @@ import com.yandex.metrica.YandexMetrica;
 
 import javax.inject.Inject;
 
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
-import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,28 +21,28 @@ import rx.schedulers.Schedulers;
 
 public class StatisticsInteractorImpl implements StatisticsContract.StatisticsInteractor {
 
-    InMemoryFactRepository factRepository;
+    FactService factService;
     StatisticsContract.StatisticsView statisticsView;
     Context context;
 
     @Inject
-    public StatisticsInteractorImpl(Context context, InMemoryFactRepository factRepository) {
+    public StatisticsInteractorImpl(Context context, FactService factService) {
         this.context = context;
-        this.factRepository = factRepository;
+        this.factService = factService;
     }
 
     @Override
     public void loadingFacts(final TrackingService service) {
 //        statisticsView.showLoading();
         YandexMetrica.reportEvent(context.getString(R.string.metrica_recount_statistics));
-        factRepository.calculateAllTrackingsFacts(service.GetTrackingCollection())
+        factService.calculateAllTrackingsFacts(service.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
                         Log.d("statistics", "calculate");
-                        factRepository.calculateOneTrackingFacts(service.GetTrackingCollection())
+                        factService.calculateOneTrackingFacts(service.GetTrackingCollection())
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {

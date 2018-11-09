@@ -15,9 +15,9 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.EventV1;
-import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
@@ -32,7 +32,7 @@ import rx.schedulers.Schedulers;
 public class DeleteEventFromFragmentDialog extends DialogFragment {
 
     @Inject
-    InMemoryFactRepository factRepository;
+    FactService factService;
     @Inject
     TrackingService trackingService;
     @Inject
@@ -54,7 +54,7 @@ public class DeleteEventFromFragmentDialog extends DialogFragment {
 
 
                         trackingService.RemoveEvent(eventId);
-                        factRepository.onChangeCalculateOneTrackingFacts(trackingService.GetTrackingCollection() , trackingId)
+                        factService.onChangeCalculateOneTrackingFacts(trackingService.GetTrackingCollection() , trackingId)
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {
@@ -63,7 +63,7 @@ public class DeleteEventFromFragmentDialog extends DialogFragment {
                                         Log.d("statistics" , "calculateOneTrackingFact");
                                     }
                                 });
-                        factRepository.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
+                        factService.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {

@@ -4,7 +4,8 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
+import ru.lod_misis.ithappened.data.repository.InMemoryFactRepositoryImpl;
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.ui.presenters.StatisticsContract;
 import ru.lod_misis.ithappened.ui.presenters.StatisticsInteractorImpl;
 
@@ -12,8 +13,8 @@ import ru.lod_misis.ithappened.ui.presenters.StatisticsInteractorImpl;
 public class StatisticsModule {
 
     @Provides
-    public StatisticsContract.StatisticsInteractor provideStatisticsInteractor(Context context, InMemoryFactRepository repository){
-        return new StatisticsInteractorImpl(context, repository);
+    public StatisticsContract.StatisticsInteractor provideStatisticsInteractor(Context context, FactService factService){
+        return new StatisticsInteractorImpl(context, factService);
     }
 
 }

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,22 +26,26 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
-import ru.lod_misis.ithappened.data.repository.StaticFactRepository;
+import ru.lod_misis.ithappened.domain.FactService;
+import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.presenters.EditTrackingContract;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 public class EditTrackingActivity extends AppCompatActivity implements EditTrackingContract.EditTrackingView {
 
     @Inject
-    InMemoryFactRepository factRepository;
+    FactService factService;
     @Inject
-    FactCalculator factCalculator;
+    TrackingService trackingService;
 
     @Inject
     EditTrackingContract.EditTrackingPresenter editTrackingPresenter;
@@ -175,8 +180,6 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Изменить отслеживание");
-
-        factRepository = StaticFactRepository.getInstance();
 
         trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
 
@@ -539,7 +542,25 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
     @Override
     public void completeEdit () {
-        factCalculator.calculateFactsForAddNewEventActivity(trackingId);
+        factService.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<Fact>() {
+            @Override
+            public void call(Fact fact) {
+                Log.d("statistics", "calculate");
+            }
+        });
+        factService.onChangeCalculateOneTrackingFacts(
+                trackingService.GetTrackingCollection(), trackingId)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d("statistics", "calculate");
+                    }
+                });
         YandexMetrica.reportEvent(getString(R.string.metrica_edit_tracking));
         Toast.makeText(getApplicationContext() , "Отслеживание изменено" , Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext() , UserActionsActivity.class);

@@ -45,6 +45,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.ui.ConnectionReciver;
 import ru.lod_misis.ithappened.ui.ConnectionReciver.ConnectionReciverListener;
 import ru.lod_misis.ithappened.ui.fragments.EventsFragment;
@@ -55,7 +56,6 @@ import ru.lod_misis.ithappened.ui.presenters.UserActionContract;
 import ru.lod_misis.ithappened.ui.presenters.UserActionPresenterImpl;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
-import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
 import rx.Subscription;
 
 public class UserActionsActivity extends AppCompatActivity
@@ -83,8 +83,6 @@ public class UserActionsActivity extends AppCompatActivity
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
-    @Inject
-    FactCalculator factCalculator;
     CircleImageView urlUser;
     ProfileSettingsFragment profileStgsFrg;
     ProgressBar syncPB;
@@ -140,10 +138,6 @@ public class UserActionsActivity extends AppCompatActivity
         fTrans.commit();
 
         syncPB = findViewById(R.id.syncPB);
-
-
-        factCalculator.calculateFacts();
-
     }
 
     @Override

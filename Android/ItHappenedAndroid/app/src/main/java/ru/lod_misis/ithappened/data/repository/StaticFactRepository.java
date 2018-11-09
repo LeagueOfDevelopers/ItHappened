@@ -5,9 +5,9 @@ package ru.lod_misis.ithappened.data.repository;
  */
 
 public class StaticFactRepository {
-    private static final InMemoryFactRepository ourInstance = new InMemoryFactRepository();
+    private static final InMemoryFactRepositoryImpl ourInstance = new InMemoryFactRepositoryImpl();
 
-    public static InMemoryFactRepository getInstance() {
+    public static InMemoryFactRepositoryImpl getInstance() {
         return ourInstance;
     }
 
