@@ -159,7 +159,8 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         ItHappenedApplication.getAppComponent().inject(this);
 
         createTrackingPresenter.attachView(this);
-        createTrackingPresenter.init();
+        startConfiguration();
+        startConfigurationView();
     }
 
 
@@ -426,10 +427,10 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                             && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
                         createTrackingPresenter.requestPermission(GEO_REQUEST_CODE);
                     } else {
-                        createTrackingPresenter.createNewTracking();
+                        addNewTracking();
                     }
                 } else {
-                    createTrackingPresenter.createNewTracking();
+                    addNewTracking();
                 }
             }
         });
@@ -467,7 +468,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                         grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
                     stopService(new Intent(this , MyGeopositionService.class));
                     startService(new Intent(this , MyGeopositionService.class));
-                    createTrackingPresenter.createNewTracking();
+                    addNewTracking();
                 }
             }
         }
@@ -498,26 +499,19 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     @Override
-    public void createTracking () {
-        addNewTracking();
-    }
-
-    @Override
     public void requestPermissionForGeoposition () {
         Log.d("RequestPermission" , "Request");
         ActivityCompat.requestPermissions(AddNewTrackingActivity.this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , GEO_REQUEST_CODE);
     }
 
-    @Override
-    public void startConfigurationView () {
+    private void startConfigurationView () {
         visbilityScaleTypeHint.setVisibility(View.GONE);
         visibilityScaleType.setVisibility(View.GONE);
         scaleType.setVisibility(View.GONE);
         setupToolbar();
     }
 
-    @Override
-    public void satredConfiguration () {
+    private void startConfiguration () {
         rating = TrackingCustomization.None;
         comment = TrackingCustomization.None;
         scale = TrackingCustomization.None;

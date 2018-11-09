@@ -20,14 +20,6 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
     }
 
     @Override
-    public void init () {
-        if ( isViewAttached() ) {
-            createTrackingView.startConfigurationView();
-            createTrackingView.satredConfiguration();
-        }
-    }
-
-    @Override
     public void attachView (CreateTrackingContract.CreateTrackingView createTrackingView) {
         this.createTrackingView = createTrackingView;
     }
@@ -35,13 +27,6 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
     @Override
     public void detachView () {
         this.createTrackingView = null;
-    }
-
-    @Override
-    public void createNewTracking () {
-        if ( isViewAttached() ) {
-            createTrackingView.createTracking();
-        }
     }
 
     @Override
