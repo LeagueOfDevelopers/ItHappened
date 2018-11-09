@@ -21,11 +21,13 @@ public class CertainWeekDaysFact extends Fact {
     public CertainWeekDaysFact(TrackingV1 trackingV1) {
         trackingId = trackingV1.getTrackingId();
         this.trackingV1 = trackingV1;
+        modelList = new ArrayList<>();
     }
 
     @Override
     public void calculateData() {
         List<EventV1> eventV1Collection = new ArrayList<>();
+        modelList = new ArrayList<>();
 
         for(EventV1 eventV1 : trackingV1.getEventHistory()){
             if(!eventV1.isDeleted()) eventV1Collection.add(eventV1);
