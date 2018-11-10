@@ -22,6 +22,8 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
     FactService factService;
     TrackingService trackingService;
 
+    private String STATISTICS = "statistics";
+
     @Inject
     public AddNewEventPresenterImpl(TrackingDataSource trackingRepository,
                                     TrackingService trackingService,
@@ -81,7 +83,7 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
                     .subscribe(new Action1() {
                         @Override
                         public void call(Object o) {
-                            Log.d("statistics", "calculate");
+                            Log.d(STATISTICS, "calculate");
                         }
                     });
 
@@ -91,7 +93,7 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
                     .subscribe(new Action1() {
                         @Override
                         public void call(Object o) {
-                            Log.d("statistics", "calculate");
+                            Log.d(STATISTICS, "calculate");
                         }
                     });
 

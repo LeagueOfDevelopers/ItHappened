@@ -153,6 +153,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
     UUID trackingId;
 
+    private String STATISTICS = "statistics";
+
     TrackingV1 editableTrackingV1;
     int stateForScale;
     int stateForText;
@@ -548,7 +550,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         .subscribe(new Action1<Fact>() {
             @Override
             public void call(Fact fact) {
-                Log.d("statistics", "calculate");
+                Log.d(STATISTICS, "calculate");
             }
         });
         factService.onChangeCalculateOneTrackingFacts(
@@ -558,7 +560,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculate");
+                        Log.d(STATISTICS, "calculate");
                     }
                 });
         YandexMetrica.reportEvent(getString(R.string.metrica_edit_tracking));

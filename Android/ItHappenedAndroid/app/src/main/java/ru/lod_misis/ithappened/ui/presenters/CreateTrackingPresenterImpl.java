@@ -20,6 +20,8 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
     FactService factService;
     SharedPreferences sharedPreferences;
 
+    private String STATISTICS = "statistics";
+
     @Inject
     public CreateTrackingPresenterImpl(SharedPreferences sharedPreferences,
                                        TrackingService trackingService,
@@ -63,7 +65,7 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
                     .subscribe(new Action1() {
                         @Override
                         public void call(Object o) {
-                            Log.d("statistics", "calculate");
+                            Log.d(STATISTICS, "calculate");
                         }
                     });
 
@@ -73,7 +75,7 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
                     .subscribe(new Action1() {
                         @Override
                         public void call(Object o) {
-                            Log.d("statistics", "calculate");
+                            Log.d(STATISTICS, "calculate");
                         }
                     });
 

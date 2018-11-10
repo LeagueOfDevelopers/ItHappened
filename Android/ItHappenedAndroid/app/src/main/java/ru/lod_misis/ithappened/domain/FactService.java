@@ -8,6 +8,7 @@ import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
 import ru.lod_misis.ithappened.domain.statistics.facts.FunctionApplicability;
+import rx.Observable;
 
 public class FactService {
 
@@ -17,15 +18,15 @@ public class FactService {
         this.repository = repository;
     }
 
-    public rx.Observable calculateOneTrackingFacts(List<TrackingV1> trackingV1Collection) {
+    public Observable calculateOneTrackingFacts(List<TrackingV1> trackingV1Collection) {
         for (TrackingV1 trackingV1 : trackingV1Collection) {
             functionApplicabilityCheck(trackingV1);
         }
 
-        return rx.Observable.from(repository.getOneTrackingFactCollection());
+        return Observable.from(repository.getOneTrackingFactCollection());
     }
 
-    public rx.Observable<Fact> onChangeCalculateOneTrackingFacts(List<TrackingV1> trackingV1Collection, UUID trackingId) {
+    public Observable<Fact> onChangeCalculateOneTrackingFacts(List<TrackingV1> trackingV1Collection, UUID trackingId) {
         List<Fact> oneTrackingFactCollection = repository.getOneTrackingFactCollection();
         TrackingV1 changedTrackingV1 = null;
         List<Fact> factCollectionCheck = new ArrayList<>();
@@ -47,10 +48,10 @@ public class FactService {
 
         functionApplicabilityCheck(changedTrackingV1);
 
-        return rx.Observable.from(oneTrackingFactCollection);
+        return Observable.from(oneTrackingFactCollection);
     }
 
-    public rx.Observable<Fact> calculateAllTrackingsFacts(List<TrackingV1> trackingV1Collection) {
+    public Observable<Fact> calculateAllTrackingsFacts(List<TrackingV1> trackingV1Collection) {
         List<Fact> factsToSave = new ArrayList<>();
         Fact factToAdd;
         List<Fact> facts;
@@ -78,7 +79,7 @@ public class FactService {
 
         repository.addAllTrackingFacts(factsToSave);
 
-        return rx.Observable.from(repository.getAllTrackingsFactCollection());
+        return Observable.from(repository.getAllTrackingsFactCollection());
     }
 
     public List<Fact> getAllTrackingsFactCollection() {

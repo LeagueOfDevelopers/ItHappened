@@ -20,6 +20,8 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     UUID eventId;
     TrackingService trackingSercvice;
 
+    private String STATISTICS = "statistics";
+
     @Inject
     public EventDetailsPresenterImpl(TrackingService trackingSercvice, FactService factService) {
         this.trackingSercvice = trackingSercvice;
@@ -63,7 +65,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculateOneTrackingFact");
+                        Log.d(STATISTICS, "calculateOneTrackingFact");
                     }
                 });
         factService.calculateAllTrackingsFacts(trackingSercvice.GetTrackingCollection())
@@ -72,7 +74,7 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculateOneTrackingFact");
+                        Log.d(STATISTICS, "calculateOneTrackingFact");
                     }
                 });
         eventDetailsView.showMessage("Событие удалено");

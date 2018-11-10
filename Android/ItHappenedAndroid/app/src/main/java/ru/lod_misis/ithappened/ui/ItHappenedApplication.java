@@ -52,6 +52,9 @@ public class ItHappenedApplication extends Application {
     TrackingService trackingService;
     @Inject
     FactService factService;
+
+    private String STATISTICS = "statistics";
+
     private Retrofit retrofit;
 
     public static synchronized ItHappenedApplication getInstance () {
@@ -126,7 +129,7 @@ public class ItHappenedApplication extends Application {
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculate");
+                        Log.d(STATISTICS, "calculate");
                     }
                 });
 
@@ -136,7 +139,7 @@ public class ItHappenedApplication extends Application {
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculate");
+                        Log.d(STATISTICS, "calculate");
                     }
                 });
     }

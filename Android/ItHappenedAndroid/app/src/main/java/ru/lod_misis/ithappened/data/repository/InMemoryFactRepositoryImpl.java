@@ -13,10 +13,12 @@ import ru.lod_misis.ithappened.domain.statistics.facts.FunctionApplicability;
 
 public class InMemoryFactRepositoryImpl implements InMemoryFactRepository {
 
-    private List<Fact> oneTrackingFactCollection = new ArrayList<>();
-    private List<Fact> allTrackingsFactCollection = new ArrayList<>();
+    private List<Fact> oneTrackingFactCollection;
+    private List<Fact> allTrackingsFactCollection;
 
     public InMemoryFactRepositoryImpl() {
+        oneTrackingFactCollection = new ArrayList<>();
+        allTrackingsFactCollection = new ArrayList<>();
     }
 
     public void addOneTrackingFacts(List<Fact> facts, UUID trackingID) {
@@ -66,7 +68,7 @@ public class InMemoryFactRepositoryImpl implements InMemoryFactRepository {
                 collectionToReturn.add(fact);
             }
         }
-        return collectionToReturn;
+        return sortFactCollection(collectionToReturn);
     }
 
     public void setOneTrackingFactCollection(List<Fact> oneTrackingFactCollection) {

@@ -24,6 +24,8 @@ public class EditEventPresenterImpl implements EditEventContract.EditEventPresen
     private UUID trackingId;
     private UUID eventId;
 
+    private String STATISTICS = "statistics";
+
     @Inject
     public EditEventPresenterImpl(TrackingService trackingService, FactService factService) {
         this.trackingService = trackingService;
@@ -58,7 +60,7 @@ public class EditEventPresenterImpl implements EditEventContract.EditEventPresen
         .subscribe(new Action1() {
             @Override
             public void call(Object o) {
-                Log.d("statistics", "calculate");
+                Log.d(STATISTICS, "calculate");
             }
         });
 
@@ -68,7 +70,7 @@ public class EditEventPresenterImpl implements EditEventContract.EditEventPresen
                 .subscribe(new Action1() {
                     @Override
                     public void call(Object o) {
-                        Log.d("statistics", "calculate");
+                        Log.d(STATISTICS, "calculate");
                     }
                 });
     }

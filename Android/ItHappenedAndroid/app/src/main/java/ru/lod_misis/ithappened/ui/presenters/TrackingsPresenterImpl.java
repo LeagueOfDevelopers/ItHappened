@@ -26,6 +26,8 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
     private TrackingsContract.TrackingsView trackingView;
     private FactService factService;
 
+    private String STATISTICS = "statistics";
+
     public TrackingsPresenterImpl(TrackingService service,
                                   Context context,
                                   FactService factService) {
@@ -68,7 +70,7 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
                 .subscribe(new Action1() {
                     @Override
                     public void call(Object o) {
-                        Log.d("statistics", "calculate");
+                        Log.d(STATISTICS, "calculate");
                     }
                 });
 
@@ -78,7 +80,7 @@ public class TrackingsPresenterImpl implements TrackingsContract.TrackingsPresen
                 .subscribe(new Action1() {
                     @Override
                     public void call(Object o) {
-                        Log.d("statistics", "calculate");
+                        Log.d(STATISTICS, "calculate");
                     }
                 });
 

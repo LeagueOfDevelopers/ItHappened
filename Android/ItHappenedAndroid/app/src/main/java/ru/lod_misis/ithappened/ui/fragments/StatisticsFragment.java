@@ -32,7 +32,6 @@ import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.ui.activities.UserActionsActivity;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.data.repository.StaticFactRepository;
 import ru.lod_misis.ithappened.ui.presenters.StatisticsContract;
 import ru.lod_misis.ithappened.ui.presenters.StatisticsInteractorImpl;
 import ru.lod_misis.ithappened.R;

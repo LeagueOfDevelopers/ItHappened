@@ -25,6 +25,8 @@ public class StatisticsInteractorImpl implements StatisticsContract.StatisticsIn
     StatisticsContract.StatisticsView statisticsView;
     Context context;
 
+    private String STATISTICS = "statistics";
+
     @Inject
     public StatisticsInteractorImpl(Context context, FactService factService) {
         this.context = context;
@@ -41,14 +43,14 @@ public class StatisticsInteractorImpl implements StatisticsContract.StatisticsIn
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculate");
+                        Log.d(STATISTICS, "calculate");
                         factService.calculateOneTrackingFacts(service.GetTrackingCollection())
                                 .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Fact>() {
                                     @Override
                                     public void call(Fact fact) {
-                                        Log.d("statistics", "calculateOneTrackingFact");
+                                        Log.d(STATISTICS, "calculateOneTrackingFact");
 
 //                                        statisticsView.fragmentRefresh();
 //                                        statisticsView.hideLoading();
