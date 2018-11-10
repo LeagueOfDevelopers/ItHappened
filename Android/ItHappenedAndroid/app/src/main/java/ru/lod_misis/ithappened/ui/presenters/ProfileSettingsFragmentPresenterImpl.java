@@ -101,8 +101,8 @@ public class ProfileSettingsFragmentPresenterImpl implements ProfileSettingsFrag
     }
 
 //    private void saveDataToDb(List<TrackingV1> trackingV1s) {
-//        TrackingDataSource trackingRepository = StaticInMemoryRepository.getInstance();
-//        trackingRepository.updateTrackingCollection(trackingV1s);
+//        TrackingDataSource trackingService = StaticInMemoryRepository.getInstance();
+//        trackingService.updateTrackingCollection(trackingV1s);
 //    }
 
     @Override

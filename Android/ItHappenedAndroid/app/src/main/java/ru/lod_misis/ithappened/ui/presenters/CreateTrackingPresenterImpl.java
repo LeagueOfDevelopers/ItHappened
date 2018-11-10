@@ -1,27 +1,34 @@
 package ru.lod_misis.ithappened.ui.presenters;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
+import ru.lod_misis.ithappened.domain.FactService;
+import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 public class CreateTrackingPresenterImpl implements CreateTrackingContract.CreateTrackingPresenter {
     CreateTrackingContract.CreateTrackingView createTrackingView;
-    TrackingDataSource trackingRepository;
-    FactCalculator factCalculator;
+    TrackingService trackingService;
+    FactService factService;
     SharedPreferences sharedPreferences;
+
+    private String STATISTICS = "statistics";
 
     @Inject
     public CreateTrackingPresenterImpl(SharedPreferences sharedPreferences,
-                                       TrackingDataSource trackingRepository,
-                                       FactCalculator factCalculator){
+                                       TrackingService trackingService,
+                                       FactService factService){
         this.sharedPreferences=sharedPreferences;
-        this.trackingRepository = trackingRepository;
-        this.factCalculator = factCalculator;
+        this.trackingService = trackingService;
+        this.factService = factService;
     }
     @Override
     public void init() {
@@ -50,8 +57,28 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
     @Override
     public void saveNewTracking(TrackingV1 newTrackingV1) {
         if(isViewAttached()){
-            trackingRepository.createTracking(newTrackingV1);
-            factCalculator.calculateFacts();
+            trackingService.AddTracking(newTrackingV1);
+
+            factService.calculateOneTrackingFacts(trackingService.GetTrackingCollection())
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1() {
+                        @Override
+                        public void call(Object o) {
+                            Log.d(STATISTICS, "calculate");
+                        }
+                    });
+
+            factService.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1() {
+                        @Override
+                        public void call(Object o) {
+                            Log.d(STATISTICS, "calculate");
+                        }
+                    });
+
             createTrackingView.showMessage("Отслеживание добавлено");
             createTrackingView.finishCreatingTracking();
         }

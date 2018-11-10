@@ -28,11 +28,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.ui.activities.UserActionsActivity;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
-import ru.lod_misis.ithappened.data.repository.StaticFactRepository;
 import ru.lod_misis.ithappened.ui.presenters.StatisticsContract;
 import ru.lod_misis.ithappened.ui.presenters.StatisticsInteractorImpl;
 import ru.lod_misis.ithappened.R;
@@ -51,7 +50,7 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
     RecyclerView allTrackingsRecycler;
 
     @Inject
-    InMemoryFactRepository factRepository;
+    FactService factService;
     @Inject
     StatisticsContract.StatisticsInteractor statisticsInteractor;
 
@@ -184,12 +183,11 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
         @Override
         public View setViewForPosition(int position) {
             View customView = getActivity().getLayoutInflater().inflate(R.layout.view_statistics, null);
-            factRepository = StaticFactRepository.getInstance();
             if (position == 0) {
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.all_statistics_layout, null);
-                facts = factRepository.getAllTrackingsFactCollection();
-                statisticsInteractor = new StatisticsInteractorImpl(getActivity(), factRepository);
+                facts = factService.getAllTrackingsFactCollection();
+                statisticsInteractor = new StatisticsInteractorImpl(getActivity(), factService);
 
                 if (facts.size() != 0) {
                     hint = (TextView) customView.findViewById(R.id.hintAllTrackingsFacts);
@@ -203,7 +201,7 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
 
                 facts = new ArrayList<>();
                 customView = getActivity().getLayoutInflater().inflate(R.layout.one_tracking_statistics_layout, null);
-                facts = factRepository.getOneTrackingFactCollection(allTrackingV1s.get(position - 1).getTrackingId());
+                facts = factService.getOneTrackingsFactCollectionById(allTrackingV1s.get(position - 1).getTrackingId());
 
 
                 Log.e("Size", facts.size() + "");
