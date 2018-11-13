@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,10 +24,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
 import ru.lod_misis.ithappened.data.retrofit.ItHappenedApi;
+import ru.lod_misis.ithappened.domain.FactService;
+import ru.lod_misis.ithappened.domain.TrackingService;
+import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
 import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
 import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
 import ru.lod_misis.ithappened.di.components.MainComponent;
 import ru.lod_misis.ithappened.di.modules.MainModule;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Пользователь on 19.01.2018.
@@ -41,6 +48,13 @@ public class ItHappenedApplication extends Application {
     boolean isFirts = false;
     @Inject
     TrackingDataSource repository;
+    @Inject
+    TrackingService trackingService;
+    @Inject
+    FactService factService;
+
+    private String STATISTICS = "statistics";
+
     private Retrofit retrofit;
 
     public static synchronized ItHappenedApplication getInstance () {
@@ -109,6 +123,25 @@ public class ItHappenedApplication extends Application {
 
         itHappenedApi = retrofit.create(ItHappenedApi.class);
 
+        factService.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d(STATISTICS, "calculate");
+                    }
+                });
+
+        factService.calculateOneTrackingFacts(trackingService.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Fact>() {
+                    @Override
+                    public void call(Fact fact) {
+                        Log.d(STATISTICS, "calculate");
+                    }
+                });
     }
 
     public void setConnectionListener (ConnectionReciver.ConnectionReciverListener listener) {

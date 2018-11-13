@@ -7,11 +7,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSourceImpl;
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
-import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
-import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
+import ru.lod_misis.ithappened.data.repository.InMemoryFactRepositoryImpl;
 
 @Module
 public class MainModule {
@@ -51,8 +52,8 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public InMemoryFactRepository provideFactRepository(){
-        return new InMemoryFactRepository();
+    public InMemoryFactRepositoryImpl provideFactRepository(){
+        return new InMemoryFactRepositoryImpl();
     }
 
     @Singleton
@@ -63,7 +64,7 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public FactCalculator provideFactCalculator(TrackingDataSource trackingRepository){
-        return new FactCalculator(trackingRepository);
+    public FactService provideFactService(InMemoryFactRepositoryImpl inMemoryFactRepositoryImpl) {
+        return new FactService(inMemoryFactRepositoryImpl);
     }
 }

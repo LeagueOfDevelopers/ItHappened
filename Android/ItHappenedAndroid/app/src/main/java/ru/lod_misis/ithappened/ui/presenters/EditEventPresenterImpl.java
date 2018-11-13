@@ -1,28 +1,35 @@
 package ru.lod_misis.ithappened.ui.presenters;
 
+import android.util.Log;
+
 import java.util.Date;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class EditEventPresenterImpl implements EditEventContract.EditEventPresenter {
 
-
-    EditEventContract.EditEventView view;
-    TrackingService trackingService;
-    FactCalculator factCalculator;
+    private EditEventContract.EditEventView view;
+    private TrackingService trackingService;
+    private FactService factService;
     private UUID trackingId;
     private UUID eventId;
 
+    private String STATISTICS = "statistics";
+
     @Inject
-    public EditEventPresenterImpl(TrackingService trackingService, FactCalculator factCalculator) {
+    public EditEventPresenterImpl(TrackingService trackingService, FactService factService) {
         this.trackingService = trackingService;
-        this.factCalculator = factCalculator;
+        this.factService = factService;
     }
 
     @Override
@@ -47,7 +54,25 @@ public class EditEventPresenterImpl implements EditEventContract.EditEventPresen
                 longitude,
                 photoPath,
                 eventDate);
-        factCalculator.calculateFacts();
+        factService.calculateOneTrackingFacts(trackingService.GetTrackingCollection())
+        .subscribeOn(Schedulers.computation())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1() {
+            @Override
+            public void call(Object o) {
+                Log.d(STATISTICS, "calculate");
+            }
+        });
+
+        factService.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1() {
+                    @Override
+                    public void call(Object o) {
+                        Log.d(STATISTICS, "calculate");
+                    }
+                });
     }
 
     @Override

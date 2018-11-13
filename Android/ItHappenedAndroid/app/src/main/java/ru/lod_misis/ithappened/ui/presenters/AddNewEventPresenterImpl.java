@@ -1,25 +1,36 @@
 package ru.lod_misis.ithappened.ui.presenters;
 
+import android.app.Activity;
+import android.util.Log;
+
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.EventV1;
-import ru.lod_misis.ithappened.domain.statistics.FactCalculator;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEventPresenter {
+    AddNewEventContract.AddNewEventView addNewEventView;
+    TrackingDataSource trackingRepository;
+    FactService factService;
+    TrackingService trackingService;
 
-    private AddNewEventContract.AddNewEventView addNewEventView;
-    private TrackingDataSource trackingRepository;
-    private TrackingService trackingService;
+    private String STATISTICS = "statistics";
 
     @Inject
-    public AddNewEventPresenterImpl (TrackingDataSource trackingRepository ,
-                                     TrackingService trackingService) {
+    public AddNewEventPresenterImpl(TrackingDataSource trackingRepository,
+                                    TrackingService trackingService,
+                                    FactService factService) {
         this.trackingRepository = trackingRepository;
         this.trackingService = trackingService;
+        this.factService = factService;
     }
 
     @Override
@@ -53,6 +64,30 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
     }
 
     @Override
+    public void saveEvent(EventV1 eventV1, UUID trackingId) {
+        if (isViewAttached()) {
+            trackingService.AddEvent(trackingId, eventV1);
+
+            factService.calculateOneTrackingFacts(trackingService.GetTrackingCollection())
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1() {
+                        @Override
+                        public void call(Object o) {
+                            Log.d(STATISTICS, "calculate");
+                        }
+                    });
+
+            factService.calculateAllTrackingsFacts(trackingService.GetTrackingCollection())
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1() {
+                        @Override
+                        public void call(Object o) {
+                            Log.d(STATISTICS, "calculate");
+                        }
+                    });
+
     public void saveEvent (EventV1 eventV1 , UUID trackingId) {
         if (addNewEventView != null) {
             trackingService.AddEvent(trackingId , eventV1);

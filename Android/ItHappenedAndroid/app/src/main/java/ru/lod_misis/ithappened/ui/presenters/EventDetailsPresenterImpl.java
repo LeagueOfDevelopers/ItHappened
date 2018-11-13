@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
-import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -15,15 +15,17 @@ import rx.schedulers.Schedulers;
 
 public class EventDetailsPresenterImpl implements EventDetailsContract.EventDetailsPresenter {
     EventDetailsContract.EventDetailsView eventDetailsView;
-    InMemoryFactRepository factRepository;
+    FactService factService;
     UUID trackingId;
     UUID eventId;
     TrackingService trackingSercvice;
 
+    private String STATISTICS = "statistics";
+
     @Inject
-    public EventDetailsPresenterImpl(TrackingService trackingSercvice,InMemoryFactRepository factRepository) {
+    public EventDetailsPresenterImpl(TrackingService trackingSercvice, FactService factService) {
         this.trackingSercvice = trackingSercvice;
-        this.factRepository = factRepository;
+        this.factService = factService;
     }
 
     @Override
@@ -57,22 +59,22 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     @Override
     public void okClicked() {
         trackingSercvice.RemoveEvent(eventId);
-        factRepository.onChangeCalculateOneTrackingFacts(trackingSercvice.GetTrackingCollection(), trackingId)
+        factService.onChangeCalculateOneTrackingFacts(trackingSercvice.GetTrackingCollection(), trackingId)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculateOneTrackingFact");
+                        Log.d(STATISTICS, "calculateOneTrackingFact");
                     }
                 });
-        factRepository.calculateAllTrackingsFacts(trackingSercvice.GetTrackingCollection())
+        factService.calculateAllTrackingsFacts(trackingSercvice.GetTrackingCollection())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Fact>() {
                     @Override
                     public void call(Fact fact) {
-                        Log.d("statistics", "calculateOneTrackingFact");
+                        Log.d(STATISTICS, "calculateOneTrackingFact");
                     }
                 });
         eventDetailsView.showMessage("Событие удалено");
