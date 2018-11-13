@@ -17,10 +17,10 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEventPresenter {
-    AddNewEventContract.AddNewEventView addNewEventView;
-    TrackingDataSource trackingRepository;
-    FactService factService;
-    TrackingService trackingService;
+    private AddNewEventContract.AddNewEventView addNewEventView;
+    private TrackingDataSource trackingRepository;
+    private FactService factService;
+    private TrackingService trackingService;
 
     private String STATISTICS = "statistics";
 
@@ -63,11 +63,8 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
         }
     }
 
-    @Override
-    public void saveEvent(EventV1 eventV1, UUID trackingId) {
-        if (isViewAttached()) {
-            trackingService.AddEvent(trackingId, eventV1);
-
+    public void saveEvent (EventV1 eventV1 , UUID trackingId) {
+        if (addNewEventView != null) {
             factService.calculateOneTrackingFacts(trackingService.GetTrackingCollection())
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -87,11 +84,7 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
                             Log.d(STATISTICS, "calculate");
                         }
                     });
-
-    public void saveEvent (EventV1 eventV1 , UUID trackingId) {
-        if (addNewEventView != null) {
             trackingService.AddEvent(trackingId , eventV1);
-            new FactCalculator(trackingRepository).calculateFactsForAddNewEventActivity(trackingId);
             addNewEventView.showMessage("Событие добавлено");
             addNewEventView.finishAddEventActivity();
         }

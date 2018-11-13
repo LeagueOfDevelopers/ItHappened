@@ -348,7 +348,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             scaleFlag = false;
         }
 
-        if (geopositionState == 2) {
+        if (geopositionState == 2 && adress.getText().toString().trim().isEmpty()) {
             geopositionFlag = false;
         }
         if (photoState == 2 && photoPath.isEmpty())
