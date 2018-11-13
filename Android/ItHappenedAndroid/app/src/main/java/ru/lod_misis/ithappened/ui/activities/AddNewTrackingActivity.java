@@ -145,11 +145,11 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     @BindView(R.id.addTrack)
     Button addTrackingBtn;
 
-    TrackingCustomization rating;
-    TrackingCustomization comment;
-    TrackingCustomization scale;
-    TrackingCustomization photo;
-    TrackingCustomization geoposition;
+    private TrackingCustomization rating;
+    private TrackingCustomization comment;
+    private TrackingCustomization scale;
+    private TrackingCustomization photo;
+    private TrackingCustomization geoposition;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -160,7 +160,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         createTrackingPresenter.attachView(this);
         startConfiguration();
-        startConfigurationView();
     }
 
 
@@ -403,7 +402,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected (boolean b , int i) {
-                        if ( b ) {
+                        if (b) {
                             Toast.makeText(getApplicationContext() , Integer.toHexString(i) + "" , Toast.LENGTH_SHORT).show();
                             colorPickerDialogBuilder.setSelectedColor(i);
                             colorPickerText.setTextColor(i);
@@ -422,9 +421,9 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                if ( geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required ) {
-                    if ( ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                if (geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required) {
+                    if (ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         createTrackingPresenter.requestPermission(GEO_REQUEST_CODE);
                     } else {
                         addNewTracking();
@@ -464,8 +463,8 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         Log.d("RequestPermission" , "ReSPONSEaLL");
         switch ( requestCode ) {
             case GEO_REQUEST_CODE: {
-                if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     stopService(new Intent(this , MyGeopositionService.class));
                     startService(new Intent(this , MyGeopositionService.class));
                     addNewTracking();
@@ -475,7 +474,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     public void addNewTracking () {
-        if ( trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty() ) {
+        if (trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty()) {
             Toast.makeText(getApplicationContext() , "Введите название отслеживания" , Toast.LENGTH_SHORT).show();
         } else {
 
@@ -483,12 +482,12 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
             String trackingTitle = trackingName.getText().toString().trim();
             String scaleNumb = null;
 
-            if ( (scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
+            if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
                     (scaleType.getText().toString().isEmpty()
-                            || scaleType.getText().toString().trim().isEmpty()) ) {
+                            || scaleType.getText().toString().trim().isEmpty())) {
                 showMessage("Введите единицу измерения шкалы");
             } else {
-                if ( scale != TrackingCustomization.None ) {
+                if (scale != TrackingCustomization.None) {
                     scaleNumb = scaleType.getText().toString().trim();
                 }
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle , UUID.randomUUID() , scale , rating , comment , geoposition , photo , scaleNumb , trackingColor);
@@ -504,19 +503,17 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         ActivityCompat.requestPermissions(AddNewTrackingActivity.this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , GEO_REQUEST_CODE);
     }
 
-    private void startConfigurationView () {
-        visbilityScaleTypeHint.setVisibility(View.GONE);
-        visibilityScaleType.setVisibility(View.GONE);
-        scaleType.setVisibility(View.GONE);
-        setupToolbar();
-    }
-
     private void startConfiguration () {
         rating = TrackingCustomization.None;
         comment = TrackingCustomization.None;
         scale = TrackingCustomization.None;
         photo = TrackingCustomization.None;
         geoposition = TrackingCustomization.None;
+
+        visbilityScaleTypeHint.setVisibility(View.GONE);
+        visibilityScaleType.setVisibility(View.GONE);
+        scaleType.setVisibility(View.GONE);
+        setupToolbar();
     }
 
     @Override

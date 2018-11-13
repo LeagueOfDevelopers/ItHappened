@@ -24,7 +24,7 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
 
     @Override
     public void init (UUID trackingId) {
-        if ( isViewAttached() ) {
+        if (addNewEventView != null) {
             addNewEventView.startedConfiguration(trackingRepository.getTracking(trackingId));
             addNewEventView.startConfigurationView();
         }
@@ -42,7 +42,7 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
 
     @Override
     public void requestPermission (int codePermission) {
-        if ( isViewAttached() ) {
+        if (addNewEventView != null) {
             switch ( codePermission ) {
                 case 1: {
                     addNewEventView.requestPermissionForGeoposition();
@@ -54,7 +54,7 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
 
     @Override
     public void saveEvent (EventV1 eventV1 , UUID trackingId) {
-        if ( isViewAttached() ) {
+        if (addNewEventView != null) {
             trackingService.AddEvent(trackingId , eventV1);
             new FactCalculator(trackingRepository).calculateFactsForAddNewEventActivity(trackingId);
             addNewEventView.showMessage("Событие добавлено");
@@ -62,7 +62,4 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
         }
     }
 
-    private Boolean isViewAttached () {
-        return addNewEventView != null;
-    }
 }

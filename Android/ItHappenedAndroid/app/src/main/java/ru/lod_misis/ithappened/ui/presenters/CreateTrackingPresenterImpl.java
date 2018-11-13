@@ -31,7 +31,7 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
 
     @Override
     public void saveNewTracking (TrackingV1 newTrackingV1) {
-        if ( isViewAttached() ) {
+        if (createTrackingView != null) {
             trackingRepository.createTracking(newTrackingV1);
             factCalculator.calculateFacts();
             createTrackingView.showMessage("Отслеживание добавлено");
@@ -41,17 +41,13 @@ public class CreateTrackingPresenterImpl implements CreateTrackingContract.Creat
 
     @Override
     public void requestPermission (int codePermission) {
-        switch ( codePermission ) {
-            case 1: {
-                createTrackingView.requestPermissionForGeoposition();
-                break;
+        if (createTrackingView != null)
+            switch ( codePermission ) {
+                case 1: {
+                    createTrackingView.requestPermissionForGeoposition();
+                    break;
+                }
             }
-        }
-    }
-
-    @Override
-    public Boolean isViewAttached () {
-        return this.createTrackingView != null;
     }
 
 }

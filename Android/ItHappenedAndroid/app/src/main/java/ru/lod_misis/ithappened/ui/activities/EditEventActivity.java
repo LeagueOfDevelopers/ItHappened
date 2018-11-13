@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Geocoder;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -57,16 +56,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
     @Inject
     EditEventContract.EditEventPresenter presenter;
-
-    int commentState;
-    int scaleState;
-    int ratingState;
-    int geopositionState;
-    int photoState;
-
-    UUID trackingId;
-    UUID eventId;
-
     @BindView(R.id.commentEventContainerEdit)
     LinearLayout commentContainer;
     @BindView(R.id.scaleEventContainerEdit)
@@ -77,7 +66,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     LinearLayout geopositionContainer;
     @BindView(R.id.photoEventContainerEdit)
     LinearLayout photoContainer;
-
     @BindView(R.id.commentAccessEdit)
     TextView commentAccess;
     @BindView(R.id.scaleAccessEdit)
@@ -90,7 +78,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     TextView photoAccess;
     @BindView(R.id.adress)
     TextView adress;
-
     @BindView(R.id.eventCommentControlEdit)
     EditText commentControl;
     @BindView(R.id.eventScaleControlEdit)
@@ -99,27 +86,26 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     RatingBar ratingControl;
     @BindView(R.id.eventDateControlEdit)
     Button dateControl;
-
     @BindView(R.id.scaleTypeAccessEdit)
     TextView scaleType;
     @BindView(R.id.editEvent)
     Button addEvent;
-
-    PhotoInteractor workWithFIles;
+    PhotoInteractor photoInteractor;
     String photoPath;
     @BindView(R.id.photoEdit)
     ImageView photo;
     AlertDialog.Builder dialog;
     Boolean flagPhoto = false;
-
-    LocationManager locationManager;
     Double latitude = null;
     Double longitude = null;
-
     String uriPhotoFromCamera;
-
     Context context;
     Activity activity;
+    private int commentState;
+    private int scaleState;
+    private int ratingState;
+    private int geopositionState;
+    private int photoState;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -139,7 +125,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
-        locationManager = ( LocationManager ) getSystemService(LOCATION_SERVICE);
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
         scaleControl.setKeyListener(keyListener);
 
@@ -166,7 +151,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                workWithFIles = new PhotoInteractorImpl(context);
+                photoInteractor = new PhotoInteractorImpl(context);
                 dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
                 dialog.setItems(new String[]{"Галлерея" , "Фото"} , new DialogInterface.OnClickListener() {
@@ -252,17 +237,17 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
         dateControl.setText(format.format(date));
 
-        if ( scale != TrackingCustomization.None && scaleName != null ) {
+        if (scale != TrackingCustomization.None && scaleName != null) {
 
             scaleType.setText(scaleName);
         }
 
-        if ( (scale == TrackingCustomization.Optional
-                || scale == TrackingCustomization.Required) && scaleValue != null ) {
+        if ((scale == TrackingCustomization.Optional
+                || scale == TrackingCustomization.Required) && scaleValue != null) {
             scaleControl.setText(StringParse.parseDouble(scaleValue));
 
-            if ( scaleName != null ) {
-                if ( scaleName.length() >= 3 ) {
+            if (scaleName != null) {
+                if (scaleName.length() >= 3) {
                     scaleType.setText(scaleName.substring(0 , 2));
                 } else {
                     scaleType.setText(scaleName);
@@ -270,19 +255,19 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             }
         }
 
-        if ( (rating == TrackingCustomization.Optional
-                || rating == TrackingCustomization.Required) && ratingValue != null ) {
+        if ((rating == TrackingCustomization.Optional
+                || rating == TrackingCustomization.Required) && ratingValue != null) {
             ratingControl.setRating(ratingValue.getRating() / 2.0f);
         }
 
-        if ( (comment == TrackingCustomization.Optional
-                || comment == TrackingCustomization.Required) && commentValue != null ) {
+        if ((comment == TrackingCustomization.Optional
+                || comment == TrackingCustomization.Required) && commentValue != null) {
             commentControl.setText(commentValue);
         }
 
-        if ( (geoposition == TrackingCustomization.Optional
-                || geoposition == TrackingCustomization.Required) ) {
-            if ( longitude != null && latitude != null ) {
+        if ((geoposition == TrackingCustomization.Optional
+                || geoposition == TrackingCustomization.Required)) {
+            if (longitude != null && latitude != null) {
                 try {
                     adress.setText(getAddress(latitude , longitude));
                 } catch (IOException e) {
@@ -290,12 +275,12 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 }
             }
         }
-        if ( (photo == TrackingCustomization.Optional
-                || photo == TrackingCustomization.Required) ) {
-            workWithFIles = new PhotoInteractorImpl(this);
-            if ( photoPath != null ) {
+        if ((photo == TrackingCustomization.Optional
+                || photo == TrackingCustomization.Required)) {
+            photoInteractor = new PhotoInteractorImpl(this);
+            if (photoPath != null) {
                 this.photoPath = photoPath;
-                this.photo.setImageBitmap(workWithFIles.loadImage(photoPath));
+                this.photo.setImageBitmap(photoInteractor.loadImage(photoPath));
             } else {
                 this.photoPath = "";
             }
@@ -351,39 +336,39 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         boolean geopositionFlag = true;
         boolean photoFlag = true;
 
-        if ( commentState == 2 && commentControl.getText().toString().isEmpty() && commentControl.getText().toString().trim().isEmpty() ) {
+        if (commentState == 2 && commentControl.getText().toString().isEmpty() && commentControl.getText().toString().trim().isEmpty()) {
             commentFlag = false;
         }
 
-        if ( ratingState == 2 && ratingControl.getRating() == 0 ) {
+        if (ratingState == 2 && ratingControl.getRating() == 0) {
             ratingFlag = false;
         }
 
-        if ( scaleState == 2 && scaleControl.getText().toString().isEmpty() && scaleControl.getText().toString().trim().isEmpty() ) {
+        if (scaleState == 2 && scaleControl.getText().toString().isEmpty() && scaleControl.getText().toString().trim().isEmpty()) {
             scaleFlag = false;
         }
 
-        if ( geopositionState == 2 ) {
+        if (geopositionState == 2) {
             geopositionFlag = false;
         }
-        if ( photoState == 2 && photoPath.isEmpty())
+        if (photoState == 2 && photoPath.isEmpty())
             photoFlag = false;
 
-        if ( commentFlag && ratingFlag && scaleFlag && geopositionFlag && photoFlag ) {
-            if ( !commentControl.getText().toString().trim().isEmpty() )
+        if (commentFlag && ratingFlag && scaleFlag && geopositionFlag && photoFlag) {
+            if (!commentControl.getText().toString().trim().isEmpty())
                 comment = commentControl.getText().toString().trim();
-            if ( !scaleControl.getText().toString().trim().isEmpty() )
+            if (!scaleControl.getText().toString().trim().isEmpty())
                 scale = Double.valueOf(scaleControl.getText().toString());
-            if ( ratingControl.getRating() != 0f )
+            if (ratingControl.getRating() != 0f)
                 rating = new Rating(( int ) ratingControl.getRating());
             try {
                 eventDate = getDate();
             } catch (ParseException e) {
                 e.printStackTrace();
-                showMessage("У нас неполадки,извиняемся");
+                showMessage(getString(R.string.error_message));
                 return;
             }
-            showMessage("Событие изменено");
+            showMessage(getString(R.string.edit_event_success));
             presenter.finish(scale , rating , comment ,
                     latitude , longitude , photoPath , eventDate);
             reportEvent(R.string.metrica_edit_event);
@@ -426,21 +411,21 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     @Override
     protected void onActivityResult (int requestCode , int resultCode , Intent data) {
         super.onActivityResult(requestCode , resultCode , data);
-        if ( resultCode != RESULT_OK ) {
+        if (resultCode != RESULT_OK) {
             Toast.makeText(getApplicationContext() , "Упс,что-то пошло не так =((((" , Toast.LENGTH_SHORT).show();
             return;
         }
-        if ( requestCode == 1 ) {
-            Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
-            photoPath = workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
+        if (requestCode == 1) {
+            Picasso.get().load(Uri.parse(photoInteractor.getUriPhotoFromCamera())).into(photo);
+            photoPath = photoInteractor.saveBitmap(Uri.parse(photoInteractor.getUriPhotoFromCamera()));
             flagPhoto = true;
         }
-        if ( requestCode == 2 ) {
+        if (requestCode == 2) {
             Picasso.get().load(data.getData()).into(photo);
-            photoPath = workWithFIles.saveBitmap(data.getData());
+            photoPath = photoInteractor.saveBitmap(data.getData());
             flagPhoto = true;
         }
-        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE ) {
+        if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE) {
             latitude = data.getDoubleExtra("latitude" , 0);
             longitude = data.getDoubleExtra("longitude" , 0);
             try {
@@ -452,20 +437,20 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     private void pickCamera () {
-        if ( workWithFIles != null ) {
+        if (photoInteractor != null) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            uriPhotoFromCamera = workWithFIles.generateFileUri(1).toString();
-            intent.putExtra(MediaStore.EXTRA_OUTPUT , workWithFIles.generateFileUri(1));
+            uriPhotoFromCamera = photoInteractor.generateFileUri(1).toString();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT , photoInteractor.generateFileUri(1));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             activity.startActivityForResult(intent , 1);
         }
     }
 
     private void pickGallery () {
-        if ( workWithFIles != null ) {
+        if (photoInteractor != null) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
-            if ( intent.resolveActivity(activity.getPackageManager()) != null ) {
+            if (intent.resolveActivity(activity.getPackageManager()) != null) {
                 activity.startActivityForResult(intent , 2);
             }
         }

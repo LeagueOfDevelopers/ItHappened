@@ -14,6 +14,5 @@ public interface CreateTrackingContract {
         void detachView();
         void saveNewTracking(TrackingV1 newTrackingV1);
         void requestPermission(int codePermission);
-        Boolean isViewAttached();
     }
 }
