@@ -17,10 +17,10 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEventPresenter {
-    AddNewEventContract.AddNewEventView addNewEventView;
-    TrackingDataSource trackingRepository;
-    FactService factService;
-    TrackingService trackingService;
+    private AddNewEventContract.AddNewEventView addNewEventView;
+    private TrackingDataSource trackingRepository;
+    private FactService factService;
+    private TrackingService trackingService;
 
     private String STATISTICS = "statistics";
 
@@ -34,36 +34,27 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
     }
 
     @Override
-    public void addNewEvent() {
-        if(isViewAttached()){
-        addNewEventView.addNewEvent();}
-    }
-
-    @Override
-    public void init(Activity activity) {
-        if (isViewAttached()) {
-            UUID trackingId = UUID.fromString(activity.getIntent().getStringExtra("trackingId"));
-            TrackingV1 trackingV1 = trackingRepository.getTracking(trackingId);
-            addNewEventView.startedConfiguration(trackingId, trackingV1);
+    public void init (UUID trackingId) {
+        if (addNewEventView != null) {
+            addNewEventView.startedConfiguration(trackingRepository.getTracking(trackingId));
             addNewEventView.startConfigurationView();
-
         }
     }
 
     @Override
-    public void attachView(AddNewEventContract.AddNewEventView addNewEventView) {
+    public void attachView (AddNewEventContract.AddNewEventView addNewEventView) {
         this.addNewEventView = addNewEventView;
     }
 
     @Override
-    public void detachView() {
+    public void detachView () {
         addNewEventView = null;
     }
 
     @Override
-    public void requestPermission(int codePermission) {
-        if (isViewAttached()) {
-            switch (codePermission) {
+    public void requestPermission (int codePermission) {
+        if (addNewEventView != null) {
+            switch ( codePermission ) {
                 case 1: {
                     addNewEventView.requestPermissionForGeoposition();
                     break;
@@ -72,11 +63,8 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
         }
     }
 
-    @Override
-    public void saveEvent(EventV1 eventV1, UUID trackingId) {
-        if (isViewAttached()) {
-            trackingService.AddEvent(trackingId, eventV1);
-
+    public void saveEvent (EventV1 eventV1 , UUID trackingId) {
+        if (addNewEventView != null) {
             factService.calculateOneTrackingFacts(trackingService.GetTrackingCollection())
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -96,14 +84,10 @@ public class AddNewEventPresenterImpl implements AddNewEventContract.AddNewEvent
                             Log.d(STATISTICS, "calculate");
                         }
                     });
-
+            trackingService.AddEvent(trackingId , eventV1);
             addNewEventView.showMessage("Событие добавлено");
             addNewEventView.finishAddEventActivity();
         }
     }
 
-    @Override
-    public Boolean isViewAttached() {
-        return addNewEventView != null;
-    }
 }

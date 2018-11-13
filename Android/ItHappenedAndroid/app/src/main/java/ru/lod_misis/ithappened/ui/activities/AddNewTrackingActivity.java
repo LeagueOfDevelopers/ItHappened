@@ -1,8 +1,6 @@
 package ru.lod_misis.ithappened.ui.activities;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -32,15 +30,16 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
-import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
 import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
+import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
 
 public class AddNewTrackingActivity extends AppCompatActivity implements CreateTrackingContract.CreateTrackingView {
 
+    public static final int GEO_REQUEST_CODE = 1;
     @Inject
     CreateTrackingContract.CreateTrackingPresenter createTrackingPresenter;
 
@@ -146,36 +145,21 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     @BindView(R.id.addTrack)
     Button addTrackingBtn;
 
-    TrackingCustomization rating;
-    TrackingCustomization comment;
-    TrackingCustomization scale;
-    TrackingCustomization photo;
-    TrackingCustomization geoposition;
-
-    Context context;
-    Activity activity;
+    private TrackingCustomization rating;
+    private TrackingCustomization comment;
+    private TrackingCustomization scale;
+    private TrackingCustomization photo;
+    private TrackingCustomization geoposition;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
-
         ItHappenedApplication.getAppComponent().inject(this);
 
         createTrackingPresenter.attachView(this);
-        createTrackingPresenter.init();
-        photoEnabled = ( TextView ) findViewById(R.id.photoTextEnabled);
-
-        photoDont = ( LinearLayout ) findViewById(R.id.photoBackColorDont);
-        photoOptional = ( LinearLayout ) findViewById(R.id.photoBackColorCheck);
-        photoRequired = ( LinearLayout ) findViewById(R.id.photoBackColorDoubleCheck);
-
-        photoDontImage = ( ImageView ) findViewById(R.id.photoBackImageDont);
-        photoOptionalImage = ( ImageView ) findViewById(R.id.photoBackImageCheck);
-        photoRequiredImage = ( ImageView ) findViewById(R.id.photoBackImageDoubleCheck);
-
-
+        startConfiguration();
     }
 
 
@@ -320,7 +304,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleRequired.setBackgroundColor(getResources().getColor(R.color.required));
                 scale = TrackingCustomization.Required;
-
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
@@ -419,7 +402,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected (boolean b , int i) {
-                        if ( b ) {
+                        if (b) {
                             Toast.makeText(getApplicationContext() , Integer.toHexString(i) + "" , Toast.LENGTH_SHORT).show();
                             colorPickerDialogBuilder.setSelectedColor(i);
                             colorPickerText.setTextColor(i);
@@ -430,7 +413,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         colorPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-
                 SpectrumDialog dialog = colorPickerDialogBuilder.build();
                 dialog.show(getSupportFragmentManager() , "Tag");
             }
@@ -439,14 +421,15 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                if ( geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required ) {
-                    if ( ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                        createTrackingPresenter.requestPermission(1);
+                if (geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required) {
+                    if (ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        createTrackingPresenter.requestPermission(GEO_REQUEST_CODE);
                     } else {
-                        createTrackingPresenter.createNewTracking();
+                        addNewTracking();
                     }
                 } else {
-                    createTrackingPresenter.createNewTracking();
+                    addNewTracking();
                 }
             }
         });
@@ -479,19 +462,19 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         super.onRequestPermissionsResult(requestCode , permissions , grantResults);
         Log.d("RequestPermission" , "ReSPONSEaLL");
         switch ( requestCode ) {
-            case 1: {
-                if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
+            case GEO_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     stopService(new Intent(this , MyGeopositionService.class));
                     startService(new Intent(this , MyGeopositionService.class));
-                    createTrackingPresenter.createNewTracking();
+                    addNewTracking();
                 }
             }
         }
     }
 
     public void addNewTracking () {
-        if ( trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty() ) {
+        if (trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty()) {
             Toast.makeText(getApplicationContext() , "Введите название отслеживания" , Toast.LENGTH_SHORT).show();
         } else {
 
@@ -499,57 +482,38 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
             String trackingTitle = trackingName.getText().toString().trim();
             String scaleNumb = null;
 
-            if ( (scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
+            if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
                     (scaleType.getText().toString().isEmpty()
-                            || scaleType.getText().toString().trim().isEmpty()) ) {
+                            || scaleType.getText().toString().trim().isEmpty())) {
                 showMessage("Введите единицу измерения шкалы");
             } else {
-                if ( scale != TrackingCustomization.None ) {
+                if (scale != TrackingCustomization.None) {
                     scaleNumb = scaleType.getText().toString().trim();
                 }
-
                 TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle , UUID.randomUUID() , scale , rating , comment , geoposition , photo , scaleNumb , trackingColor);
                 createTrackingPresenter.saveNewTracking(newTrackingV1);
-
-
                 YandexMetrica.reportEvent(getString(R.string.metrica_add_tracking));
-
-
             }
         }
     }
 
     @Override
-    public void createTracking () {
-        addNewTracking();
-    }
-
-    @Override
     public void requestPermissionForGeoposition () {
         Log.d("RequestPermission" , "Request");
-        ActivityCompat.requestPermissions(activity , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , 1);
+        ActivityCompat.requestPermissions(AddNewTrackingActivity.this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , GEO_REQUEST_CODE);
     }
 
-    @Override
-    public void requestPermissionForCamera () {
-
-    }
-
-    @Override
-    public void startConfigurationView () {
-        visbilityScaleTypeHint.setVisibility(View.GONE);
-        visibilityScaleType.setVisibility(View.GONE);
-        scaleType.setVisibility(View.GONE);
-        setupToolbar();
-    }
-
-    @Override
-    public void satredConfiguration () {
+    private void startConfiguration () {
         rating = TrackingCustomization.None;
         comment = TrackingCustomization.None;
         scale = TrackingCustomization.None;
         photo = TrackingCustomization.None;
         geoposition = TrackingCustomization.None;
+
+        visbilityScaleTypeHint.setVisibility(View.GONE);
+        visibilityScaleType.setVisibility(View.GONE);
+        scaleType.setVisibility(View.GONE);
+        setupToolbar();
     }
 
     @Override

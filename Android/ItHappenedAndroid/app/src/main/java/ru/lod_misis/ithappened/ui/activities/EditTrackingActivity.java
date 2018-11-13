@@ -271,7 +271,6 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 photoRequired ,
                 photoEnabled);
 
-
         ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -424,7 +423,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
-                geoposition = TrackingCustomization.None;
+                stateForGeoposition=0;
             }
         });
 
@@ -438,7 +437,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
                 geopositionOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
                 geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
-                geoposition = TrackingCustomization.Optional;
+                stateForGeoposition=1;
             }
         });
 
@@ -453,7 +452,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 geopositionRequiredImage.setImageResource(R.drawable.active_double_check);
                 geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionRequired.setBackgroundColor(getResources().getColor(R.color.required));
-                geoposition = TrackingCustomization.Required;
+                stateForGeoposition=2;
             }
         });
 
