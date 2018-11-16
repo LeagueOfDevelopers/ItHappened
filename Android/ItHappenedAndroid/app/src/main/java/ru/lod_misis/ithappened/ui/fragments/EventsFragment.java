@@ -75,7 +75,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private Double scale = null;
     private Comparison ratingComparison = null;
     private Rating rating = null;
-    private List<UUID> filteredTrackingsUuids =new ArrayList<>();
+    private List<UUID> filteredTrackingsUuids = new ArrayList<>();
     private String[] trackingsTitles;
     private boolean[] selectedArray;
 
@@ -169,8 +169,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         trackingsTitles = new String[strings.size()];
         trackingsTitles = strings.toArray(trackingsTitles);
         selectedArray = new boolean[selectedItems.size()];
-        for (int i = 0; i < selectedItems.size(); i++)
+        for (int i = 0; i < selectedItems.size(); i++) {
             selectedArray[i] = selectedItems.get(i);
+            selectedPositionItems.add(i);
+        }
 
 //Работа с диалогом
         if (strings.size() != 0) {
