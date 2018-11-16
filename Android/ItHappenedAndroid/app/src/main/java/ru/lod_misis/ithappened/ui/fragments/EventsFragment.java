@@ -43,11 +43,9 @@ import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
-import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.Comparison;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
-import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
@@ -59,15 +57,16 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     @Inject
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
+    @Inject
+    TrackingDataSource collection;
 
     List<EventV1> eventsForAdapter = new ArrayList<>();
-    List<Boolean> selectedItems;
-    ArrayList<Integer> selectedPositionItems = new ArrayList<>();
+    List<Boolean> selectedItems = new ArrayList<>();
+    List<Integer> selectedPositionItems = new ArrayList<>();
 
-    List<String> filteredTrackingsTitles;
-    ArrayList<UUID> idCollection;
-    List<String> strings;
-    ArrayList<UUID> allTrackingsId;
+    List<UUID> idCollection = new ArrayList<>();
+    List<String> strings = new ArrayList<>();
+    List<UUID> allTrackingsId;
     int startPosition = 0;
     int endPosition = 10;
 
@@ -81,7 +80,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     Double scale = null;
     Comparison ratingComparison = null;
     Rating rating = null;
-    List<UUID> filteredTrackingsUuids;
+    List<UUID> filteredTrackingsUuids = new ArrayList<>();
 
     int stateForHint;
 
@@ -93,8 +92,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     Spinner hintsForScaleSpinner;
     Spinner hintsForRatingSpinner;
     CardView trackingsPickerBtn;
-    @Inject
-    TrackingService trackingService;
     TextView hintForEventsHistory;
     TextView hintForSpinner;
     TextView filtersHintText;
@@ -103,10 +100,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     FloatingActionButton filtersCancel;
     TextView trackingsPickerText;
     ProgressBar progressBar;
-
-    @Inject
-    TrackingDataSource collection;
-    List<TrackingV1> trackings;
     private boolean isFilteredCancel = false;
 
     @Nullable
@@ -180,20 +173,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         LinearLayoutManager manager = new LinearLayoutManager(getActivity().getApplicationContext());
         eventsRecycler.setLayoutManager(manager);
 
-        idCollection = new ArrayList<>();
-        strings = new ArrayList<>();
-        selectedItems = new ArrayList<>();
 
-        trackings = new ArrayList<>();
-        trackings = trackingService.GetTrackingCollection();
-
-        String allText = eventsHistoryPresenter.prepareDataForDialog(trackings , strings , idCollection , selectedItems);
-        ;
-        filteredTrackingsTitles = new ArrayList<>();
+        String allText = eventsHistoryPresenter.prepareDataForDialog(strings , idCollection , selectedItems);
         filteredTrackingsUuids = new ArrayList<>();
-        allTrackingsId = new ArrayList<>();
+        allTrackingsId = eventsHistoryPresenter.setUuidsCollection();
 
-        setUuidsCollection(allTrackingsId);
 
         if (allText.length() != 0)
             trackingsPickerText.setText(allText.substring(0 , allText.length() - 2));
@@ -308,11 +292,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         String[] hints = new String[]{"Больше" , "Меньше" , "Равно"};
         final Comparison[] comparisons = new Comparison[]{Comparison.More , Comparison.Less , Comparison.Equal};
 
-        ArrayAdapter<String> hintsForScaleAdapter = new ArrayAdapter<String>(getActivity() , android.R.layout.simple_spinner_item , hints);
+        ArrayAdapter<String> hintsForScaleAdapter = new ArrayAdapter<>(getActivity() , android.R.layout.simple_spinner_item , hints);
         hintsForScaleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForScaleSpinner.setAdapter(hintsForScaleAdapter);
 
-        final ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<String>(getActivity() , android.R.layout.simple_spinner_item , hints);
+        ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<>(getActivity() , android.R.layout.simple_spinner_item , hints);
         hintsForRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
@@ -379,8 +363,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                startPosition = 0;
-                endPosition = 10;
                 isFilteredAdded = true;
                 for (int i = 0; i < selectedPositionItems.size(); i++) {
                     filteredTrackingsUuids.add
@@ -393,14 +375,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
                     try {
                         dateF = simpleDateFormat.parse(dateFrom.getText().toString());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    try {
                         dateT = simpleDateFormat.parse(dateTo.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+
                 }
                 try {
                     if (!scaleFilter.getText().toString().isEmpty()) {
@@ -460,6 +439,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters = activity.findViewById(R.id.addFiltersButton);
     }
 
+    //я пытался понять ,честно,но не смог,сус, я вызываю тебя!
     @Override
     public void showEvents (List<EventV1> events) {
         isScrolling = false;
@@ -473,7 +453,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         if (eventsForAdapter.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events , getActivity() , 1 , collection);
+            eventsAdpt = new EventsAdapter(eventsForAdapter , getActivity() , 1 , collection);
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
             eventsAdpt = new EventsAdapter(eventsForAdapter , getActivity() , 1 , collection);
@@ -498,12 +478,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
-    @Override
-    public void onResume () {
-        super.onResume();
-
-    }
-
 
     @Override
     public void onPause () {
@@ -524,7 +498,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     @Override
     public void cancelFilters () {
-
         ratingFilter.setRating(0);
         scaleFilter.setText("");
         dateFrom.setText("После");
@@ -551,11 +524,4 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
     }
 
-    private void setUuidsCollection (List<UUID> uuids) {
-        for (int i = 0; i < trackingService.GetTrackingCollection().size(); i++) {
-            if (!trackingService.GetTrackingCollection().get(i).setDeleted()) {
-                uuids.add(trackingService.GetTrackingCollection().get(i).getTrackingId());
-            }
-        }
-    }
 }
