@@ -124,12 +124,10 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
                 selectedItems.add(true);
             }
         }
-
         for (int i = 0; i < strings.size(); i++) {
             strings.size();
             allText += strings.get(i) + ", ";
         }
-
         return allText;
     }
 
