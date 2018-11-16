@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.ui.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -40,16 +41,16 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.Comparison;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
-import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
+import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
+import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 
 public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
 
@@ -105,76 +106,57 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     @Inject
     TrackingDataSource collection;
-    private LinearLayoutManager manager;
-    private boolean isFilteredCancel = false;
     List<TrackingV1> trackings;
+    private boolean isFilteredCancel = false;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_events_history, null);
+    public View onCreateView (LayoutInflater inflater , @Nullable ViewGroup container , Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_events_history , null);
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated (View view , @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view , savedInstanceState);
         getActivity().setTitle("История событий");
 
         ItHappenedApplication.getAppComponent().inject(this);
 
-        dateFrom = (Button) view.findViewById(R.id.dateFromButton);
-        dateTo = (Button) view.findViewById(R.id.dateToButton);
-        trackingsPickerText = getActivity().findViewById(R.id.trackingsPickerText);
-        trackingsPickerBtn = getActivity().findViewById(R.id.trackingsFiltersCard);
-        hintForEventsHistory = (TextView) getActivity().findViewById(R.id.hintForEventsHistoryFragment);
-        filtersCancel = (FloatingActionButton) getActivity().findViewById(R.id.filtersCancel);
-        eventsRecycler = (RecyclerView) view.findViewById(R.id.evetsRec);
-        progressBar = (ProgressBar) view.findViewById(R.id.eventsHistoryProgressBar);
+        initViews(view , getActivity());
 
         startPosition = 0;
         endPosition = 10;
 
-        Bundle bundle = getArguments();
-        if(bundle!=null){
-            dateF = new Date(bundle.getLong("dateFrom"));
-            dateT = new Date(bundle.getLong("dateTo"));
-            Locale locale = new Locale("ru");
-            SimpleDateFormat simpleDateFormat = new
-                    SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
-            dateFrom.setText(simpleDateFormat.format(dateF));
-            dateTo.setText(simpleDateFormat.format(dateT));
-        }
+        getDataFromBundle();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
         eventsHistoryPresenter.onViewAttach(this);
-        eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
-                dateF,
-                dateT,
-                scaleComparison,
-                scale,
-                ratingComparison,
-                rating,
-                startPosition,
+        eventsHistoryPresenter.filterEvents(filteredTrackingsUuids ,
+                dateF ,
+                dateT ,
+                scaleComparison ,
+                scale ,
+                ratingComparison ,
+                rating ,
+                startPosition ,
                 endPosition
         );
 
-        filtersScreen = (RelativeLayout) getActivity().findViewById(R.id.bottom_sheet);
+
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setHideable(false);
-
-        filtersHint = (RelativeLayout) getActivity().findViewById(R.id.filtersText);
 
         stateForHint = 0;
 
         filtersHint.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                switch (stateForHint) {
+            public void onClick (View view) {
+                switch ( stateForHint ) {
                     case 0:
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         stateForHint = 1;
@@ -184,7 +166,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         stateForHint = 0;
                         break;
                     default:
-                        Toast.makeText(getActivity(), "Потяните вверх!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity() , "Потяните вверх!" , Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -195,7 +177,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         filtersHintText.setVisibility(View.GONE);
 
 
-        manager = new LinearLayoutManager(getActivity().getApplicationContext());
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity().getApplicationContext());
         eventsRecycler.setLayoutManager(manager);
 
         idCollection = new ArrayList<>();
@@ -205,7 +187,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         trackings = new ArrayList<>();
         trackings = trackingService.GetTrackingCollection();
 
-        String allText = eventsHistoryPresenter.prepareDataForDialog(trackings, strings, idCollection, selectedItems);;
+        String allText = eventsHistoryPresenter.prepareDataForDialog(trackings , strings , idCollection , selectedItems);
+        ;
         filteredTrackingsTitles = new ArrayList<>();
         filteredTrackingsUuids = new ArrayList<>();
         allTrackingsId = new ArrayList<>();
@@ -213,7 +196,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         setUuidsCollection(allTrackingsId);
 
         if (allText.length() != 0)
-            trackingsPickerText.setText(allText.substring(0, allText.length() - 2));
+            trackingsPickerText.setText(allText.substring(0 , allText.length() - 2));
 
         final String[] trackingsTitles = new String[strings.size()];
         final boolean[] selectedArray = new boolean[strings.size()];
@@ -227,14 +210,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         if (strings.size() != 0) {
             trackingsPickerText.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick (View view) {
                     filteredTrackingsUuids.clear();
                     final AlertDialog trackingsPickerDiaolg;
                     final AlertDialog.Builder trackingsPicker = new AlertDialog.Builder(getActivity());
                     trackingsPicker.setTitle("Выберите отслеживания");
-                    trackingsPicker.setMultiChoiceItems(trackingsTitles, selectedArray, new DialogInterface.OnMultiChoiceClickListener() {
+                    trackingsPicker.setMultiChoiceItems(trackingsTitles , selectedArray , new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
+                        public void onClick (DialogInterface dialogInterface , int position , boolean isChecked) {
 
                             if (isChecked) {
                                 selectedPositionItems.add(position);
@@ -243,9 +226,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             }
                         }
                     });
-                    trackingsPicker.setPositiveButton("Применить", new DialogInterface.OnClickListener() {
+                    trackingsPicker.setPositiveButton("Применить" , new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int k) {
+                        public void onClick (DialogInterface dialogInterface , int k) {
                             String item = "";
                             for (int i = 0; i < selectedPositionItems.size(); i++) {
                                 item = item + trackingsTitles[selectedPositionItems.get(i)];
@@ -259,8 +242,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             }
                         }
                     });
-                    trackingsPicker.setNegativeButton("Снять все", null);
-                    trackingsPicker.setNeutralButton("Выбрать все", null);
+                    trackingsPicker.setNegativeButton("Снять все" , null);
+                    trackingsPicker.setNeutralButton("Выбрать все" , null);
 
                     trackingsPickerDiaolg = trackingsPicker.show();
 
@@ -269,7 +252,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
                     selectAll.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(View view) {
+                        public void onClick (View view) {
                             selectedPositionItems.clear();
                             for (int i = 0; i < selectedArray.length; i++) {
                                 selectedArray[i] = true;
@@ -278,14 +261,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             }
                             ListView curList = trackingsPickerDiaolg.getListView();
                             for (int i = 0; i < trackingsTitles.length; ++i)
-                                curList.setItemChecked(i, true);
+                                curList.setItemChecked(i , true);
 
                         }
                     });
 
                     unselectAll.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(View view) {
+                        public void onClick (View view) {
                             for (int i = 0; i < selectedArray.length; i++) {
                                 selectedArray[i] = false;
                                 selectedPositionItems.clear();
@@ -293,7 +276,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
                             ListView curList = trackingsPickerDiaolg.getListView();
                             for (int i = 0; i < trackingsTitles.length; ++i)
-                                curList.setItemChecked(i, false);
+                                curList.setItemChecked(i , false);
                         }
                     });
                 }
@@ -304,73 +287,54 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
 
 
-
         dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateFrom);
-                picker.show(fragmentManager, "from");
+                picker.show(fragmentManager , "from");
             }
         });
 
         dateTo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateTo);
-                picker.show(fragmentManager, "to");
+                picker.show(fragmentManager , "to");
             }
         });
 
-        String[] hints = new String[]{"Больше", "Меньше", "Равно"};
-        final Comparison[] comparisons = new Comparison[]{Comparison.More, Comparison.Less, Comparison.Equal};
+        String[] hints = new String[]{"Больше" , "Меньше" , "Равно"};
+        final Comparison[] comparisons = new Comparison[]{Comparison.More , Comparison.Less , Comparison.Equal};
 
-        hintsForScaleSpinner = (Spinner) view.findViewById(R.id.hintsForScale);
-        hintsForRatingSpinner = (Spinner) view.findViewById(R.id.hintsForRating);
-
-        ArrayAdapter<String> hintsForScaleAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, hints);
+        ArrayAdapter<String> hintsForScaleAdapter = new ArrayAdapter<String>(getActivity() , android.R.layout.simple_spinner_item , hints);
         hintsForScaleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForScaleSpinner.setAdapter(hintsForScaleAdapter);
 
-        final ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, hints);
+        final ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<String>(getActivity() , android.R.layout.simple_spinner_item , hints);
         hintsForRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
         KeyListener keyListener = DigitsKeyListener.getInstance("-1234567890.");
-        scaleFilter = (EditText) getActivity().findViewById(R.id.scaleFilter);
         scaleFilter.setKeyListener(keyListener);
-        ratingFilter = (RatingBar) getActivity().findViewById(R.id.ratingFilter);
 
         filtersCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                startPosition = 0;
-                endPosition = 10;
+            public void onClick (View view) {
                 final List<EventV1> allEvents = new ArrayList<>();
                 YandexMetrica.reportEvent(getString(R.string.metrica_cancel_filters));
-                dateT = null;
-                dateF = null;
-                filteredTrackingsUuids = null;
-                scaleComparison = null;
-                scale = null;
-                rating = null;
-                ratingComparison = null;
                 isFilteredCancel = true;
-                eventsHistoryPresenter.filterEvents(null,
-                        dateF,
-                        dateT,
-                        scaleComparison,
-                        scale,
-                        ratingComparison,
-                        rating,
-                        startPosition, endPosition);
+                eventsHistoryPresenter.filterEvents(null ,
+                        null ,
+                        null ,
+                        null ,
+                        null ,
+                        null ,
+                        null ,
+                        startPosition , endPosition);
             }
         });
-
-        addFilters = (Button) getActivity().findViewById(R.id.addFiltersButton);
-
-
 
         /*Это надо полюбому переделать!
         eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
@@ -414,7 +378,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 startPosition = 0;
                 endPosition = 10;
                 isFilteredAdded = true;
@@ -426,7 +390,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 if (!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()) {
                     Locale locale = new Locale("ru");
                     SimpleDateFormat simpleDateFormat = new
-                            SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
+                            SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
                     try {
                         dateF = simpleDateFormat.parse(dateFrom.getText().toString());
                     } catch (ParseException e) {
@@ -448,25 +412,56 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         int positionForRating = hintsForRatingSpinner.getSelectedItemPosition();
                         ratingComparison = comparisons[positionForRating];
                         double ratingVal = ratingFilter.getRating() * 2;
-                        rating = new Rating((int) ratingVal);
+                        rating = new Rating(( int ) ratingVal);
                     }
                     YandexMetrica.reportEvent(getString(R.string.metrica_add_filters));
-                    eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
-                            dateF,
-                            dateT,
-                            scaleComparison,
-                            scale,
-                            ratingComparison,
-                            rating, startPosition, endPosition);
+                    eventsHistoryPresenter.filterEvents(filteredTrackingsUuids ,
+                            dateF ,
+                            dateT ,
+                            scaleComparison ,
+                            scale ,
+                            ratingComparison ,
+                            rating , startPosition , endPosition);
                 } catch (NumberFormatException e) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext() , "Введите нормальные данные шкалы!" , Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    private void getDataFromBundle () {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            dateF = new Date(bundle.getLong("dateFrom"));
+            dateT = new Date(bundle.getLong("dateTo"));
+            Locale locale = new Locale("ru");
+            SimpleDateFormat simpleDateFormat = new
+                    SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
+            dateFrom.setText(simpleDateFormat.format(dateF));
+            dateTo.setText(simpleDateFormat.format(dateT));
+        }
+    }
+
+    private void initViews (View view , Activity activity) {
+        filtersScreen = activity.findViewById(R.id.bottom_sheet);
+        filtersHint = activity.findViewById(R.id.filtersText);
+        dateFrom = view.findViewById(R.id.dateFromButton);
+        dateTo = view.findViewById(R.id.dateToButton);
+        trackingsPickerText = activity.findViewById(R.id.trackingsPickerText);
+        trackingsPickerBtn = activity.findViewById(R.id.trackingsFiltersCard);
+        hintForEventsHistory = activity.findViewById(R.id.hintForEventsHistoryFragment);
+        filtersCancel = activity.findViewById(R.id.filtersCancel);
+        eventsRecycler = view.findViewById(R.id.evetsRec);
+        progressBar = view.findViewById(R.id.eventsHistoryProgressBar);
+        hintsForScaleSpinner = view.findViewById(R.id.hintsForScale);
+        hintsForRatingSpinner = view.findViewById(R.id.hintsForRating);
+        scaleFilter = activity.findViewById(R.id.scaleFilter);
+        ratingFilter = activity.findViewById(R.id.ratingFilter);
+        addFilters = activity.findViewById(R.id.addFiltersButton);
+    }
+
     @Override
-    public void showEvents(List<EventV1> events) {
+    public void showEvents (List<EventV1> events) {
         isScrolling = false;
         if (isFilteredAdded || isFilteredCancel) {
             eventsForAdapter.clear();
@@ -478,10 +473,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         if (eventsForAdapter.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1,collection);
+            eventsAdpt = new EventsAdapter(events , getActivity() , 1 , collection);
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(eventsForAdapter, getActivity(), 1,collection);
+            eventsAdpt = new EventsAdapter(eventsForAdapter , getActivity() , 1 , collection);
             eventsAdpt.notifyDataSetChanged();
         }
         if (eventsAdpt != null) {
@@ -497,38 +492,38 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             if (refreshedEvents.size() == 0) {
                 hintForEventsHistory.setVisibility(View.VISIBLE);
             }
-            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity().getApplicationContext(), 1,collection));
+            eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents , getActivity().getApplicationContext() , 1 , collection));
         }
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     @Override
-    public void onResume() {
+    public void onResume () {
         super.onResume();
 
     }
 
 
     @Override
-    public void onPause() {
+    public void onPause () {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history));
     }
 
     @Override
-    public void showLoading(boolean isLoading) {
-        if(isLoading){
+    public void showLoading (boolean isLoading) {
+        if (isLoading) {
             eventsRecycler.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             eventsRecycler.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void cancelFilters() {
+    public void cancelFilters () {
 
         ratingFilter.setRating(0);
         scaleFilter.setText("");
@@ -539,15 +534,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         hintsForRatingSpinner.setSelection(0);
         hintsForScaleSpinner.setSelection(0);
 
-        String allText = "";
+        StringBuilder allText = new StringBuilder();
         for (int i = 0; i < strings.size(); i++) {
-            if (i != strings.size()) {
-                allText += strings.get(i) + ", ";
-            }
+            strings.size();
+            allText.append(strings.get(i)).append(", ");
         }
 
         if (strings.size() != 0) {
-            trackingsPickerText.setText(allText);
+            trackingsPickerText.setText(allText.toString());
             filteredTrackingsUuids.clear();
             selectedPositionItems.clear();
             filtersHintText.setVisibility(View.GONE);
@@ -557,7 +551,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
     }
 
-    private void setUuidsCollection(List<UUID> uuids) {
+    private void setUuidsCollection (List<UUID> uuids) {
         for (int i = 0; i < trackingService.GetTrackingCollection().size(); i++) {
             if (!trackingService.GetTrackingCollection().get(i).setDeleted()) {
                 uuids.add(trackingService.GetTrackingCollection().get(i).getTrackingId());
