@@ -75,7 +75,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private Double scale = null;
     private Comparison ratingComparison = null;
     private Rating rating = null;
-    private List<UUID> filteredTrackingsUuids = new ArrayList<>();
+    private List<UUID> filteredTrackingsUuids =new ArrayList<>();
     private String[] trackingsTitles;
     private boolean[] selectedArray;
 
@@ -116,7 +116,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         getDataFromBundle();
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
         eventsHistoryPresenter.onViewAttach(this);
-        eventsHistoryPresenter.filterEvents(filteredTrackingsUuids ,
+        eventsHistoryPresenter.filterEvents(null ,//всегда ли при первом вызове null???
                 dateF ,
                 dateT ,
                 scaleComparison ,
