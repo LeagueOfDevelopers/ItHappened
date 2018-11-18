@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ARIMA.Models
 {
-    internal class Sequence
+    public class Sequence
     {
         private readonly List<double> data;
         private readonly double sum;
@@ -93,6 +92,13 @@ namespace ARIMA.Models
                 result.Add(data[i]);
             }
             return new Sequence(result);
+        }
+
+        public Sequence Reverse()
+        {
+            var copy = new List<double>(data);
+            copy.Reverse();
+            return new Sequence(copy);
         }
     }
 }

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItHappenedDomain", "ItHappe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItHappenedUnitTests", "ItHappenedUnitTests\ItHappenedUnitTests.csproj", "{38BB771D-5D22-4230-966A-828E6DE8C2E7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARIMA", "ARIMA\ARIMA.csproj", "{70BB77DD-7991-4D19-BB13-89438B0A93D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{38BB771D-5D22-4230-966A-828E6DE8C2E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38BB771D-5D22-4230-966A-828E6DE8C2E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38BB771D-5D22-4230-966A-828E6DE8C2E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70BB77DD-7991-4D19-BB13-89438B0A93D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70BB77DD-7991-4D19-BB13-89438B0A93D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70BB77DD-7991-4D19-BB13-89438B0A93D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70BB77DD-7991-4D19-BB13-89438B0A93D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,16 +1,21 @@
 ﻿using System;
 using MathNet.Numerics.Distributions;
 
-namespace ARIMA.Autocorrelation.PearsonCorrelation
+namespace ARIMA.Autocorrelation.Correlation
 {
-    internal class PearsonCorrealtion
+    internal class Correaltion
     {
         private readonly double coefficient;
         private readonly int numSamples;
+        private readonly int lag;
         public bool IsSignificant { get; }
 
-        public PearsonCorrealtion(double coefficient, int numSamples)
+        public Correaltion(double coefficient, int numSamples)
         {
+            if (coefficient > 1 || coefficient < -1)
+            {
+                throw new ArgumentException("Correlation coefficient should be between -1 and 1");
+            }
             this.coefficient = coefficient;
             this.numSamples = numSamples;
             IsSignificant = SignificanceTest();
@@ -21,9 +26,9 @@ namespace ARIMA.Autocorrelation.PearsonCorrelation
 
         private bool SignificanceTest()
         {
-            var t = coefficient * Math.Sqrt(numSamples - 2) / Math.Sqrt(1 - Math.Pow(coefficient, 2));
+            var t = coefficient * Math.Sqrt(numSamples - lag - 2) / Math.Sqrt(1 - Math.Pow(coefficient, 2));
             const double alpha = 0.05;
-            var tCritical = StudentT.InvCDF(0, 1, numSamples - 2, alpha);
+            var tCritical = StudentT.InvCDF(0, 1, numSamples - lag - 2, alpha);
             return Math.Abs(t) < tCritical;
         }
     }

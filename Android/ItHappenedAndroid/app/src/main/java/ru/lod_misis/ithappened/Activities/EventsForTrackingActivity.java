@@ -32,7 +32,6 @@ import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Recyclers.EventsAdapter;
-import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
 
 public class EventsForTrackingActivity extends AppCompatActivity {
 
@@ -54,18 +53,17 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     ITrackingRepository trackingsCollection;
     @Inject
     TrackingService trackingService;
-    int trackingPosition;
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
-    private DateTime UserOpenAnActivityDateTime;
+    private DateTime userOpenAnActivityDateTime;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_history_for_tracking);
         ButterKnife.bind(this);
-        UserOpenAnActivityDateTime = DateTime.now();
+        userOpenAnActivityDateTime = DateTime.now();
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_hitroy_for_tracking));
 
         ActionBar actionBar = getSupportActionBar();
@@ -104,13 +102,6 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         eventsRecycler.setAdapter(eventsAdpt);
     }
 
-    private void setupActionBar () {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(thisTrackingV1.GetTrackingName());
-    }
-
     @Override
     public void onResume () {
         super.onResume();
@@ -143,7 +134,7 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history_for_tracking));
         Map<String, Object> activityVisitTimeBorders = new HashMap<>();
-        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("Start time", userOpenAnActivityDateTime.toDate());
         activityVisitTimeBorders.put("End time", DateTime.now().toDate());
         YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_events_for_tracking), activityVisitTimeBorders);
     }
