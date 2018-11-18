@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -39,9 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
 import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
 import ru.lod_misis.ithappened.MyGeopositionService;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
 import ru.lod_misis.ithappened.Presenters.CreateTrackingContract;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.Retrofit.ItHappenedApplication;
@@ -166,11 +163,10 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
     Context context;
     Activity activity;
-    SharedPreferences sharedPreferences;
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
-    private DateTime UserOpenAnActivityDateTime;
+    private DateTime userOpenAnActivityDateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -183,11 +179,11 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         createTrackingPresenter.attachView(this);
         createTrackingPresenter.init();
         stateForPhoto = 0;
-        photoEnabled = (TextView) findViewById(R.id.photoTextEnabled);
+        photoEnabled = findViewById(R.id.photoTextEnabled);
 
-        photoDont = (LinearLayout) findViewById(R.id.photoBackColorDont);
-        photoOptional = (LinearLayout) findViewById(R.id.photoBackColorCheck);
-        photoRequired = (LinearLayout) findViewById(R.id.photoBackColorDoubleCheck);
+        photoDont = findViewById(R.id.photoBackColorDont);
+        photoOptional = findViewById(R.id.photoBackColorCheck);
+        photoRequired = findViewById(R.id.photoBackColorDoubleCheck);
 
         photoDontImage = findViewById(R.id.photoBackImageDont);
         photoOptionalImage = findViewById(R.id.photoBackImageCheck);
@@ -483,7 +479,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     @Override
     protected void onResume() {
         super.onResume();
-        UserOpenAnActivityDateTime = DateTime.now();
+        userOpenAnActivityDateTime = DateTime.now();
     }
 
     @Override
@@ -491,7 +487,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_from_add_tracking));
         Map<String, Object> activityVisitTimeBorders = new HashMap<>();
-        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("Start time", userOpenAnActivityDateTime.toDate());
         activityVisitTimeBorders.put("End time", DateTime.now().toDate());
         YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_add_tracking), activityVisitTimeBorders);
     }

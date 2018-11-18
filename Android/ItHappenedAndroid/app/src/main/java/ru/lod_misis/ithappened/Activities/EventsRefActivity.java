@@ -19,7 +19,7 @@ public class EventsRefActivity extends AppCompatActivity {
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
-    private DateTime UserOpenAnActivityDateTime;
+    private DateTime userOpenAnActivityDateTime;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -51,14 +51,14 @@ public class EventsRefActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        UserOpenAnActivityDateTime = DateTime.now();
+        userOpenAnActivityDateTime = DateTime.now();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Map<String, Object> activityVisitTimeBorders = new HashMap<>();
-        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("Start time", userOpenAnActivityDateTime.toDate());
         activityVisitTimeBorders.put("End time", DateTime.now().toDate());
         YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_events_ref), activityVisitTimeBorders);
     }

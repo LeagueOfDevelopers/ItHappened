@@ -12,9 +12,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -63,7 +63,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.Activities.MapActivity.MapActivity;
 import ru.lod_misis.ithappened.AllId;
-import ru.lod_misis.ithappened.BuildConfig;
 import ru.lod_misis.ithappened.Domain.EventV1;
 import ru.lod_misis.ithappened.Domain.Rating;
 import ru.lod_misis.ithappened.Domain.TrackingCustomization;
@@ -165,7 +164,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
-    private DateTime UserOpenAnActivityDateTime;
+    private DateTime userOpenAnActivityDateTime;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -247,7 +246,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     @Override
     protected void onResume() {
         super.onResume();
-        UserOpenAnActivityDateTime = DateTime.now();
+        userOpenAnActivityDateTime = DateTime.now();
     }
 
     @Override
@@ -255,7 +254,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_from_add_event));
         Map<String, Object> activityVisitTimeBorders = new HashMap<>();
-        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("Start time", userOpenAnActivityDateTime.toDate());
         activityVisitTimeBorders.put("End time", DateTime.now().toDate());
         YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_add_event), activityVisitTimeBorders);
     }

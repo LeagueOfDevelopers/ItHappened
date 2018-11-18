@@ -166,7 +166,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
-    private DateTime UserOpenAnActivityDateTime;
+    private DateTime userOpenAnActivityDateTime;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
@@ -530,7 +530,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     @Override
     protected void onResume() {
         super.onResume();
-        UserOpenAnActivityDateTime = DateTime.now();
+        userOpenAnActivityDateTime = DateTime.now();
     }
 
     @Override
@@ -538,7 +538,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_edit_tracking));
         Map<String, Object> activityVisitTimeBorders = new HashMap<>();
-        activityVisitTimeBorders.put("Start time", UserOpenAnActivityDateTime.toDate());
+        activityVisitTimeBorders.put("Start time", userOpenAnActivityDateTime.toDate());
         activityVisitTimeBorders.put("End time", DateTime.now().toDate());
         YandexMetrica.reportEvent(getString(R.string.metrica_user_time_on_activity_edit_tracking), activityVisitTimeBorders);
     }
@@ -711,10 +711,6 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                 break;
 
         }
-
         return 0;
-
     }
-
-
 }
