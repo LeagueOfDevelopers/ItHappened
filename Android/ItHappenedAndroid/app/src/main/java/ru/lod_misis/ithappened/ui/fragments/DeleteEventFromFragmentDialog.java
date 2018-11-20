@@ -72,18 +72,7 @@ public class DeleteEventFromFragmentDialog extends DialogFragment {
                                         Log.d("statistics" , "calculateOneTrackingFact");
                                     }
                                 });
-                        EventsFragment eventsFragment = ( EventsFragment ) getActivity().getFragmentManager().findFragmentByTag("EVENTS_HISTORY");
-                        List<EventV1> eventV1s = eventsFragment.eventsAdpt.getEventV1s();
-                        for (int i = 0; i < eventV1s.size(); i++) {
-                            if ( eventV1s.get(i).getEventId().equals(eventId) ) {
-                                eventV1s.remove(i);
-                                break;
-                            }
-                        }
-                        if ( eventV1s.size() == 0 ) {
-                            eventsFragment.hintForEventsHistory.setVisibility(View.VISIBLE);
-                        }
-                        eventsFragment.eventsRecycler.setAdapter(new EventsAdapter(eventV1s , getActivity() , 1 , trackingRepository));
+
                         Toast.makeText(getActivity().getApplicationContext() , "Событие удалено" , Toast.LENGTH_SHORT).show();
                     }
                 })
