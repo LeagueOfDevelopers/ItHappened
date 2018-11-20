@@ -426,12 +426,14 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             flagPhoto = true;
         }
         if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE) {
-            latitude = data.getDoubleExtra("latitude" , 0);
-            longitude = data.getDoubleExtra("longitude" , 0);
-            try {
-                adress.setText(getAddress(latitude , longitude));
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (data != null) {
+                latitude = data.getDoubleExtra("latitude" , 0);
+                longitude = data.getDoubleExtra("longitude" , 0);
+                try {
+                    adress.setText(getAddress(latitude , longitude));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -5,8 +5,8 @@ import android.app.Activity;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MapMethodForDetails extends CommonMethodForMapAlgorithm {
-    Double longitude;
-    Double latitude;
+    private Double longitude;
+    private Double latitude;
 
     public MapMethodForDetails (Double latitude , Double longitude) {
         this.longitude = longitude;

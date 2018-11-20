@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +14,6 @@ import android.widget.Button;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,12 +56,12 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onMapReady (GoogleMap googleMap) {
                 int flag = getIntent().getIntExtra("code" , -1);
-                if ( ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                if (ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 } else {
                     switch ( flag ) {
                         case 1: {
-                            algorithm = new MapMethodForAddGeoposition();
+                            algorithm = new MapMethodForAddGeoposition(getApplicationContext());
                             break;
                         }
                         case 2: {
@@ -84,8 +81,7 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void createAndInitMap () {
-
-        if ( ActivityCompat.checkSelfPermission(this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+        if (ActivityCompat.checkSelfPermission(this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         supportMapFragment = ( SupportMapFragment ) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -93,23 +89,11 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
-    private Location getLastKnownLocation () {
-        LocationManager mLocationManager = ( LocationManager ) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            if ( ActivityCompat.checkSelfPermission(this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+    @Override
+    public void onBackPressed () {
+        setResult(Activity.RESULT_OK);
+        finish();
+        super.onBackPressed();
 
-            }
-            Location l = mLocationManager.getLastKnownLocation(provider);
-            if ( l == null ) {
-                continue;
-            }
-            if ( bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy() ) {
-                // Found best last known location: %s", l);
-                bestLocation = l;
-            }
-        }
-        return bestLocation;
     }
 }

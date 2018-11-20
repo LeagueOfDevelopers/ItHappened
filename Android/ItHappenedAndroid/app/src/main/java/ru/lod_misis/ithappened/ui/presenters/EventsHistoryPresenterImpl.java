@@ -1,5 +1,7 @@
 package ru.lod_misis.ithappened.ui.presenters;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,11 +9,11 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.Comparison;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
-import ru.lod_misis.ithappened.domain.TrackingService;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -19,9 +21,9 @@ import rx.schedulers.Schedulers;
 
 public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsHistoryPresenter {
 
-    TrackingService service;
-    EventsHistoryContract.EventsHistoryView eventsHistoryView;
-    List<EventV1> eventV1s = new ArrayList<>();
+    private TrackingService service;
+    private EventsHistoryContract.EventsHistoryView eventsHistoryView;
+    private List<EventV1> eventV1s = new ArrayList<>();
 
     @Inject
     public EventsHistoryPresenterImpl (TrackingService service) {
@@ -111,24 +113,33 @@ public class EventsHistoryPresenterImpl implements EventsHistoryContract.EventsH
     }
 
     @Override
-    public String prepareDataForDialog (List<TrackingV1> trackings , List<String> strings , List<UUID> idCollection , List<Boolean> selectedItems) {
-
+    public String prepareDataForDialog (List<String> strings , List<UUID> idCollection , List<Boolean> selectedItems) {
+        List<TrackingV1> trackings = service.GetTrackingCollection();
         String allText = "";
 
         for (int i = 0; i < trackings.size(); i++) {
-            if ( !trackings.get(i).setDeleted() ) {
+            if (!trackings.get(i).setDeleted()) {
                 strings.add(trackings.get(i).getTrackingName());
                 idCollection.add(trackings.get(i).getTrackingId());
                 selectedItems.add(true);
             }
         }
-
         for (int i = 0; i < strings.size(); i++) {
-            if ( i != strings.size() ) {
-                allText += strings.get(i) + ", ";
+            strings.size();
+            allText += strings.get(i) + ", ";
+        }
+        return allText;
+    }
+
+    @Override
+    @Nullable
+    public List<UUID> setUuidsCollection () {
+        List<UUID> uuids=new ArrayList<>();
+        for (int i = 0; i < service.GetTrackingCollection().size(); i++) {
+            if (!service.GetTrackingCollection().get(i).setDeleted()) {
+                uuids.add(service.GetTrackingCollection().get(i).getTrackingId());
             }
         }
-
-        return allText;
+        return uuids;
     }
 }

@@ -7,33 +7,34 @@ import java.util.UUID;
 import ru.lod_misis.ithappened.domain.models.Comparison;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
-import ru.lod_misis.ithappened.domain.models.TrackingV1;
 
 public interface EventsHistoryContract {
     interface EventsHistoryView {
 
-        void showEvents(List<EventV1> eventV1s);
+        void showEvents (List<EventV1> eventV1s);
 
-        void cancelFilters();
+        void cancelFilters ();
 
-        void showLoading(boolean isLoading);
+        void showLoading (boolean isLoading);
 
 
     }
 
     interface EventsHistoryPresenter {
 
-        void onViewAttach(EventsHistoryView view);
+        void onViewAttach (EventsHistoryView view);
 
-        void filterEvents(List<UUID> trackingId, Date dateFrom, Date dateTo,
-                          Comparison scaleComparison, Double scale,
-                          Comparison ratingComparison, Rating rating, int startPosition, int endPosition);
+        void filterEvents (List<UUID> trackingId , Date dateFrom , Date dateTo ,
+                           Comparison scaleComparison , Double scale ,
+                           Comparison ratingComparison , Rating rating , int startPosition , int endPosition);
 
-        void cancleFilters();
+        void cancleFilters ();
 
-        String prepareDataForDialog(List<TrackingV1> trackings, List<String> strings, List<UUID> uuids, List<Boolean> selectedItem);
+        String prepareDataForDialog (List<String> strings , List<UUID> uuids , List<Boolean> selectedItem);
 
-        void onViewDettach();
+        List<UUID> setUuidsCollection ();
+
+        void onViewDettach ();
 
     }
 }
