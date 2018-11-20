@@ -116,17 +116,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         getDataFromBundle();
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
         eventsHistoryPresenter.onViewAttach(this);
-        eventsHistoryPresenter.filterEvents(null ,//всегда ли при первом вызове null???
-                dateF ,
-                dateT ,
-                scaleComparison ,
-                scale ,
-                ratingComparison ,
-                rating ,
-                startPosition ,
-                endPosition
-        );
-
 
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setHideable(false);
@@ -156,10 +145,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         filtersHintText.setVisibility(View.GONE);
 
-
         LinearLayoutManager manager = new LinearLayoutManager(getActivity().getApplicationContext());
         eventsRecycler.setLayoutManager(manager);
-
 
         String allText = eventsHistoryPresenter.prepareDataForDialog(strings , idCollection , selectedItems);
 
@@ -385,6 +372,21 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 return isLastPage;
             }
         });*/
+    }
+
+    @Override
+    public void onStart () {
+        eventsHistoryPresenter.filterEvents(null ,//всегда ли при первом вызове null???
+                dateF ,
+                dateT ,
+                scaleComparison ,
+                scale ,
+                ratingComparison ,
+                rating ,
+                startPosition ,
+                endPosition
+        );
+        super.onStart();
     }
 
     private void getDataFromBundle () {

@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Geocoder;
@@ -29,17 +30,16 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.EventV1;
-import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractor;
 import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
-import ru.lod_misis.ithappened.domain.TrackingService;
-import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.activities.mapactivity.MapActivity;
 import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
-import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
 
 public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
@@ -122,7 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                MapActivity.toMapActivity(activity , 2,latitude,longitude);
+                MapActivity.toMapActivity(activity , 2 , latitude , longitude);
             }
         });
         deleteEvent.setOnClickListener(new View.OnClickListener() {
@@ -177,10 +177,10 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         recreate();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void startConfigurationView () {
-        showOrNotNullCard();
-        if ( thisEventV1.getRating() != null ) {
+        if (thisEventV1.getRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
@@ -190,7 +190,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         }
         dateValue.setText(format.format(thisDate));
 
-        if ( thisEventV1.getRating() != null ) {
+        if (thisEventV1.getRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
@@ -199,7 +199,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             ratingValue.setVisibility(View.GONE);
         }
 
-        if ( thisEventV1.getComment() != null ) {
+        if (thisEventV1.getComment() != null) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             commentValue.setVisibility(View.VISIBLE);
@@ -209,16 +209,16 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             commentHint.setVisibility(View.GONE);
         }
 
-        if ( thisEventV1.getScale() != null ) {
+        if (thisEventV1.getScale() != null) {
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale().doubleValue()) + " " + thisTrackingV1.getScaleName());
+            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale()) + " " + thisTrackingV1.getScaleName());
         } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);
         }
-        if ( thisEventV1.getLongitude() != null && thisEventV1.getLotitude() != null ) {
+        if (thisEventV1.getLongitude() != null && thisEventV1.getLotitude() != null) {
 
             this.latitude = thisEventV1.getLotitude();
             this.longitude = thisEventV1.getLongitude();
@@ -234,7 +234,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             adress.setVisibility(View.GONE);
             geoposition_title.setVisibility(View.GONE);
         }
-        if ( thisEventV1.getPhoto() != null ) {
+        if (thisEventV1.getPhoto() != null) {
             workWithFIles = new PhotoInteractorImpl(this);
             photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
             nullsCard.setVisibility(View.GONE);
@@ -269,7 +269,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     public void finishDetailsEventActivity () {
         eventDetailsPresenter.detachView();
         finish();
-
     }
 
     @Override
@@ -287,25 +286,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         eventDetailsPresenter.detachView();
     }
 
-    private void showOrNotNullCard () {
-        if ( (thisTrackingV1.getCommentCustomization() == TrackingCustomization.None
-                && thisTrackingV1.getScaleCustomization() == TrackingCustomization.None
-                && thisTrackingV1.getRatingCustomization() == TrackingCustomization.None
-                && thisTrackingV1.getGeopositionCustomization() == TrackingCustomization.None
-                && thisTrackingV1.getPhotoCustomization() == TrackingCustomization.None)
-                ||
-                ((thisTrackingV1.getCommentCustomization() == TrackingCustomization.Optional && thisEventV1.getComment() == null)
-                        && (thisTrackingV1.getScaleCustomization() == TrackingCustomization.Optional && thisEventV1.getScale() == null)
-                        && (thisTrackingV1.getRatingCustomization() == TrackingCustomization.Optional && thisEventV1.getRating() == null)
-                        && (thisTrackingV1.getGeopositionCustomization() == TrackingCustomization.Optional && thisEventV1.getLongitude() == null && thisEventV1.getLotitude() == null)
-                        && (thisTrackingV1.getPhotoCustomization() == TrackingCustomization.Optional && thisEventV1.getPhoto() == null)
-                )
-                ) {
-            valuesCard.setVisibility(View.GONE);
-            nullsCard.setVisibility(View.VISIBLE);
-        }
-    }
-
     private String getAddress (Double latitude , Double longitude) throws IOException {
         Geocoder geocoder = new Geocoder(this , Locale.getDefault());
         return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
@@ -313,9 +293,9 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     protected void onActivityResult (int requestCode , int resultCode , Intent data) {
-        if ( requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE )
-            if ( resultCode == RESULT_OK )
+        if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE)
+            if (resultCode == RESULT_OK)
 
-        super.onActivityResult(requestCode , resultCode , data);
+                super.onActivityResult(requestCode , resultCode , data);
     }
 }
