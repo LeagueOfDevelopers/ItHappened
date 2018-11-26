@@ -45,17 +45,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
-import ru.lod_misis.ithappened.domain.FactService;
+import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.ConnectionReciver;
 import ru.lod_misis.ithappened.ui.ConnectionReciver.ConnectionReciverListener;
+import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.fragments.EventsFragment;
 import ru.lod_misis.ithappened.ui.fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.ui.fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.ui.fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.ui.presenters.UserActionContract;
 import ru.lod_misis.ithappened.ui.presenters.UserActionPresenterImpl;
-import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import rx.Subscription;
 
 public class UserActionsActivity extends AppCompatActivity
@@ -115,14 +114,14 @@ public class UserActionsActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         connectionToken = ConnectionReciver.isConnected();
 
-        if ( sharedPreferences.getString("UserId" , "").isEmpty() ) {
+        if (sharedPreferences.getString("UserId" , "").isEmpty()) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("UserId" , "Offline");
             editor.putString("Nick" , "Offline");
             editor.commit();
         }
 
-        if ( !sharedPreferences.getString("UserId" , "").equals("Offline") && connectionToken ) {
+        if (!sharedPreferences.getString("UserId" , "").equals("Offline") && connectionToken) {
             isTokenFailed = userActionPresenter.updateToken();
         } else {
             navigationView.getMenu().getItem(3).setVisible(false);
@@ -143,10 +142,10 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     public void onBackPressed () {
         DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
-        if ( drawer.isDrawerOpen(GravityCompat.START) ) {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if ( !isTrackingHistory ) {
+            if (!isTrackingHistory) {
                 isTrackingHistory = true;
                 isEventsHistory = false;
                 isProfileSettings = false;
@@ -179,7 +178,7 @@ public class UserActionsActivity extends AppCompatActivity
                         loginButton = ( TextView ) findViewById(R.id.loginButton);
                         urlUser = ( CircleImageView ) findViewById(R.id.imageView);
                         lable = ( TextView ) findViewById(R.id.menuTitle);
-                        if ( !sharedPreferences.getString("UserId" , "").equals("Offline") ) {
+                        if (!sharedPreferences.getString("UserId" , "").equals("Offline")) {
                             loginButton.setVisibility(View.GONE);
                             new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url" , ""));
                         } else {
@@ -210,17 +209,15 @@ public class UserActionsActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if ( id == R.id.my_events ) {
+        if (id == R.id.my_events) {
             item.setCheckable(false);
-            if ( !isTrackingHistory ) {
-
+            if (!isTrackingHistory) {
                 isTrackingHistory = true;
                 isEventsHistory = false;
                 isProfileSettings = false;
                 isStatistics = false;
 
                 TrackingsFragment newTrackFrg = new TrackingsFragment();
-
 
                 fTrans = getFragmentManager().beginTransaction();
                 fTrans.replace(R.id.trackingsFrg , newTrackFrg).addToBackStack(null);
@@ -233,10 +230,10 @@ public class UserActionsActivity extends AppCompatActivity
 
         }
 
-        if ( id == R.id.events_history ) {
+        if (id == R.id.events_history) {
             item.setCheckable(false);
 
-            if ( !isEventsHistory ) {
+            if (!isEventsHistory) {
                 setTitle("История событий");
                 isTrackingHistory = false;
                 isEventsHistory = true;
@@ -252,10 +249,10 @@ public class UserActionsActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         }
 
-        if ( id == R.id.statistics ) {
+        if (id == R.id.statistics) {
             item.setCheckable(false);
             setTitle("Статистика");
-            if ( !isStatistics ) {
+            if (!isStatistics) {
                 StatisticsFragment statFrg = new StatisticsFragment();
 
                 isTrackingHistory = false;
@@ -271,26 +268,26 @@ public class UserActionsActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         }
 
-        if ( id == R.id.synchronisation ) {
+        if (id == R.id.synchronisation) {
             syncItem = item;
             item.setCheckable(false);
-            if ( getApplicationContext().getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE).getString("UserId" , "").equals("Offline") ) {
+            if (getApplicationContext().getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE).getString("UserId" , "").equals("Offline")) {
                 Toast.makeText(getApplicationContext() , "Привяжите аккаунт к GOOGLE для синхронизации" , Toast.LENGTH_SHORT).show();
             } else {
                 userActionPresenter.syncronization();
             }
         }
 
-        if ( id == R.id.proile_settings ) {
+        if (id == R.id.proile_settings) {
             item.setCheckable(false);
             String userId = getSharedPreferences("MAIN_KEYS" , MODE_PRIVATE).getString("UserId" , "");
-            if ( userId.equals("Offline") ) {
+            if (userId.equals("Offline")) {
                 item.setVisible(false);
                 DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             } else {
 
-                if ( !isProfileSettings ) {
+                if (!isProfileSettings) {
 
                     isTrackingHistory = false;
                     isEventsHistory = false;
@@ -306,6 +303,11 @@ public class UserActionsActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
             }
 
+        }
+        if (id == R.id.buyingPaidVersion) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isFreeVersion" , false);
+            editor.apply();
         }
         return true;
     }
@@ -361,7 +363,7 @@ public class UserActionsActivity extends AppCompatActivity
                                   final Intent data) {
 
 
-        if ( requestCode == 228 && resultCode == RESULT_OK ) {
+        if (requestCode == 228 && resultCode == RESULT_OK) {
             showLoading();
             final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 
@@ -416,7 +418,7 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     protected void onStop () {
         super.onStop();
-        if ( mainSync != null )
+        if (mainSync != null)
             mainSync.unsubscribe();
     }
 
@@ -434,7 +436,7 @@ public class UserActionsActivity extends AppCompatActivity
 
         sharedPreferences = getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE);
 
-        if ( !sharedPreferences.getString("UserId" , "").equals("Offline") ) {
+        if (!sharedPreferences.getString("UserId" , "").equals("Offline")) {
 
             navigationView.getMenu().getItem(4).setEnabled(isConnected);
             navigationView.setNavigationItemSelectedListener(this);

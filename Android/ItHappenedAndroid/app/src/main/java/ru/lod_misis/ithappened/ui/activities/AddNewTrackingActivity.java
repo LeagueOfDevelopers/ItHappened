@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.ui.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -144,6 +145,14 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
     @BindView(R.id.addTrack)
     Button addTrackingBtn;
+    @BindView(R.id.addNewPhoto)
+    CardView photoContainer;
+    @BindView(R.id.addNewPhotoHint)
+    TextView photoHint;
+    @BindView(R.id.addNewGeoposition)
+    CardView geopositionContainer;
+    @BindView(R.id.addNewGeopositionHint)
+    TextView geopositionHint;
 
     private TrackingCustomization rating;
     private TrackingCustomization comment;
@@ -504,6 +513,14 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     private void startConfiguration () {
+        if (getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE).getBoolean("isFreeVersion" , true)) {
+            photoContainer.setVisibility(View.GONE);
+            photoEnabled.setVisibility(View.GONE);
+            photoHint.setVisibility(View.GONE);
+            geopositionContainer.setVisibility(View.GONE);
+            geopositionEnabled.setVisibility(View.GONE);
+            geopositionHint.setVisibility(View.GONE);
+        }
         rating = TrackingCustomization.None;
         comment = TrackingCustomization.None;
         scale = TrackingCustomization.None;
