@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anjlab.android.iab.v3.BillingProcessor;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -53,12 +54,15 @@ import ru.lod_misis.ithappened.ui.fragments.EventsFragment;
 import ru.lod_misis.ithappened.ui.fragments.ProfileSettingsFragment;
 import ru.lod_misis.ithappened.ui.fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.ui.fragments.TrackingsFragment;
+import ru.lod_misis.ithappened.ui.presenters.BillingPresenter;
+import ru.lod_misis.ithappened.ui.presenters.BillingView;
 import ru.lod_misis.ithappened.ui.presenters.UserActionContract;
 import ru.lod_misis.ithappened.ui.presenters.UserActionPresenterImpl;
 import rx.Subscription;
 
 public class UserActionsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ConnectionReciverListener, UserActionContract.UserActionView {
+        implements NavigationView.OnNavigationItemSelectedListener, ConnectionReciverListener,
+        UserActionContract.UserActionView, BillingView {
 
     private final static String G_PLUS_SCOPE =
             "oauth2:https://www.googleapis.com/auth/plus.me";
@@ -92,6 +96,8 @@ public class UserActionsActivity extends AppCompatActivity
     TextView loginButton;
     private DrawerLayout mDrawerLayout;
     private boolean isTokenFailed = false;
+    private BillingPresenter billingPresenter;
+    private BillingProcessor bp;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -137,6 +143,11 @@ public class UserActionsActivity extends AppCompatActivity
         fTrans.commit();
 
         syncPB = findViewById(R.id.syncPB);
+
+        billingPresenter=BillingPresenter.getInstance(this);
+        billingPresenter.atachView(this);
+        bp=billingPresenter.getBillingProcessor();
+
     }
 
     @Override
@@ -305,9 +316,7 @@ public class UserActionsActivity extends AppCompatActivity
 
         }
         if (id == R.id.buyingPaidVersion) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isFreeVersion" , false);
-            editor.apply();
+            billingPresenter.buyFullVersion();
         }
         return true;
     }
@@ -401,6 +410,10 @@ public class UserActionsActivity extends AppCompatActivity
 
             getToken.execute(null , null , null);
         }
+
+        if (!bp.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -442,6 +455,13 @@ public class UserActionsActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
         }
 
+    }
+
+    @Override
+    public void getPurchase (Boolean purchase) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isFreeVersion" , false);
+        editor.apply();
     }
 
 
