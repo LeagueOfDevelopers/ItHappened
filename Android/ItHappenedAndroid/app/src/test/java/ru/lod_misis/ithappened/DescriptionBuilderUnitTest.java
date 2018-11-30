@@ -6,22 +6,21 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.BinaryCorrelationFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.MultinomialCorrelationFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.Correlation.ScaleCorrelationFact;
-import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.LongestBreakFact;
-import ru.lod_misis.ithappened.Statistics.Facts.OneTrackingStatistcs.ScaleTrendChangingFact;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.DayWithLargestEventCountFact;
-import ru.lod_misis.ithappened.Statistics.Facts.AllTrackingsStatistics.WeekWithLargestEventCountFact;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.BinaryCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.MultinomialCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.ScaleCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.onetrackingstatistcs.LongestBreakFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.onetrackingstatistcs.ScaleTrendChangingFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.DataSet;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.DayWithLargestEventCountFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.WeekWithLargestEventCountFact;
 
 public class DescriptionBuilderUnitTest {
 
@@ -98,22 +97,23 @@ public class DescriptionBuilderUnitTest {
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "scale", "");
         Integer[] dates = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 7, 10, 11, 12, 14, 16, 25, 2, 2, 2, 2, 2, 2, 2, 2};
         for (int i = 0; i < 12; i++) {
             EventV1 event = new EventV1();
             DateTime date = new DateTime(2018, 1, dates[i], 10, 0);
-            event.SetEventDate(date.toDate());
-            event.SetEventId(UUID.randomUUID());
-            tracking.AddEvent(event);
+            event.setEventDate(date.toDate());
+            event.setEventId(UUID.randomUUID());
+            tracking.addEvent(event);
         }
         // Тест на то, что события из будующего будут проигнорированы
         for (int i = 12; i < dates.length; i++) {
             EventV1 event = new EventV1();
             DateTime date = new DateTime(2019, 1, dates[i], 10, 0);
-            event.SetEventDate(date.toDate());
-            event.SetEventId(UUID.randomUUID());
-            tracking.AddEvent(event);
+            event.setEventDate(date.toDate());
+            event.setEventId(UUID.randomUUID());
+            tracking.addEvent(event);
         }
         return tracking;
     }
@@ -125,14 +125,15 @@ public class DescriptionBuilderUnitTest {
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 "scale", "");
         Random rand = new Random();
         for (int i = 0; i < 100; i++) {
             EventV1 event = new EventV1();
-            event.SetScale((double)rand.nextInt(10 + i) + i);
-            event.SetEventDate(new DateTime(2000, i / 30 + 3, i % 30 + 1, 0, 0).toDate());
-            event.SetEventId(UUID.randomUUID());
-            tracking.AddEvent(event);
+            event.setScale((double)rand.nextInt(10 + i) + i);
+            event.setEventDate(new DateTime(2000, i / 30 + 3, i % 30 + 1, 0, 0).toDate());
+            event.setEventId(UUID.randomUUID());
+            tracking.addEvent(event);
         }
         return tracking;
     }
@@ -145,12 +146,13 @@ public class DescriptionBuilderUnitTest {
                 TrackingCustomization.None,
                 TrackingCustomization.None,
                 TrackingCustomization.None,
+                TrackingCustomization.None,
                 scaleName, "");
         for (int i = 0; i < data.size(); i++) {
             EventV1 event = new EventV1();
-            event.SetScale(data.get(i));
+            event.setScale(data.get(i));
             event.setEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1 + dayseed, 0, 0).toDate());
-            tracking.AddEvent(event);
+            tracking.addEvent(event);
         }
         return tracking;
     }

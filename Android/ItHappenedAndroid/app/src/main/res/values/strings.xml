@@ -73,4 +73,6 @@
     <string name="title_dialog_for_photo">Загрузить фотографию</string>
     <string name="confirm_add_geoposition">Подтвердить</string>
     <string name="add_geoposition">Добавить геометку</string>
+    <string name="error_message">У нас неполадки,извиняемся</string>
+    <string name="edit_event_success">Событие изменено</string>
 </resources>

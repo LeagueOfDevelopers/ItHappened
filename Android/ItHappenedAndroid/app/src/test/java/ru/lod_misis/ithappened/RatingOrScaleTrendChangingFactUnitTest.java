@@ -1,19 +1,15 @@
 package ru.lod_misis.ithappened;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.junit.Test;
 
 import java.util.Random;
 import java.util.UUID;
 
 import io.realm.RealmList;
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Domain.Rating;
-import ru.lod_misis.ithappened.Domain.TrackingCustomization;
-import ru.lod_misis.ithappened.Domain.TrackingV1;
-import ru.lod_misis.ithappened.Statistics.Facts.Fact;
-import ru.lod_misis.ithappened.Statistics.Facts.FunctionApplicability;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.models.Rating;
+import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
 
 public class RatingOrScaleTrendChangingFactUnitTest {
 
@@ -30,7 +26,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
 //                String descr = fact.textDescription();
 //            }
 //            System.out.print("Test " + i + " finished\n");
-//            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
+//            System.out.print("data set length: " + tracking.getEventCollection().size() + "\n");
 //            if (fact == null) {
 //                System.out.print("Fact is null\n");
 //            }
@@ -52,7 +48,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
 //                String descr = fact.textDescription();
 //            }
 //            System.out.print("Test " + i + " finished\n");
-//            System.out.print("Data set length: " + tracking.getEventV1Collection().size() + "\n");
+//            System.out.print("data set length: " + tracking.getEventCollection().size() + "\n");
 //            if (fact == null) {
 //                System.out.print("Fact is null\n");
 //            }
@@ -64,14 +60,14 @@ public class RatingOrScaleTrendChangingFactUnitTest {
     private TrackingV1 GenerateRandomRatingTracking(Random r) {
         int eventCount = r.nextInt(10000);
         TrackingV1 tracking = new TrackingV1();
-        tracking.setEventV1Collection(new RealmList<EventV1>());
-        tracking.SetTrackingID(UUID.randomUUID());
-        tracking.SetScaleCustomization(TrackingCustomization.None);
-        tracking.SetCommentCustomization(TrackingCustomization.None);
-        tracking.SetRatingCustomization(TrackingCustomization.Optional);
+        tracking.setEventCollection(new RealmList<EventV1>());
+        tracking.setTrackingId(UUID.randomUUID());
+        tracking.setScaleCustomization(TrackingCustomization.None);
+        tracking.setCommentCustomization(TrackingCustomization.None);
+        tracking.setRatingCustomization(TrackingCustomization.Optional);
         for (int i = 0; i < eventCount; i++) {
             EventV1 e = new EventV1();
-            e.setEventId(UUID.randomUUID().toString());
+            e.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 1) {
                 Rating rating = new Rating();
                 rating.setRating(r.nextInt(10));
@@ -81,7 +77,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
                 e.setRating(null);
             }
             e.setEventDate(new DateTime(2017 + r.nextInt(1000) / 365, r.nextInt(12) + 1, r.nextInt(27) + 1, 0, 0).toDate());
-            tracking.AddEvent(e);
+            tracking.addEvent(e);
         }
         return tracking;
     }
@@ -89,14 +85,14 @@ public class RatingOrScaleTrendChangingFactUnitTest {
     private TrackingV1 GenerateRandomScaleTracking(Random r) {
         int eventCount = r.nextInt(10000);
         TrackingV1 tracking = new TrackingV1();
-        tracking.setEventV1Collection(new RealmList<EventV1>());
-        tracking.SetTrackingID(UUID.randomUUID());
-        tracking.SetScaleCustomization(TrackingCustomization.Optional);
-        tracking.SetCommentCustomization(TrackingCustomization.None);
-        tracking.SetRatingCustomization(TrackingCustomization.None);
+        tracking.setEventCollection(new RealmList<EventV1>());
+        tracking.setTrackingId(UUID.randomUUID());
+        tracking.setScaleCustomization(TrackingCustomization.Optional);
+        tracking.setCommentCustomization(TrackingCustomization.None);
+        tracking.setRatingCustomization(TrackingCustomization.None);
         for (int i = 0; i < eventCount; i++) {
             EventV1 e = new EventV1();
-            e.setEventId(UUID.randomUUID().toString());
+            e.setEventId(UUID.randomUUID());
             if (r.nextInt() % 10 == 1) {
                 e.setScale(r.nextDouble() * 1000);
             }
@@ -104,7 +100,7 @@ public class RatingOrScaleTrendChangingFactUnitTest {
                 e.setRating(null);
             }
             e.setEventDate(new DateTime(2017 + r.nextInt(1000) / 365, r.nextInt(12) + 1, r.nextInt(27) + 1, 0, 0).toDate());
-            tracking.AddEvent(e);
+            tracking.addEvent(e);
         }
         return tracking;
     }

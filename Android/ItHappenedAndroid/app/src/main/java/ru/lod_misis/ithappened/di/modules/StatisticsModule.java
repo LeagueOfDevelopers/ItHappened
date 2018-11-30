@@ -4,17 +4,17 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Presenters.StatisticsContract;
-import ru.lod_misis.ithappened.Presenters.StatisticsInteractorImpl;
-import ru.lod_misis.ithappened.Presenters.StatisticsPresenterImpl;
+import ru.lod_misis.ithappened.data.repository.InMemoryFactRepositoryImpl;
+import ru.lod_misis.ithappened.domain.FactService;
+import ru.lod_misis.ithappened.ui.presenters.StatisticsContract;
+import ru.lod_misis.ithappened.ui.presenters.StatisticsInteractorImpl;
 
 @Module(includes = MainModule.class)
 public class StatisticsModule {
 
     @Provides
-    public StatisticsContract.StatisticsInteractor provideStatisticsInteractor(Context context, InMemoryFactRepository repository){
-        return new StatisticsInteractorImpl(context, repository);
+    public StatisticsContract.StatisticsInteractor provideStatisticsInteractor(Context context, FactService factService){
+        return new StatisticsInteractorImpl(context, factService);
     }
 
 }

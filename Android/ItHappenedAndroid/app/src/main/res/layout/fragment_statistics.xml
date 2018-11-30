@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_vertical_margin"
-        app:layout_behavior="ru.lod_misis.ithappened.ButtonsEffects.FAB_Float_on_Scroll"
+        app:layout_behavior="ru.lod_misis.ithappened.ui.utils.ScrollBehavior"
         android:layout_gravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>
