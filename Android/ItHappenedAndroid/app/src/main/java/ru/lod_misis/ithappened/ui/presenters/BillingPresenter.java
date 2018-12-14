@@ -1,46 +1,46 @@
 package ru.lod_misis.ithappened.ui.presenters;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 
 import ru.lod_misis.ithappened.domain.BillingInteractor.BillingInteractor;
+import ru.lod_misis.ithappened.domain.BillingInteractor.IBilling;
 
 public class BillingPresenter {
-    private static BillingPresenter billingPresenter;
-    private BillingInteractor billingInteractor;
+    private IBilling billingInteractor;
     private BillingView billingView;
 
-    private BillingPresenter (Context context) {
-        billingInteractor = new BillingInteractor(context);
+    public BillingPresenter(Activity activity) {
+        billingInteractor = BillingInteractor.getInstance(activity, this);
     }
 
-    public synchronized static BillingPresenter getInstance (Context context) {
-        if (billingPresenter == null) {
-            billingPresenter = new BillingPresenter(context);
-        }
-        return billingPresenter;
-    }
-
-    public void atachView (BillingView billingView) {
+    public void attachView(BillingView billingView) {
         this.billingView = billingView;
     }
 
-    public void detachView () {
+    public void detachView() {
         billingView = null;
     }
 
-    public void buyFullVersion () {
+    public void buyFullVersion() {
         billingInteractor.startPurchase();
     }
 
-    public void checkPurchase () {
+    public void checkPurchase() {
         if (billingView != null) {
-            billingView.getPurchase(billingInteractor.alreadyBuy());
+            billingView.getPurchase(billingInteractor.checkPurchase());
         }
     }
 
-    public BillingProcessor getBillingProcessor () {
+    public BillingProcessor getBillingProcessor() {
         return billingInteractor.getBillingProcessor();
+    }
+
+    public void purchaseSuccess() {
+        if (billingView != null) {
+            billingView.getPurchase(true);
+        }
     }
 }

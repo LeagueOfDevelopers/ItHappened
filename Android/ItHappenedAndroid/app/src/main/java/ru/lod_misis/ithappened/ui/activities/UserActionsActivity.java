@@ -100,11 +100,11 @@ public class UserActionsActivity extends AppCompatActivity
     private BillingProcessor bp;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
         ButterKnife.bind(this);
-        Fabric.with(this , new Crashlytics());
+        Fabric.with(this, new Crashlytics());
         ItHappenedApplication.getAppComponent().inject(this);
         userActionPresenter.attachView(this);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -114,20 +114,20 @@ public class UserActionsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this , drawer , toolbar , R.string.navigation_drawer_open , R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView = findViewById(R.id.nav_view);
         connectionToken = ConnectionReciver.isConnected();
 
-        if (sharedPreferences.getString("UserId" , "").isEmpty()) {
+        if (sharedPreferences.getString("UserId", "").isEmpty()) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("UserId" , "Offline");
-            editor.putString("Nick" , "Offline");
+            editor.putString("UserId", "Offline");
+            editor.putString("Nick", "Offline");
             editor.commit();
         }
 
-        if (!sharedPreferences.getString("UserId" , "").equals("Offline") && connectionToken) {
+        if (!sharedPreferences.getString("UserId", "").equals("Offline") && connectionToken) {
             isTokenFailed = userActionPresenter.updateToken();
         } else {
             navigationView.getMenu().getItem(3).setVisible(false);
@@ -139,20 +139,21 @@ public class UserActionsActivity extends AppCompatActivity
         trackFrg = new TrackingsFragment();
         fTrans = getFragmentManager().beginTransaction();
         layoutFrg = findViewById(R.id.trackingsFrg);
-        fTrans.replace(R.id.trackingsFrg , trackFrg).addToBackStack(null);
+        fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
         fTrans.commit();
 
         syncPB = findViewById(R.id.syncPB);
 
-        billingPresenter=BillingPresenter.getInstance(this);
-        billingPresenter.atachView(this);
-        bp=billingPresenter.getBillingProcessor();
+        billingPresenter = new BillingPresenter(this);
+        billingPresenter.attachView(this);
+        bp = billingPresenter.getBillingProcessor();
+        billingPresenter.checkPurchase();
 
     }
 
     @Override
-    public void onBackPressed () {
-        DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -163,7 +164,7 @@ public class UserActionsActivity extends AppCompatActivity
                 isStatistics = false;
                 setTitle("Что произошло?");
                 fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg , trackFrg).addToBackStack(null);
+                fTrans.replace(R.id.trackingsFrg, trackFrg).addToBackStack(null);
                 fTrans.commit();
             }
         }
@@ -171,27 +172,27 @@ public class UserActionsActivity extends AppCompatActivity
 
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onCreateOptionsMenu (Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         ViewTreeObserver vto = navigationView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener
                 (new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
-                    public void onGlobalLayout () {
-                        sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE);
-                        userNick = ( TextView ) findViewById(R.id.userNickname);
-                        userNick.setText(sharedPreferences.getString("Nick" , ""));
-                        loginButton = ( TextView ) findViewById(R.id.loginButton);
-                        urlUser = ( CircleImageView ) findViewById(R.id.imageView);
-                        lable = ( TextView ) findViewById(R.id.menuTitle);
-                        if (!sharedPreferences.getString("UserId" , "").equals("Offline")) {
+                    public void onGlobalLayout() {
+                        sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+                        userNick = (TextView) findViewById(R.id.userNickname);
+                        userNick.setText(sharedPreferences.getString("Nick", ""));
+                        loginButton = (TextView) findViewById(R.id.loginButton);
+                        urlUser = (CircleImageView) findViewById(R.id.imageView);
+                        lable = (TextView) findViewById(R.id.menuTitle);
+                        if (!sharedPreferences.getString("UserId", "").equals("Offline")) {
                             loginButton.setVisibility(View.GONE);
-                            new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url" , ""));
+                            new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
                         } else {
                             loginButton.setVisibility(View.VISIBLE);
                             lable.setVisibility(View.GONE);
@@ -200,9 +201,9 @@ public class UserActionsActivity extends AppCompatActivity
 
                             loginButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick (View view) {
+                                public void onClick(View view) {
                                     userActionPresenter.getGoogleToken();
-                                    DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
+                                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                                     drawer.closeDrawer(GravityCompat.START);
                                 }
                             });
@@ -216,7 +217,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected (final MenuItem item) {
+    public boolean onNavigationItemSelected(final MenuItem item) {
 
         int id = item.getItemId();
 
@@ -231,12 +232,12 @@ public class UserActionsActivity extends AppCompatActivity
                 TrackingsFragment newTrackFrg = new TrackingsFragment();
 
                 fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg , newTrackFrg).addToBackStack(null);
+                fTrans.replace(R.id.trackingsFrg, newTrackFrg).addToBackStack(null);
                 fTrans.commit();
 
                 setTitle("Что произошло?");
             }
-            DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
 
         }
@@ -253,10 +254,10 @@ public class UserActionsActivity extends AppCompatActivity
 
                 EventsFragment eventsFrg = new EventsFragment();
                 fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg , eventsFrg , "EVENTS_HISTORY").addToBackStack(null);
+                fTrans.replace(R.id.trackingsFrg, eventsFrg, "EVENTS_HISTORY").addToBackStack(null);
                 fTrans.commit();
             }
-            DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
 
@@ -272,18 +273,18 @@ public class UserActionsActivity extends AppCompatActivity
                 isStatistics = true;
 
                 fTrans = getFragmentManager().beginTransaction();
-                fTrans.replace(R.id.trackingsFrg , statFrg).addToBackStack(null);
+                fTrans.replace(R.id.trackingsFrg, statFrg).addToBackStack(null);
                 fTrans.commit();
             }
-            DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
 
         if (id == R.id.synchronisation) {
             syncItem = item;
             item.setCheckable(false);
-            if (getApplicationContext().getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE).getString("UserId" , "").equals("Offline")) {
-                Toast.makeText(getApplicationContext() , "Привяжите аккаунт к GOOGLE для синхронизации" , Toast.LENGTH_SHORT).show();
+            if (getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")) {
+                Toast.makeText(getApplicationContext(), "Привяжите аккаунт к GOOGLE для синхронизации", Toast.LENGTH_SHORT).show();
             } else {
                 userActionPresenter.syncronization();
             }
@@ -291,10 +292,10 @@ public class UserActionsActivity extends AppCompatActivity
 
         if (id == R.id.proile_settings) {
             item.setCheckable(false);
-            String userId = getSharedPreferences("MAIN_KEYS" , MODE_PRIVATE).getString("UserId" , "");
+            String userId = getSharedPreferences("MAIN_KEYS", MODE_PRIVATE).getString("UserId", "");
             if (userId.equals("Offline")) {
                 item.setVisible(false);
-                DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             } else {
 
@@ -307,69 +308,73 @@ public class UserActionsActivity extends AppCompatActivity
 
                     profileStgsFrg = new ProfileSettingsFragment();
                     fTrans = getFragmentManager().beginTransaction();
-                    fTrans.replace(R.id.trackingsFrg , profileStgsFrg).addToBackStack(null);
+                    fTrans.replace(R.id.trackingsFrg, profileStgsFrg).addToBackStack(null);
                     fTrans.commit();
                 }
-                DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.drawer_layout);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             }
 
         }
         if (id == R.id.buyingPaidVersion) {
-            billingPresenter.buyFullVersion();
+            if (!BillingProcessor.isIabServiceAvailable(this)) {
+                Toast.makeText(this, "In-app billing service is unavailable, please upgrade Android Market/Play to version >= 3.9.16", Toast.LENGTH_LONG).show();
+            } else {
+                billingPresenter.buyFullVersion();
+            }
         }
         return true;
     }
 
 
     @Override
-    public void stopMenuAnimation () {
+    public void stopMenuAnimation() {
         syncItem.setActionView(null);
     }
 
     @Override
-    public void startMenuAnimation () {
+    public void startMenuAnimation() {
         final Animation animationRotateCenter = AnimationUtils.loadAnimation(
-                this , R.anim.rotate);
+                this, R.anim.rotate);
         syncItem.setActionView(new ProgressBar(this));
         syncItem.getActionView().postDelayed(new Runnable() {
 
             @Override
-            public void run () {
+            public void run() {
             }
-        } , 1000);
+        }, 1000);
     }
 
 
     @Override
-    public void showLoading () {
+    public void showLoading() {
         layoutFrg.setVisibility(View.INVISIBLE);
         syncPB.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideLoading () {
+    public void hideLoading() {
         layoutFrg.setVisibility(View.VISIBLE);
         syncPB.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void finishActivity () {
+    public void finishActivity() {
         finish();
     }
 
     @Override
-    public void startActivity () {
+    public void startActivity() {
         startActivity(getIntent());
     }
 
     @Override
-    public void showMessage (String message) {
-        Toast.makeText(getApplicationContext() , message , Toast.LENGTH_SHORT).show();
+    public void showMessage(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    public void onActivityResult (final int requestCode , final int resultCode ,
-                                  final Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                 final Intent data) {
 
 
         if (requestCode == 228 && resultCode == RESULT_OK) {
@@ -378,37 +383,37 @@ public class UserActionsActivity extends AppCompatActivity
 
             AsyncTask<Void, Void, String> getToken = new AsyncTask<Void, Void, String>() {
                 @Override
-                protected String doInBackground (Void... params) {
+                protected String doInBackground(Void... params) {
 
                     String idToken = "";
 
                     try {
-                        idToken = GoogleAuthUtil.getToken(getApplicationContext() , accountName , SCOPES);
+                        idToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName, SCOPES);
                         return idToken;
 
                     } catch (UserRecoverableAuthException userAuthEx) {
-                        startActivityForResult(userAuthEx.getIntent() , 228);
+                        startActivityForResult(userAuthEx.getIntent(), 228);
                     } catch (IOException ioEx) {
-                        Log.e(TAG , "IOException");
+                        Log.e(TAG, "IOException");
                         this.cancel(true);
                         hideLoading();
-                        Toast.makeText(getApplicationContext() , "IOException" , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "IOException", Toast.LENGTH_SHORT).show();
                     } catch (GoogleAuthException fatalAuthEx) {
                         this.cancel(true);
                         hideLoading();
-                        Log.e(TAG , "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
-                        Toast.makeText(getApplicationContext() , "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage() , Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage());
+                        Toast.makeText(getApplicationContext(), "Fatal Authorization Exception" + fatalAuthEx.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                     return idToken;
                 }
 
                 @Override
-                protected void onPostExecute (String idToken) {
+                protected void onPostExecute(String idToken) {
                     userActionPresenter.registrate(idToken);
                 }
             };
 
-            getToken.execute(null , null , null);
+            getToken.execute(null, null, null);
         }
 
         if (!bp.handleActivityResult(requestCode, resultCode, data)) {
@@ -417,39 +422,40 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume () {
+    protected void onResume() {
         super.onResume();
 
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
         ConnectionReciver connectivityReceiver = new ConnectionReciver();
-        registerReceiver(connectivityReceiver , intentFilter);
+        registerReceiver(connectivityReceiver, intentFilter);
         ItHappenedApplication.getInstance().setConnectionListener(this);
     }
 
     @Override
-    protected void onStop () {
+    protected void onStop() {
         super.onStop();
         if (mainSync != null)
             mainSync.unsubscribe();
     }
 
     @Override
-    protected void onDestroy () {
+    protected void onDestroy() {
         super.onDestroy();
+        billingPresenter.detachView();
         userActionPresenter.dettachView();
     }
 
-    public void cancelLogout () {
+    public void cancelLogout() {
     }
 
     @Override
-    public void onNetworkConnectionChanged (boolean isConnected) {
+    public void onNetworkConnectionChanged(boolean isConnected) {
 
-        sharedPreferences = getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
-        if (!sharedPreferences.getString("UserId" , "").equals("Offline")) {
+        if (!sharedPreferences.getString("UserId", "").equals("Offline")) {
 
             navigationView.getMenu().getItem(4).setEnabled(isConnected);
             navigationView.setNavigationItemSelectedListener(this);
@@ -458,21 +464,20 @@ public class UserActionsActivity extends AppCompatActivity
     }
 
     @Override
-    public void getPurchase (Boolean purchase) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isFreeVersion" , false);
-        editor.apply();
+    public void getPurchase(Boolean purchase) {
+        navigationView.getMenu().getItem(navigationView.getMenu().size() - 1).setVisible(!purchase);
+        navigationView.setVisibility(View.GONE);
     }
 
 
     private class DownLoadImageTask extends AsyncTask<String, Void, Bitmap> {
         CircleImageView imageView;
 
-        public DownLoadImageTask (CircleImageView imageView) {
+        public DownLoadImageTask(CircleImageView imageView) {
             this.imageView = imageView;
         }
 
-        protected Bitmap doInBackground (String... urls) {
+        protected Bitmap doInBackground(String... urls) {
             String urlOfImage = urls[0];
             Bitmap logo = null;
             try {
@@ -485,9 +490,8 @@ public class UserActionsActivity extends AppCompatActivity
         }
 
 
-        protected void onPostExecute (Bitmap result) {
+        protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
     }
-
 }
