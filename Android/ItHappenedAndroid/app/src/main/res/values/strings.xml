@@ -55,4 +55,7 @@
     <string name="add_geoposition">Добавить геометку</string>
     <string name="error_message">У нас неполадки,извиняемся</string>
     <string name="edit_event_success">Событие изменено</string>
+    <string name="get_started_button_text">Начать отслеживать</string>
+    <string name="miss_tutorial">Пропустить обучение</string>
+    <string name="start_message">Добро пожаловать в ItHappened.  Планируй и достигай целей</string>
 </resources>
