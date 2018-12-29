@@ -7,11 +7,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.lod_misis.ithappened.Application.TrackingService;
-import ru.lod_misis.ithappened.Infrastructure.ITrackingRepository;
-import ru.lod_misis.ithappened.Infrastructure.InMemoryFactRepository;
-import ru.lod_misis.ithappened.Infrastructure.TrackingRepository;
-import ru.lod_misis.ithappened.Statistics.FactCalculator;
+import ru.lod_misis.ithappened.data.repository.InMemoryFactRepository;
+import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
+import ru.lod_misis.ithappened.data.repository.TrackingDataSourceImpl;
+import ru.lod_misis.ithappened.domain.FactService;
+import ru.lod_misis.ithappened.domain.TrackingService;
+import ru.lod_misis.ithappened.data.repository.InMemoryFactRepositoryImpl;
 
 @Module
 public class MainModule {
@@ -45,25 +46,25 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public ITrackingRepository provideTrackingRepository(Context context, String userId){
-        return new TrackingRepository(context, userId);
+    public TrackingDataSource provideTrackingRepository(Context context, String userId){
+        return new TrackingDataSourceImpl(context, userId);
     }
 
     @Singleton
     @Provides
-    public InMemoryFactRepository provideFactRepository(){
-        return new InMemoryFactRepository();
+    public InMemoryFactRepositoryImpl provideFactRepository(){
+        return new InMemoryFactRepositoryImpl();
     }
 
     @Singleton
     @Provides
-    public TrackingService provideTrackingService(ITrackingRepository trackingRepository){
+    public TrackingService provideTrackingService(TrackingDataSource trackingRepository){
         return new TrackingService(trackingRepository);
     }
 
     @Singleton
     @Provides
-    public FactCalculator provideFactCalculator(ITrackingRepository trackingRepository){
-        return new FactCalculator(trackingRepository);
+    public FactService provideFactService(InMemoryFactRepositoryImpl inMemoryFactRepositoryImpl) {
+        return new FactService(inMemoryFactRepositoryImpl);
     }
 }

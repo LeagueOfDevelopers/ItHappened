@@ -26,7 +26,7 @@
         android:layout_gravity="center"/>
 
     <android.support.design.widget.FloatingActionButton
-        app:layout_behavior="ru.lod_misis.ithappened.ButtonsEffects.FAB_Float_on_Scroll"
+        app:layout_behavior="ru.lod_misis.ithappened.ui.utils.ScrollBehavior"
         android:id="@+id/addNewTracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -5,14 +5,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import ru.lod_misis.ithappened.Domain.EventV1;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Builders.DataSetBuilder;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.DataSet;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Collections.Sequence;
-import ru.lod_misis.ithappened.Statistics.Facts.Models.Trends.EventsTimeDistribution;
+import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.builders.DataSetBuilder;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.DataSet;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.Sequence;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.trends.EventsTimeDistribution;
 
 public class DataSetBuilderTest {
 
@@ -22,7 +21,7 @@ public class DataSetBuilderTest {
         DataSet<Integer> intDS = DataSetBuilder.BuildBooleanDataset(eventSet.get(0), eventSet.get(1), 1);
         DataSet<Double> doubleDS = DataSetBuilder.BuildDoubleDataSet(eventSet.get(0), eventSet.get(1), 1);
 
-        Assert.assertEquals(intDS.Length(), 9);
+        Assert.assertEquals(intDS.Length(), 10);
         Assert.assertEquals(doubleDS.Length(), 9);
     }
 
@@ -41,7 +40,7 @@ public class DataSetBuilderTest {
         List<EventV1> events = new ArrayList<>();
         for (int i = 1; i < 100; i++) {
             EventV1 e = new EventV1();
-            e.SetEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1, 0, 0).toDate());
+            e.setEventDate(new DateTime(2000, i / 30 + 1, i % 25 + 1, 0, 0).toDate());
             events.add(e);
         }
         return events;
@@ -53,14 +52,14 @@ public class DataSetBuilderTest {
         List<EventV1> events2 = new ArrayList<>();
         for (int i = 1; i <= count; i += 2) {
             EventV1 event = new EventV1();
-            event.EditDate(new DateTime(2000, 1, i, 0, 0).toDate());
-            event.EditScale((double)i * 100);
+            event.editDate(new DateTime(2000, 1, i, 0, 0).toDate());
+            event.editScale((double)i * 100);
             events1.add(event);
         }
         for (int i = 2; i <= count; i += 2) {
             EventV1 event = new EventV1();
-            event.EditDate(new DateTime(2000, 1, i, 0, 0).toDate());
-            event.EditScale((double)i * 100);
+            event.editDate(new DateTime(2000, 1, i, 0, 0).toDate());
+            event.editScale((double)i * 100);
             events2.add(event);
         }
         result.add(events1);
