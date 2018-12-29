@@ -7,11 +7,21 @@ public class Sequence {
 
     private List<Double> Data;
     private double Sum;
+    private double Min;
+    private double Max;
 
     public Sequence(List<Double> data) {
         Data = data;
+        Min = data.get(0);
+        Max = data.get(0);
         for (Double d: data) {
             Sum += d;
+            if (d < Min) {
+                Min = d;
+            }
+            if (d > Max) {
+                Max = d;
+            }
         }
     }
 
@@ -58,7 +68,23 @@ public class Sequence {
         return new Sequence(result);
     }
 
-    public List<Double> ToList() {
-        return Data;
+    public Sequence DiffConst(double constant) {
+        List<Double> result = new ArrayList<>();
+        for (double i: Data) {
+            result.add(i - constant);
+        }
+        return new Sequence(result);
+    }
+
+    public double Var() {
+        return this.DiffConst(this.Mean()).Pow(2).Sum() / (this.Length() - 1);
+    }
+
+    public double Max() {
+        return Max;
+    }
+
+    public double Min() {
+        return Min;
     }
 }

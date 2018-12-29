@@ -57,10 +57,16 @@ public class SequenceAnalyzer {
     // и находится в другой зоне от прошлого коэффициента (по другую сторону от 0),
     // то говорим, что этот коэффициент и есть последний перегиб графика.
 
+    public static LinearRegression BuildLinearRegression(Sequence Y) {
+        double a = CalculateACoefficient(Y, Range(0, Y.Length()));
+        double b = CalculateBCoefficient(Y, Range(0, Y.Length()), a);
+        return new LinearRegression(a, b);
+    }
+
     private static double CalculateACoefficient(Sequence Y, Sequence X) {
-        int n = Y.Length();
         // Формула для расчета коэффициента а линейной регрессии у = ax + b
-        return (n * X.Mult(Y).Sum() - X.Sum() * Y.Sum()) / (n * X.Pow(2).Sum() - Math.pow(X.Sum(), 2));
+        return X.DiffConst(X.Mean()).Mult(Y.DiffConst(Y.Mean())).Sum() / X.DiffConst(X.Mean()).Pow(2).Sum();
+        //return (n * X.Mult(Y).Sum() - X.Sum() * Y.Sum()) / (n * X.Pow(2).Sum() - Math.pow(X.Sum(), 2));
     }
 
     private static double CalculateBCoefficient(Sequence Y, Sequence X, Double A) {

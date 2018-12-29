@@ -17,6 +17,8 @@ import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.We
 import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.BinaryCorrelationFact;
 import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.MultinomialCorrelationFact;
 import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.correlation.ScaleCorrelationFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.scalePrediction.ScalePredictionFact;
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.scalePrediction.predictors.PredictorEnum;
 import ru.lod_misis.ithappened.domain.statistics.facts.onetrackingstatistcs.AvrgRatingFact;
 import ru.lod_misis.ithappened.domain.statistics.facts.onetrackingstatistcs.AvrgScaleFact;
 import ru.lod_misis.ithappened.domain.statistics.facts.onetrackingstatistcs.BestEvent;
@@ -420,5 +422,16 @@ public final class FunctionApplicability  {
         fact.calculateData();
         if (!fact.IsFactSignificant()) return null;
         return fact;
+    }
+
+    public static Fact ScalePredictionFactApplicability(TrackingV1 trackingV1) {
+        ScalePredictionFact fact = new ScalePredictionFact(trackingV1, 1, PredictorEnum.LinearRegressionPredictor);
+        if (fact.hasEnoughData()) {
+            fact.calculateData();
+            return fact;
+        }
+        else {
+            return null;
+        }
     }
 }
