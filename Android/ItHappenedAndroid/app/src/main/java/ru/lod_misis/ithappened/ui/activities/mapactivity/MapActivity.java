@@ -14,6 +14,7 @@ import android.widget.Button;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.yandex.metrica.YandexMetrica;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +49,7 @@ public class MapActivity extends AppCompatActivity {
                 algorithm.returnData(MapActivity.this);
             }
         });
-
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_use_address_button));
     }
 
     private void initMap () {

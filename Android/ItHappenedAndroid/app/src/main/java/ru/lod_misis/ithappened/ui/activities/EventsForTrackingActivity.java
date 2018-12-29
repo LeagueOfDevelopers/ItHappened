@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
-import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.R;
@@ -120,8 +119,6 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext() , AddNewEventActivity.class);
                 intent.putExtra("trackingId" , thisTrackingV1.getTrackingId().toString());
-
-                YandexMetrica.reportEvent(getString(R.string.metrica_user_press_button_add_event));
 
                 startActivity(intent);
 

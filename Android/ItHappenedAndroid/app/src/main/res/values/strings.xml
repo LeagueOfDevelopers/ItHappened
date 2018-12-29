@@ -21,7 +21,10 @@
     </string-array>
 
     <string name="hint_for_addnewtracking_button">Your title</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="privacy_policy_ref">https://api.ithappened.ru/privacy/policy</string>
     <string name="metrica_add_event">Пользователь добавил событие</string>
+    <string name="metrica_user_is_adding_new_event">Пользователь зашел в добавление события</string>
     <string name="metrica_exit_from_add_event">Пользователь вышел из создания события</string>
     <string name="metrica_enter_add_tracking">Пользователь зашел в добавление отслеживания</string>
     <string name="metrica_add_tracking">Пользователь добавил отслеживание</string>
@@ -42,8 +45,6 @@
     <string name="metrica_add_filters">Пользователь добавил фильтры</string>
     <string name="metrica_exit_event_history">Пользователь вышел из истории</string>
     <string name="metrica_enter_profile_settings">Пользователь зашел в настройки профиля</string>
-    <string name="privacy_policy">Политика конфиденциальности</string>
-    <string name="privacy_policy_ref">https://api.ithappened.ru/privacy/policy</string>
     <string name="metrica_exit_statistics">Пользователь перестал смотреть статистику</string>
     <string name="metrica_recount_statistics">Пользователь пересчитывает статистику</string>
     <string name="metrica_enter_statistics">Пользователь вошел в статистику</string>
@@ -73,6 +74,6 @@
     <string name="title_dialog_for_photo">Загрузить фотографию</string>
     <string name="confirm_add_geoposition">Подтвердить</string>
     <string name="add_geoposition">Добавить геометку</string>
-    <string name="error_message">У нас неполадки,извиняемся</string>
+    <string name="error_message">У нас неполадки, извиняемся</string>
     <string name="edit_event_success">Событие изменено</string>
 </resources>

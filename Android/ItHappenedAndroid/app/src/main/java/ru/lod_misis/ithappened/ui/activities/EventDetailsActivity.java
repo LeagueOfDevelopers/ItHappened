@@ -46,7 +46,11 @@ import ru.lod_misis.ithappened.ui.activities.mapactivity.MapActivity;
 import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
 
+
+
 public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
+
+
     @BindView(R.id.editEventButton)
     Button editEvent;
     @BindView(R.id.deleteEventButton)
@@ -130,6 +134,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+
                 YandexMetrica.reportEvent(getString(R.string.metrica_user_use_address_button));
                 MapActivity.toMapActivity(activity , 2 , latitude , longitude);
             }

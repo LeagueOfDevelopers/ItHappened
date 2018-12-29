@@ -140,6 +140,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
 
     String photoPath;
+
     @BindView(R.id.photo)
     ImageView photo;
 
@@ -157,7 +158,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         setContentView(R.layout.activity_add_new_event);
 
         ButterKnife.bind(this);
-        YandexMetrica.reportEvent("Пользователь вошел в создание события");
+        YandexMetrica.reportEvent(getString(R.string.metrica_user_is_adding_new_event));
         trackingId = UUID.fromString(this.getIntent().getStringExtra("trackingId"));
         ItHappenedApplication.getAppComponent().inject(this);
         addNewEventPresenter.attachView(this);
@@ -547,9 +548,10 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         }
     }
 
-    private void createJobScheduler(Long time){
-        ComponentName notificationJobServiece = new ComponentName(this,NotificationJobService.class);
-        JobInfo.Builder jobBuilder = new JobInfo.Builder(jobId,notificationJobServiece);
+
+    private void createJobScheduler (Long time) {
+        ComponentName notificationJobServiece = new ComponentName(this , NotificationJobService.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(jobId , notificationJobServiece);
         jobBuilder.setMinimumLatency(time);
         JobScheduler jobScheduler =
                 ( JobScheduler ) AddNewEventActivity.this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
