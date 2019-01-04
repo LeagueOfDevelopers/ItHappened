@@ -18,15 +18,16 @@ public class StartIntroFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.start_intro_screen,container,false);
-        /*button.setOnClickListener(new View.OnClickListener() {
+        View view = inflater.inflate(R.layout.start_intro_screen, container, false);
+        Button button = view.findViewById(R.id.miss_tutorial);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getContext(),UserActionsActivity.class);
+                Intent intent = new Intent(getContext(), UserActionsActivity.class);
                 getActivity().startActivity(intent);
             }
         });
-        */
+
         return view;
     }
 }
