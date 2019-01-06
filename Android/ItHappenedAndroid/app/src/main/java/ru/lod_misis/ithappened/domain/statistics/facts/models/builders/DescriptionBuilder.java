@@ -230,8 +230,8 @@ public class DescriptionBuilder {
         return String.format(ScalePredictionFactReportFormat,
                 scaleName,
                 trackingName,
-                average - n_deviations * prediction.getStandartDeviation(),
-                average + n_deviations * prediction.getStandartDeviation());
+                format.format(average - n_deviations * prediction.getStandartDeviation()),
+                format.format(average + n_deviations * prediction.getStandartDeviation()));
     }
 
     private static String TimesCountDescription(int times) {
