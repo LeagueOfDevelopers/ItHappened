@@ -24,7 +24,7 @@ public class FrequencyTrendChangingFactUnitTest {
         Assert.assertEquals(descr, "Событие <b>null</b> происходит <b>реже</b>: за последние <b>15 дней</b> - <b>10</b> раз.");
     }
 
-    // STRESS TEST
+//    STRESS TEST
 //    @Test
 //    public void FrequencyTrendChangingFactStressTest_FactDoesNotRaiseExceptions() {
 //        Random gen = new Random();

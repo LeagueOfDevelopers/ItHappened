@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.scalePrediction.predictors.Prediction;
 import ru.lod_misis.ithappened.domain.statistics.facts.models.TimeSpanEventData;
 import ru.lod_misis.ithappened.domain.statistics.facts.models.trends.TrendChangingPoint;
 
@@ -42,8 +43,8 @@ public class DescriptionBuilder {
     private static final String LargestEventCountWeekReportFormat =
             "Самая насыщенная событиями неделя была с <b>%s</b> до <b>%s</b>. В течении этой недели произошло <b>%s</b> ";
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat
-            ("dd.MM.yyyy HH:mm", DateFormatLocalization);
+    private static final String ScalePredictionFactReportFormat =
+            "Скорее всего завтра значение шкалы <b>%s</b> события <b>%s</b> составит от <b>%s</b> до <b>%s</b>";
 
     private static DecimalFormat format = new DecimalFormat("#.##");
 
@@ -224,6 +225,15 @@ public class DescriptionBuilder {
                 rightBorderDescription, data.getEventCount()).trim();
     }
 
+    public static String ScaleOneDayPredictionDescription(String scaleName, String trackingName, Prediction prediction, double n_deviations) {
+        Double average = prediction.getPredictions().get(0);
+        return String.format(ScalePredictionFactReportFormat,
+                scaleName,
+                trackingName,
+                average - n_deviations * prediction.getStandartDeviation(),
+                average + n_deviations * prediction.getStandartDeviation());
+    }
+
     private static String TimesCountDescription(int times) {
         String timesDescr = "";
         int lastEventCountDigit = times % 10;
@@ -308,78 +318,6 @@ public class DescriptionBuilder {
                 }
             }
         }
-//        if (years_rounded > 0) {
-//            int lastDigitY = years_rounded % 10;
-//            // Данное условие отвечает за описание чисел с 10 до 20: например 11 дней но 21 день
-//            boolean condition = years_rounded % 100 > 10 && years_rounded % 100 < 20;
-//            if (lastDigitY > 4 || lastDigitY == 0 || condition) {
-//                return String.format("%s лет ", years_rounded);
-//            }
-//            if (lastDigitY > 1 && lastDigitY <= 4 && !condition) {
-//                return String.format("%s года ", years_rounded);
-//            }
-//            if (lastDigitY == 1 && !condition) {
-//                return String.format("%s год ", years_rounded);
-//            }
-//        }
-//        if (months_rounded > 0) {
-//
-//        }
-//        if (days_rounded > 0) {
-//            int lastDigitD = days_rounded % 10;
-//            // Данное условие отвечает за описание чисел с 10 до 20: например 11 дней но 21 день
-//            boolean condition = days_rounded % 100 > 10 && days_rounded % 100 < 20;
-//            if (lastDigitD > 4 || lastDigitD == 0 || condition) {
-//                return String.format("%s дней ", days_rounded);
-//            }
-//            if (lastDigitD > 1 && lastDigitD <= 4 && !condition) {
-//                return String.format("%s дня ", days_rounded);
-//            }
-//            if (lastDigitD == 1 && !condition) {
-//                return String.format("%s день ", days_rounded);
-//            }
-//        }
-//        if (hours_rounded > 0) {
-//            int lastDigitH = hours_rounded % 10;
-//            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
-//            boolean condition = hours_rounded % 100 > 10 && hours_rounded % 100 < 20;
-//            if (lastDigitH > 4 || lastDigitH == 0 || condition) {
-//                return String.format("%s часов ", hours_rounded);
-//            }
-//            if (lastDigitH > 1 && lastDigitH <= 4 && !condition) {
-//                return String.format("%s часа ", hours_rounded);
-//            }
-//            if (lastDigitH == 1 && !condition) {
-//                return String.format("%s час ", hours_rounded);
-//            }
-//        }
-//        if (minutes_rounded > 0) {
-//            int lastDigitM = minutes_rounded % 10;
-//            // Данное условие отвечает за описание числе с 10 до 20: например 11 дней но 21 день
-//            boolean condition = minutes_rounded % 100 > 10 && minutes_rounded % 100 < 20;
-//            if (lastDigitM > 4 || lastDigitM == 0 || condition) {
-//                return String.format("%s минут ", minutes_rounded);
-//            }
-//            if (lastDigitM > 1 && lastDigitM <= 4 && !condition) {
-//                return String.format("%s минуты ", minutes_rounded);
-//            }
-//            if (lastDigitM == 1 && !condition) {
-//                return String.format("%s минуту ", minutes_rounded);
-//            }
-//        }
-//        if (seconds > 0) {
-//            int lastDigitS = seconds % 10;
-//            boolean condition = seconds % 100 > 10 && seconds % 100 < 20;
-//            if (lastDigitS > 4 || lastDigitS == 0 || condition) {
-//                return String.format("%s секунд ", seconds);
-//            }
-//            if (lastDigitS > 1 && lastDigitS <= 4 && !condition) {
-//                return String.format("%s секунды ", seconds);
-//            }
-//            if (lastDigitS == 1 && !condition) {
-//                return String.format("%s секунду ", seconds);
-//            }
-//        }
         return duration.trim();
     }
 

@@ -133,6 +133,9 @@ public class FactService {
         factToAdd = FunctionApplicability.LongestBreakFactApplicability(tracking);
         factsToSave.add(factToAdd);
 
+        factToAdd = FunctionApplicability.ScalePredictionFactApplicability(tracking);
+        factsToSave.add(factToAdd);
+
         repository.addOneTrackingFacts(factsToSave, tracking.getTrackingId());
     }
 }

@@ -27,10 +27,10 @@ public class LinearRegressionPredictor implements Predictor {
     public void fit(Sequence data) {
         dataLength = data.Length();
         Sequence trainData = data.Slice(data.Length() - dataSliceLength, data.Length());
-        regression = SequenceAnalyzer.BuildLinearRegression(trainData);
+        regression = SequenceAnalyzer.BuildLinearRegression(trainData, data.Length() - dataSliceLength);
         List<Double> dev = new ArrayList<>();
         for (int i = 0; i < trainData.Length(); i++) {
-            dev.add(trainData.get(i) - regression.predictionInPoint(i));
+            dev.add(trainData.get(i) - regression.predictionInPoint(data.Length() - dataSliceLength + i));
         }
         deviations = new Sequence(dev);
         isFitted = true;
@@ -43,7 +43,7 @@ public class LinearRegressionPredictor implements Predictor {
             for (int i = 0; i < n; i++) {
                 predictions.add(regression.predictionInPoint(dataLength + i));
             }
-            return new Prediction(predictions, Math.sqrt(deviations.Var()));
+            return new Prediction(predictions, Math.sqrt(deviations.Pow(2).Sum() / (deviations.Length() - 2)));
         }
         return null;
     }

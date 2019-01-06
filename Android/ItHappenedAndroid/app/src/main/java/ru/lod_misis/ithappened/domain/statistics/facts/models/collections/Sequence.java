@@ -12,8 +12,8 @@ public class Sequence {
 
     public Sequence(List<Double> data) {
         Data = data;
-        Min = data.get(0);
-        Max = data.get(0);
+        Min = Integer.MAX_VALUE;
+        Max = Integer.MIN_VALUE;
         for (Double d: data) {
             Sum += d;
             if (d < Min) {

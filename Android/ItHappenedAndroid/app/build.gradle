@@ -60,6 +60,7 @@ android {
         }
     }
 }
+
 dependencies {
     androidTestImplementation 'org.testng:testng:6.9.6'
     implementation fileTree(include: ['*.jar'], dir: 'libs')

@@ -14,6 +14,7 @@ import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.sc
 import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.scalePrediction.predictors.Prediction;
 import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.scalePrediction.predictors.Predictor;
 import ru.lod_misis.ithappened.domain.statistics.facts.alltrackingsstatistics.scalePrediction.predictors.PredictorEnum;
+import ru.lod_misis.ithappened.domain.statistics.facts.models.builders.DescriptionBuilder;
 import ru.lod_misis.ithappened.domain.statistics.facts.models.collections.Sequence;
 
 public class ScalePredictionFact extends Fact {
@@ -23,14 +24,20 @@ public class ScalePredictionFact extends Fact {
     private Predictor predictor;
     private Prediction prediction;
     private boolean hasEnoughData;
+    private double n_deviations;
+    private String scaleName;
+    private String trackingName;
 
-    private final int DATASLISELENGTH = 10; // How mush data will be used for predictions
+    private final int DATASLICELENGTH = 10; // How mush data will be used for predictions
 
-    public ScalePredictionFact(TrackingV1 tracking, int n_predictions, PredictorEnum predictorType) {
+    public ScalePredictionFact(TrackingV1 tracking, int n_predictions, PredictorEnum predictorType, double n_deviations) {
         this.n_predictions = n_predictions;
         this.data = groupScaleByDays(tracking);
+        this.n_deviations = n_deviations;
+        this.scaleName = tracking.getScaleName();
+        this.trackingName = tracking.getTrackingName();
 
-        hasEnoughData = DATASLISELENGTH <= this.data.Length();
+        hasEnoughData = DATASLICELENGTH <= this.data.Length();
 
         initializePredictor(predictorType);
     }
@@ -45,7 +52,7 @@ public class ScalePredictionFact extends Fact {
     @Override
     protected void calculatePriority() {
         if (prediction.getStandartDeviation() > 0) {
-            priority = (data.Max() - data.Min()) / (4 * prediction.getStandartDeviation());
+            priority = (data.Max() - data.Min()) / (2 * n_deviations * prediction.getStandartDeviation());
         }
         else {
             priority = 40.;
@@ -54,7 +61,7 @@ public class ScalePredictionFact extends Fact {
 
     @Override
     public String textDescription() {
-        return null;
+        return DescriptionBuilder.ScaleOneDayPredictionDescription(scaleName, trackingName, prediction, n_deviations);
     }
 
     public boolean hasEnoughData() {
@@ -64,7 +71,7 @@ public class ScalePredictionFact extends Fact {
     private void initializePredictor(PredictorEnum predictorType) {
         switch (predictorType) {
             case LinearRegressionPredictor:
-                predictor = new LinearRegressionPredictor(DATASLISELENGTH);
+                predictor = new LinearRegressionPredictor(DATASLICELENGTH);
                 break;
         }
     }
@@ -78,7 +85,7 @@ public class ScalePredictionFact extends Fact {
             double scale = 0;
             for (int j = i; j < sorted.size(); j++) {
                 DateTime currentDate = new DateTime(sorted.get(j).getEventDate());
-                if (date.dayOfYear() == currentDate.dayOfYear() && date.year() == currentDate.year()) {
+                if (date.getDayOfYear() == currentDate.getDayOfYear() && date.getYear() == currentDate.getYear()) {
                     scale += sorted.get(j).getScale();
                 }
                 else {
@@ -86,7 +93,9 @@ public class ScalePredictionFact extends Fact {
                     break;
                 }
             }
-            i = index;
+            if (i < index) {
+                i = index;
+            }
             values.add(scale);
         }
         return new Sequence(values);

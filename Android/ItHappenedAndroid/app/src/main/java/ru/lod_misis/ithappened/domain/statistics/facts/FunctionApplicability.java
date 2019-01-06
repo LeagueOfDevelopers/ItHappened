@@ -301,6 +301,10 @@ public final class FunctionApplicability  {
     private static final int minFrequencyTrendAnalysisDataSetSize = 4;
     // Минимальный размер валидного набора данных для расчета факта самого долгого перерыва
     private static final int minLongestBreakApplicabilityFactCount = 10;
+    // Точность предсказания значения шкалы регулирется размером окна
+    // (размер измерятеся в стандартных отклонениях и 2 стандартных
+    // отклонения соответствуют точности 95%, 3 отклонения - 99.5%, но чем шире окно, тем бесполезнее информация)
+    private static final double nDeviationsForScalePrediction = 2;
 
     public static List<Fact> BinaryCorrelationFactApplicability(List<TrackingV1> trackings) {
         List<Fact> facts = new ArrayList<>();
@@ -425,7 +429,12 @@ public final class FunctionApplicability  {
     }
 
     public static Fact ScalePredictionFactApplicability(TrackingV1 trackingV1) {
-        ScalePredictionFact fact = new ScalePredictionFact(trackingV1, 1, PredictorEnum.LinearRegressionPredictor);
+        // Проверка трекинга и коллекции эвентов на то, что все эвенты произошли в прошлом и каждый эвент имеет значение шкалы
+        if (!validator.CheckTrackingForScaleData(trackingV1, trackingV1.getEventCollection().size())) {
+            return null;
+        }
+        ScalePredictionFact fact = new ScalePredictionFact(trackingV1, 1,
+                PredictorEnum.LinearRegressionPredictor, nDeviationsForScalePrediction);
         if (fact.hasEnoughData()) {
             fact.calculateData();
             return fact;
