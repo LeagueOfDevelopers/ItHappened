@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +61,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     UUID eventId;
 
     @BindView(R.id.valuesCard)
-    CardView valuesCard;
+    RelativeLayout valuesCard;
     @BindView(R.id.nullsCard)
     CardView nullsCard;
 
@@ -77,16 +78,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     TextView dateValue;
     @BindView(R.id.dateValueNulls)
     TextView dateValueNulls;
+    @BindView(R.id.geoposition_logo)
+    ImageView geopositionLogo;
     @BindView(R.id.adress)
     TextView adress;
     @BindView(R.id.ratingValue)
     RatingBar ratingValue;
 
-    @BindView(R.id.geoposition_title)
-    TextView geoposition_title;
-
-    @BindView(R.id.photo_title)
-    TextView photo_title;
     @BindView(R.id.photo)
     ImageView photo;
 
@@ -261,7 +259,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
         } else {
             adress.setVisibility(View.GONE);
-            geoposition_title.setVisibility(View.GONE);
+            geopositionLogo.setVisibility(View.GONE);
         }
         if (thisEventV1.getPhoto() != null) {
             workWithFIles = new PhotoInteractorImpl(this);
@@ -269,7 +267,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             nullsCard.setVisibility(View.GONE);
 
         } else {
-            photo_title.setVisibility(View.GONE);
             photo.setVisibility(View.GONE);
         }
     }

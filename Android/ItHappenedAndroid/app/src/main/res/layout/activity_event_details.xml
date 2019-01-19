@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,184 +13,168 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="16dp">
+            android:paddingBottom="12dp">
 
-            <android.support.v7.widget.CardView
+            <RelativeLayout
                 android:id="@+id/valuesCard"
-                app:cardUseCompatPadding="true"
-                app:cardElevation="5dp"
-                app:cardBackgroundColor="#ffffff"
-                android:layout_marginTop="@dimen/outer_margin"
-                android:layout_marginLeft="@dimen/outer_margin"
-                android:layout_marginRight="@dimen/outer_margin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/commentHint"
-                    android:padding="20dp"
-                    android:src="@drawable/ic_insert_comment_black_24dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/adress"
+                    android:layout_margin="@dimen/outer_margin"
+                    android:src="@drawable/ic_insert_comment_black_24dp" />
 
-                    <TextView
-                        android:id="@+id/commentValue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@+id/commentHint"
-                        android:layout_toRightOf="@+id/commentHint"
-                        android:paddingRight="20dp"
-                        android:text="КОММЕНТАРИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИЙ"
-                        android:paddingTop="20dp"/>
+                <TextView
+                    android:id="@+id/commentValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/adress"
+                    android:layout_marginTop="@dimen/outer_margin"
+                    android:layout_marginEnd="@dimen/outer_margin"
+                    android:layout_marginRight="@dimen/outer_margin"
+                    android:layout_toEndOf="@+id/commentHint"
+                    android:layout_toRightOf="@+id/commentHint"
+                    android:text="КОММЕНТАРИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИЙ" />
 
-                    <ImageView
-                        android:id="@+id/dateHint"
-                        android:layout_below="@id/commentValue"
-                        android:padding="20dp"
-                        android:src="@drawable/ic_schedule_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@+id/dateHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/commentValue"
+                    android:layout_margin="@dimen/outer_margin"
+                    android:src="@drawable/ic_schedule_black_24dp" />
 
-                    <TextView
-                        android:id="@+id/dateValue"
-                        android:layout_below="@id/commentValue"
-                        android:paddingTop="22dp"
-                        android:paddingRight="20dp"
-                        android:layout_width="match_parent"
-                        android:text="26.10.2017 20:13"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/dateHint"/>
+                <TextView
+                    android:id="@+id/dateValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/commentValue"
+                    android:layout_marginTop="@dimen/outer_margin"
+                    android:layout_marginRight="@dimen/outer_margin"
+                    android:layout_toRightOf="@id/dateHint"
+                    android:text="26.10.2017 20:13" />
 
-                    <ImageView
-                        android:id="@+id/scaleHint"
-                        android:layout_below="@id/dateValue"
-                        android:padding="20dp"
-                        android:src="@drawable/ic_insert_chart_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@+id/scaleHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dateValue"
+                    android:layout_margin="@dimen/outer_margin"
+                    android:src="@drawable/ic_insert_chart_black_24dp" />
 
-                    <TextView
-                        android:id="@+id/scaleValue"
-                        android:layout_below="@id/dateValue"
-                        android:paddingTop="22dp"
-                        android:paddingRight="20dp"
-                        android:layout_width="match_parent"
-                        android:text="150000000000000000000 Киллограмм"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/scaleHint"/>
+                <TextView
+                    android:id="@+id/scaleValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dateValue"
+                    android:layout_toRightOf="@id/scaleHint"
+                    android:paddingTop="22dp"
+                    android:paddingRight="20dp"
+                    android:text="150000000000000000000 Киллограмм" />
 
-                    <RatingBar
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@id/scaleHint"
-                        android:id="@+id/ratingValue"
-                        style="@style/Widget.AppCompat.RatingBar.Indicator"
-                        android:isIndicator="true"
-                        android:numStars="5"
-                        android:stepSize="0.5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"/>
-                    <com.rey.material.widget.TextView
-                        android:id="@+id/geoposition_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Геометка"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_below="@+id/ratingValue"/>
-                    <com.rey.material.widget.TextView
-                        android:id="@+id/adress"
-                        android:layout_width="match_parent"
-                        android:layout_below="@+id/geoposition_title"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"
-                        android:layout_marginBottom="20dp"
-                        android:layout_margin="20dp"
-                        android:layout_marginTop="10dp"
-                        android:maxLines="2"
-                        tools:text="@tools:sample/lorem/random"
-                        />
-                    <com.rey.material.widget.TextView
-                        android:id="@+id/photo_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Фотография"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_below="@+id/adress"/>
-                    <ImageView
-                        android:id="@+id/photo"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_below="@id/photo_title"/>
+                <RatingBar
+                    android:id="@+id/ratingValue"
+                    style="@style/Widget.AppCompat.RatingBar.Indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/scaleHint"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/outer_margin"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:stepSize="0.5" />
 
-                </RelativeLayout>
+                <ImageView
+                    android:id="@+id/geoposition_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/photo"
+                    android:layout_marginStart="@dimen/outer_margin"
+                    android:layout_marginLeft="@dimen/outer_margin"
+                    android:layout_marginTop="@dimen/outer_margin"
+                    android:src="@drawable/ic_geoposition" />
 
-            </android.support.v7.widget.CardView>
+                <com.rey.material.widget.TextView
+                    android:id="@+id/adress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/photo"
+                    android:layout_marginLeft="@dimen/outer_margin"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="@dimen/outer_margin"
+                    android:layout_marginBottom="20dp"
+                    android:layout_toEndOf="@id/geoposition_logo"
+                    android:layout_toRightOf="@id/geoposition_logo"
+                    android:maxLines="2"
+                    android:textSize="@dimen/text_size"
+                    tools:text="@tools:sample/lorem/random" />
 
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="20dp"
+                    android:scaleType="centerCrop"/>
+            </RelativeLayout>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/nullsCard"
-                app:cardElevation="5dp"
-                android:layout_margin="@dimen/outer_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/outer_margin"
                 android:visibility="gone"
-                >
+                app:cardElevation="5dp">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <TextView
-                    android:layout_marginTop="@dimen/padding_up_down_for_cards"
-                    android:textColor="#a9a9a9"
-                    android:textSize="16sp"
-                    android:id="@+id/nullHint"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                    android:layout_centerHorizontal="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Отсутсвуют данные"/>
+
+                    <TextView
+                        android:id="@+id/nullHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/padding_up_down_for_cards"
+                        android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                        android:text="Отсутсвуют данные"
+                        android:textColor="#a9a9a9"
+                        android:textSize="16sp" />
 
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/inner_margin_between_components"
                         android:layout_width="wrap_content"
-                        android:layout_below="@id/nullHint"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/nullHint"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/inner_margin_between_components"
                         android:orientation="horizontal">
-                    <ImageView
-                        android:id="@+id/dateHintNulls"
 
-                        android:layout_centerHorizontal="true"
-                        android:src="@drawable/ic_schedule_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <ImageView
+                            android:id="@+id/dateHintNulls"
 
-                    <TextView
-                        android:id="@+id/dateValueNulls"
-                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                        android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                        android:layout_marginBottom="@dimen/padding_up_down_for_cards"
-                        android:layout_centerHorizontal="true"
-                        android:layout_width="match_parent"
-                        android:text=""
-                        android:layout_height="wrap_content" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/ic_schedule_black_24dp" />
+
+                        <TextView
+                            android:id="@+id/dateValueNulls"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="@dimen/padding_up_down_for_cards"
+                            android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                            android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                            android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                            android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                            android:text="" />
                     </LinearLayout>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
@@ -201,18 +185,19 @@
     </ScrollView>
 
     <LinearLayout
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:weightSum="2">
+
         <Button
+            android:id="@+id/editEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:text="Изменить"
-            android:textColor="#FFFFFF"
-            android:id="@+id/editEventButton"
-            android:layout_weight="1" />
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/deleteEventButton"
