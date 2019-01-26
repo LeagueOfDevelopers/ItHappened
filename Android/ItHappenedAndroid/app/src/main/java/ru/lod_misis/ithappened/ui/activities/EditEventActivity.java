@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import com.yandex.metrica.YandexMetrica;
 
 import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,43 +60,43 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
     @Inject
     EditEventContract.EditEventPresenter presenter;
-    @BindView(R.id.commentEventContainerEdit)
+    @BindView(R.id.commentEventContainer)
     LinearLayout commentContainer;
-    @BindView(R.id.scaleEventContainerEdit)
+    @BindView(R.id.scaleEventContainer)
     LinearLayout scaleContainer;
-    @BindView(R.id.ratingEventContainerEdit)
+    @BindView(R.id.ratingEventContainer)
     LinearLayout ratingContainer;
-    @BindView(R.id.geopositionEventContainerEdit)
+    @BindView(R.id.geopositionEventContainer)
     LinearLayout geopositionContainer;
-    @BindView(R.id.photoEventContainerEdit)
+    @BindView(R.id.photoEventContainer)
     LinearLayout photoContainer;
-    @BindView(R.id.commentAccessEdit)
+    @BindView(R.id.commentAccess)
     TextView commentAccess;
-    @BindView(R.id.scaleAccessEdit)
+    @BindView(R.id.scaleAccess)
     TextView scaleAccess;
-    @BindView(R.id.ratingAccessEdit)
+    @BindView(R.id.ratingAccess)
     TextView ratingAccess;
     @BindView(R.id.geopositionAccess)
     TextView geopositionAccess;
-    @BindView(R.id.photoAccessEdit)
+    @BindView(R.id.photoAccess)
     TextView photoAccess;
     @BindView(R.id.adress)
     TextView adress;
-    @BindView(R.id.eventCommentControlEdit)
+    @BindView(R.id.eventCommentControl)
     EditText commentControl;
-    @BindView(R.id.eventScaleControlEdit)
+    @BindView(R.id.eventScaleControl)
     EditText scaleControl;
-    @BindView(R.id.ratingEventControlEdit)
+    @BindView(R.id.ratingEventControl)
     RatingBar ratingControl;
-    @BindView(R.id.eventDateControlEdit)
+    @BindView(R.id.eventDateControl)
     Button dateControl;
-    @BindView(R.id.scaleTypeAccessEdit)
+    @BindView(R.id.scaleTypeAccess)
     TextView scaleType;
-    @BindView(R.id.editEvent)
+    @BindView(R.id.addEvent)
     Button addEvent;
     PhotoInteractor photoInteractor;
     String photoPath;
-    @BindView(R.id.photoEdit)
+    @BindView(R.id.photo)
     ImageView photo;
     AlertDialog.Builder dialog;
     Boolean flagPhoto = false;
@@ -115,9 +116,9 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     private DateTime userOpenAnActivityDateTime;
 
     @Override
-    protected void onCreate (@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_event);
+        setContentView(R.layout.activity_add_new_event);
         ButterKnife.bind(this);
 
         context = this;
@@ -125,10 +126,12 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
         ItHappenedApplication.getAppComponent().inject(this);
         presenter.onViewAttached(this);
-        presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")) ,
+        presenter.setIdentificators(UUID.fromString(getIntent().getStringExtra("trackingId")),
                 UUID.fromString(getIntent().getStringExtra("eventId")));
 
         presenter.onViewCreated();
+
+        addEvent.setText("Сохранить");
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_event));
 
@@ -137,34 +140,34 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
         dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DialogFragment picker = new DatePickerFragment(dateControl);
-                picker.show(fragmentManager , "from");
+                picker.show(fragmentManager, "from");
             }
         });
         adress.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
-                MapActivity.toMapActivity(activity , 3 , latitude , longitude);
+            public void onClick(View view) {
+                MapActivity.toMapActivity(activity, 3, latitude, longitude);
             }
         });
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 presenter.addEventClick();
             }
         });
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 photoInteractor = new PhotoInteractorImpl(context);
                 dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
-                dialog.setItems(new String[]{"Галлерея" , "Фото"} , new DialogInterface.OnClickListener() {
+                dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick (DialogInterface dialogInterface , int i) {
-                        switch ( i ) {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i) {
                             case 0: {
                                 pickGallery();
                                 break;
@@ -182,7 +185,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
     }
 
-    private void initToolbar (String title) {
+    private void initToolbar(String title) {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -191,8 +194,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch ( item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
                 return true;
@@ -202,25 +205,25 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    public void showEditResult () {
+    public void showEditResult() {
         finish();
     }
 
     @Override
-    public void onViewCreated (TrackingCustomization comment ,
-                               TrackingCustomization rating ,
-                               TrackingCustomization scale ,
-                               TrackingCustomization photo ,
-                               TrackingCustomization geoposition ,
-                               Date date ,
-                               String commentValue ,
-                               Double scaleValue ,
-                               Rating ratingValue ,
-                               Double longitude ,
-                               Double latitude ,
-                               String photoPath ,
-                               String title ,
-                               String scaleName) {
+    public void onViewCreated(TrackingCustomization comment,
+                              TrackingCustomization rating,
+                              TrackingCustomization scale,
+                              TrackingCustomization photo,
+                              TrackingCustomization geoposition,
+                              Date date,
+                              String commentValue,
+                              Double scaleValue,
+                              Rating ratingValue,
+                              Double longitude,
+                              Double latitude,
+                              String photoPath,
+                              String title,
+                              String scaleName) {
         initToolbar(title);
 
         commentState = calculateState(comment);
@@ -232,14 +235,14 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         this.latitude = latitude;
         this.longitude = longitude;
 
-        calculateContainerState(commentContainer , commentAccess , commentState);
-        calculateContainerState(ratingContainer , ratingAccess , ratingState);
-        calculateContainerState(scaleContainer , scaleAccess , scaleState);
-        calculateContainerState(geopositionContainer , geopositionAccess , geopositionState);
-        calculateContainerState(photoContainer , photoAccess , photoState);
+        calculateContainerState(commentContainer, commentAccess, commentState);
+        calculateContainerState(ratingContainer, ratingAccess, ratingState);
+        calculateContainerState(scaleContainer, scaleAccess, scaleState);
+        calculateContainerState(geopositionContainer, geopositionAccess, geopositionState);
+        calculateContainerState(photoContainer, photoAccess, photoState);
 
         Locale loc = new Locale("ru");
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm" , loc);
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
 
         dateControl.setText(format.format(date));
@@ -255,7 +258,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
             if (scaleName != null) {
                 if (scaleName.length() >= 3) {
-                    scaleType.setText(scaleName.substring(0 , 2));
+                    scaleType.setText(scaleName.substring(0, 2));
                 } else {
                     scaleType.setText(scaleName);
                 }
@@ -276,7 +279,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 || geoposition == TrackingCustomization.Required)) {
             if (longitude != null && latitude != null) {
                 try {
-                    adress.setText(getAddress(latitude , longitude));
+                    adress.setText(getAddress(latitude, longitude));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -296,12 +299,12 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    protected void onPostResume () {
+    protected void onPostResume() {
         super.onPostResume();
     }
 
-    private int calculateState (TrackingCustomization customization) {
-        switch ( customization ) {
+    private int calculateState(TrackingCustomization customization) {
+        switch (customization) {
             case None:
                 return 0;
             case Optional:
@@ -337,17 +340,17 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    public void showMessage (String message) {
-        Toast.makeText(this , message , Toast.LENGTH_SHORT).show();
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void reportEvent (int resourceId) {
+    public void reportEvent(int resourceId) {
         YandexMetrica.reportEvent(getString(resourceId));
     }
 
     @Override
-    public void addEvent () {
+    public void addEvent() {
         String comment = null;
         Double scale = null;
         Rating rating = null;
@@ -383,7 +386,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             if (!scaleControl.getText().toString().trim().isEmpty())
                 scale = Double.valueOf(scaleControl.getText().toString());
             if (ratingControl.getRating() != 0f)
-                rating = new Rating(( int ) ratingControl.getRating());
+                rating = new Rating((int) ratingControl.getRating());
             try {
                 eventDate = getDate();
             } catch (ParseException e) {
@@ -392,8 +395,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 return;
             }
             showMessage(getString(R.string.edit_event_success));
-            presenter.finish(scale , rating , comment ,
-                    latitude , longitude , photoPath , eventDate);
+            presenter.finish(scale, rating, comment,
+                    latitude, longitude, photoPath, eventDate);
             reportEvent(R.string.metrica_edit_event);
             showEditResult();
         } else {
@@ -401,23 +404,23 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
     }
 
-    private Date getDate () throws ParseException {
+    private Date getDate() throws ParseException {
 
         Date eventDate = null;
         Locale locale = new Locale("ru");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
         eventDate = simpleDateFormat.parse(dateControl.getText().toString());
         return eventDate;
 
     }
 
-    private void finishActivity () {
+    private void finishActivity() {
         this.finish();
     }
 
-    private void calculateContainerState (LinearLayout container , TextView access , int state) {
-        switch ( state ) {
+    private void calculateContainerState(LinearLayout container, TextView access, int state) {
+        switch (state) {
             case 0:
                 container.setVisibility(View.GONE);
                 break;
@@ -432,10 +435,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     }
 
     @Override
-    protected void onActivityResult (int requestCode , int resultCode , Intent data) {
-        super.onActivityResult(requestCode , resultCode , data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
-            Toast.makeText(getApplicationContext() , "Упс,что-то пошло не так =((((" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =((((", Toast.LENGTH_SHORT).show();
             return;
         }
         if (requestCode == 1) {
@@ -450,10 +453,10 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
         if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE) {
             if (data != null) {
-                latitude = data.getDoubleExtra("latitude" , 0);
-                longitude = data.getDoubleExtra("longitude" , 0);
+                latitude = data.getDoubleExtra("latitude", 0);
+                longitude = data.getDoubleExtra("longitude", 0);
                 try {
-                    adress.setText(getAddress(latitude , longitude));
+                    adress.setText(getAddress(latitude, longitude));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -461,28 +464,28 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
     }
 
-    private void pickCamera () {
+    private void pickCamera() {
         if (photoInteractor != null) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             uriPhotoFromCamera = photoInteractor.generateFileUri(1).toString();
-            intent.putExtra(MediaStore.EXTRA_OUTPUT , photoInteractor.generateFileUri(1));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoInteractor.generateFileUri(1));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            activity.startActivityForResult(intent , 1);
+            activity.startActivityForResult(intent, 1);
         }
     }
 
-    private void pickGallery () {
+    private void pickGallery() {
         if (photoInteractor != null) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                activity.startActivityForResult(intent , 2);
+                activity.startActivityForResult(intent, 2);
             }
         }
     }
 
-    private String getAddress (Double latitude , Double longitude) throws IOException {
-        Geocoder geocoder = new Geocoder(this , Locale.getDefault());
-        return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
+    private String getAddress(Double latitude, Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        return geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);
     }
 }

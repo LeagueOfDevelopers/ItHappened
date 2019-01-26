@@ -29,44 +29,37 @@
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_gravity="left"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="110dp">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/trackingColorEvent"
-                    android:layout_width="20dp"
-                    android:minHeight="60dp"
-                    android:layout_height="wrap_content"
-                    card_view:cardElevation="0dp"
-                    card_view:cardBackgroundColor="@color/colorPrimary"></android.support.v7.widget.CardView>
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="100dp"
+                    android:layout_height="110dp"
+                    android:scaleType="fitXY"/>
 
                 <TextView
                     android:id="@+id/TrackingTitle"
-                    android:layout_toRightOf="@id/trackingColorEvent"
+                    android:layout_toRightOf="@id/photo"
                     android:ellipsize="end"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_gravity="left"
                     android:lines="1"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:padding="@dimen/padding"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
                     tools:text="Сахар в крови"
-                    android:textSize="16sp"></TextView>
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/eventDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-
-                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@id/photo"
+                    android:layout_toEndOf="@id/photo"
                     android:layout_below="@+id/TrackingTitle"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:padding="@dimen/padding"
                     tools:text="14.12.2017 22:54"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp" />
@@ -75,15 +68,14 @@
                     android:id="@+id/ratingValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/trackingColorEvent"
-                    android:layout_below="@+id/TrackingTitle"
-                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:layout_toRightOf="@+id/photo"
+                    android:layout_below="@+id/eventDate"
+                    android:padding="@dimen/padding"
                     android:textSize="14sp"
                     android:visibility="gone"
                     android:textColor="@color/colorPrimaryDark"
-                    android:text="2" />
+                    android:text="2"
+                    tools:visibility="visible"/>
 
                 <ImageView
                     android:id="@+id/starIcon"
@@ -93,11 +85,11 @@
                     android:layout_toRightOf="@+id/ratingValue"
                     android:layout_alignBottom="@id/ratingValue"
                     android:layout_marginRight="20dp"
-                    android:paddingLeft="4dp"
                     android:layout_below="@id/TrackingTitle"
                     android:paddingTop="1dp"
                     android:visibility="gone"
-                    android:src="@drawable/star" />
+                    android:src="@drawable/star"
+                    tools:visibility="visible"/>
 
                 <TextView
                     android:id="@+id/scaleValue"
@@ -106,17 +98,14 @@
                     android:singleLine="true"
                     android:ellipsize="middle"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/TrackingTitle"
-
+                    android:layout_below="@+id/eventDate"
                     android:visibility="gone"
-                    android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                    android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                    android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                    android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                    android:padding="@dimen/padding"
                     android:layout_marginRight="120dp"
                     android:text="12 кг"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/text_size"
+                    tools:visibility="visible"/>
 
             </RelativeLayout>
 

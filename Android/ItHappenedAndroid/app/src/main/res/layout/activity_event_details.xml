@@ -72,8 +72,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/dateValue"
                     android:layout_toRightOf="@id/scaleHint"
-                    android:paddingTop="22dp"
-                    android:paddingRight="20dp"
+                    android:layout_marginTop="@dimen/outer_margin"
+                    android:layout_marginEnd="@dimen/outer_margin"
+                    android:layout_marginRight="@dimen/outer_margin"
                     android:text="150000000000000000000 Киллограмм" />
 
                 <RatingBar

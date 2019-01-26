@@ -8,6 +8,7 @@
     <dimen name="padding_left_and_right_for_texts">8dp</dimen>
     <dimen name="padding_up_down_for_cards">8dp</dimen>
     <dimen name="padding_up_and_down_for_texts">8dp</dimen>
+    <dimen name="padding">8dp</dimen>
     <dimen name="inner_margin_between_components">8dp</dimen>
     <dimen name="outer_margin">12dp</dimen>
     <dimen name="text_size">16sp</dimen>
