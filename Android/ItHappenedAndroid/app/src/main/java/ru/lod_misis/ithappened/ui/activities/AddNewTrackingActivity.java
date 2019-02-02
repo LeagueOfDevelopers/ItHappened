@@ -179,7 +179,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                ratingDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                ratingDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 ratingEnabled.setText("не надо");
                 ratingDontImage.setImageResource(R.drawable.active_dont);
                 ratingOptionalImage.setImageResource(R.drawable.not_active_check);
@@ -198,7 +198,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 ratingDontImage.setImageResource(R.drawable.not_active_dont);
                 ratingOptionalImage.setImageResource(R.drawable.active_check);
                 ratingRequiredImage.setImageResource(R.drawable.not_active_double_chek);
-                ratingOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                ratingOptional.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 ratingRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 rating = TrackingCustomization.Optional;
             }
@@ -214,7 +214,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 ratingOptionalImage.setImageResource(R.drawable.not_active_check);
                 ratingRequiredImage.setImageResource(R.drawable.active_double_check);
                 ratingOptional.setBackgroundColor(Color.parseColor("#ffffff"));
-                ratingRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                ratingRequired.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 rating = TrackingCustomization.Required;
             }
         });
@@ -224,7 +224,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
             @Override
             public void onClick (View view) {
                 commentEnabled.setText("не надо");
-                commentDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                commentDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 commentDontImage.setImageResource(R.mipmap.active_dont);
                 commentOptionalImage.setImageResource(R.mipmap.not_active_check);
                 commentRequiredImage.setImageResource(R.mipmap.not_active_double_chek);
@@ -242,7 +242,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 commentDontImage.setImageResource(R.drawable.not_active_dont);
                 commentOptionalImage.setImageResource(R.drawable.active_check);
                 commentRequiredImage.setImageResource(R.drawable.not_active_double_chek);
-                commentOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                commentOptional.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 commentRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 comment = TrackingCustomization.Optional;
             }
@@ -258,7 +258,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 commentOptionalImage.setImageResource(R.drawable.not_active_check);
                 commentRequiredImage.setImageResource(R.drawable.active_double_check);
                 commentOptional.setBackgroundColor(Color.parseColor("#ffffff"));
-                commentRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                commentRequired.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 comment = TrackingCustomization.Required;
             }
         });
@@ -268,7 +268,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
             @Override
             public void onClick (View view) {
                 scaleEnabled.setText("не надо");
-                scaleDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                scaleDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 scaleDontImage.setImageResource(R.drawable.active_dont);
                 scaleOptionalImage.setImageResource(R.drawable.not_active_check);
                 scaleRequiredImage.setImageResource(R.drawable.not_active_double_chek);
@@ -290,7 +290,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 scaleDontImage.setImageResource(R.drawable.not_active_dont);
                 scaleOptionalImage.setImageResource(R.drawable.active_check);
                 scaleRequiredImage.setImageResource(R.drawable.not_active_double_chek);
-                scaleOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                scaleOptional.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 scaleRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 scale = TrackingCustomization.Optional;
 
@@ -310,7 +310,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 scaleOptionalImage.setImageResource(R.drawable.not_active_check);
                 scaleRequiredImage.setImageResource(R.drawable.active_double_check);
                 scaleOptional.setBackgroundColor(Color.parseColor("#ffffff"));
-                scaleRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                scaleRequired.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 scale = TrackingCustomization.Required;
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
@@ -320,7 +320,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         geopositionDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                geopositionDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                geopositionDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 geopositionEnabled.setText("не надо");
                 geopositionDontImage.setImageResource(R.drawable.active_dont);
                 geopositionOptionalImage.setImageResource(R.drawable.not_active_check);
@@ -339,7 +339,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 geopositionDontImage.setImageResource(R.drawable.not_active_dont);
                 geopositionOptionalImage.setImageResource(R.drawable.active_check);
                 geopositionRequiredImage.setImageResource(R.drawable.not_active_double_chek);
-                geopositionOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                geopositionOptional.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 geopositionRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 geoposition = TrackingCustomization.Optional;
             }
@@ -355,7 +355,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 geopositionOptionalImage.setImageResource(R.drawable.not_active_check);
                 geopositionRequiredImage.setImageResource(R.drawable.active_double_check);
                 geopositionOptional.setBackgroundColor(Color.parseColor("#ffffff"));
-                geopositionRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                geopositionRequired.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 geoposition = TrackingCustomization.Required;
             }
         });
@@ -363,7 +363,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         photoDont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                photoDont.setBackgroundColor(getResources().getColor(R.color.dont));
+                photoDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 photoEnabled.setText("не надо");
                 photoDontImage.setImageResource(R.drawable.active_dont);
                 photoOptionalImage.setImageResource(R.drawable.not_active_check);
@@ -382,7 +382,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 photoDontImage.setImageResource(R.drawable.not_active_dont);
                 photoOptionalImage.setImageResource(R.drawable.active_check);
                 photoRequiredImage.setImageResource(R.drawable.not_active_double_chek);
-                photoOptional.setBackgroundColor(getResources().getColor(R.color.color_for_not_definetly));
+                photoOptional.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 photoRequired.setBackgroundColor(Color.parseColor("#ffffff"));
                 photo = TrackingCustomization.Optional;
             }
@@ -398,7 +398,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 photoOptionalImage.setImageResource(R.drawable.not_active_check);
                 photoRequiredImage.setImageResource(R.drawable.active_double_check);
                 photoOptional.setBackgroundColor(Color.parseColor("#ffffff"));
-                photoRequired.setBackgroundColor(getResources().getColor(R.color.required));
+                photoRequired.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 photo = TrackingCustomization.Required;
             }
         });

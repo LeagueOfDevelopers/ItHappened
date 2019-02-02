@@ -25,10 +25,14 @@
                 android:id="@+id/titleHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingLeft="@dimen/padding"
+                android:paddingStart="@dimen/padding"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginLeft="4dp"
                 android:text="Название:"
                 android:textSize="16sp" />
@@ -65,10 +69,14 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/trackingNameContainer"
                 android:layout_marginTop="@dimen/outer_margin"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingLeft="@dimen/padding"
+                android:paddingStart="@dimen/padding"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginLeft="4dp"
                 android:text="Рейтинг:"
                 android:textSize="16sp" />
@@ -80,10 +88,10 @@
                 android:layout_below="@id/trackingNameContainer"
                 android:layout_marginTop="@dimen/outer_margin"
                 android:layout_toRightOf="@id/addNewRatingHint"
-
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
                 android:text="не надо"
                 android:textSize="17sp" />
 
@@ -111,7 +119,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_weight="1"
-                        android:background="#A93226">
+                        android:background="@color/colorAccent">
 
                         <ImageView
                             android:id="@+id/ratingBackImageDont"
@@ -163,11 +171,16 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewRating"
                 android:layout_marginTop="@dimen/outer_margin"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding"
+                android:paddingStart="@dimen/padding"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginLeft="4dp"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+
                 android:text="Комментарий:"
                 android:textSize="16sp" />
 
@@ -178,9 +191,10 @@
                 android:layout_below="@id/addNewRating"
                 android:layout_marginTop="@dimen/outer_margin"
                 android:layout_toRightOf="@id/addNewCommentHint"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
                 android:text="не надо"
                 android:textSize="16sp" />
 
@@ -206,7 +220,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_weight="1"
-                        android:background="#A93226">
+                        android:background="@color/colorAccent">
 
                         <ImageView
                             android:id="@+id/commentBackImageDont"
@@ -258,11 +272,15 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewComment"
                 android:layout_marginTop="@dimen/outer_margin"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding"
+                android:paddingStart="@dimen/padding"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginLeft="4dp"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="Шкала:"
                 android:textSize="16sp" />
 
@@ -271,11 +289,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewComment"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:layout_toRightOf="@id/addNewScaleHint"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
                 android:text="не надо"
                 android:textSize="16sp" />
 
@@ -303,7 +322,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_weight="1"
-                        android:background="#A93226">
+                        android:background="@color/colorAccent">
 
                         <ImageView
                             android:id="@+id/scaleBackImageDont"
@@ -355,11 +374,15 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewScale"
                 android:layout_marginTop="@dimen/outer_margin"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding"
+                android:paddingStart="@dimen/padding"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginLeft="4dp"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="Измерять в:"
                 android:textSize="16sp" />
 
@@ -393,11 +416,15 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/scaleTypeContainer"
                 android:layout_marginTop="@dimen/outer_margin"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingLeft="@dimen/padding"
+                android:paddingStart="@dimen/padding"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginLeft="4dp"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="Геометка:"
                 android:textSize="16sp" />
 
@@ -406,11 +433,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/scaleTypeContainer"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:layout_toRightOf="@id/addNewGeopositionHint"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
                 android:text="не надо"
                 android:textSize="16sp" />
             <android.support.v7.widget.CardView
@@ -436,7 +464,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_weight="1"
-                        android:background="#A93226">
+                        android:background="@color/colorAccent">
 
                         <ImageView
                             android:id="@+id/geopositionBackImageDont"
@@ -486,11 +514,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewGeoposition"
                 android:layout_marginTop="@dimen/outer_margin"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_marginLeft="4dp"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="Фотография:"
                 android:textSize="16sp" />
 
@@ -499,12 +529,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/addNewGeoposition"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/outer_margin"
                 android:layout_toRightOf="@id/addNewPhotoHint"
-                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                android:paddingTop="@dimen/padding_up_and_down_for_texts"
                 android:text="не надо"
+                android:paddingEnd="@dimen/padding"
+                android:paddingRight="@dimen/padding"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:paddingTop="@dimen/padding_up_down"
                 android:textSize="16sp" />
             <android.support.v7.widget.CardView
                 android:id="@+id/addNewPhoto"
@@ -529,7 +560,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_weight="1"
-                        android:background="#A93226">
+                        android:background="@color/colorAccent">
 
                         <ImageView
                             android:id="@+id/photoBackImageDont"

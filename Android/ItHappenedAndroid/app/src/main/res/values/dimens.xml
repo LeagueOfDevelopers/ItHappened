@@ -12,6 +12,7 @@
     <dimen name="inner_margin_between_components">8dp</dimen>
     <dimen name="outer_margin">12dp</dimen>
     <dimen name="text_size">16sp</dimen>
+    <dimen name="padding_up_down">4dp</dimen>
 
 
 </resources>

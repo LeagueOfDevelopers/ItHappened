@@ -71,10 +71,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/dateValue"
-                    android:layout_toRightOf="@id/scaleHint"
                     android:layout_marginTop="@dimen/outer_margin"
                     android:layout_marginEnd="@dimen/outer_margin"
                     android:layout_marginRight="@dimen/outer_margin"
+                    android:layout_toRightOf="@id/scaleHint"
                     android:text="150000000000000000000 Киллограмм" />
 
                 <RatingBar
@@ -104,10 +104,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/photo"
-                    android:layout_marginLeft="@dimen/outer_margin"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/outer_margin"
                     android:layout_marginRight="@dimen/outer_margin"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="@dimen/outer_margin"
+                    android:layout_marginStart="@dimen/outer_margin"
+                    android:layout_marginLeft="@dimen/outer_margin"
                     android:layout_toEndOf="@id/geoposition_logo"
                     android:layout_toRightOf="@id/geoposition_logo"
                     android:maxLines="2"
@@ -117,9 +118,11 @@
                 <ImageView
                     android:id="@+id/photo"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="198dp"
                     android:layout_marginBottom="20dp"
-                    android:scaleType="centerCrop"/>
+                    android:background="@drawable/ic_geoposition"
+                    android:scaleType="centerCrop"
+                    android:tint="#80000000" />
             </RelativeLayout>
 
             <android.support.v7.widget.CardView
@@ -211,5 +214,27 @@
             android:textColor="#111111" />
     </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_margin="8dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:padding="@dimen/padding"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_margin="8dp" />
+        </LinearLayout>
 
 </RelativeLayout>

@@ -33,6 +33,10 @@ import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+
+    public static final int TYPE_WITHOUT_PHOTO = 2;
+    public static final int TYPE_WITH_PHOTO = 1;
+
     TrackingDataSource trackingRepository;
     //TODO переписать
     private List<EventV1> eventV1s;
@@ -55,12 +59,26 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (eventV1s.get(position).getPhoto() == null || eventV1s.get(position).getPhoto().equals("")) {
+            return TYPE_WITHOUT_PHOTO;
+        } else {
+            return TYPE_WITH_PHOTO;
+        }
+    }
+
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(ru.lod_misis.ithappened.R.layout.event_item, parent, false);
-        return new EventsAdapter.ViewHolder(v);
-
+        View v;
+        if (viewType == TYPE_WITH_PHOTO) {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(ru.lod_misis.ithappened.R.layout.event_item, parent, false);
+            return new ViewHolder(v);
+        } else {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(ru.lod_misis.ithappened.R.layout.event_item2, parent, false);
+            return new ViewHolder(v);
+        }
     }
 
     public void refreshData(List<EventV1> eventV1s) {
@@ -176,7 +194,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
         }
     }
 }

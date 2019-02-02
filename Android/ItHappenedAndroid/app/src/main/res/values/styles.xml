@@ -41,6 +41,7 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+
     <style name="Theme.MyBack" parent="AppTheme">
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_black_24dp</item>
     </style>

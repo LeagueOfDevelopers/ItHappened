@@ -29,13 +29,7 @@
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_gravity="left"
                 android:layout_width="match_parent"
-                android:layout_height="90dp">
-
-                <ImageView
-                    android:id="@+id/photo"
-                    android:layout_width="100dp"
-                    android:layout_height="90dp"
-                    android:scaleType="fitXY"/>
+                android:layout_height="60dp">
 
                 <TextView
                     android:id="@+id/TrackingTitle"
@@ -61,7 +55,6 @@
                     android:id="@+id/eventDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/photo"
                     android:layout_toEndOf="@id/photo"
                     android:layout_below="@+id/TrackingTitle"
                     android:paddingLeft="@dimen/padding"
@@ -78,14 +71,16 @@
                     android:id="@+id/ratingValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/photo"
-                    android:layout_below="@+id/eventDate"
+                    android:layout_toRightOf="@+id/eventDate"
+                    android:layout_below="@+id/TrackingTitle"
                     android:paddingLeft="@dimen/padding"
                     android:paddingStart="@dimen/padding"
                     android:paddingEnd="@dimen/padding"
                     android:paddingRight="@dimen/padding"
                     android:paddingBottom="@dimen/padding_up_down"
                     android:paddingTop="@dimen/padding_up_down"
+                    android:layout_marginLeft="@dimen/outer_margin"
+                    android:layout_marginStart="@dimen/outer_margin"
                     android:textSize="14sp"
                     android:visibility="gone"
                     android:textColor="@color/colorPrimaryDark"
@@ -113,7 +108,7 @@
                     android:singleLine="true"
                     android:ellipsize="middle"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/eventDate"
+                    android:layout_below="@+id/TrackingTitle"
                     android:visibility="gone"
                     android:paddingLeft="@dimen/padding"
                     android:paddingStart="@dimen/padding"
@@ -126,6 +121,12 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/text_size"
                     tools:visibility="visible"/>
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="100dp"
+                    android:layout_height="90dp"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

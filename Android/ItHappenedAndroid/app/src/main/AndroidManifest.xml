@@ -72,7 +72,7 @@
         <activity
             android:name=".ui.activities.EventDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyBack" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activities.EditEventActivity"
             android:label="Изменить событие"
