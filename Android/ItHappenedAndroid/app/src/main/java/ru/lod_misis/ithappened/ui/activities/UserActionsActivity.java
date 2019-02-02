@@ -94,6 +94,7 @@ public class UserActionsActivity extends AppCompatActivity
     SharedPreferences sharedPreferences;
     Subscription mainSync;
     TextView loginButton;
+    private View headerLayout;
     private DrawerLayout mDrawerLayout;
     private boolean isTokenFailed = false;
     private BillingPresenter billingPresenter;
@@ -118,6 +119,7 @@ public class UserActionsActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView = findViewById(R.id.nav_view);
+        headerLayout = navigationView.getHeaderView(0);
         connectionToken = ConnectionReciver.isConnected();
 
         if (sharedPreferences.getString("UserId", "").isEmpty()) {
@@ -185,11 +187,11 @@ public class UserActionsActivity extends AppCompatActivity
                     @Override
                     public void onGlobalLayout() {
                         sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-                        userNick = (TextView) findViewById(R.id.userNickname);
-                        userNick.setText(sharedPreferences.getString("Nick", ""));
-                        loginButton = (TextView) findViewById(R.id.loginButton);
-                        urlUser = (CircleImageView) findViewById(R.id.imageView);
-                        lable = (TextView) findViewById(R.id.menuTitle);
+                        userNick = (TextView) headerLayout.findViewById(R.id.userNickname);
+                        userNick.setText("11111");
+                        loginButton = (TextView) headerLayout.findViewById(R.id.loginButton);
+                        urlUser = (CircleImageView) headerLayout.findViewById(R.id.imageView);
+                        lable = (TextView) headerLayout.findViewById(R.id.menuTitle);
                         if (!sharedPreferences.getString("UserId", "").equals("Offline")) {
                             loginButton.setVisibility(View.GONE);
                             new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
@@ -207,6 +209,7 @@ public class UserActionsActivity extends AppCompatActivity
                                     drawer.closeDrawer(GravityCompat.START);
                                 }
                             });
+
                         }
 
                     }
