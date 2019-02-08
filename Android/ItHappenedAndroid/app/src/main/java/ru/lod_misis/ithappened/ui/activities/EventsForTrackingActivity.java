@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
 
@@ -27,13 +28,16 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
+import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
+import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 
-public class EventsForTrackingActivity extends AppCompatActivity {
+public class EventsForTrackingActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
 
     @BindView(R.id.eventsForTrackingRV)
     RecyclerView eventsRecycler;
@@ -51,13 +55,15 @@ public class EventsForTrackingActivity extends AppCompatActivity {
 
     @Inject
     TrackingDataSource trackingsCollection;
+    @Inject
+    EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
     private DateTime userOpenAnActivityDateTime;
 
     @Override
-    protected void onCreate (@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_history_for_tracking);
         ButterKnife.bind(this);
@@ -72,11 +78,18 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         thisTrackingV1 = trackingsCollection.getTracking(trackingId);
 
         eventV1s = trackingsCollection.getEventCollection(trackingId);
+        eventDetailsPresenter.attachView(this);
 
         setupActionBar();
 
+
+        setTitle(thisTrackingV1.getTrackingName());
+        initEventsRecyclerView();
+    }
+
+    private void initEventsRecyclerView() {
         for (int i = 0; i < eventV1s.size(); i++) {
-            if ( eventV1s.get(i).isDeleted() ) {
+            if (eventV1s.get(i).isDeleted()) {
                 eventV1s.remove(i);
             }
         }
@@ -84,23 +97,20 @@ public class EventsForTrackingActivity extends AppCompatActivity {
         List<EventV1> visibleEventV1s = new ArrayList<>();
 
         for (int i = 0; i < eventV1s.size(); i++) {
-            if ( !eventV1s.get(i).isDeleted() ) {
+            if (!eventV1s.get(i).isDeleted()) {
                 visibleEventV1s.add(eventV1s.get(i));
             }
         }
 
-        if ( visibleEventV1s.size() != 0 ) {
+        if (visibleEventV1s.size() != 0) {
             hintForEvents.setVisibility(View.INVISIBLE);
         }
-
-        setTitle(thisTrackingV1.getTrackingName());
-
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsAdpt = new EventsAdapter(visibleEventV1s , this , 0 , trackingsCollection);
+        eventsAdpt = new EventsAdapter(visibleEventV1s, this, 0, trackingsCollection, eventDetailsPresenter);
         eventsRecycler.setAdapter(eventsAdpt);
     }
 
-    private void setupActionBar () {
+    private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -108,17 +118,17 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume () {
+    public void onResume() {
         super.onResume();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_hitroy_for_tracking));
 
         addNewEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
 
-                Intent intent = new Intent(getApplicationContext() , AddNewEventActivity.class);
-                intent.putExtra("trackingId" , thisTrackingV1.getTrackingId().toString());
+                Intent intent = new Intent(getApplicationContext(), AddNewEventActivity.class);
+                intent.putExtra("trackingId", thisTrackingV1.getTrackingId().toString());
 
                 startActivity(intent);
 
@@ -127,13 +137,13 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestart () {
+    protected void onRestart() {
         super.onRestart();
         recreate();
     }
 
     @Override
-    protected void onPause () {
+    protected void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history_for_tracking));
         Map<String, Object> activityVisitTimeBorders = new HashMap<>();
@@ -149,13 +159,45 @@ public class EventsForTrackingActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch ( item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void startConfigurationView() {
+        //надо разбить интерфейс
+    }
+
+    @Override
+    public void startedConfiguration(TrackingService service, UUID trackingId, UUID eventId) {
+        //надо разбить интерфейс
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void finishDetailsEventActivity() {
+        initEventsRecyclerView();
+    }
+
+    @Override
+    public void deleteEvent() {
+        DeleteEventDialog delete = new DeleteEventDialog();
+        delete.setEventDetailsPresenter(eventDetailsPresenter);
+        delete.show(getFragmentManager(), "DeleteEvent");
+    }
+
+    @Override
+    public void editEvent() {
+        //Надо разбить интерфейс
     }
 }

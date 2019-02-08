@@ -76,4 +76,5 @@
     <string name="add_geoposition">Добавить геометку</string>
     <string name="error_message">У нас неполадки, извиняемся</string>
     <string name="edit_event_success">Событие изменено</string>
+    <string name="delete_event_in_list">Удалить</string>
 </resources>

@@ -24,7 +24,9 @@ public interface EventDetailsContract {
     interface EventDetailsPresenter {
         void init();
 
-        void attachView(EventDetailsView eventDetailsView, UUID trackingId, UUID eventId);
+        void attachView(EventDetailsView eventDetailsView);
+
+        void initData(UUID trackingId, UUID eventId);
 
         void detachView();
 

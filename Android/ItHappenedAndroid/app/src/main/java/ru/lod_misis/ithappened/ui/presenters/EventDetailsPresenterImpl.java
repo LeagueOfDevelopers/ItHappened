@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
+import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -38,8 +39,12 @@ public class EventDetailsPresenterImpl implements EventDetailsContract.EventDeta
     }
 
     @Override
-    public void attachView(EventDetailsContract.EventDetailsView eventDetailsView, UUID trackingId, UUID eventId) {
+    public void attachView(EventDetailsContract.EventDetailsView eventDetailsView) {
         this.eventDetailsView = eventDetailsView;
+    }
+
+    @Override
+    public void initData(UUID trackingId, UUID eventId) {
         this.trackingId = trackingId;
         this.eventId = eventId;
     }
