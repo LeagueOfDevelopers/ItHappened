@@ -1,218 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/container">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="64dp">
+        android:id="@+id/container_with_content">
 
-        <RelativeLayout
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="12dp">
+            android:layout_marginBottom="64dp">
 
             <RelativeLayout
-                android:id="@+id/valuesCard"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/commentHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/adress"
-                    android:layout_margin="@dimen/outer_margin"
-                    android:src="@drawable/ic_insert_comment_black_24dp" />
-
-                <TextView
-                    android:id="@+id/commentValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/adress"
-                    android:layout_marginTop="@dimen/outer_margin"
-                    android:layout_marginEnd="@dimen/outer_margin"
-                    android:layout_marginRight="@dimen/outer_margin"
-                    android:layout_toEndOf="@+id/commentHint"
-                    android:layout_toRightOf="@+id/commentHint"
-                    android:text="КОММЕНТАРИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИЙ" />
-
-                <ImageView
-                    android:id="@+id/dateHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/commentValue"
-                    android:layout_margin="@dimen/outer_margin"
-                    android:src="@drawable/ic_schedule_black_24dp" />
-
-                <TextView
-                    android:id="@+id/dateValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/commentValue"
-                    android:layout_marginTop="@dimen/outer_margin"
-                    android:layout_marginRight="@dimen/outer_margin"
-                    android:layout_toRightOf="@id/dateHint"
-                    android:text="26.10.2017 20:13" />
-
-                <ImageView
-                    android:id="@+id/scaleHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/dateValue"
-                    android:layout_margin="@dimen/outer_margin"
-                    android:src="@drawable/ic_insert_chart_black_24dp" />
-
-                <TextView
-                    android:id="@+id/scaleValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/dateValue"
-                    android:layout_marginTop="@dimen/outer_margin"
-                    android:layout_marginEnd="@dimen/outer_margin"
-                    android:layout_marginRight="@dimen/outer_margin"
-                    android:layout_toRightOf="@id/scaleHint"
-                    android:text="150000000000000000000 Киллограмм" />
-
-                <RatingBar
-                    android:id="@+id/ratingValue"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/scaleHint"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/outer_margin"
-                    android:isIndicator="true"
-                    android:numStars="5"
-                    android:stepSize="0.5" />
-
-                <ImageView
-                    android:id="@+id/geoposition_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/photo"
-                    android:layout_marginStart="@dimen/outer_margin"
-                    android:layout_marginLeft="@dimen/outer_margin"
-                    android:layout_marginTop="@dimen/outer_margin"
-                    android:src="@drawable/ic_geoposition" />
-
-                <com.rey.material.widget.TextView
-                    android:id="@+id/adress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/photo"
-                    android:layout_marginTop="@dimen/outer_margin"
-                    android:layout_marginRight="@dimen/outer_margin"
-                    android:layout_marginEnd="@dimen/outer_margin"
-                    android:layout_marginStart="@dimen/outer_margin"
-                    android:layout_marginLeft="@dimen/outer_margin"
-                    android:layout_toEndOf="@id/geoposition_logo"
-                    android:layout_toRightOf="@id/geoposition_logo"
-                    android:maxLines="2"
-                    android:textSize="@dimen/text_size"
-                    tools:text="@tools:sample/lorem/random" />
-
-                <ImageView
-                    android:id="@+id/photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="198dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/ic_geoposition"
-                    android:scaleType="centerCrop"
-                    android:tint="#80000000" />
-            </RelativeLayout>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/nullsCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/outer_margin"
-                android:visibility="gone"
-                app:cardElevation="5dp">
+                android:layout_height="match_parent"
+                android:paddingBottom="12dp">
 
                 <RelativeLayout
+                    android:id="@+id/valuesCard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <ImageView
+                        android:id="@+id/commentHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/adress"
+                        android:layout_margin="@dimen/outer_margin"
+                        android:src="@drawable/ic_insert_comment_black_24dp" />
+
                     <TextView
-                        android:id="@+id/nullHint"
+                        android:id="@+id/commentValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/adress"
+                        android:layout_marginTop="@dimen/outer_margin"
+                        android:layout_marginEnd="@dimen/outer_margin"
+                        android:layout_marginRight="@dimen/outer_margin"
+                        android:layout_toEndOf="@+id/commentHint"
+                        android:layout_toRightOf="@+id/commentHint"
+                        android:text="КОММЕНТАРИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИЙ" />
+
+                    <ImageView
+                        android:id="@+id/dateHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/padding_up_down_for_cards"
-                        android:paddingLeft="@dimen/padding_left_and_right_for_texts"
-                        android:paddingTop="@dimen/padding_up_and_down_for_texts"
-                        android:paddingRight="@dimen/padding_left_and_right_for_texts"
-                        android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                        android:text="Отсутсвуют данные"
-                        android:textColor="#a9a9a9"
-                        android:textSize="16sp" />
+                        android:layout_below="@id/commentValue"
+                        android:layout_margin="@dimen/outer_margin"
+                        android:src="@drawable/ic_schedule_black_24dp" />
 
+                    <TextView
+                        android:id="@+id/dateValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/commentValue"
+                        android:layout_marginTop="@dimen/outer_margin"
+                        android:layout_marginRight="@dimen/outer_margin"
+                        android:layout_toRightOf="@id/dateHint"
+                        android:text="26.10.2017 20:13" />
 
-                    <LinearLayout
+                    <ImageView
+                        android:id="@+id/scaleHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/nullHint"
+                        android:layout_below="@id/dateValue"
+                        android:layout_margin="@dimen/outer_margin"
+                        android:src="@drawable/ic_insert_chart_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/scaleValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/dateValue"
+                        android:layout_marginTop="@dimen/outer_margin"
+                        android:layout_marginEnd="@dimen/outer_margin"
+                        android:layout_marginRight="@dimen/outer_margin"
+                        android:layout_toRightOf="@id/scaleHint"
+                        android:text="150000000000000000000 Киллограмм" />
+
+                    <RatingBar
+                        android:id="@+id/ratingValue"
+                        style="@style/Widget.AppCompat.RatingBar.Indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/scaleHint"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/inner_margin_between_components"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="@dimen/outer_margin"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.5" />
 
-                        <ImageView
-                            android:id="@+id/dateHintNulls"
+                    <ImageView
+                        android:id="@+id/geoposition_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/photo"
+                        android:layout_marginStart="@dimen/outer_margin"
+                        android:layout_marginLeft="@dimen/outer_margin"
+                        android:layout_marginTop="@dimen/outer_margin"
+                        android:src="@drawable/ic_geoposition" />
 
+                    <com.rey.material.widget.TextView
+                        android:id="@+id/adress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/photo"
+                        android:layout_marginStart="@dimen/outer_margin"
+                        android:layout_marginLeft="@dimen/outer_margin"
+                        android:layout_marginTop="@dimen/outer_margin"
+                        android:layout_marginEnd="@dimen/outer_margin"
+                        android:layout_marginRight="@dimen/outer_margin"
+                        android:layout_toEndOf="@id/geoposition_logo"
+                        android:layout_toRightOf="@id/geoposition_logo"
+                        android:maxLines="2"
+                        android:textSize="@dimen/text_size"
+                        tools:text="@tools:sample/lorem/random" />
+
+                    <ImageView
+                        android:id="@+id/photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="198dp"
+                        android:background="@drawable/ic_geoposition"
+                        android:scaleType="centerCrop"
+                        android:tint="#80000000" />
+                </RelativeLayout>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/nullsCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/outer_margin"
+                    android:visibility="gone"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/nullHint"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:src="@drawable/ic_schedule_black_24dp" />
-
-                        <TextView
-                            android:id="@+id/dateValueNulls"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="@dimen/padding_up_down_for_cards"
+                            android:layout_marginTop="@dimen/padding_up_down_for_cards"
                             android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                             android:paddingTop="@dimen/padding_up_and_down_for_texts"
                             android:paddingRight="@dimen/padding_left_and_right_for_texts"
                             android:paddingBottom="@dimen/padding_up_and_down_for_texts"
-                            android:text="" />
-                    </LinearLayout>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
+                            android:text="Отсутсвуют данные"
+                            android:textColor="#a9a9a9"
+                            android:textSize="16sp" />
 
 
-        </RelativeLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/nullHint"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="@dimen/inner_margin_between_components"
+                            android:orientation="horizontal">
 
-    </ScrollView>
+                            <ImageView
+                                android:id="@+id/dateHintNulls"
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:weightSum="2">
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/ic_schedule_black_24dp" />
 
-        <Button
-            android:id="@+id/editEventButton"
-            android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/dateValueNulls"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginBottom="@dimen/padding_up_down_for_cards"
+                                android:paddingLeft="@dimen/padding_left_and_right_for_texts"
+                                android:paddingTop="@dimen/padding_up_and_down_for_texts"
+                                android:paddingRight="@dimen/padding_left_and_right_for_texts"
+                                android:paddingBottom="@dimen/padding_up_and_down_for_texts"
+                                android:text="" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Изменить"
-            android:textColor="#FFFFFF" />
+            android:layout_alignParentBottom="true"
+            android:weightSum="2">
 
-        <Button
-            android:id="@+id/deleteEventButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_weight="1"
-            android:background="#E5E5E5"
-            android:text="Удалить"
-            android:textColor="#111111" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/editEventButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="Изменить"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/deleteEventButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:background="#E5E5E5"
+                android:text="Удалить"
+                android:textColor="#111111" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -221,20 +227,28 @@
 
             <ImageView
                 android:id="@+id/backButton"
-                android:layout_margin="8dp"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_margin="8dp"
                 android:padding="12dp"
-                android:src="@drawable/ic_arrow_back_black_24dp" />
+                android:src="@drawable/ic_arrow_back_white_24dp" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
+                android:layout_margin="8dp"
                 android:padding="@dimen/padding"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:layout_margin="8dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
-</RelativeLayout>
+
+
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/expanded_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
+</FrameLayout>

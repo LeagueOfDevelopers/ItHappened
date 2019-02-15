@@ -28,8 +28,10 @@
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_gravity="left"
+                android:paddingTop="@dimen/padding_up_down"
+                android:paddingBottom="@dimen/padding_up_down"
                 android:layout_width="match_parent"
-                android:layout_height="90dp">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/photo"
@@ -52,7 +54,6 @@
                     android:paddingRight="@dimen/padding"
                     android:paddingBottom="@dimen/padding_up_down"
                     android:paddingTop="@dimen/padding_up_down"
-                    android:textStyle="bold"
                     android:textColor="@color/black"
                     tools:text="Сахар в крови"
                     android:textSize="16sp" />
@@ -82,8 +83,6 @@
                     android:layout_below="@+id/eventDate"
                     android:paddingLeft="@dimen/padding"
                     android:paddingStart="@dimen/padding"
-                    android:paddingEnd="@dimen/padding"
-                    android:paddingRight="@dimen/padding"
                     android:paddingBottom="@dimen/padding_up_down"
                     android:paddingTop="@dimen/padding_up_down"
                     android:textSize="14sp"
@@ -99,9 +98,9 @@
                     android:layout_alignTop="@+id/ratingValue"
                     android:layout_toRightOf="@+id/ratingValue"
                     android:layout_alignBottom="@id/ratingValue"
-                    android:layout_marginRight="20dp"
-                    android:layout_below="@id/TrackingTitle"
-                    android:paddingTop="1dp"
+                    android:layout_below="@id/eventDate"
+                    android:paddingTop="@dimen/padding_up_down"
+                    android:paddingBottom="@dimen/padding_up_down"
                     android:visibility="gone"
                     android:src="@drawable/star"
                     tools:visibility="visible"/>
@@ -120,8 +119,8 @@
                     android:paddingEnd="@dimen/padding"
                     android:paddingRight="@dimen/padding"
                     android:paddingBottom="@dimen/padding_up_down"
+                    android:layout_marginLeft="@dimen/inner_margin_between_components"
                     android:paddingTop="@dimen/padding_up_down"
-                    android:layout_marginRight="120dp"
                     android:text="12 кг"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/text_size"
