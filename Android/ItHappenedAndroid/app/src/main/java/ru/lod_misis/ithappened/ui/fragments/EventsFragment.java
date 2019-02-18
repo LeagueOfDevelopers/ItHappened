@@ -16,16 +16,19 @@ import android.support.v7.widget.RecyclerView;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,10 +52,13 @@ import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
+import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 
-public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView,EventDetailsContract.EventDetailsView {
+import static ru.lod_misis.ithappened.R.menu.popup_menu_delete_in_list;
+
+public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView, EventDetailsContract.EventDetailsView, EventsFragmnetCallBack {
 
     @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
@@ -437,11 +443,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         EventsAdapter eventsAdpt;
         if (events.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection,eventDetailsPresenter);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection, this);
             eventsAdpt.notifyDataSetChanged();
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection,eventDetailsPresenter);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection, this);
             eventsAdpt.notifyDataSetChanged();
         }
         ArrayList<EventV1> refreshedEvents = new ArrayList<>();
@@ -454,7 +460,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         if (refreshedEvents.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
         }
-        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity(), 1, collection,eventDetailsPresenter));
+        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity(), 1, collection, this));
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
@@ -535,5 +541,31 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     @Override
     public void editEvent() {
         //Надо разбить интерфейс
+    }
+
+    @Override
+    public void showPopupMenu(View v, final UUID trackingId, final UUID eventId) {
+        PopupMenu popupMenu = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            popupMenu = new PopupMenu(getContext(), v);
+
+            popupMenu.inflate(R.menu.popup_menu_delete_in_list);
+
+            popupMenu
+                    .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.delete:
+                                    eventDetailsPresenter.initData(trackingId, eventId);
+                                    eventDetailsPresenter.deleteEvent();
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
+            popupMenu.show();
+        }
     }
 }

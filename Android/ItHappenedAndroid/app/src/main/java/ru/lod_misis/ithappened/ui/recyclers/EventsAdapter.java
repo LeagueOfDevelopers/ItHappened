@@ -34,6 +34,7 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
+import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
@@ -41,11 +42,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     //TODO переписать
     private List<EventV1> eventV1s;
     private List<EventV1> deletedEventV1;
-    private Activity activity;
+    private Context context;
     private int state = 0;
-    private EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
+    private EventsFragmnetCallBack callBack;
 
-    public EventsAdapter(List<EventV1> eventV1s, Activity activity, int state, TrackingDataSource trackingRepository, EventDetailsContract.EventDetailsPresenter eventDetailsPresenter) {
+    public EventsAdapter(List<EventV1> eventV1s, Context context, int state, TrackingDataSource trackingRepository, EventsFragmnetCallBack callBack) {
         this.trackingRepository = trackingRepository;
         this.eventV1s = eventV1s;
         deletedEventV1 = new ArrayList<>();
@@ -55,9 +56,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
         if (eventV1s != null)
             eventV1s.removeAll(deletedEventV1);
-        this.activity = activity;
+        this.context = context;
         this.state = state;
-        this.eventDetailsPresenter = eventDetailsPresenter;
+        this.callBack = callBack;
     }
 
     @Override
@@ -81,8 +82,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     }
 
-    public Context getActivity() {
-        return activity;
+    public Context getContext() {
+        return context;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         final EventV1 eventV1 = eventV1s.get(position);
 
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
 
         final UUID trackingId = eventV1.getTrackingId();
 
@@ -131,18 +132,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.itemLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, EventDetailsActivity.class);
+                Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra("trackingId", eventV1.getTrackingId().toString());
                 intent.putExtra("eventId", eventV1.getEventId().toString());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                activity.startActivity(intent);
+                context.startActivity(intent);
             }
         });
 
         holder.itemLL.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                showPopupMenu(view,trackingId,eventV1.getEventId());
+                callBack.showPopupMenu(view, trackingId, eventV1.getEventId());
                 return false;
             }
         });
@@ -188,26 +189,5 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             ButterKnife.bind(this, itemView);
 
         }
-    }
-
-    private void showPopupMenu(View v, final UUID trackingId, final UUID eventId) {
-        PopupMenu popupMenu = new PopupMenu(activity, v);
-        popupMenu.inflate(R.menu.popup_menu_delete_in_list);
-
-        popupMenu
-                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.delete:
-                                eventDetailsPresenter.initData(trackingId,eventId);
-                                eventDetailsPresenter.deleteEvent();
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-        popupMenu.show();
     }
 }

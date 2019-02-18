@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,10 +35,11 @@ import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
+import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 
-public class EventsForTrackingActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
+public class EventsForTrackingActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView, EventsFragmnetCallBack {
 
     @BindView(R.id.eventsForTrackingRV)
     RecyclerView eventsRecycler;
@@ -106,7 +108,7 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
             hintForEvents.setVisibility(View.INVISIBLE);
         }
         eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsAdpt = new EventsAdapter(visibleEventV1s, this, 0, trackingsCollection, eventDetailsPresenter);
+        eventsAdpt = new EventsAdapter(visibleEventV1s, this, 0, trackingsCollection, this);
         eventsRecycler.setAdapter(eventsAdpt);
     }
 
@@ -200,4 +202,31 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
     public void editEvent() {
         //Надо разбить интерфейс
     }
+
+    @Override
+    public void showPopupMenu(View v, final UUID trackingID, final UUID eventID) {
+        PopupMenu popupMenu = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            popupMenu = new PopupMenu(this, v);
+
+            popupMenu.inflate(R.menu.popup_menu_delete_in_list);
+
+            popupMenu
+                    .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.delete:
+                                    eventDetailsPresenter.initData(trackingID, eventID);
+                                    eventDetailsPresenter.deleteEvent();
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
+            popupMenu.show();
+        }
+    }
+
 }
