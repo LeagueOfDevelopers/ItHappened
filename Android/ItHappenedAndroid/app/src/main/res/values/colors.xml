@@ -73,4 +73,6 @@
     <color name="twelve">#00AC6B</color>
     <color name="thirteen">#007046</color>
     <color name="fourteen">#60D6A9</color>
+
+    <color name="colorAccentWithAlpha">#000E507C</color>
 </resources>

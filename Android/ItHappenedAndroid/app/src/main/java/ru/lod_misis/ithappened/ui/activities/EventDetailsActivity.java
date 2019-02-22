@@ -1,19 +1,31 @@
 package ru.lod_misis.ithappened.ui.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +62,11 @@ import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
 public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
 
 
+    @BindView(R.id.backButton)
+    ImageView backButton;
+    @BindView(R.id.title)
+    TextView title;
+
     @BindView(R.id.editEventButton)
     Button editEvent;
     @BindView(R.id.deleteEventButton)
@@ -59,7 +76,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     UUID eventId;
 
     @BindView(R.id.valuesCard)
-    CardView valuesCard;
+    RelativeLayout valuesCard;
     @BindView(R.id.nullsCard)
     CardView nullsCard;
 
@@ -76,18 +93,21 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     TextView dateValue;
     @BindView(R.id.dateValueNulls)
     TextView dateValueNulls;
+    @BindView(R.id.geoposition_logo)
+    ImageView geopositionLogo;
     @BindView(R.id.adress)
     TextView adress;
     @BindView(R.id.ratingValue)
     RatingBar ratingValue;
 
-    @BindView(R.id.geoposition_title)
-    TextView geoposition_title;
-
-    @BindView(R.id.photo_title)
-    TextView photo_title;
     @BindView(R.id.photo)
     ImageView photo;
+
+    @BindView(R.id.container_with_content)
+    RelativeLayout conteinerWithContent;
+
+    private Animator mCurrentAnimator;
+    private int mShortAnimationDuration;
 
     Double latitude;
     Double longitude;
@@ -96,6 +116,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     EventV1 thisEventV1;
     Date thisDate;
     SimpleDateFormat format;
+
 
     Intent intent;
 
@@ -107,6 +128,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,13 +136,14 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         intent = getIntent();
         ButterKnife.bind(this);
         activity = this;
+        workWithFIles = new PhotoInteractorImpl(this);
 
         ItHappenedApplication.getAppComponent().inject(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
 
-        eventDetailsPresenter.attachView(this);
-        eventDetailsPresenter.initData(UUID.fromString(getIntent().getStringExtra("trackingId")),
+        eventDetailsPresenter.attachView(this,
+                UUID.fromString(getIntent().getStringExtra("trackingId")),
                 UUID.fromString(getIntent().getStringExtra("eventId")));
 
         eventDetailsPresenter.init();
@@ -144,6 +167,30 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 eventDetailsPresenter.deleteEvent();
             }
         });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventDetailsActivity.this.finish();
+                android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                fm.popBackStack();
+            }
+        });
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                zoomImageFromThumb(photo, workWithFIles.loadImage(thisEventV1.getPhoto()));
+            }
+        });
+
+        // Retrieve and cache the system's default "short" animation time.
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+    }
+
+    public void okClicked() {
+        eventDetailsPresenter.okClicked();
+        YandexMetrica.reportEvent("Пользователь удалил событие");
     }
 
     @Override
@@ -152,14 +199,18 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         userOpenAnActivityDateTime = DateTime.now();
     }
 
-    @Override
+    /*@Override
     protected void onPostResume() {
         super.onPostResume();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-    }
+   }
+*/
 
+    public void cancelClicked() {
+        eventDetailsPresenter.canselClicked();
+    }
 
     @Override
     protected void onPause() {
@@ -177,19 +228,18 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_event_details));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-                fm.popBackStack();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
+    /* @Override
+     public boolean onOptionsItemSelected (MenuItem item) {
+         switch ( item.getItemId() ) {
+             case android.R.id.home:
+                 this.finish();
+                 android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                 fm.popBackStack();
+                 return true;
+             default:
+                 return super.onOptionsItemSelected(item);
+         }
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -199,6 +249,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     @SuppressLint("SetTextI18n")
     @Override
     public void startConfigurationView() {
+        title.setText(thisTrackingV1.getTrackingName());
         if (thisEventV1.getRating() != null) {
             ratingValue.setVisibility(View.VISIBLE);
             nullsCard.setVisibility(View.GONE);
@@ -251,16 +302,19 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
         } else {
             adress.setVisibility(View.GONE);
-            geoposition_title.setVisibility(View.GONE);
+            geopositionLogo.setVisibility(View.GONE);
         }
         if (thisEventV1.getPhoto() != null) {
-            workWithFIles = new PhotoInteractorImpl(this);
             photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
             nullsCard.setVisibility(View.GONE);
 
         } else {
-            photo_title.setVisibility(View.GONE);
-            photo.setVisibility(View.GONE);
+            float height= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,64f,getResources().getDisplayMetrics());
+            photo.setBackgroundColor(getResources().getColor(R.color.white));
+            photo.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,Math.round(height)));
+            photo.setVisibility(View.INVISIBLE);
+            title.setTextColor(getResources().getColor(R.color.black));
+            backButton.setImageResource(R.drawable.ic_arraow_back_black_24dp);
         }
     }
 
@@ -293,7 +347,6 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     @Override
     public void deleteEvent() {
         DeleteEventDialog delete = new DeleteEventDialog();
-        delete.setEventDetailsPresenter(eventDetailsPresenter);
         delete.show(getFragmentManager(), "DeleteEvent");
     }
 
@@ -317,5 +370,136 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             if (resultCode == RESULT_OK)
 
                 super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //
+    private void zoomImageFromThumb(final View thumbView, Bitmap imageResId) {
+
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
+        }
+
+
+        final ImageView expandedImageView = (ImageView) findViewById(
+                R.id.expanded_image);
+        expandedImageView.setImageBitmap(imageResId);
+
+        final Rect startBounds = new Rect();
+        final Rect finalBounds = new Rect();
+        final Point globalOffset = new Point();
+
+        thumbView.getGlobalVisibleRect(startBounds);
+        findViewById(R.id.container)
+                .getGlobalVisibleRect(finalBounds, globalOffset);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // Extend start bounds horizontally
+            startScale = (float) startBounds.height() / finalBounds.height();
+            float startWidth = startScale * finalBounds.width();
+            float deltaWidth = (startWidth - startBounds.width()) / 2;
+            startBounds.left -= deltaWidth;
+            startBounds.right += deltaWidth;
+        } else {
+            // Extend start bounds vertically
+            startScale = (float) startBounds.width() / finalBounds.width();
+            float startHeight = startScale * finalBounds.height();
+            float deltaHeight = (startHeight - startBounds.height()) / 2;
+            startBounds.top -= deltaHeight;
+            startBounds.bottom += deltaHeight;
+        }
+
+        // Hide the thumbnail and show the zoomed-in view. When the animation
+        // begins, it will position the zoomed-in view in the place of the
+        // thumbnail.
+        thumbView.setAlpha(0f);
+        expandedImageView.setVisibility(View.VISIBLE);
+        conteinerWithContent.setVisibility(View.GONE);
+
+        // Set the pivot point for SCALE_X and SCALE_Y transformations
+        // to the top-left corner of the zoomed-in view (the default
+        // is the center of the view).
+        expandedImageView.setPivotX(0f);
+        expandedImageView.setPivotY(0f);
+
+        // Construct and run the parallel animation of the four translation and
+        // scale properties (X, Y, SCALE_X, and SCALE_Y).
+        AnimatorSet set = new AnimatorSet();
+        set
+                .play(ObjectAnimator.ofFloat(expandedImageView, View.X,
+                        startBounds.left, finalBounds.left))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.Y,
+                        startBounds.top, finalBounds.top))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X,
+                        startScale, 1f))
+                .with(ObjectAnimator.ofFloat(expandedImageView,
+                        View.SCALE_Y, startScale, 1f));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+
+        // Upon clicking the zoomed-in image, it should zoom back down
+        // to the original bounds and show the thumbnail instead of
+        // the expanded image.
+        final float startScaleFinal = startScale;
+        expandedImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mCurrentAnimator != null) {
+                    mCurrentAnimator.cancel();
+                }
+
+                // Animate the four positioning/sizing properties in parallel,
+                // back to their original values.
+                AnimatorSet set = new AnimatorSet();
+                set.play(ObjectAnimator
+                        .ofFloat(expandedImageView, View.X, startBounds.left))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView,
+                                        View.Y,startBounds.top))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView,
+                                        View.SCALE_X, startScaleFinal))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView,
+                                        View.SCALE_Y, startScaleFinal));
+                set.setDuration(mShortAnimationDuration);
+                set.setInterpolator(new DecelerateInterpolator());
+                set.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        expandedImageView.setVisibility(View.GONE);
+                        conteinerWithContent.setVisibility(View.VISIBLE);
+                        mCurrentAnimator = null;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        expandedImageView.setVisibility(View.GONE);
+                        conteinerWithContent.setVisibility(View.VISIBLE);
+                        mCurrentAnimator = null;
+                    }
+                });
+                set.start();
+                mCurrentAnimator = set;
+            }
+        });
     }
 }

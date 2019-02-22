@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
 import android.util.Log;
@@ -596,7 +597,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             case 1:
                 break;
             case 2:
-                access.setText(access.getText().toString() + "*");
+                String styledText = access.getText().toString() +" <font color='red'>*</font>";
+                access.setText(Html.fromHtml(styledText), TextView.BufferType.SPANNABLE);
                 break;
             default:
                 break;

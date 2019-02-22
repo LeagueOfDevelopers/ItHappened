@@ -29,6 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
 import ru.lod_misis.ithappened.domain.models.EventV1;
+import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractor;
+import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
@@ -38,6 +40,10 @@ import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+
+    public static final int TYPE_WITHOUT_PHOTO = 2;
+    public static final int TYPE_WITH_PHOTO = 1;
+
     TrackingDataSource trackingRepository;
     //TODO переписать
     private List<EventV1> eventV1s;
@@ -63,11 +69,26 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType(int position) {
+        if (eventV1s.get(position).getPhoto() == null || eventV1s.get(position).getPhoto().equals("")) {
+            return TYPE_WITHOUT_PHOTO;
+        } else {
+            return TYPE_WITH_PHOTO;
+        }
+    }
 
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(ru.lod_misis.ithappened.R.layout.event_item, parent, false);
-        return new EventsAdapter.ViewHolder(v);
-
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v;
+        if (viewType == TYPE_WITH_PHOTO) {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(ru.lod_misis.ithappened.R.layout.event_item, parent, false);
+            return new ViewHolder(v);
+        } else {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(ru.lod_misis.ithappened.R.layout.event_item2, parent, false);
+            return new ViewHolder(v);
+        }
     }
 
     public void refreshData(List<EventV1> eventV1s) {
@@ -95,7 +116,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         final UUID trackingId = eventV1.getTrackingId();
 
-        holder.trackingColor.setCardBackgroundColor(Integer.parseInt(trackingRepository.getTracking(trackingId).getColor()));
+        // holder.trackingColor.setCardBackgroundColor(Integer.parseInt(trackingRepository.getTracking(trackingId).getColor()));
+
+        if (eventV1.getPhoto() == null || eventV1.getPhoto().equals("")) {
+            holder.trackingPhoto.setVisibility(View.GONE);
+        } else {
+            PhotoInteractor workWithFIles = new PhotoInteractorImpl(context);
+            holder.trackingPhoto.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
+        }
 
         if (eventV1.getComment() != null && state == 0) {
             holder.trackingTitle.setText(eventV1.getComment());
@@ -178,16 +206,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         TextView ratingValue;
         @BindView(R.id.starIcon)
         ImageView starIcon;
-        @BindView(R.id.trackingColorEvent)
-        CardView trackingColor;
-
-        ImageView deleteEvent;
-        ImageView editEvent;
+        @BindView(R.id.photo)
+        ImageView trackingPhoto;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
         }
     }
 }
