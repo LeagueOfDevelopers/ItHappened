@@ -9,10 +9,13 @@ import ru.lod_misis.ithappened.ui.activities.EditEventActivity;
 import ru.lod_misis.ithappened.ui.activities.EditTrackingActivity;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.ui.activities.EventsForTrackingActivity;
+import ru.lod_misis.ithappened.ui.activities.IntroActivity;
 import ru.lod_misis.ithappened.ui.activities.UserActionsActivity;
 import ru.lod_misis.ithappened.ui.fragments.DeleteEventFromFragmentDialog;
 import ru.lod_misis.ithappened.ui.fragments.EventsFragment;
+import ru.lod_misis.ithappened.ui.fragments.IntroLastFragment;
 import ru.lod_misis.ithappened.ui.fragments.ProfileSettingsFragment;
+import ru.lod_misis.ithappened.ui.fragments.StartIntroFragment;
 import ru.lod_misis.ithappened.ui.fragments.StatisticsFragment;
 import ru.lod_misis.ithappened.ui.fragments.TrackingsFragment;
 import ru.lod_misis.ithappened.ui.background.NotificationJobService;
@@ -41,6 +44,7 @@ import ru.lod_misis.ithappened.di.modules.UserActionModule;
         UserActionModule.class,
         EditTrackingModule.class,
         EditEvetModule.class})
+
 public interface MainComponent {
 
     void inject(UserActionsActivity activity);
@@ -70,5 +74,13 @@ public interface MainComponent {
     void inject(NotificationJobService service);
 
     void inject(ItHappenedApplication itHappenedApplication);
+
+    void inject(IntroLastFragment introLastFragment);
+
+    void inject(StartIntroFragment startIntroFragment);
+
+    void inject(IntroActivity introActivity);
+
+
 
 }

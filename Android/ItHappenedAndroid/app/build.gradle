@@ -63,6 +63,7 @@ android {
 dependencies {
     androidTestImplementation 'org.testng:testng:6.9.6'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'me.relex:circleindicator:1.2.2@aar'
     implementation 'com.android.support:cardview-v7:21.0.+'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
