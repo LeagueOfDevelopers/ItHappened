@@ -67,8 +67,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         this.callBack = callBack;
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     public int getItemViewType(int position) {
         if (eventV1s.get(position).getPhoto() == null || eventV1s.get(position).getPhoto().equals("")) {
             return TYPE_WITHOUT_PHOTO;

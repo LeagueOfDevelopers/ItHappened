@@ -142,8 +142,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
 
-        eventDetailsPresenter.attachView(this,
-                UUID.fromString(getIntent().getStringExtra("trackingId")),
+        eventDetailsPresenter.attachView(this);
+        eventDetailsPresenter.initData(UUID.fromString(getIntent().getStringExtra("trackingId")),
                 UUID.fromString(getIntent().getStringExtra("eventId")));
 
         eventDetailsPresenter.init();
