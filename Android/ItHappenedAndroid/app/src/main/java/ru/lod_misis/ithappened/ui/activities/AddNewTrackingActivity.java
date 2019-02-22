@@ -1,6 +1,7 @@
 package ru.lod_misis.ithappened.ui.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -39,9 +40,11 @@ import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
+import ru.lod_misis.ithappened.ui.presenters.BillingPresenter;
+import ru.lod_misis.ithappened.ui.presenters.BillingView;
 import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
 
-public class AddNewTrackingActivity extends AppCompatActivity implements CreateTrackingContract.CreateTrackingView {
+public class AddNewTrackingActivity extends AppCompatActivity implements CreateTrackingContract.CreateTrackingView, BillingView {
 
     public static final int GEO_REQUEST_CODE = 1;
     @Inject
@@ -148,37 +151,47 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
     @BindView(R.id.addTrack)
     Button addTrackingBtn;
+    @BindView(R.id.addNewPhoto)
+    CardView photoContainer;
+    @BindView(R.id.addNewPhotoHint)
+    TextView photoHint;
+    @BindView(R.id.addNewGeoposition)
+    CardView geopositionContainer;
+    @BindView(R.id.addNewGeopositionHint)
+    TextView geopositionHint;
 
     private TrackingCustomization rating;
     private TrackingCustomization comment;
     private TrackingCustomization scale;
     private TrackingCustomization photo;
     private TrackingCustomization geoposition;
+    private BillingPresenter billingPresenter;
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
     private DateTime userOpenAnActivityDateTime;
 
     @Override
-    protected void onCreate (@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(ru.lod_misis.ithappened.R.layout.activity_addnewtracking);
         ButterKnife.bind(this);
         ItHappenedApplication.getAppComponent().inject(this);
 
         createTrackingPresenter.attachView(this);
-
+        billingPresenter = new BillingPresenter(this);
+        billingPresenter.attachView(this);
         startConfiguration();
     }
 
     @Override
-    protected void onStart () {
+    protected void onStart() {
         super.onStart();
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_add_tracking));
 
         ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 ratingDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 ratingEnabled.setText("не надо");
                 ratingDontImage.setImageResource(R.drawable.active_dont);
@@ -192,7 +205,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         ratingOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("не обязательно");
                 ratingDontImage.setImageResource(R.drawable.not_active_dont);
@@ -207,7 +220,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         ratingRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 ratingDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 ratingEnabled.setText("обязательно");
                 ratingDontImage.setImageResource(R.drawable.not_active_dont);
@@ -222,7 +235,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         commentDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 commentEnabled.setText("не надо");
                 commentDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 commentDontImage.setImageResource(R.mipmap.active_dont);
@@ -236,7 +249,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         commentOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 commentEnabled.setText("не обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 commentDontImage.setImageResource(R.drawable.not_active_dont);
@@ -251,7 +264,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         commentRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 commentEnabled.setText("обязательно");
                 commentDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 commentDontImage.setImageResource(R.drawable.not_active_dont);
@@ -266,7 +279,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         scaleDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 scaleEnabled.setText("не надо");
                 scaleDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 scaleDontImage.setImageResource(R.drawable.active_dont);
@@ -284,7 +297,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         scaleOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 scaleEnabled.setText("не обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleDontImage.setImageResource(R.drawable.not_active_dont);
@@ -303,7 +316,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         scaleRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 scaleEnabled.setText("обязательно");
                 scaleDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 scaleDontImage.setImageResource(R.drawable.not_active_dont);
@@ -319,7 +332,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         });
         geopositionDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 geopositionDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 geopositionEnabled.setText("не надо");
                 geopositionDontImage.setImageResource(R.drawable.active_dont);
@@ -333,7 +346,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         geopositionOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionEnabled.setText("не обязательно");
                 geopositionDontImage.setImageResource(R.drawable.not_active_dont);
@@ -348,7 +361,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         geopositionRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 geopositionDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 geopositionEnabled.setText("обязательно");
                 geopositionDontImage.setImageResource(R.drawable.not_active_dont);
@@ -362,7 +375,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         photoDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 photoDont.setBackgroundColor(getResources().getColor(R.color.dont));
                 photoEnabled.setText("не надо");
                 photoDontImage.setImageResource(R.drawable.active_dont);
@@ -376,7 +389,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         photoOptional.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 photoEnabled.setText("не обязательно");
                 photoDontImage.setImageResource(R.drawable.not_active_dont);
@@ -391,7 +404,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         photoRequired.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 photoDont.setBackgroundColor(Color.parseColor("#ffffff"));
                 photoEnabled.setText("обязательно");
                 photoDontImage.setImageResource(R.drawable.not_active_dont);
@@ -409,9 +422,9 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 .setDismissOnColorSelected(false)
                 .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override
-                    public void onColorSelected (boolean b , int i) {
+                    public void onColorSelected(boolean b, int i) {
                         if (b) {
-                            Toast.makeText(getApplicationContext() , Integer.toHexString(i) + "" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), Integer.toHexString(i) + "", Toast.LENGTH_SHORT).show();
                             colorPickerDialogBuilder.setSelectedColor(i);
                             colorPickerText.setTextColor(i);
                         }
@@ -420,18 +433,18 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         colorPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 SpectrumDialog dialog = colorPickerDialogBuilder.build();
-                dialog.show(getSupportFragmentManager() , "Tag");
+                dialog.show(getSupportFragmentManager(), "Tag");
             }
         });
 
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 if (geoposition == TrackingCustomization.Optional || geoposition == TrackingCustomization.Required) {
-                    if (ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(AddNewTrackingActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         createTrackingPresenter.requestPermission(GEO_REQUEST_CODE);
                     } else {
                         addNewTracking();
@@ -444,8 +457,8 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch ( item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
                 return true;
@@ -471,35 +484,29 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        YandexMetrica.reportEvent(getString(R.string.metrica_user_last_activity_add_tracking));
-    }
-
-    @Override
-    protected void onPostResume () {
+    protected void onPostResume() {
         super.onPostResume();
     }
 
     @Override
-    public void onRequestPermissionsResult (int requestCode , @NonNull String[] permissions , @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode , permissions , grantResults);
-        Log.d("RequestPermission" , "ReSPONSEaLL");
-        switch ( requestCode ) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("RequestPermission", "ReSPONSEaLL");
+        switch (requestCode) {
             case GEO_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    stopService(new Intent(this , MyGeopositionService.class));
-                    startService(new Intent(this , MyGeopositionService.class));
+                    stopService(new Intent(this, MyGeopositionService.class));
+                    startService(new Intent(this, MyGeopositionService.class));
                     addNewTracking();
                 }
             }
         }
     }
 
-    public void addNewTracking () {
+    public void addNewTracking() {
         if (trackingName.getText().toString().isEmpty() || trackingName.getText().toString().trim().isEmpty()) {
-            Toast.makeText(getApplicationContext() , "Введите название отслеживания" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Введите название отслеживания", Toast.LENGTH_SHORT).show();
         } else {
 
             trackingColor = String.valueOf(colorPickerText.getCurrentTextColor());
@@ -514,7 +521,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 if (scale != TrackingCustomization.None) {
                     scaleNumb = scaleType.getText().toString().trim();
                 }
-                TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle , UUID.randomUUID() , scale , rating , comment , geoposition , photo , scaleNumb , trackingColor);
+                TrackingV1 newTrackingV1 = new TrackingV1(trackingTitle, UUID.randomUUID(), scale, rating, comment, geoposition, photo, scaleNumb, trackingColor);
                 createTrackingPresenter.saveNewTracking(newTrackingV1);
 
                 Map<String, Object> customizationMask = new HashMap<>();
@@ -530,12 +537,12 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     @Override
-    public void requestPermissionForGeoposition () {
-        Log.d("RequestPermission" , "Request");
-        ActivityCompat.requestPermissions(AddNewTrackingActivity.this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , GEO_REQUEST_CODE);
+    public void requestPermissionForGeoposition() {
+        Log.d("RequestPermission", "Request");
+        ActivityCompat.requestPermissions(AddNewTrackingActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, GEO_REQUEST_CODE);
     }
 
-    private void startConfiguration () {
+    private void startConfiguration() {
         rating = TrackingCustomization.None;
         comment = TrackingCustomization.None;
         scale = TrackingCustomization.None;
@@ -549,21 +556,39 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     }
 
     @Override
-    public void showMessage (String message) {
-        Toast.makeText(getApplicationContext() , message , Toast.LENGTH_SHORT).show();
+    public void showMessage(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void finishCreatingTracking () {
-        Intent intent = new Intent(getApplicationContext() , UserActionsActivity.class);
+    public void finishCreatingTracking() {
+        Intent intent = new Intent(getApplicationContext(), UserActionsActivity.class);
         startActivity(intent);
         createTrackingPresenter.detachView();
     }
 
-    private void setupToolbar () {
+    private void setupToolbar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Отслеживать");
+    }
+
+    @Override
+    public void getPurchase(Boolean purchase) {
+        if (!purchase) {
+            photoContainer.setVisibility(View.GONE);
+            photoEnabled.setVisibility(View.GONE);
+            photoHint.setVisibility(View.GONE);
+            geopositionContainer.setVisibility(View.GONE);
+            geopositionEnabled.setVisibility(View.GONE);
+            geopositionHint.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        billingPresenter.detachView();
     }
 }

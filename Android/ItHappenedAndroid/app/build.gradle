@@ -95,6 +95,8 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.jakewharton:butterknife:8.8.1'
 
+    //BILLING
+    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
     //Dependency injection
     implementation 'com.google.dagger:dagger:2.0'
     implementation 'org.glassfish:javax.annotation:10.0-b28'
