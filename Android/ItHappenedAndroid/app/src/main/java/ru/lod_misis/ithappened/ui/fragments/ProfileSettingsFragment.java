@@ -29,6 +29,7 @@ import java.net.URL;
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ru.lod_misis.ithappened.ui.dialog.EditNicknameDialogFragment;
 import ru.lod_misis.ithappened.ui.presenters.ProfileSettingsFragmentContract;
 import ru.lod_misis.ithappened.ui.presenters.ProfileSettingsFragmentPresenterImpl;
 import ru.lod_misis.ithappened.R;

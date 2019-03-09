@@ -187,11 +187,11 @@ public class UserActionsActivity extends AppCompatActivity
                     @Override
                     public void onGlobalLayout () {
                         sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE);
-                        userNick = findViewById(R.id.userNickname);
-                        userNick.setText(sharedPreferences.getString("Nick" , ""));
-                        loginButton = findViewById(R.id.loginButton);
-                        urlUser = findViewById(R.id.imageView);
-                        lable = findViewById(R.id.menuTitle);
+                        userNick = (TextView) headerLayout.findViewById(R.id.userNickname);
+                        userNick.setText("11111");
+                        loginButton = (TextView) headerLayout.findViewById(R.id.loginButton);
+                        urlUser = (CircleImageView) headerLayout.findViewById(R.id.imageView);
+                        lable = (TextView) headerLayout.findViewById(R.id.menuTitle);
                         if ( !sharedPreferences.getString("UserId" , "").equals("Offline") ) {
                             loginButton.setVisibility(View.GONE);
                             new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));

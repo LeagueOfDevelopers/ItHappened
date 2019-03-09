@@ -86,7 +86,7 @@
             android:theme="@style/Theme.MyBack" />
 
         <service
-            android:name=".ui.background.MyGeopositionService"
+            android:name=".ui.background.GeopositionService"
             android:enabled="true"
             android:exported="true" />
         <service

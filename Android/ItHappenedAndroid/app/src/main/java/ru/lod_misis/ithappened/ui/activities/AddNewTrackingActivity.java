@@ -1,6 +1,9 @@
 package ru.lod_misis.ithappened.ui.activities;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,7 +42,8 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.models.TrackingCustomization;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
-import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
+import ru.lod_misis.ithappened.ui.background.GeopositionService;
+import ru.lod_misis.ithappened.ui.background.NotificationJobService;
 import ru.lod_misis.ithappened.ui.presenters.BillingPresenter;
 import ru.lod_misis.ithappened.ui.presenters.BillingView;
 import ru.lod_misis.ithappened.ui.presenters.CreateTrackingContract;
@@ -191,7 +195,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         ratingDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 ratingDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 ratingEnabled.setText("не надо");
                 ratingDontImage.setImageResource(R.drawable.active_dont);
@@ -332,7 +336,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         });
         geopositionDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 geopositionDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 geopositionEnabled.setText("не надо");
                 geopositionDontImage.setImageResource(R.drawable.active_dont);
@@ -375,7 +379,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
         photoDont.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 photoDont.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 photoEnabled.setText("не надо");
                 photoDontImage.setImageResource(R.drawable.active_dont);
@@ -496,11 +500,21 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
             case GEO_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    stopService(new Intent(this, MyGeopositionService.class));
-                    startService(new Intent(this, MyGeopositionService.class));
+                    createGeopositionJobService();
                     addNewTracking();
                 }
             }
+        }
+    }
+
+    private void createGeopositionJobService() {
+        ComponentName notificationJobServiece = new ComponentName(this, GeopositionService.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(534324, notificationJobServiece);
+        jobBuilder.setMinimumLatency(1000 * 60L);
+        JobScheduler jobScheduler =
+                (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (jobScheduler != null) {
+            jobScheduler.schedule(jobBuilder.build());
         }
     }
 

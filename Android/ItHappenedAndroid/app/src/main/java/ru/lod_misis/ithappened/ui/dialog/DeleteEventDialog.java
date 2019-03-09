@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened.ui.fragments;
+package ru.lod_misis.ithappened.ui.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,22 +8,33 @@ import android.os.Bundle;
 
 import com.yandex.metrica.YandexMetrica;
 
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
-import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
+import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
+import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
 
 public class DeleteEventDialog extends DialogFragment {
 
-    private EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
+    DeleteCallback deleteCallback;
+
+    private UUID trackingId;
+    private UUID eventId;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
+        if (getArguments() != null && getArguments().getString(EventDetailsActivity.EVENT_ID) != null && getArguments().getString(EventDetailsActivity.TRACKING_ID) != null) {
+            trackingId = UUID.fromString(getArguments().getString(EventDetailsActivity.TRACKING_ID));
+            eventId = UUID.fromString(getArguments().getString(EventDetailsActivity.EVENT_ID));
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Вы болше не сможете восстановить это событие!")
                 .setTitle("Вы действительно хотите удалить это событие?")
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        okClicked();
+                        okClicked(trackingId, eventId);
                     }
                 })
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -36,17 +47,18 @@ public class DeleteEventDialog extends DialogFragment {
 
     }
 
-    public void setEventDetailsPresenter(EventDetailsContract.EventDetailsPresenter eventDetailsPresenter) {
-        this.eventDetailsPresenter = eventDetailsPresenter;
+    public void setDeleteCallback(DeleteCallback deleteCallback) {
+        this.deleteCallback = deleteCallback;
     }
 
-    public void okClicked() {
-        eventDetailsPresenter.okClicked();
+
+    private void okClicked(UUID trackingId, UUID eventId) {
+        deleteCallback.finishDeleting(trackingId, eventId);
         YandexMetrica.reportEvent("Пользователь удалил событие");
     }
 
     public void cancelClicked() {
-        eventDetailsPresenter.canselClicked();
+        deleteCallback.cansel();
     }
 
 }

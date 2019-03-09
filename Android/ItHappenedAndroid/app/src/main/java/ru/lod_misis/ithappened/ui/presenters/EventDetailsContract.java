@@ -1,44 +1,25 @@
 package ru.lod_misis.ithappened.ui.presenters;
 
-
 import java.util.UUID;
 
-import ru.lod_misis.ithappened.domain.TrackingService;
+import ru.lod_misis.ithappened.domain.models.TrackingV1;
 
 public interface EventDetailsContract {
-    interface EventDetailsView {
+
+    interface EventDetailsView  {
+
         void startConfigurationView();
 
-        void startedConfiguration(TrackingService service, UUID trackingId, UUID eventId);
-
-        void showMessage(String message);
-
-        void finishDetailsEventActivity();
-
-        void deleteEvent();
-
-        void editEvent();
-
+        void startedConfiguration(TrackingV1 tracking);
     }
 
-    interface EventDetailsPresenter {
-        void init();
+    interface EventDetailsPresenter{
 
-        void attachView(EventDetailsView eventDetailsView);
+        void init(UUID trackingId);
 
-        void initData(UUID trackingId, UUID eventId);
+        void attachView(EventDetailsView deleteView);
 
         void detachView();
-
-        void deleteEvent();
-
-        void okClicked();
-
-        void canselClicked();
-
-        void editEvent();
-
-        void beforeFinish();
 
         Boolean isViewAttached();
     }

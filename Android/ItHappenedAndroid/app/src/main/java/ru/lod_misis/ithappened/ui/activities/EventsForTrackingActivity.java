@@ -29,17 +29,17 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
-import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
-import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
+import ru.lod_misis.ithappened.ui.dialog.DeleteEventDialog;
+import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
+import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
 import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 
-public class EventsForTrackingActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView, EventsFragmnetCallBack {
+public class EventsForTrackingActivity extends AppCompatActivity implements DeleteContract.DeleteView, EventsFragmnetCallBack,DeleteCallback {
 
     @BindView(R.id.eventsForTrackingRV)
     RecyclerView eventsRecycler;
@@ -58,7 +58,7 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
     @Inject
     TrackingDataSource trackingsCollection;
     @Inject
-    EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
+    DeleteContract.DeletePresenter deletePresenter;
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
@@ -80,7 +80,7 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
         thisTrackingV1 = trackingsCollection.getTracking(trackingId);
 
         eventV1s = trackingsCollection.getEventCollection(trackingId);
-        eventDetailsPresenter.attachView(this);
+        deletePresenter.attachView(this);
 
         setupActionBar();
 
@@ -172,16 +172,6 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
     }
 
     @Override
-    public void startConfigurationView() {
-        //надо разбить интерфейс
-    }
-
-    @Override
-    public void startedConfiguration(TrackingService service, UUID trackingId, UUID eventId) {
-        //надо разбить интерфейс
-    }
-
-    @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -191,16 +181,14 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
         initEventsRecyclerView();
     }
 
-    @Override
-    public void deleteEvent() {
+    private void deleteEvent(UUID trackingID, UUID eventID) {
         DeleteEventDialog delete = new DeleteEventDialog();
-        delete.setEventDetailsPresenter(eventDetailsPresenter);
+        delete.setDeleteCallback(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(EventDetailsActivity.TRACKING_ID, trackingID.toString());
+        bundle.putString(EventDetailsActivity.EVENT_ID, eventID.toString());
+        delete.setArguments(bundle);
         delete.show(getFragmentManager(), "DeleteEvent");
-    }
-
-    @Override
-    public void editEvent() {
-        //Надо разбить интерфейс
     }
 
     @Override
@@ -217,8 +205,7 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.delete:
-                                    eventDetailsPresenter.initData(trackingID, eventID);
-                                    eventDetailsPresenter.deleteEvent();
+                                    deleteEvent(trackingID,eventID);
                                     return true;
                                 default:
                                     return false;
@@ -227,6 +214,16 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Even
                     });
             popupMenu.show();
         }
+    }
+
+    @Override
+    public void finishDeleting(UUID trackingId, UUID eventId) {
+        deletePresenter.okClicked(trackingId, eventId);
+    }
+
+    @Override
+    public void cansel() {
+        deletePresenter.canselClicked();
     }
 
 }

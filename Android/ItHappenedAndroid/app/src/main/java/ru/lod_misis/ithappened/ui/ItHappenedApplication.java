@@ -2,6 +2,9 @@ package ru.lod_misis.ithappened.ui;
 
 import android.Manifest;
 import android.app.Application;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,7 +30,7 @@ import ru.lod_misis.ithappened.data.retrofit.ItHappenedApi;
 import ru.lod_misis.ithappened.domain.FactService;
 import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
-import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
+import ru.lod_misis.ithappened.ui.background.GeopositionService;
 import ru.lod_misis.ithappened.di.components.DaggerMainComponent;
 import ru.lod_misis.ithappened.di.components.MainComponent;
 import ru.lod_misis.ithappened.di.modules.MainModule;
@@ -78,10 +81,13 @@ public class ItHappenedApplication extends Application {
         super.onCreate();
         mInstance = this;
         if ( ActivityCompat.checkSelfPermission(getApplicationContext() , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext() , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-            stopService(new Intent(this , MyGeopositionService.class));
+            ComponentName notificationJobServiece = new ComponentName(this, GeopositionService.class);
+            JobInfo.Builder jobBuilder = new JobInfo.Builder(534324, notificationJobServiece);
+            JobScheduler jobScheduler =
+                    (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.cancel(534324);
         } else {
-            stopService(new Intent(this , MyGeopositionService.class));
-            startService(new Intent(this , MyGeopositionService.class));
+            createGeopositionJobService();
         }
         appComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
         appComponent.inject(this);
@@ -146,5 +152,15 @@ public class ItHappenedApplication extends Application {
 
     public void setConnectionListener (ConnectionReciver.ConnectionReciverListener listener) {
         ConnectionReciver.connectionReciverListener = listener;
+    }
+    private void createGeopositionJobService() {
+        ComponentName notificationJobServiece = new ComponentName(this, GeopositionService.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(534324, notificationJobServiece);
+        jobBuilder.setMinimumLatency(1000 * 60L);
+        JobScheduler jobScheduler =
+                (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (jobScheduler != null) {
+            jobScheduler.schedule(jobBuilder.build());
+        }
     }
 }

@@ -5,20 +5,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.TypedValue;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -47,7 +43,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.lod_misis.ithappened.R;
-import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractor;
@@ -55,12 +50,16 @@ import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.activities.mapactivity.MapActivity;
-import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
+import ru.lod_misis.ithappened.ui.dialog.DeleteEventDialog;
+import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
+import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
 
 
-public class EventDetailsActivity extends AppCompatActivity implements EventDetailsContract.EventDetailsView {
+public class EventDetailsActivity extends AppCompatActivity implements DeleteContract.DeleteView, EventDetailsContract.EventDetailsView, DeleteCallback {
 
+    public static String TRACKING_ID = "trackingId";
+    public static String EVENT_ID = "eventId";
 
     @BindView(R.id.backButton)
     ImageView backButton;
@@ -72,8 +71,8 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     @BindView(R.id.deleteEventButton)
     Button deleteEvent;
 
-    UUID trackingId;
-    UUID eventId;
+    private UUID trackingId;
+    private UUID eventId;
 
     @BindView(R.id.valuesCard)
     RelativeLayout valuesCard;
@@ -109,22 +108,23 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
 
-    Double latitude;
-    Double longitude;
-    PhotoInteractor workWithFIles;
-    TrackingV1 thisTrackingV1;
-    EventV1 thisEventV1;
-    Date thisDate;
-    SimpleDateFormat format;
+    private Double latitude;
+    private Double longitude;
+    private PhotoInteractor workWithFIles;
+    private TrackingV1 thisTrackingV1;
+    private EventV1 thisEventV1;
+    private Date thisDate;
+    private SimpleDateFormat format;
 
 
-    Intent intent;
+    private Intent intent;
 
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
     private DateTime userOpenAnActivityDateTime;
 
-    Activity activity;
+    @Inject
+    DeleteContract.DeletePresenter deletePresenter;
     @Inject
     EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
 
@@ -135,22 +135,20 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
         setContentView(R.layout.activity_event_details);
         intent = getIntent();
         ButterKnife.bind(this);
-        activity = this;
         workWithFIles = new PhotoInteractorImpl(this);
 
         ItHappenedApplication.getAppComponent().inject(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_event_details));
-
         eventDetailsPresenter.attachView(this);
-        eventDetailsPresenter.initData(UUID.fromString(getIntent().getStringExtra("trackingId")),
-                UUID.fromString(getIntent().getStringExtra("eventId")));
+        deletePresenter.attachView(this);
+        this.trackingId = UUID.fromString(getIntent().getStringExtra("trackingId"));
+        this.eventId = UUID.fromString(getIntent().getStringExtra("eventId"));
 
-        eventDetailsPresenter.init();
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eventDetailsPresenter.editEvent();
+                editEvent(trackingId, eventId);
             }
         });
         adress.setOnClickListener(new View.OnClickListener() {
@@ -158,13 +156,13 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             public void onClick(View view) {
 
                 YandexMetrica.reportEvent(getString(R.string.metrica_user_use_address_button));
-                MapActivity.toMapActivity(activity, 2, latitude, longitude);
+                MapActivity.toMapActivity(EventDetailsActivity.this, 2, latitude, longitude);
             }
         });
         deleteEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eventDetailsPresenter.deleteEvent();
+                deleteEvent(trackingId, eventId);
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -188,28 +186,11 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 android.R.integer.config_shortAnimTime);
     }
 
-    public void okClicked() {
-        eventDetailsPresenter.okClicked();
-        YandexMetrica.reportEvent("Пользователь удалил событие");
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
+        eventDetailsPresenter.init(trackingId);
         userOpenAnActivityDateTime = DateTime.now();
-    }
-
-    /*@Override
-    protected void onPostResume() {
-        super.onPostResume();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-   }
-*/
-
-    public void cancelClicked() {
-        eventDetailsPresenter.canselClicked();
     }
 
     @Override
@@ -309,9 +290,9 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
             nullsCard.setVisibility(View.GONE);
 
         } else {
-            float height= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,64f,getResources().getDisplayMetrics());
+            float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64f, getResources().getDisplayMetrics());
             photo.setBackgroundColor(getResources().getColor(R.color.white));
-            photo.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,Math.round(height)));
+            photo.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Math.round(height)));
             photo.setVisibility(View.INVISIBLE);
             title.setTextColor(getResources().getColor(R.color.black));
             backButton.setImageResource(R.drawable.ic_arraow_back_black_24dp);
@@ -319,12 +300,10 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     }
 
     @Override
-    public void startedConfiguration(TrackingService collection, UUID trackingId, UUID eventId) {
-        setTitle(collection.GetTrackingById(trackingId).getTrackingName());
-        this.eventId = eventId;
-        this.trackingId = trackingId;
-        thisEventV1 = collection.GetTrackingById(trackingId).getEvent(eventId);
-        thisTrackingV1 = collection.GetTrackingById(trackingId);
+    public void startedConfiguration(TrackingV1 tracking) {
+        setTitle(tracking.getTrackingName());
+        thisEventV1 = tracking.getEvent(eventId);
+        thisTrackingV1 = tracking;
         thisEventV1 = thisTrackingV1.getEvent(eventId);
         thisDate = thisEventV1.getEventDate();
 
@@ -340,23 +319,27 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
 
     @Override
     public void finishDetailsEventActivity() {
+        deletePresenter.detachView();
         eventDetailsPresenter.detachView();
         finish();
     }
 
-    @Override
-    public void deleteEvent() {
+    public void deleteEvent(UUID trackingId, UUID eventId) {
         DeleteEventDialog delete = new DeleteEventDialog();
+        delete.setDeleteCallback(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(TRACKING_ID, trackingId.toString());
+        bundle.putString(EVENT_ID, eventId.toString());
+        delete.setArguments(bundle);
         delete.show(getFragmentManager(), "DeleteEvent");
     }
 
-    @Override
-    public void editEvent() {
+    private void editEvent(UUID trackingId,UUID eventId) {
         Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
-        intent.putExtra("eventId", eventId.toString());
-        intent.putExtra("trackingId", trackingId.toString());
+        intent.putExtra(TRACKING_ID, trackingId.toString());
+        intent.putExtra(EVENT_ID, eventId.toString());
         startActivity(intent);
-        eventDetailsPresenter.detachView();
+        deletePresenter.detachView();
     }
 
     private String getAddress(Double latitude, Double longitude) throws IOException {
@@ -367,19 +350,20 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE)
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (resultCode == RESULT_OK)
-
                 super.onActivityResult(requestCode, resultCode, data);
     }
 
-    //
+    //Это анимация скопировал с документации,из-за нехватки времени
     private void zoomImageFromThumb(final View thumbView, Bitmap imageResId) {
 
         if (mCurrentAnimator != null) {
             mCurrentAnimator.cancel();
         }
-
-
         final ImageView expandedImageView = (ImageView) findViewById(
                 R.id.expanded_image);
         expandedImageView.setImageBitmap(imageResId);
@@ -471,7 +455,7 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                         .ofFloat(expandedImageView, View.X, startBounds.left))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImageView,
-                                        View.Y,startBounds.top))
+                                        View.Y, startBounds.top))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImageView,
                                         View.SCALE_X, startScaleFinal))
@@ -501,5 +485,15 @@ public class EventDetailsActivity extends AppCompatActivity implements EventDeta
                 mCurrentAnimator = set;
             }
         });
+    }
+
+    @Override
+    public void finishDeleting(UUID trackingId, UUID eventId) {
+        deletePresenter.okClicked(trackingId, eventId);
+    }
+
+    @Override
+    public void cansel() {
+        deletePresenter.canselClicked();
     }
 }

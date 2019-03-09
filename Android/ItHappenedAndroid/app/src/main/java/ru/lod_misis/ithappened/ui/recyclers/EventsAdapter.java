@@ -1,20 +1,15 @@
 package ru.lod_misis.ithappened.ui.recyclers;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -34,8 +29,6 @@ import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
-import ru.lod_misis.ithappened.ui.fragments.DeleteEventDialog;
-import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
 import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 
 
@@ -110,69 +103,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         final EventV1 eventV1 = eventV1s.get(position);
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
-
         final UUID trackingId = eventV1.getTrackingId();
 
-        // holder.trackingColor.setCardBackgroundColor(Integer.parseInt(trackingRepository.getTracking(trackingId).getColor()));
+        holder.initData(eventV1, trackingId);
 
-        if (eventV1.getPhoto() == null || eventV1.getPhoto().equals("")) {
-            holder.trackingPhoto.setVisibility(View.GONE);
-        } else {
-            PhotoInteractor workWithFIles = new PhotoInteractorImpl(context);
-            holder.trackingPhoto.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
-        }
+        holder.setupClickListener(eventV1, context);
 
-        if (eventV1.getComment() != null && state == 0) {
-            holder.trackingTitle.setText(eventV1.getComment());
-        } else {
-            holder.trackingTitle.setText(trackingRepository.getTracking(trackingId).getTrackingName());
-        }
-
-        if (eventV1.getScale() != null && trackingRepository.getTracking(trackingId).getScaleName() != null) {
-            String type = trackingRepository.getTracking(trackingId).getScaleName();
-            if (type != null) {
-                holder.scaleValue.setVisibility(View.VISIBLE);
-                if (type.length() >= 10 && eventV1.getScale() > 1000000 && eventV1.getRating() != null) {
-                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.getScale().doubleValue()) + " " + type.substring(0, 3) + ".");
-                } else {
-                    holder.scaleValue.setText(StringParse.parseDouble(eventV1.getScale().doubleValue()) + " " + type);
-                }
-            }
-        } else {
-            holder.scaleValue.setVisibility(View.GONE);
-        }
-
-        if (eventV1.getRating() != null) {
-            DecimalFormat format = new DecimalFormat("#.#");
-            holder.ratingValue.setText(format.format(eventV1.getRating().getRating() / 2.0f) + "");
-            holder.starIcon.setVisibility(View.VISIBLE);
-            holder.ratingValue.setVisibility(View.VISIBLE);
-        } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
-                holder.scaleValue.setPadding(holder.trackingTitle.getPaddingLeft(), holder.eventDate.getTotalPaddingTop(), 7, 7);
-            holder.ratingValue.setVisibility(View.GONE);
-            holder.starIcon.setVisibility(View.GONE);
-        }
-
-        holder.itemLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, EventDetailsActivity.class);
-                intent.putExtra("trackingId", eventV1.getTrackingId().toString());
-                intent.putExtra("eventId", eventV1.getEventId().toString());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        });
-
-        holder.itemLL.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                callBack.showPopupMenu(view, trackingId, eventV1.getEventId());
-                return false;
-            }
-        });
+        holder.setupLongClickListener(trackingId, eventV1);
 
         Date eventDate = eventV1.getEventDate();
 
@@ -210,6 +147,73 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        public void setupLongClickListener(final UUID trackingId, final EventV1 event) {
+            itemLL.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    callBack.showPopupMenu(view, trackingId, event.getEventId());
+                    return false;
+                }
+            });
+        }
+
+        public void setupClickListener(final EventV1 eventV1, final Context context) {
+            itemLL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, EventDetailsActivity.class);
+                    String abs=eventV1.getTrackingId().toString();
+                    intent.putExtra("trackingId", abs);
+                    intent.putExtra("eventId", eventV1.getEventId().toString());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            });
+
+        }
+
+        @SuppressLint("SetTextI18n")
+        public void initData(EventV1 eventV1, UUID trackingId) {
+            if (eventV1.getPhoto() == null || eventV1.getPhoto().equals("")) {
+                trackingPhoto.setVisibility(View.GONE);
+            } else {
+                PhotoInteractor workWithFIles = new PhotoInteractorImpl(context);
+                trackingPhoto.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
+            }
+
+            if (eventV1.getComment() != null && state == 0) {
+                trackingTitle.setText(eventV1.getComment());
+            } else {
+                trackingTitle.setText(trackingRepository.getTracking(trackingId).getTrackingName());
+            }
+
+            if (eventV1.getScale() != null && trackingRepository.getTracking(trackingId).getScaleName() != null) {
+                String type = trackingRepository.getTracking(trackingId).getScaleName();
+                if (type != null) {
+                    scaleValue.setVisibility(View.VISIBLE);
+                    if (type.length() >= 10 && eventV1.getScale() > 1000000 && eventV1.getRating() != null) {
+                        scaleValue.setText(StringParse.parseDouble(eventV1.getScale()) + " " + type.substring(0, 3) + ".");
+                    } else {
+                        scaleValue.setText(StringParse.parseDouble(eventV1.getScale()) + " " + type);
+                    }
+                }
+            } else {
+                scaleValue.setVisibility(View.GONE);
+            }
+
+            if (eventV1.getRating() != null) {
+                DecimalFormat format = new DecimalFormat("#.#");
+                ratingValue.setText(format.format(eventV1.getRating().getRating() / 2.0f) + "");
+                starIcon.setVisibility(View.VISIBLE);
+                ratingValue.setVisibility(View.VISIBLE);
+            } else {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+                    scaleValue.setPadding(trackingTitle.getPaddingLeft(), eventDate.getTotalPaddingTop(), 7, 7);
+                ratingValue.setVisibility(View.GONE);
+                starIcon.setVisibility(View.GONE);
+            }
         }
     }
 }

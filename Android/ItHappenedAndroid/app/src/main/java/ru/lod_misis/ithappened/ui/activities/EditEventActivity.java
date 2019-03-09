@@ -386,7 +386,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             if (!scaleControl.getText().toString().trim().isEmpty())
                 scale = Double.valueOf(scaleControl.getText().toString());
             if (ratingControl.getRating() != 0f)
-                rating = new Rating((int) ratingControl.getRating());
+                rating = new Rating((int)(ratingControl.getRating()*2));
             try {
                 eventDate = getDate();
             } catch (ParseException e) {
@@ -437,21 +437,29 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK) {
-            Toast.makeText(getApplicationContext(), "Упс,что-то пошло не так =((((", Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (requestCode == 1) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Picasso.get().load(Uri.parse(photoInteractor.getUriPhotoFromCamera())).into(photo);
             photoPath = photoInteractor.saveBitmap(Uri.parse(photoInteractor.getUriPhotoFromCamera()));
             flagPhoto = true;
         }
         if (requestCode == 2) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Picasso.get().load(data.getData()).into(photo);
             photoPath = photoInteractor.saveBitmap(data.getData());
             flagPhoto = true;
         }
         if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Не удалось определить ваше местоположение", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (data != null) {
                 latitude = data.getDoubleExtra("latitude", 0);
                 longitude = data.getDoubleExtra("longitude", 0);
@@ -488,4 +496,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         return geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);
     }
+
+
 }

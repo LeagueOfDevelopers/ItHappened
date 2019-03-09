@@ -28,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,22 +45,22 @@ import javax.inject.Inject;
 
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.data.repository.TrackingDataSource;
-import ru.lod_misis.ithappened.domain.TrackingService;
 import ru.lod_misis.ithappened.domain.models.Comparison;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
-import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
+import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
+import ru.lod_misis.ithappened.ui.dialog.DeleteEventDialog;
+import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
+import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
 import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 
-import static ru.lod_misis.ithappened.R.menu.popup_menu_delete_in_list;
-
-public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView, EventDetailsContract.EventDetailsView, EventsFragmnetCallBack {
+public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView, DeleteContract.DeleteView, EventsFragmnetCallBack,DeleteCallback {
 
     @Inject
-    EventDetailsContract.EventDetailsPresenter eventDetailsPresenter;
+    DeleteContract.DeletePresenter deletePresenter;
     @Inject
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
     @Inject
@@ -132,7 +131,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         stateForHint = 0;
 
-        eventDetailsPresenter.attachView(this);
+        deletePresenter.attachView(this);
 
         filtersHint.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -512,16 +511,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void startConfigurationView() {
-        //надо разбить интерфейс
-    }
-
-    @Override
-    public void startedConfiguration(TrackingService service, UUID trackingId, UUID eventId) {
-        //надо разбить интерфейс
-    }
-
-    @Override
     public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -531,16 +520,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         onStart();
     }
 
-    @Override
-    public void deleteEvent() {
+    private void deleteEvent(UUID trackingId,  UUID eventId) {
         DeleteEventDialog delete = new DeleteEventDialog();
-        delete.setEventDetailsPresenter(eventDetailsPresenter);
+        delete.setDeleteCallback(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(EventDetailsActivity.TRACKING_ID, trackingId.toString());
+        bundle.putString(EventDetailsActivity.EVENT_ID, eventId.toString());
+        delete.setArguments(bundle);
         delete.show(getFragmentManager(), "DeleteEvent");
-    }
-
-    @Override
-    public void editEvent() {
-        //Надо разбить интерфейс
     }
 
     @Override
@@ -557,8 +544,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.delete:
-                                    eventDetailsPresenter.initData(trackingId, eventId);
-                                    eventDetailsPresenter.deleteEvent();
+                                   deleteEvent(trackingId,eventId);
                                     return true;
                                 default:
                                     return false;
@@ -568,4 +554,15 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             popupMenu.show();
         }
     }
+
+    @Override
+    public void finishDeleting(UUID trackingId, UUID eventId) {
+        deletePresenter.okClicked(trackingId, eventId);
+    }
+
+    @Override
+    public void cansel() {
+        deletePresenter.canselClicked();
+    }
+
 }

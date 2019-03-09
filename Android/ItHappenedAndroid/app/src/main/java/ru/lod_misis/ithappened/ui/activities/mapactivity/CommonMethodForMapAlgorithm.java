@@ -17,7 +17,7 @@ public abstract class CommonMethodForMapAlgorithm {
     private LatLng location;
     private Marker marker;
 
-    public void commonAbstractMethodForMap (GoogleMap googleMap) {
+    public void commonAbstractMethodForMap (GoogleMap googleMap) throws Exception {
         this.map = googleMap;
         location = initStartedLocation();
         initMap();
@@ -25,7 +25,7 @@ public abstract class CommonMethodForMapAlgorithm {
             setAllListenersIfNeedIt();
     }
 
-    abstract public LatLng initStartedLocation ();
+    abstract public LatLng initStartedLocation () throws Exception;
 
     public void setAllListenersIfNeedIt () {
         marker.setDraggable(true);

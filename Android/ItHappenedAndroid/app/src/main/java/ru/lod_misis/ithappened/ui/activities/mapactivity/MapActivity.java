@@ -74,7 +74,14 @@ public class MapActivity extends AppCompatActivity {
                         default:
                             new Exception();
                     }
-                    algorithm.commonAbstractMethodForMap(googleMap);
+                    try {
+                        algorithm.commonAbstractMethodForMap(googleMap);
+                    }catch (Exception exeption){
+                        Intent data = new Intent();
+                        setResult(Activity.RESULT_CANCELED , data);
+                        finish();
+                    }
+
                 }
             }
         });

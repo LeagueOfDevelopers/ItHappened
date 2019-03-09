@@ -1,9 +1,16 @@
 package ru.lod_misis.ithappened.ui.activities;
 
+import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -37,6 +44,7 @@ import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
+import ru.lod_misis.ithappened.ui.background.GeopositionService;
 import ru.lod_misis.ithappened.ui.presenters.EditTrackingContract;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
@@ -510,7 +518,14 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTrackingPresenter.onEditClick();
+                if(geoposition!=TrackingCustomization.None){
+                editTrackingPresenter.onEditClick();}else{
+                    if (ActivityCompat.checkSelfPermission(EditTrackingActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(EditTrackingActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(EditTrackingActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+                    }
+                }
             }
         });
 
@@ -735,5 +750,16 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
 
         }
         return 0;
+    }
+
+    private void createGeopositionJobService() {
+        ComponentName notificationJobServiece = new ComponentName(this, GeopositionService.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(534324, notificationJobServiece);
+        jobBuilder.setMinimumLatency(1000 * 60L);
+        JobScheduler jobScheduler =
+                (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (jobScheduler != null) {
+            jobScheduler.schedule(jobBuilder.build());
+        }
     }
 }

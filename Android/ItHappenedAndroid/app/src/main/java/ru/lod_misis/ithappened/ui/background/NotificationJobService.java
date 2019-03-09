@@ -27,14 +27,10 @@ public class NotificationJobService extends JobService {
     @Inject
     TrackingDataSource trackingRepository;
 
-    public NotificationJobService() {
-    }
-
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         ItHappenedApplication.getAppComponent().inject(this);
-        trackingV1 = trackingRepository.getTracking((UUID) AllId.map.get(jobParameters.getJobId()));
-        Log.i("JOB SERVICE!!!", "JOB SERVICE");
+        trackingV1 = trackingRepository.getTracking(UUID.fromString(jobParameters.getExtras().getString("TrackingId")));
         NotificationCompat.Builder builder = createBulder();
         Intent intent = new Intent(this, AddNewEventActivity.class);
         intent.putExtra("trackingId", trackingV1.getTrackingId().toString());
