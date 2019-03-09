@@ -108,7 +108,6 @@ public class UserActionsActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
         ItHappenedApplication.getAppComponent().inject(this);
         userActionPresenter.attachView(this);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         toolbar.hideOverflowMenu();
@@ -116,10 +115,11 @@ public class UserActionsActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = findViewById(R.id.nav_view);
-        headerLayout = navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
+
         connectionToken = ConnectionReciver.isConnected();
 
         if (sharedPreferences.getString("UserId", "").isEmpty()) {
@@ -133,10 +133,7 @@ public class UserActionsActivity extends AppCompatActivity
             isTokenFailed = userActionPresenter.updateToken();
         } else {
             navigationView.getMenu().getItem(3).setVisible(false);
-            navigationView.setNavigationItemSelectedListener(this);
         }
-
-        navigationView.setNavigationItemSelectedListener(this);
 
         trackFrg = new TrackingsFragment();
         fTrans = getFragmentManager().beginTransaction();
@@ -181,11 +178,12 @@ public class UserActionsActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        ViewTreeObserver vto = navigationView.getViewTreeObserver();
+        /*ViewTreeObserver vto = navigationView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener
                 (new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout () {
+                        headerLayout = navigationView.getHeaderView(0);
                         sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS" , Context.MODE_PRIVATE);
                         userNick = (TextView) headerLayout.findViewById(R.id.userNickname);
                         userNick.setText("11111");
@@ -214,6 +212,7 @@ public class UserActionsActivity extends AppCompatActivity
 
                     }
                 });
+                */
         return true;
     }
 

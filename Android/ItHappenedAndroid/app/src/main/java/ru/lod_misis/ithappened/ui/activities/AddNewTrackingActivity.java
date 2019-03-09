@@ -566,6 +566,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         visbilityScaleTypeHint.setVisibility(View.GONE);
         visibilityScaleType.setVisibility(View.GONE);
         scaleType.setVisibility(View.GONE);
+        billingPresenter.checkPurchase();
         setupToolbar();
     }
 

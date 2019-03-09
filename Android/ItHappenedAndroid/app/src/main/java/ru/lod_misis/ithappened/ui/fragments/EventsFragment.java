@@ -57,7 +57,7 @@ import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 
-public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView, DeleteContract.DeleteView, EventsFragmnetCallBack,DeleteCallback {
+public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView, DeleteContract.DeleteView, EventsFragmnetCallBack, DeleteCallback {
 
     @Inject
     DeleteContract.DeletePresenter deletePresenter;
@@ -185,9 +185,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         @Override
                         public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                             if (isChecked) {
-                                selectedPositionItems.add(position);
+                                selectedPositionItems.set(position,position);
                             } else {
-                                selectedPositionItems.remove(position);
+                                selectedPositionItems.set(position, -1);
                             }
                         }
                     });
@@ -196,14 +196,18 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                                 public void onClick(DialogInterface dialogInterface, int k) {
                                     StringBuilder item = new StringBuilder();
                                     for (int i = 0; i < selectedPositionItems.size(); i++) {
-                                        item.append(trackingsTitles[selectedPositionItems.get(i)]);
-                                        if (i != selectedPositionItems.size() - 1) {
-                                            item.append(", ");
+                                        if (selectedPositionItems.get(i) != -1) {
+                                            item.append(trackingsTitles[selectedPositionItems.get(i)]);
+                                            if (selectedPositionItems.get(i) != -1) {
+                                                item.append(", ");
+                                            }
                                         }
                                     }
-                                    trackingsPickerText.setText(item.toString());
                                     if (item.length() == 0) {
                                         trackingsPickerText.setText("Не выбрано отслеживаний");
+                                    }else{
+                                        item.deleteCharAt(item.length()-2);
+                                        trackingsPickerText.setText(item.toString());
                                     }
                                 }
                             }
@@ -303,8 +307,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             public void onClick(View view) {
                 allTrackingsId = eventsHistoryPresenter.setUuidsCollection();
                 for (int i = 0; i < selectedPositionItems.size(); i++) {
-                    filteredTrackingsUuids.add
-                            (allTrackingsId.get(selectedPositionItems.get(i)));
+                    if (selectedPositionItems.get(i) != -1) {
+                        filteredTrackingsUuids.add
+                                (allTrackingsId.get(selectedPositionItems.get(i)));
+                    }
                 }
 
                 if (!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()) {
@@ -520,7 +526,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         onStart();
     }
 
-    private void deleteEvent(UUID trackingId,  UUID eventId) {
+    private void deleteEvent(UUID trackingId, UUID eventId) {
         DeleteEventDialog delete = new DeleteEventDialog();
         delete.setDeleteCallback(this);
         Bundle bundle = new Bundle();
@@ -544,7 +550,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.delete:
-                                   deleteEvent(trackingId,eventId);
+                                    deleteEvent(trackingId, eventId);
                                     return true;
                                 default:
                                     return false;
