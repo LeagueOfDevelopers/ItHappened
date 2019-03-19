@@ -335,10 +335,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
     }
 
     private void editEvent(UUID trackingId,UUID eventId) {
-        Intent intent = new Intent(getApplicationContext(), EditEventActivity.class);
-        intent.putExtra(TRACKING_ID, trackingId.toString());
-        intent.putExtra(EVENT_ID, eventId.toString());
-        startActivity(intent);
+        EditEventActivity.toEditEventActivity(this,trackingId.toString(),eventId.toString());
         deletePresenter.detachView();
     }
 

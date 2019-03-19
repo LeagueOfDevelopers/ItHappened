@@ -82,4 +82,5 @@
     <string name="start_work">Начать работу</string>
     <string name="paid_version">Полная версия</string>
     <string name="delete_event_in_list">Удалить</string>
+    <string name="edit">Изменить</string>
 </resources>

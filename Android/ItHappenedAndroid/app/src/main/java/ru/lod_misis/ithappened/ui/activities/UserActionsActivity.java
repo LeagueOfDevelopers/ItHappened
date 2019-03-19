@@ -178,7 +178,7 @@ public class UserActionsActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /*ViewTreeObserver vto = navigationView.getViewTreeObserver();
+        ViewTreeObserver vto = navigationView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener
                 (new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -195,7 +195,7 @@ public class UserActionsActivity extends AppCompatActivity
                             new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
                         } else {
                             loginButton.setVisibility(View.VISIBLE);
-                            lable.setVisibility(View.GONE);
+                            lable.setVisibility(View.VISIBLE);
                             userNick.setVisibility(View.GONE);
                             urlUser.setVisibility(View.GONE);
 
@@ -212,7 +212,7 @@ public class UserActionsActivity extends AppCompatActivity
 
                     }
                 });
-                */
+
         return true;
     }
 

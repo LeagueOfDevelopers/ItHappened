@@ -49,6 +49,7 @@ import ru.lod_misis.ithappened.domain.models.Comparison;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
+import ru.lod_misis.ithappened.ui.activities.EditEventActivity;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.ui.dialog.DeleteEventDialog;
 import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
@@ -551,6 +552,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             switch (item.getItemId()) {
                                 case R.id.delete:
                                     deleteEvent(trackingId, eventId);
+                                    return true;
+                                    case R.id.edit:
+                                        EditEventActivity.toEditEventActivity(getContext(),trackingId.toString(),eventId.toString());
                                     return true;
                                 default:
                                     return false;

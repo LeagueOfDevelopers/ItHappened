@@ -58,6 +58,15 @@ import ru.lod_misis.ithappened.ui.presenters.EditEventContract;
 
 public class EditEventActivity extends AppCompatActivity implements EditEventContract.EditEventView {
 
+    public static String TRACKING_ID = "trackingId";
+    public static String EVENT_ID = "eventId";
+
+    public static void toEditEventActivity(Context context,String trackingId,String eventId){
+        Intent intent = new Intent(context, EditEventActivity.class);
+        intent.putExtra(TRACKING_ID, trackingId);
+        intent.putExtra(EVENT_ID, eventId);
+        context.startActivity(intent);
+    }
     @Inject
     EditEventContract.EditEventPresenter presenter;
     @BindView(R.id.commentEventContainer)
