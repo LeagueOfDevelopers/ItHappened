@@ -3,6 +3,8 @@ package ru.lod_misis.ithappened.di.modules;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.anjlab.android.iab.v3.BillingProcessor;
+
 import javax.inject.Singleton;
 
 import dagger.Module;

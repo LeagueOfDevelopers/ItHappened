@@ -15,12 +15,14 @@ import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
 import android.util.Log;
@@ -50,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -68,7 +71,7 @@ import ru.lod_misis.ithappened.domain.photointeractor.PhotoInteractorImpl;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.activities.mapactivity.MapActivity;
 import ru.lod_misis.ithappened.ui.background.AllId;
-import ru.lod_misis.ithappened.ui.background.MyGeopositionService;
+import ru.lod_misis.ithappened.ui.background.GeopositionService;
 import ru.lod_misis.ithappened.ui.background.NotificationJobService;
 import ru.lod_misis.ithappened.ui.presenters.AddNewEventContract;
 
@@ -77,26 +80,26 @@ import static ru.lod_misis.ithappened.domain.models.TrackingCustomization.None;
 
 public class AddNewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AddNewEventContract.AddNewEventView {
 
-    int commentState;
-    int scaleState;
-    int ratingState;
-    int geopositionState;
-    int photoState;
+    private int commentState;
+    private int scaleState;
+    private int ratingState;
+    private int geopositionState;
+    private int photoState;
 
-    UUID trackingId;
+    private UUID trackingId;
 
-    DatePickerDialog datePickerDialog;
-    TimePickerDialog timePickerDialog;
+    private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
 
     //Date time attrs
-    int eventYear;
-    int eventMonth;
-    int eventDay;
+    private int eventYear;
+    private int eventMonth;
+    private int eventDay;
 
-    boolean timeSetFlag = false;
+    private boolean timeSetFlag = false;
 
 
-    Date eventDate;
+    private Date eventDate;
 
     @Inject
     AddNewEventContract.AddNewEventPresenter addNewEventPresenter;
@@ -135,11 +138,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     @BindView(R.id.adress)
     TextView address;
 
-    Double latitude = null;
-    Double longitude = null;
+    private Double latitude = null;
+    private Double longitude = null;
 
 
-    String photoPath;
+    private String photoPath;
 
     @BindView(R.id.photo)
     ImageView photo;
@@ -153,7 +156,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     private DateTime userOpenAnActivityDateTime;
 
     @Override
-    protected void onCreate (@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
 
@@ -166,11 +169,11 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    protected void onStart () {
+    protected void onStart() {
         super.onStart();
         dateControl.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 datePickerDialog.create();
                 datePickerDialog.show();
             }
@@ -178,48 +181,49 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
         geopositionContainer.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
-                if (ActivityCompat.checkSelfPermission(AddNewEventActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(AddNewEventActivity.this , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            public void onClick(View view) {
+                if (ActivityCompat.checkSelfPermission(AddNewEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(AddNewEventActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     addNewEventPresenter.requestPermission(1);
+                } else {
+                    MapActivity.toMapActivity(AddNewEventActivity.this, 1, 0, 0);
                 }
-                MapActivity.toMapActivity(AddNewEventActivity.this , 1 , 0 , 0);
             }
         });
 
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 initDialogForPhoto();
             }
         });
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 addEvent();
             }
         });
         scaleContainer.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 scaleControl.requestFocus();
-                InputMethodManager imm = ( InputMethodManager ) getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
-                    imm.showSoftInput(scaleControl , InputMethodManager.SHOW_IMPLICIT);
+                    imm.showSoftInput(scaleControl, InputMethodManager.SHOW_IMPLICIT);
                 }
             }
         });
     }
 
-    private void initDialogForPhoto () {
+    private void initDialogForPhoto() {
         workWithFIles = new PhotoInteractorImpl(AddNewEventActivity.this);
         AlertDialog.Builder dialog = new AlertDialog.Builder(AddNewEventActivity.this);
         dialog.setTitle(R.string.title_dialog_for_photo);
-        dialog.setItems(new String[]{"Галлерея" , "Фото"} , new DialogInterface.OnClickListener() {
+        dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick (DialogInterface dialogInterface , int i) {
-                switch ( i ) {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
                     case 0: {
                         pickGallery();
                         break;
@@ -258,8 +262,8 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch ( item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
                 return true;
@@ -269,7 +273,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    public void onDateSet (DatePicker datePicker , int year , int month , int day) {
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         eventYear = year - 1900;
         eventMonth = month;
         eventDay = day;
@@ -277,24 +281,23 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    public void onTimeSet (TimePicker timePicker , int hour , int minuets) {
-        eventDate = new Date(eventYear , eventMonth , eventDay , hour , minuets);
+    public void onTimeSet(TimePicker timePicker, int hour, int minuets) {
+        eventDate = new Date(eventYear, eventMonth, eventDay, hour, minuets);
         SimpleDateFormat format = getSimpleDateFormat();
         timeSetFlag = true;
         dateControl.setText(format.format(eventDate));
     }
 
     @Override
-    public void onRequestPermissionsResult (int requestCode , @NonNull String[] permissions , @NonNull int[] grantResults) {
-        Log.d("RequestPermission" , "responseAll");
-        super.onRequestPermissionsResult(requestCode , permissions , grantResults);
-        switch ( requestCode ) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("RequestPermission", "responseAll");
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("RequestPermission" , "RequestYes");
-                    stopService(new Intent(this , MyGeopositionService.class));
-                    startService(new Intent(this , MyGeopositionService.class));
+                    Log.d("RequestPermission", "RequestYes");
+                    createGeopositionJobService();
 
                 } else {
                     onBackPressed();
@@ -304,13 +307,13 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    public void requestPermissionForGeoposition () {
-        Log.d("RequestPermission" , "Request");
-        ActivityCompat.requestPermissions(this , new String[]{Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION} , 1);
+    public void requestPermissionForGeoposition() {
+        Log.d("RequestPermission", "Request");
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 
     @Override
-    public void startConfigurationView () {
+    public void startConfigurationView() {
         if (trackingV1.getScaleCustomization() != None
                 && trackingV1.getScaleName() != null) {
             scaleType.setText(trackingV1.getScaleName());
@@ -322,7 +325,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    public void startedConfiguration (TrackingV1 trackingV1) {
+    public void startedConfiguration(TrackingV1 trackingV1) {
         eventDate = Calendar.getInstance(TimeZone.getDefault()).getTime();
         this.address.setText(R.string.add_geoposition);
 
@@ -335,37 +338,46 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @Override
-    public void showMessage (String message) {
-        Toast.makeText(getApplicationContext() , message , Toast.LENGTH_SHORT).show();
+    public void showMessage(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void finishAddEventActivity () {
+    public void finishAddEventActivity() {
         addNewEventPresenter.detachView();
         finish();
     }
 
     @Override
-    protected void onActivityResult (int requestCode , int resultCode , Intent data) {
-        super.onActivityResult(requestCode , resultCode , data);
-        if (resultCode != RESULT_OK) {
-            Toast.makeText(getApplicationContext() , "Упс,что-то пошло не так =((((" + "\n" + "Фотографию не удалось загрузить" , Toast.LENGTH_SHORT).show();
-            return;
-        }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
             photoPath = workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
+
         }
         if (requestCode == 2) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Picasso.get().load(data.getData()).into(photo);
             photoPath = workWithFIles.saveBitmap(data.getData());
         }
         if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Не удалось определить ваше местоположение", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (data != null) {
-                latitude = data.getDoubleExtra("latitude" , 0);
-                longitude = data.getDoubleExtra("longitude" , 0);
+                latitude = data.getDoubleExtra("latitude", 0);
+                longitude = data.getDoubleExtra("longitude", 0);
                 try {
-                    address.setText(getAddress(latitude , longitude));
+                    address.setText(getAddress(latitude, longitude));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -375,7 +387,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     }
 
-    private void addEvent () {
+    private void addEvent() {
         boolean commentFlag = true;
         boolean scaleFlag = true;
         boolean ratingFlag = true;
@@ -408,12 +420,12 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 comment = commentControl.getText().toString().trim();
             }
             if (!(ratingControl.getRating() == 0)) {
-                rating = new Rating(( int ) (ratingControl.getRating() * 2));
+                rating = new Rating((int) (ratingControl.getRating() * 2));
             }
             if (!scaleControl.getText().toString().isEmpty()) {
                 try {
                     scale = Double.parseDouble(scaleControl.getText().toString().trim());
-                    addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID() , trackingId , eventDate , scale , rating , comment , latitude , longitude , photoPath) , trackingId);
+                    addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude, photoPath), trackingId);
                     YandexMetrica.reportEvent("Пользователь добавил событие");
                     if (longitude != null && latitude != null) {
                         YandexMetrica.reportEvent(getString(R.string.metrica_user_add_address_to_event));
@@ -440,16 +452,16 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
 
     }
 
-    private void initJobSchedulerForNotifications (TrackingV1 trackingV1) {
-        jobId = AllId.addNewValue(trackingV1.getTrackingId());
-        JobScheduler jobScheduler = ( JobScheduler ) AddNewEventActivity.this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+    private void initJobSchedulerForNotifications(TrackingV1 trackingV1) {
+        jobId = trackingV1.getEventHistory().size();
+        JobScheduler jobScheduler = (JobScheduler) AddNewEventActivity.this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler != null) {
-            jobScheduler.cancel(trackingV1.getEventHistory().size() - 1);
+            jobScheduler.cancel(jobId - 1);
         }
         planningNotification(trackingV1);
     }
 
-    private void calculateState (TrackingV1 trackingV1) {
+    private void calculateState(TrackingV1 trackingV1) {
         commentState = stateMap(trackingV1.getCommentCustomization());
         ratingState = stateMap(trackingV1.getRatingCustomization());
         scaleState = stateMap(trackingV1.getScaleCustomization());
@@ -457,15 +469,15 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         photoState = stateMap(trackingV1.getPhotoCustomization());
     }
 
-    private void calculateUx () {
-        calculateUX(commentContainer , commentAccess , commentState);
-        calculateUX(ratingContainer , ratingAccess , ratingState);
-        calculateUX(scaleContainer , scaleAccess , scaleState);
-        calculateUX(geopositionContainer , geopositionAccess , geopositionState);
-        calculateUX(photoContainer , photoAccess , photoState);
+    private void calculateUx() {
+        calculateUX(commentContainer, commentAccess, commentState);
+        calculateUX(ratingContainer, ratingAccess, ratingState);
+        calculateUX(scaleContainer, scaleAccess, scaleState);
+        calculateUX(geopositionContainer, geopositionAccess, geopositionState);
+        calculateUX(photoContainer, photoAccess, photoState);
     }
 
-    private void initToolbar () {
+    private void initToolbar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
@@ -474,7 +486,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         }
     }
 
-    private void initDate () {
+    private void initDate() {
         SimpleDateFormat format = getSimpleDateFormat();
         dateControl.setText(format.format(eventDate));
     }
@@ -483,40 +495,40 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
         datePickerDialog = new DatePickerDialog(
-                this ,
-                this ,
-                calendar.get(Calendar.YEAR) ,
-                calendar.get(Calendar.MONTH) ,
+                this,
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
 
         timePickerDialog = new TimePickerDialog(
-                this ,
-                this ,
-                calendar.get(Calendar.HOUR_OF_DAY) ,
-                calendar.get(Calendar.MINUTE) ,
+                this,
+                this,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
                 true);
     }
 
-    private void pickCamera () {
+    private void pickCamera() {
         if (workWithFIles != null) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT , workWithFIles.generateFileUri(1));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, workWithFIles.generateFileUri(1));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            AddNewEventActivity.this.startActivityForResult(intent , 1);
+            AddNewEventActivity.this.startActivityForResult(intent, 1);
         }
     }
 
-    private void pickGallery () {
+    private void pickGallery() {
         if (workWithFIles != null) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             if (intent.resolveActivity(AddNewEventActivity.this.getPackageManager()) != null) {
-                AddNewEventActivity.this.startActivityForResult(intent , 2);
+                AddNewEventActivity.this.startActivityForResult(intent, 2);
             }
         }
     }
 
-    private Long calculateAverageTime(TrackingV1 trackingV1){
+    private Long calculateAverageTime(TrackingV1 trackingV1) {
         int eventCount = 0;
         Date dateOfFirstEvent = Calendar.getInstance(TimeZone.getDefault()).getTime();
         for (EventV1 eventV1 : trackingV1.getEventHistory()) {
@@ -526,13 +538,17 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                     dateOfFirstEvent = eventV1.getEventDate();
             }
         }
-        return (new Date().getTime() - dateOfFirstEvent.getTime()) / eventCount;
+        if (eventCount == 0) {
+            return 0L;
+        } else {
+            return (new Date().getTime() - dateOfFirstEvent.getTime()) / eventCount;
+        }
     }
 
-    private void planningNotification (TrackingV1 trackingV1) {
+    private void planningNotification(TrackingV1 trackingV1) {
         Long averangeTime;
-        Long oneDay = ( long ) (1000 * 60 * 60 * 24);
-        if (trackingV1.getEventHistory().size() < 10) {
+        Long oneDay = (long) (1000 * 60 * 60 * 24);
+        if (trackingV1.getEventHistory().size() < 1) {
             return;
         }
         averangeTime = calculateAverageTime(trackingV1);
@@ -549,32 +565,36 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
 
-    private void createJobScheduler (Long time) {
-        ComponentName notificationJobServiece = new ComponentName(this , NotificationJobService.class);
-        JobInfo.Builder jobBuilder = new JobInfo.Builder(jobId , notificationJobServiece);
+    private void createJobScheduler(Long time) {
+
+        PersistableBundle persistableBundle = new PersistableBundle();
+        persistableBundle.putString("TrackingId", trackingId.toString());
+        ComponentName notificationJobServiece = new ComponentName(this, NotificationJobService.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(jobId, notificationJobServiece);
+        jobBuilder.setExtras(persistableBundle);
         jobBuilder.setMinimumLatency(time);
         JobScheduler jobScheduler =
-                ( JobScheduler ) AddNewEventActivity.this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                (JobScheduler) AddNewEventActivity.this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler != null) {
             jobScheduler.schedule(jobBuilder.build());
         }
     }
 
-    private String getAddress (Double latitude , Double longitude) throws IOException {
-        Geocoder geocoder = new Geocoder(this , Locale.getDefault());
-        return geocoder.getFromLocation(latitude , longitude , 1).get(0).getAddressLine(0);
+    private String getAddress(Double latitude, Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        return geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);
     }
 
     @NonNull
-    private SimpleDateFormat getSimpleDateFormat () {
+    private SimpleDateFormat getSimpleDateFormat() {
         Locale loc = new Locale("ru");
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm" , loc);
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm", loc);
         format.setTimeZone(TimeZone.getDefault());
         return format;
     }
 
     private int stateMap(TrackingCustomization customization) {
-        switch ( customization ) {
+        switch (customization) {
             case None:
                 return 0;
             case Optional:
@@ -588,18 +608,30 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
     }
 
     @SuppressLint("SetTextI18n")
-    private void calculateUX (LinearLayout container , TextView access , int state) {
-        switch ( state ) {
+    private void calculateUX(LinearLayout container, TextView access, int state) {
+        switch (state) {
             case 0:
                 container.setVisibility(View.GONE);
                 break;
             case 1:
                 break;
             case 2:
-                access.setText(access.getText().toString() + "*");
+                String styledText = access.getText().toString() + " <font color='red'>*</font>";
+                access.setText(Html.fromHtml(styledText), TextView.BufferType.SPANNABLE);
                 break;
             default:
                 break;
+        }
+    }
+
+    private void createGeopositionJobService() {
+        ComponentName notificationJobServiece = new ComponentName(this, GeopositionService.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(534324, notificationJobServiece);
+        jobBuilder.setMinimumLatency(1000 * 60L);
+        JobScheduler jobScheduler =
+                (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (jobScheduler != null) {
+            jobScheduler.schedule(jobBuilder.build());
         }
     }
 }

@@ -26,6 +26,10 @@
             android:icon="@drawable/syncr"
             android:title="@string/synchronisation"
             android:visible="true" />
+        <item
+            android:id="@+id/buyingPaidVersion"
+            android:title="@string/paid_version"
+            android:visible="true"/>
     </group>
 
 </menu>

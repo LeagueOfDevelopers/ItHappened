@@ -16,12 +16,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -47,11 +49,19 @@ import ru.lod_misis.ithappened.domain.models.Comparison;
 import ru.lod_misis.ithappened.domain.models.EventV1;
 import ru.lod_misis.ithappened.domain.models.Rating;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
+import ru.lod_misis.ithappened.ui.activities.EditEventActivity;
+import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
+import ru.lod_misis.ithappened.ui.dialog.DeleteEventDialog;
+import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
+import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
+import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 
-public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView {
+public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView, DeleteContract.DeleteView, EventsFragmnetCallBack, DeleteCallback {
 
+    @Inject
+    DeleteContract.DeletePresenter deletePresenter;
     @Inject
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
     @Inject
@@ -101,18 +111,18 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     @Nullable
     @Override
-    public View onCreateView (LayoutInflater inflater , @Nullable ViewGroup container , Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_events_history , null);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_events_history, null);
     }
 
     @Override
-    public void onViewCreated (View view , @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view , savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("История событий");
         fragmentManager = getFragmentManager();
 
         ItHappenedApplication.getAppComponent().inject(this);
-        initViews(view , getActivity());
+        initViews(view, getActivity());
         getDataFromBundle();
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
         eventsHistoryPresenter.onViewAttach(this);
@@ -122,10 +132,12 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         stateForHint = 0;
 
+        deletePresenter.attachView(this);
+
         filtersHint.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
-                switch ( stateForHint ) {
+            public void onClick(View view) {
+                switch (stateForHint) {
                     case 0:
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         stateForHint = 1;
@@ -135,7 +147,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         stateForHint = 0;
                         break;
                     default:
-                        Toast.makeText(getActivity() , "Потяните вверх!" , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Потяните вверх!", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -148,10 +160,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         LinearLayoutManager manager = new LinearLayoutManager(getActivity().getApplicationContext());
         eventsRecycler.setLayoutManager(manager);
 
-        String allText = eventsHistoryPresenter.prepareDataForDialog(strings , idCollection , selectedItems);
+        String allText = eventsHistoryPresenter.prepareDataForDialog(strings, idCollection, selectedItems);
 
         if (allText.length() != 0)
-            trackingsPickerText.setText(allText.substring(0 , allText.length() - 2));
+            trackingsPickerText.setText(allText.substring(0, allText.length() - 2));
 
         trackingsTitles = new String[strings.size()];
         trackingsTitles = strings.toArray(trackingsTitles);
@@ -165,40 +177,44 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         if (strings.size() != 0) {
             trackingsPickerText.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick (View view) {
+                public void onClick(View view) {
                     filteredTrackingsUuids.clear();
                     final AlertDialog trackingsPickerDiaolg;
                     final AlertDialog.Builder trackingsPicker = new AlertDialog.Builder(getActivity());
                     trackingsPicker.setTitle("Выберите отслеживания");
-                    trackingsPicker.setMultiChoiceItems(trackingsTitles , selectedArray , new DialogInterface.OnMultiChoiceClickListener() {
+                    trackingsPicker.setMultiChoiceItems(trackingsTitles, selectedArray, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
-                        public void onClick (DialogInterface dialogInterface , int position , boolean isChecked) {
+                        public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                             if (isChecked) {
-                                selectedPositionItems.add(position);
+                                selectedPositionItems.set(position,position);
                             } else {
-                                selectedPositionItems.remove(position);
+                                selectedPositionItems.set(position, -1);
                             }
                         }
                     });
-                    trackingsPicker.setPositiveButton("Применить" , new DialogInterface.OnClickListener() {
+                    trackingsPicker.setPositiveButton("Применить", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick (DialogInterface dialogInterface , int k) {
+                                public void onClick(DialogInterface dialogInterface, int k) {
                                     StringBuilder item = new StringBuilder();
                                     for (int i = 0; i < selectedPositionItems.size(); i++) {
-                                        item.append(trackingsTitles[selectedPositionItems.get(i)]);
-                                        if (i != selectedPositionItems.size() - 1) {
-                                            item.append(", ");
+                                        if (selectedPositionItems.get(i) != -1) {
+                                            item.append(trackingsTitles[selectedPositionItems.get(i)]);
+                                            if (selectedPositionItems.get(i) != -1) {
+                                                item.append(", ");
+                                            }
                                         }
                                     }
-                                    trackingsPickerText.setText(item.toString());
                                     if (item.length() == 0) {
                                         trackingsPickerText.setText("Не выбрано отслеживаний");
+                                    }else{
+                                        item.deleteCharAt(item.length()-2);
+                                        trackingsPickerText.setText(item.toString());
                                     }
                                 }
                             }
                     );
-                    trackingsPicker.setNegativeButton("Снять все" , null);
-                    trackingsPicker.setNeutralButton("Выбрать все" , null);
+                    trackingsPicker.setNegativeButton("Снять все", null);
+                    trackingsPicker.setNeutralButton("Выбрать все", null);
 
                     trackingsPickerDiaolg = trackingsPicker.show();
 
@@ -207,7 +223,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
                     selectAll.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick (View view) {
+                        public void onClick(View view) {
                             selectedPositionItems.clear();
                             for (int i = 0; i < selectedArray.length; i++) {
                                 selectedArray[i] = true;
@@ -216,14 +232,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             }
                             ListView curList = trackingsPickerDiaolg.getListView();
                             for (int i = 0; i < trackingsTitles.length; ++i)
-                                curList.setItemChecked(i , true);
+                                curList.setItemChecked(i, true);
 
                         }
                     });
 
                     unselectAll.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick (View view) {
+                        public void onClick(View view) {
                             for (int i = 0; i < selectedArray.length; i++) {
                                 selectedArray[i] = false;
                                 selectedPositionItems.clear();
@@ -231,7 +247,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
                             ListView curList = trackingsPickerDiaolg.getListView();
                             for (int i = 0; i < trackingsTitles.length; ++i)
-                                curList.setItemChecked(i , false);
+                                curList.setItemChecked(i, false);
                         }
                     });
                 }
@@ -245,28 +261,28 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         dateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
 
                 DialogFragment picker = new DatePickerFragment(dateFrom);
-                picker.show(fragmentManager , "from");
+                picker.show(fragmentManager, "from");
             }
         });
 
         dateTo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 DialogFragment picker = new DatePickerFragment(dateTo);
-                picker.show(fragmentManager , "to");
+                picker.show(fragmentManager, "to");
             }
         });
 
-        String[] hints = new String[]{"Больше" , "Меньше" , "Равно"};
+        String[] hints = new String[]{"Больше", "Меньше", "Равно"};
 
-        ArrayAdapter<String> hintsForScaleAdapter = new ArrayAdapter<>(getActivity() , android.R.layout.simple_spinner_item , hints);
+        ArrayAdapter<String> hintsForScaleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, hints);
         hintsForScaleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForScaleSpinner.setAdapter(hintsForScaleAdapter);
 
-        ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<>(getActivity() , android.R.layout.simple_spinner_item , hints);
+        ArrayAdapter<String> hintsForRatingAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, hints);
         hintsForRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hintsForRatingSpinner.setAdapter(hintsForRatingAdapter);
 
@@ -275,31 +291,33 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
         filtersCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 YandexMetrica.reportEvent(getString(R.string.metrica_cancel_filters));
-                eventsHistoryPresenter.filterEvents(null ,
-                        null ,
-                        null ,
-                        null ,
-                        null ,
-                        null ,
-                        null ,
-                        startPosition , endPosition);
+                eventsHistoryPresenter.filterEvents(null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        startPosition, endPosition);
             }
         });
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 allTrackingsId = eventsHistoryPresenter.setUuidsCollection();
                 for (int i = 0; i < selectedPositionItems.size(); i++) {
-                    filteredTrackingsUuids.add
-                            (allTrackingsId.get(selectedPositionItems.get(i)));
+                    if (selectedPositionItems.get(i) != -1) {
+                        filteredTrackingsUuids.add
+                                (allTrackingsId.get(selectedPositionItems.get(i)));
+                    }
                 }
 
                 if (!dateFrom.getText().toString().isEmpty() && !dateTo.getText().toString().isEmpty()) {
                     Locale locale = new Locale("ru");
                     SimpleDateFormat simpleDateFormat = new
-                            SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
+                            SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
                     try {
                         dateF = simpleDateFormat.parse(dateFrom.getText().toString());
                         dateT = simpleDateFormat.parse(dateTo.getText().toString());
@@ -315,20 +333,20 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                     }
                     if (ratingFilter.getRating() != 0) {
                         ratingComparison = Comparison.values()[hintsForRatingSpinner.getSelectedItemPosition()];
-                        rating = new Rating(( int ) ratingFilter.getRating() * 2);
+                        rating = new Rating((int) ratingFilter.getRating() * 2);
                     }
                     YandexMetrica.reportEvent(getString(R.string.metrica_add_filters));
 
 
-                    eventsHistoryPresenter.filterEvents(filteredTrackingsUuids ,
-                            dateF ,
-                            dateT ,
-                            scaleComparison ,
-                            scale ,
-                            ratingComparison ,
-                            rating , startPosition , endPosition);
+                    eventsHistoryPresenter.filterEvents(filteredTrackingsUuids,
+                            dateF,
+                            dateT,
+                            scaleComparison,
+                            scale,
+                            ratingComparison,
+                            rating, startPosition, endPosition);
                 } catch (NumberFormatException e) {
-                    Toast.makeText(getActivity().getApplicationContext() , "Введите нормальные данные шкалы!" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -375,34 +393,34 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void onStart () {
-        eventsHistoryPresenter.filterEvents(null ,//всегда ли при первом вызове null???
-                dateF ,
-                dateT ,
-                scaleComparison ,
-                scale ,
-                ratingComparison ,
-                rating ,
-                startPosition ,
+    public void onStart() {
+        eventsHistoryPresenter.filterEvents(null,//всегда ли при первом вызове null???
+                dateF,
+                dateT,
+                scaleComparison,
+                scale,
+                ratingComparison,
+                rating,
+                startPosition,
                 endPosition
         );
         super.onStart();
     }
 
-    private void getDataFromBundle () {
+    private void getDataFromBundle() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             dateF = new Date(bundle.getLong("dateFrom"));
             dateT = new Date(bundle.getLong("dateTo"));
             Locale locale = new Locale("ru");
             SimpleDateFormat simpleDateFormat = new
-                    SimpleDateFormat("dd.MM.yyyy HH:mm" , locale);
+                    SimpleDateFormat("dd.MM.yyyy HH:mm", locale);
             dateFrom.setText(simpleDateFormat.format(dateF));
             dateTo.setText(simpleDateFormat.format(dateT));
         }
     }
 
-    private void initViews (View view , Activity activity) {
+    private void initViews(View view, Activity activity) {
         filtersScreen = activity.findViewById(R.id.bottom_sheet);
         filtersHint = activity.findViewById(R.id.filtersText);
         dateFrom = view.findViewById(R.id.dateFromButton);
@@ -422,7 +440,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     //я пытался понять ,честно,но не смог,сус, я вызываю тебя!
     @Override
-    public void showEvents (List<EventV1> events) {
+    public void showEvents(List<EventV1> events) {
         isScrolling = false;
 
         if (events.size() == 0) {
@@ -431,11 +449,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         EventsAdapter eventsAdpt;
         if (events.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events , getActivity() , 1 , collection);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection, this);
             eventsAdpt.notifyDataSetChanged();
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(events , getActivity() , 1 , collection);
+            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection, this);
             eventsAdpt.notifyDataSetChanged();
         }
         ArrayList<EventV1> refreshedEvents = new ArrayList<>();
@@ -448,20 +466,20 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         if (refreshedEvents.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
         }
-        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents , getActivity().getApplicationContext() , 1 , collection));
+        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity(), 1, collection, this));
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
 
     @Override
-    public void onPause () {
+    public void onPause() {
         super.onPause();
         YandexMetrica.reportEvent(getString(R.string.metrica_exit_event_history));
     }
 
     @Override
-    public void showLoading (boolean isLoading) {
+    public void showLoading(boolean isLoading) {
         if (isLoading) {
             eventsRecycler.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
@@ -472,7 +490,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void cancelFilters () {
+    public void cancelFilters() {
         ratingFilter.setRating(0);
         scaleFilter.setText("");
         dateFrom.setText("После");
@@ -497,6 +515,64 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             hintForSpinner.setVisibility(View.VISIBLE);
             filtersHintText.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void finishDetailsEventActivity() {
+        onStart();
+    }
+
+    private void deleteEvent(UUID trackingId, UUID eventId) {
+        DeleteEventDialog delete = new DeleteEventDialog();
+        delete.setDeleteCallback(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(EventDetailsActivity.TRACKING_ID, trackingId.toString());
+        bundle.putString(EventDetailsActivity.EVENT_ID, eventId.toString());
+        delete.setArguments(bundle);
+        delete.show(getFragmentManager(), "DeleteEvent");
+    }
+
+    @Override
+    public void showPopupMenu(View v, final UUID trackingId, final UUID eventId) {
+        PopupMenu popupMenu = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            popupMenu = new PopupMenu(getContext(), v);
+
+            popupMenu.inflate(R.menu.popup_menu_delete_in_list);
+
+            popupMenu
+                    .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.delete:
+                                    deleteEvent(trackingId, eventId);
+                                    return true;
+                                    case R.id.edit:
+                                        EditEventActivity.toEditEventActivity(getContext(),trackingId.toString(),eventId.toString());
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
+            popupMenu.show();
+        }
+    }
+
+    @Override
+    public void finishDeleting(UUID trackingId, UUID eventId) {
+        deletePresenter.okClicked(trackingId, eventId);
+    }
+
+    @Override
+    public void cansel() {
+        deletePresenter.canselClicked();
     }
 
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/headerView"
     android:layout_height="wrap_content"
     android:background="@drawable/side_nav_bar"
@@ -24,7 +25,7 @@
         android:layout_marginBottom="@dimen/inner_margin_between_components"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/nav_header_vertical_spacing"
+        android:layout_marginTop="35dp"
         android:text="Войти"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -40,6 +41,6 @@
         android:id="@+id/userNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="android.studio@android.com" />
+        tools:text="android.studio@android.com" />
 
 </LinearLayout>

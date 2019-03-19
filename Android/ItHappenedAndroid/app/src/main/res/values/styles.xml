@@ -41,8 +41,9 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+
     <style name="Theme.MyBack" parent="AppTheme">
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_black_24dp</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
     </style>
 
     <style name="RatingBar" parent="Theme.AppCompat">
@@ -53,6 +54,10 @@
     <style name="AppTheme.NoActionBar." parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
     </style>
 
 

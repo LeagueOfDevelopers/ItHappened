@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened.ui.fragments;
+package ru.lod_misis.ithappened.ui.dialog;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import ru.lod_misis.ithappened.R;
+import ru.lod_misis.ithappened.ui.fragments.ProfileSettingsFragment;
 
 /**
  * Created by Пользователь on 16.02.2018.

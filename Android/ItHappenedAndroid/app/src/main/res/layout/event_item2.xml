@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.internal.ForegroundLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1">
+
+
+    <android.support.v7.widget.CardView
+
+        android:id="@+id/eventCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/padding_up_down_for_cards"
+        android:layout_marginLeft="@dimen/outer_margin"
+        android:layout_marginRight="@dimen/outer_margin"
+        android:layout_marginBottom="@dimen/inner_margin_between_components"
+        >
+
+
+            <RelativeLayout
+                android:id="@+id/eventRL"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_gravity="left"
+                android:paddingTop="@dimen/padding_up_down"
+                android:paddingBottom="@dimen/padding_up_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/TrackingTitle"
+                    android:layout_toRightOf="@id/photo"
+                    android:ellipsize="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="left"
+                    android:lines="1"
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingEnd="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:paddingBottom="@dimen/padding_up_down"
+                    android:paddingTop="@dimen/padding_up_down"
+                    android:textColor="@color/black"
+                    tools:text="Сахар в крови"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/eventDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/photo"
+                    android:layout_below="@+id/TrackingTitle"
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingEnd="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:paddingBottom="@dimen/padding_up_down"
+                    android:paddingTop="@dimen/padding_up_down"
+                    tools:text="14.12.2017 22:54"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/ratingValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/eventDate"
+                    android:layout_below="@+id/TrackingTitle"
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingBottom="@dimen/padding_up_down"
+                    android:paddingTop="@dimen/padding_up_down"
+                    android:layout_marginLeft="@dimen/inner_margin_between_components"
+                    android:layout_marginStart="@dimen/inner_margin_between_components"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="2"
+                    tools:visibility="visible"/>
+
+                <ImageView
+                    android:id="@+id/starIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/ratingValue"
+                    android:layout_toRightOf="@+id/ratingValue"
+                    android:layout_alignBottom="@id/ratingValue"
+                    android:layout_below="@id/TrackingTitle"
+                    android:paddingTop="@dimen/padding_up_down"
+                    android:paddingBottom="@dimen/padding_up_down"
+                    android:visibility="gone"
+                    android:src="@drawable/star"
+                    tools:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/scaleValue"
+                    android:layout_toRightOf="@id/starIcon"
+                    android:layout_width="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TrackingTitle"
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/inner_margin_between_components"
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingEnd="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:paddingBottom="@dimen/padding_up_down"
+                    android:paddingTop="@dimen/padding_up_down"
+                    android:text="12 кг"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size"
+                    tools:visibility="visible"/>
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="100dp"
+                    android:layout_height="90dp"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <!--<ImageView
+        android:id="@+id/editEventIcn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/scaleValue"
+        android:layout_alignEnd="@+id/scaleValue"
+        android:layout_alignRight="@+id/scaleValue"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginRight="27dp"
+        android:paddingBottom="7dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:paddingTop="7dp"
+        android:src="@mipmap/edit" />-->
+
+
+</android.support.design.internal.ForegroundLinearLayout>

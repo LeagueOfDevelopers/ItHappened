@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened.ui.fragments;
+package ru.lod_misis.ithappened.ui.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
