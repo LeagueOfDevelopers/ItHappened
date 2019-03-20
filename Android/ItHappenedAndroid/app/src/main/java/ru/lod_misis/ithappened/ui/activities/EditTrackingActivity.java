@@ -518,7 +518,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(geoposition!=TrackingCustomization.None){
+                if(geoposition==TrackingCustomization.None){
                 editTrackingPresenter.onEditClick();}else{
                     if (ActivityCompat.checkSelfPermission(EditTrackingActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(EditTrackingActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

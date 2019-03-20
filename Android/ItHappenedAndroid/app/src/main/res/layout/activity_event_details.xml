@@ -89,7 +89,7 @@
                         style="@style/Widget.AppCompat.RatingBar.Indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/scaleHint"
+                        android:layout_below="@id/scaleValue"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/outer_margin"
                         android:isIndicator="true"

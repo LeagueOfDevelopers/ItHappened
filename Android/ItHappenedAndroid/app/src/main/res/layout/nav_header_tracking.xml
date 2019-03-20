@@ -17,7 +17,7 @@
         android:id="@+id/imageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:layout_marginTop="24dp"
         android:src="@mipmap/logo" />
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_marginBottom="@dimen/inner_margin_between_components"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="@dimen/inner_margin_between_components"
         android:text="Войти"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 

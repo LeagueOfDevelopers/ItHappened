@@ -264,7 +264,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale()) + " " + thisTrackingV1.getScaleName());
+            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale())+ " " + thisTrackingV1.getScaleName());
         } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);

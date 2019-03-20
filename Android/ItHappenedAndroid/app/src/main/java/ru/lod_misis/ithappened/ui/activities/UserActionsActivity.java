@@ -86,7 +86,7 @@ public class UserActionsActivity extends AppCompatActivity
     TrackingsFragment trackFrg;
     FragmentTransaction fTrans;
     FrameLayout layoutFrg;
-    CircleImageView urlUser;
+    CircleImageView circleLabel;
     ProfileSettingsFragment profileStgsFrg;
     ProgressBar syncPB;
     TextView lable;
@@ -188,21 +188,23 @@ public class UserActionsActivity extends AppCompatActivity
                         userNick = (TextView) headerLayout.findViewById(R.id.userNickname);
                         userNick.setText("11111");
                         loginButton = (TextView) headerLayout.findViewById(R.id.loginButton);
-                        urlUser = (CircleImageView) headerLayout.findViewById(R.id.imageView);
+                        circleLabel = (CircleImageView) headerLayout.findViewById(R.id.imageView);
                         lable = (TextView) headerLayout.findViewById(R.id.menuTitle);
                         if ( !sharedPreferences.getString("UserId" , "").equals("Offline") ) {
                             loginButton.setVisibility(View.GONE);
-                            new DownLoadImageTask(urlUser).execute(sharedPreferences.getString("Url", ""));
+                            new DownLoadImageTask(circleLabel).execute(sharedPreferences.getString("Url", ""));
                         } else {
-                            loginButton.setVisibility(View.VISIBLE);
+                            loginButton.setVisibility(View.GONE);
                             lable.setVisibility(View.VISIBLE);
                             userNick.setVisibility(View.GONE);
-                            urlUser.setVisibility(View.GONE);
+                            circleLabel.setVisibility(View.VISIBLE);
 
                             loginButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    userActionPresenter.getGoogleToken();
+                                    //В сл версии вернем
+                                    //userActionPresenter.getGoogleToken();
+                                    Toast.makeText(getApplicationContext(),"Синхронизация временно недоступна",Toast.LENGTH_LONG).show();
                                     DrawerLayout drawer = findViewById(R.id.drawer_layout);
                                     drawer.closeDrawer(GravityCompat.START);
                                 }

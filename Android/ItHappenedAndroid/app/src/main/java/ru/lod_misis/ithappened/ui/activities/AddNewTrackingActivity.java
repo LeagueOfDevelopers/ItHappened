@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -152,6 +154,8 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     TextView visbilityScaleTypeHint;
     @BindView(R.id.editTypeOfScale)
     EditText scaleType;
+    @BindView(R.id.editTypeOfScale2)
+    TextInputLayout scaleConteiner;
 
     @BindView(R.id.addTrack)
     Button addTrackingBtn;
@@ -296,6 +300,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 visbilityScaleTypeHint.setVisibility(View.GONE);
                 visibilityScaleType.setVisibility(View.GONE);
                 scaleType.setVisibility(View.GONE);
+                scaleConteiner.setVisibility(View.GONE);
             }
         });
 
@@ -314,6 +319,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
+                scaleConteiner.setVisibility(View.VISIBLE);
             }
         });
 
@@ -332,6 +338,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                 visbilityScaleTypeHint.setVisibility(View.VISIBLE);
                 visibilityScaleType.setVisibility(View.VISIBLE);
                 scaleType.setVisibility(View.VISIBLE);
+                scaleConteiner.setVisibility(View.VISIBLE);
             }
         });
         geopositionDont.setOnClickListener(new View.OnClickListener() {
@@ -529,7 +536,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
             if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
                     (scaleType.getText().toString().isEmpty()
-                            || scaleType.getText().toString().trim().isEmpty())) {
+                            || scaleType.getText().toString().trim().isEmpty())||scaleType.getText().toString().length()>20) {
                 showMessage("Введите единицу измерения шкалы");
             } else {
                 if (scale != TrackingCustomization.None) {
@@ -566,6 +573,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         visbilityScaleTypeHint.setVisibility(View.GONE);
         visibilityScaleType.setVisibility(View.GONE);
         scaleType.setVisibility(View.GONE);
+        scaleConteiner.setVisibility(View.GONE);
         billingPresenter.checkPurchase();
         setupToolbar();
     }

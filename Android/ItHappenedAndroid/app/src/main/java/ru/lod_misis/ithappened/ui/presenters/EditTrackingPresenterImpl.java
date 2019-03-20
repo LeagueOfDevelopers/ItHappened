@@ -55,7 +55,7 @@ public class EditTrackingPresenterImpl implements EditTrackingContract.EditTrack
 
             if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
                     (scaleType.isEmpty()
-                            || scaleType.trim().isEmpty())) {
+                            || scaleType.trim().isEmpty())||scaleType.length()>20) {
                 editTrackingView.showError("Введите единицу измерения шкалы");
             } else {
                 if (scale != TrackingCustomization.None) {

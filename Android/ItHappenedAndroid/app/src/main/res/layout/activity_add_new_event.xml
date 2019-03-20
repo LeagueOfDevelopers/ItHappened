@@ -113,6 +113,7 @@
                             android:background="@drawable/custom_edit_text"
                             android:hint="1000"
                             android:minHeight="40dp"
+                            android:maxWidth="300dp"
                             android:paddingLeft="@dimen/padding_left_and_right_for_texts"
                             android:paddingTop="@dimen/padding_up_and_down_for_texts"
                             android:paddingRight="@dimen/padding_left_and_right_for_texts"
@@ -346,8 +347,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:textColor="#FFFFFF"
             android:text="Создать"
-            android:textColor="#FFFFFF" />
+            />
 
     </LinearLayout>
 </RelativeLayout>
