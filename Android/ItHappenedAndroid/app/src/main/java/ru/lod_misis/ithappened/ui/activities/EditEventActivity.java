@@ -300,8 +300,6 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             if (photoPath != null) {
                 this.photoPath = photoPath;
                 this.photo.setImageBitmap(photoInteractor.loadImage(photoPath));
-            } else {
-                this.photoPath = "";
             }
         }
 

@@ -110,7 +110,6 @@ public class UserActionsActivity extends AppCompatActivity
         userActionPresenter.attachView(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
-        toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
