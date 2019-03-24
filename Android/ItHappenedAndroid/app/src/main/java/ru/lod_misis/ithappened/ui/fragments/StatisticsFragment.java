@@ -117,8 +117,6 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
 
         s = (AppCompatSpinner) vi.findViewById(R.id.statisticsSpinner);
 
-        recountBtn = (FloatingActionButton) getActivity().findViewById(R.id.recountStatistics);
-
         spinneradapter = new ArrayAdapter<String>(getActivity(), R.layout.statistics_spinner_item, titles);
         spinneradapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
 
@@ -127,13 +125,6 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.S
         ((UserActionsActivity) getActivity()).getSupportActionBar().setCustomView(vi);
 
         spinneradapter.notifyDataSetChanged();
-
-        recountBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                statisticsInteractor.loadingFacts(service);
-            }
-        });
 
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -55,6 +57,7 @@ import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.activities.mapactivity.MapActivity;
 import ru.lod_misis.ithappened.ui.fragments.DatePickerFragment;
 import ru.lod_misis.ithappened.ui.presenters.EditEventContract;
+import rx.Subscriber;
 
 public class EditEventActivity extends AppCompatActivity implements EditEventContract.EditEventView {
 
@@ -298,8 +301,23 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 || photo == TrackingCustomization.Required)) {
             photoInteractor = new PhotoInteractorImpl(this);
             if (photoPath != null) {
-                this.photoPath = photoPath;
-                this.photo.setImageBitmap(photoInteractor.loadImage(photoPath));
+                EditEventActivity.this.photoPath = photoPath;
+                photoInteractor.loadImage(photoPath).subscribe(new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("ErrorWithLoadPhoto",e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        EditEventActivity.this.photo.setImageBitmap(bitmap);
+                    }
+                });
             }
         }
 

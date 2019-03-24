@@ -15,6 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Single;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class PhotoInteractorImpl implements PhotoInteractor {
     final int TYPE_PHOTO = 1;
     final int TYPE_VIDEO = 2;
@@ -48,9 +53,10 @@ public class PhotoInteractorImpl implements PhotoInteractor {
     }
 
     @Override
-    public Bitmap loadImage (String path) {
-        Bitmap bitmap;
-        return bitmap = BitmapFactory.decodeFile(path);
+    public Observable<Bitmap> loadImage (String path) {
+        return   Observable.just(BitmapFactory.decodeFile(path))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

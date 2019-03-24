@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ import ru.lod_misis.ithappened.ui.dialog.DeleteEventDialog;
 import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
 import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
+import rx.Subscriber;
 
 
 public class EventDetailsActivity extends AppCompatActivity implements DeleteContract.DeleteView, EventDetailsContract.EventDetailsView, DeleteCallback {
@@ -177,7 +179,22 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             @Override
             public void onClick(View view) {
 
-                zoomImageFromThumb(photo, workWithFIles.loadImage(thisEventV1.getPhoto()));
+                workWithFIles.loadImage(thisEventV1.getPhoto()).subscribe(new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        zoomImageFromThumb(photo, bitmap);
+                    }
+                });
             }
         });
 
@@ -264,7 +281,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale())+ " " + thisTrackingV1.getScaleName());
+            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale()) + " " + thisTrackingV1.getScaleName());
         } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);
@@ -286,8 +303,23 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             geopositionLogo.setVisibility(View.GONE);
         }
         if (thisEventV1.getPhoto() != null) {
-            photo.setImageBitmap(workWithFIles.loadImage(thisEventV1.getPhoto()));
-            nullsCard.setVisibility(View.GONE);
+            workWithFIles.loadImage(thisEventV1.getPhoto()).subscribe(new Subscriber<Bitmap>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e("ErrorWithLoadPhoto",e.getMessage());
+                }
+
+                @Override
+                public void onNext(Bitmap bitmap) {
+                    photo.setImageBitmap(bitmap);
+                    nullsCard.setVisibility(View.GONE);
+                }
+            });
 
         } else {
             float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64f, getResources().getDisplayMetrics());
@@ -334,8 +366,8 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
         delete.show(getFragmentManager(), "DeleteEvent");
     }
 
-    private void editEvent(UUID trackingId,UUID eventId) {
-        EditEventActivity.toEditEventActivity(this,trackingId.toString(),eventId.toString());
+    private void editEvent(UUID trackingId, UUID eventId) {
+        EditEventActivity.toEditEventActivity(this, trackingId.toString(), eventId.toString());
         deletePresenter.detachView();
     }
 
@@ -351,8 +383,8 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
                 Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (resultCode == RESULT_OK)
-                super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK)
+            super.onActivityResult(requestCode, resultCode, data);
     }
 
     //Это анимация скопировал с документации,из-за нехватки времени

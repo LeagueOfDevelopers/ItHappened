@@ -45,6 +45,8 @@ import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.statistics.facts.Fact;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 import ru.lod_misis.ithappened.ui.background.GeopositionService;
+import ru.lod_misis.ithappened.ui.presenters.BillingPresenter;
+import ru.lod_misis.ithappened.ui.presenters.BillingView;
 import ru.lod_misis.ithappened.ui.presenters.EditTrackingContract;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,7 +54,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
-public class EditTrackingActivity extends AppCompatActivity implements EditTrackingContract.EditTrackingView {
+public class EditTrackingActivity extends AppCompatActivity implements EditTrackingContract.EditTrackingView, BillingView {
 
     @Inject
     FactService factService;
@@ -137,6 +139,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     @BindView(R.id.scaleBackImageDoubleCheck)
     ImageView scaleRequiredImage;
 
+
     @BindView(R.id.geopositionBackImageDont)
     ImageView geopositionDontImage;
     @BindView(R.id.geopositionBackImageCheck)
@@ -150,6 +153,15 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     ImageView photoOptionalImage;
     @BindView(R.id.photoBackImageDoubleCheck)
     ImageView photoRequiredImage;
+
+    @BindView(R.id.addNewPhoto)
+    CardView photoContainer;
+    @BindView(R.id.addNewPhotoHint)
+    TextView photoHint;
+    @BindView(R.id.addNewGeoposition)
+    CardView geopositionContainer;
+    @BindView(R.id.addNewGeopositionHint)
+    TextView geopositionHint;
 
     String trackingColor;
 
@@ -183,6 +195,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
     private DateTime userOpenAnActivityDateTime;
+    private BillingPresenter billingPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -191,6 +204,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         ButterKnife.bind(this);
         ItHappenedApplication.getAppComponent().inject(this);
         editTrackingPresenter.onViewAttached(this);
+        billingPresenter = new BillingPresenter(this);
+        billingPresenter.attachView(this);
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_tracking));
 
@@ -761,5 +776,22 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         if (jobScheduler != null) {
             jobScheduler.schedule(jobBuilder.build());
         }
+    }
+
+    @Override
+    public void getPurchase(Boolean purchase) {
+        if (!purchase) {
+            photoContainer.setVisibility(View.GONE);
+            photoEnabled.setVisibility(View.GONE);
+            photoHint.setVisibility(View.GONE);
+            geopositionContainer.setVisibility(View.GONE);
+            geopositionEnabled.setVisibility(View.GONE);
+            geopositionHint.setVisibility(View.GONE);
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        billingPresenter.detachView();
     }
 }

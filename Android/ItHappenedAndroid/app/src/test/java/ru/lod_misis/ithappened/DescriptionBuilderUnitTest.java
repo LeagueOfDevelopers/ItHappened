@@ -1,4 +1,4 @@
-package ru.lod_misis.ithappened;
+/*package ru.lod_misis.ithappened;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -188,3 +188,4 @@ public class DescriptionBuilderUnitTest {
     // Для тестов я вытащил один из своих датасетов. Для эталонного значения корреляции
     // я взял таковую, посчитанную в питоне.
 }
+*/

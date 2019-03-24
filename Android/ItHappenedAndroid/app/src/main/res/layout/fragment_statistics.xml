@@ -20,14 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <android.support.design.widget.FloatingActionButton
-        app:backgroundTint="@color/colorPrimary"
-        android:src="@drawable/ic_show_chart_black_24dp"
-        android:id="@+id/recountStatistics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        app:layout_behavior="ru.lod_misis.ithappened.ui.utils.ScrollBehavior"
-        android:layout_gravity="bottom|end" />
+
 
 </android.support.design.widget.CoordinatorLayout>

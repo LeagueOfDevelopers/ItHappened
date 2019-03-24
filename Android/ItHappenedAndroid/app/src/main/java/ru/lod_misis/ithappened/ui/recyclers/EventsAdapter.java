@@ -3,7 +3,9 @@ package ru.lod_misis.ithappened.ui.recyclers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,13 @@ import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
+import rx.Observable;
+import rx.Scheduler;
+import rx.Single;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
@@ -180,7 +189,24 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 trackingPhoto.setVisibility(View.GONE);
             } else {
                 PhotoInteractor workWithFIles = new PhotoInteractorImpl(context);
-                trackingPhoto.setImageBitmap(workWithFIles.loadImage(eventV1.getPhoto()));
+                workWithFIles.loadImage(eventV1.getPhoto())
+                        .subscribe(new Subscriber<Bitmap>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e("ErrorWithLoadPhoto",e.getMessage());
+                            }
+
+                            @Override
+                            public void onNext(Bitmap bitmap) {
+                                trackingPhoto.setImageBitmap(bitmap);
+                            }
+                        });
+
             }
 
             if (eventV1.getComment() != null && state == 0) {

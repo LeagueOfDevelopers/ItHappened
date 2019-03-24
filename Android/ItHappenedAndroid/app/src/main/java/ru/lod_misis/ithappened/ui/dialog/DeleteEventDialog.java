@@ -30,7 +30,7 @@ public class DeleteEventDialog extends DialogFragment {
             eventId = UUID.fromString(getArguments().getString(EventDetailsActivity.EVENT_ID));
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Вы болше не сможете восстановить это событие!")
+        builder.setMessage("Вы больше не сможете восстановить это событие")
                 .setTitle("Вы действительно хотите удалить это событие?")
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

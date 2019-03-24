@@ -57,6 +57,7 @@ import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
 import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.presenters.EventsHistoryContract;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
+import ru.lod_misis.ithappened.ui.recyclers.PagonationScrollListener;
 
 public class EventsFragment extends Fragment implements EventsHistoryContract.EventsHistoryView, DeleteContract.DeleteView, EventsFragmnetCallBack, DeleteCallback {
 
@@ -100,7 +101,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private Spinner hintsForRatingSpinner;
     private CardView trackingsPickerBtn;
     private TextView hintForEventsHistory;
-    private TextView hintForSpinner;
     private TextView filtersHintText;
     private RelativeLayout filtersScreen;
     private RelativeLayout filtersHint;
@@ -108,6 +108,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private TextView trackingsPickerText;
     private ProgressBar progressBar;
     private FragmentManager fragmentManager;
+
+    Boolean isFilteredAdded=false;
 
     @Nullable
     @Override
@@ -254,7 +256,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             });
         } else {
             trackingsPickerText.setText("Отслеживания отсутствуют");
-            hintForSpinner.setVisibility(View.VISIBLE);
         }
         //конец работы с диалогом
 
@@ -307,6 +308,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             @Override
             public void onClick(View view) {
                 allTrackingsId = eventsHistoryPresenter.setUuidsCollection();
+                isFilteredAdded=true;
                 for (int i = 0; i < selectedPositionItems.size(); i++) {
                     if (selectedPositionItems.get(i) != -1) {
                         filteredTrackingsUuids.add
@@ -351,8 +353,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             }
         });
 
-        /*Это надо полюбому переделать!
-        eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
+        /*eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
 
             @Override
             protected void loadMoreItems() {
@@ -442,7 +443,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     @Override
     public void showEvents(List<EventV1> events) {
         isScrolling = false;
-
+        if (isFilteredAdded ) {
+            isFilteredAdded = false;
+        }
         if (events.size() == 0) {
             isLastPage = true;
         }
@@ -512,7 +515,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             selectedPositionItems.clear();
             filtersHintText.setVisibility(View.GONE);
         } else {
-            hintForSpinner.setVisibility(View.VISIBLE);
+
             filtersHintText.setVisibility(View.GONE);
         }
     }

@@ -108,15 +108,16 @@ public class UserActionsActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
         ItHappenedApplication.getAppComponent().inject(this);
         userActionPresenter.attachView(this);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView = findViewById(R.id.nav_view);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         connectionToken = ConnectionReciver.isConnected();
@@ -286,11 +287,13 @@ public class UserActionsActivity extends AppCompatActivity
         if (id == R.id.synchronisation) {
             syncItem = item;
             item.setCheckable(false);
-            if (getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")) {
+            Toast.makeText(getApplicationContext(), R.string.ImSorryWillBeAnableInANextVersion, Toast.LENGTH_SHORT).show();
+           /* if (getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE).getString("UserId", "").equals("Offline")) {
                 Toast.makeText(getApplicationContext(), "Привяжите аккаунт к GOOGLE для синхронизации", Toast.LENGTH_SHORT).show();
             } else {
                 userActionPresenter.syncronization();
             }
+            */
         }
 
         if (id == R.id.proile_settings) {
@@ -466,7 +469,8 @@ public class UserActionsActivity extends AppCompatActivity
     @Override
     public void getPurchase(Boolean purchase) {
         navigationView.getMenu().getItem(navigationView.getMenu().size() - 1).setVisible(!purchase);
-        navigationView.setVisibility(View.GONE);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
 
