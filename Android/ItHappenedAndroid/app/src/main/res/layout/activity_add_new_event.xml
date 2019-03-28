@@ -323,7 +323,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:padding="@dimen/padding"
-                        android:scaleType="fitXY"
+
                         android:src="@drawable/ic_add_a_photo_black_24dp" />
                 </android.support.v7.widget.CardView>
 

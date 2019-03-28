@@ -126,6 +126,11 @@
                     android:layout_height="90dp"
                     android:scaleType="fitXY"
                     android:visibility="gone"/>
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="100dp"
+                    android:layout_height="90dp"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

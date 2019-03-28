@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,13 +34,7 @@ import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
-import rx.Observable;
-import rx.Scheduler;
-import rx.Single;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
@@ -91,14 +87,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
     }
 
-    public void refreshData(List<EventV1> eventV1s) {
+    public void refreshData(List<EventV1> events) {
 
-        this.eventV1s.clear();
-        for (EventV1 eventV1 : eventV1s) {
-            if (!eventV1.isDeleted()) {
-                this.eventV1s.add(eventV1);
-            }
-        }
+        events.addAll(this.eventV1s);
         notifyDataSetChanged();
 
     }
@@ -118,7 +109,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         holder.setupClickListener(eventV1, context);
 
-        holder.setupLongClickListener(trackingId, eventV1);
+        holder.setupLongClickListener(trackingId, eventV1,position);
 
         Date eventDate = eventV1.getEventDate();
 
@@ -152,17 +143,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         ImageView starIcon;
         @BindView(R.id.photo)
         ImageView trackingPhoto;
+        @BindView(R.id.progress_bar)
+        ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void setupLongClickListener(final UUID trackingId, final EventV1 event) {
+        public void setupLongClickListener(final UUID trackingId, final EventV1 event, final int position) {
             itemLL.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    callBack.showPopupMenu(view, trackingId, event.getEventId());
+                    callBack.showPopupMenu(view, trackingId, event.getEventId(),position);
                     return false;
                 }
             });
@@ -173,7 +166,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, EventDetailsActivity.class);
-                    String abs=eventV1.getTrackingId().toString();
+                    String abs = eventV1.getTrackingId().toString();
                     intent.putExtra("trackingId", abs);
                     intent.putExtra("eventId", eventV1.getEventId().toString());
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -185,9 +178,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         @SuppressLint("SetTextI18n")
         public void initData(EventV1 eventV1, UUID trackingId) {
+
             if (eventV1.getPhoto() == null || eventV1.getPhoto().equals("")) {
                 trackingPhoto.setVisibility(View.GONE);
             } else {
+                progressBar.setVisibility(View.VISIBLE);
+                trackingPhoto.setVisibility(View.INVISIBLE);
+                trackingPhoto.setImageBitmap(null);
                 PhotoInteractor workWithFIles = new PhotoInteractorImpl(context);
                 workWithFIles.loadImage(eventV1.getPhoto())
                         .subscribe(new Subscriber<Bitmap>() {
@@ -198,12 +195,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("ErrorWithLoadPhoto",e.getMessage());
+                                Log.e("ErrorWithLoadPhoto", e.getMessage());
                             }
 
                             @Override
                             public void onNext(Bitmap bitmap) {
-                                trackingPhoto.setImageBitmap(bitmap);
+                                trackingPhoto.setImageBitmap(ThumbnailUtils.extractThumbnail(bitmap, 100, 90));
+                                progressBar.setVisibility(View.GONE);
+                                trackingPhoto.setVisibility(View.VISIBLE);
                             }
                         });
 

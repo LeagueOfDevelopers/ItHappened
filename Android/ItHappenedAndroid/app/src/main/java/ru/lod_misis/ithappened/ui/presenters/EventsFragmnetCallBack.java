@@ -5,5 +5,5 @@ import android.view.View;
 import java.util.UUID;
 
 public interface EventsFragmnetCallBack {
-    void showPopupMenu(View v, final UUID trackingId, final UUID eventId);
+    void showPopupMenu(View v, final UUID trackingId, final UUID eventId,int position);
 }

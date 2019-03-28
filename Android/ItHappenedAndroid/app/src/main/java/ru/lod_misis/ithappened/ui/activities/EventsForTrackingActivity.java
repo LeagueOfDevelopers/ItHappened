@@ -39,7 +39,7 @@ import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
 import ru.lod_misis.ithappened.ui.recyclers.EventsAdapter;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
 
-public class EventsForTrackingActivity extends AppCompatActivity implements DeleteContract.DeleteView, EventsFragmnetCallBack,DeleteCallback {
+public class EventsForTrackingActivity extends AppCompatActivity implements DeleteContract.DeleteView, EventsFragmnetCallBack, DeleteCallback {
 
     @BindView(R.id.eventsForTrackingRV)
     RecyclerView eventsRecycler;
@@ -192,7 +192,7 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Dele
     }
 
     @Override
-    public void showPopupMenu(View v, final UUID trackingID, final UUID eventID) {
+    public void showPopupMenu(View v, final UUID trackingID, final UUID eventID, int position) {
         PopupMenu popupMenu = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             popupMenu = new PopupMenu(this, v);
@@ -205,7 +205,10 @@ public class EventsForTrackingActivity extends AppCompatActivity implements Dele
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.delete:
-                                    deleteEvent(trackingID,eventID);
+                                    deleteEvent(trackingID, eventID);
+                                    return true;
+                                case R.id.edit:
+                                    EditEventActivity.toEditEventActivity(EventsForTrackingActivity.this, trackingID.toString(), eventID.toString());
                                     return true;
                                 default:
                                     return false;

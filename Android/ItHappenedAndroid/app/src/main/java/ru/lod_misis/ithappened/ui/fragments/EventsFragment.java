@@ -109,7 +109,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private ProgressBar progressBar;
     private FragmentManager fragmentManager;
 
-    Boolean isFilteredAdded=false;
+    private Boolean isFilteredAdded = false;
+    private int howManyScrolled;
+    private List<EventV1> list;
+    private ArrayList<EventV1> refreshedEvents;
+    private int deleteItemPosition;
 
     @Nullable
     @Override
@@ -132,7 +136,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setHideable(false);
 
-        stateForHint = 0;
+        initSupportVeriables();
 
         deletePresenter.attachView(this);
 
@@ -175,7 +179,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             selectedPositionItems.add(i);
         }
 
-//Работа с диалогом
+        //Работа с диалогом
         if (strings.size() != 0) {
             trackingsPickerText.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -188,7 +192,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         @Override
                         public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                             if (isChecked) {
-                                selectedPositionItems.set(position,position);
+                                selectedPositionItems.set(position, position);
                             } else {
                                 selectedPositionItems.set(position, -1);
                             }
@@ -208,8 +212,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                                     }
                                     if (item.length() == 0) {
                                         trackingsPickerText.setText("Не выбрано отслеживаний");
-                                    }else{
-                                        item.deleteCharAt(item.length()-2);
+                                    } else {
+                                        item.deleteCharAt(item.length() - 2);
                                         trackingsPickerText.setText(item.toString());
                                     }
                                 }
@@ -307,8 +311,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startPosition = 0;
+                endPosition = 10;
+                howManyScrolled = 0;
                 allTrackingsId = eventsHistoryPresenter.setUuidsCollection();
-                isFilteredAdded=true;
+                isFilteredAdded = true;
                 for (int i = 0; i < selectedPositionItems.size(); i++) {
                     if (selectedPositionItems.get(i) != -1) {
                         filteredTrackingsUuids.add
@@ -353,10 +360,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             }
         });
 
-        /*eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
+        eventsRecycler.addOnScrollListener(new PagonationScrollListener(manager) {
 
             @Override
             protected void loadMoreItems() {
+                howManyScrolled++;
                 isScrolling = true;
                 startPosition = endPosition + 1;
                 endPosition += 10;
@@ -390,7 +398,17 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             public boolean isLastPage() {
                 return isLastPage;
             }
-        });*/
+        });
+    }
+
+    private void initSupportVeriables() {
+        stateForHint = 0;
+        howManyScrolled = 0;
+        deleteItemPosition=-1;
+        list = new ArrayList<>();
+        refreshedEvents = new ArrayList<>();
+        EventsAdapter adapter = new EventsAdapter(refreshedEvents, getActivity(), 1, collection, this);
+        eventsRecycler.setAdapter(adapter);
     }
 
     @Override
@@ -439,27 +457,25 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         addFilters = activity.findViewById(R.id.addFiltersButton);
     }
 
-    //я пытался понять ,честно,но не смог,сус, я вызываю тебя!
     @Override
     public void showEvents(List<EventV1> events) {
         isScrolling = false;
-        if (isFilteredAdded ) {
+        if (isFilteredAdded) {
+            list.clear();
             isFilteredAdded = false;
         }
         if (events.size() == 0) {
             isLastPage = true;
         }
-        EventsAdapter eventsAdpt;
-        if (events.size() == 0) {
+        list.addAll(events);
+        if (list.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection, this);
-            eventsAdpt.notifyDataSetChanged();
+            return;
         } else {
             hintForEventsHistory.setVisibility(View.GONE);
-            eventsAdpt = new EventsAdapter(events, getActivity(), 1, collection, this);
-            eventsAdpt.notifyDataSetChanged();
+
         }
-        ArrayList<EventV1> refreshedEvents = new ArrayList<>();
+
         for (EventV1 event : events) {
             collection.getTracking(event.getTrackingId());
             EventV1 addAbleEvent = collection.getTracking(event.getTrackingId()).getEvent(event.getEventId());//спросить не равно ли это прост event
@@ -468,8 +484,9 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         if (refreshedEvents.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
+        } else {
+            eventsRecycler.getAdapter().notifyItemRangeChanged(eventsRecycler.getAdapter().getItemCount()-events.size(),events.size());
         }
-        eventsRecycler.setAdapter(new EventsAdapter(refreshedEvents, getActivity(), 1, collection, this));
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
@@ -515,7 +532,6 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
             selectedPositionItems.clear();
             filtersHintText.setVisibility(View.GONE);
         } else {
-
             filtersHintText.setVisibility(View.GONE);
         }
     }
@@ -527,7 +543,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     @Override
     public void finishDetailsEventActivity() {
-        onStart();
+        eventsRecycler.getAdapter().notifyItemRemoved(deleteItemPosition);
     }
 
     private void deleteEvent(UUID trackingId, UUID eventId) {
@@ -541,7 +557,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void showPopupMenu(View v, final UUID trackingId, final UUID eventId) {
+    public void showPopupMenu(View v, final UUID trackingId, final UUID eventId, final int position) {
         PopupMenu popupMenu = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             popupMenu = new PopupMenu(getContext(), v);
@@ -555,9 +571,10 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             switch (item.getItemId()) {
                                 case R.id.delete:
                                     deleteEvent(trackingId, eventId);
+                                    deleteItemPosition=position;
                                     return true;
-                                    case R.id.edit:
-                                        EditEventActivity.toEditEventActivity(getContext(),trackingId.toString(),eventId.toString());
+                                case R.id.edit:
+                                    EditEventActivity.toEditEventActivity(getContext(), trackingId.toString(), eventId.toString());
                                     return true;
                                 default:
                                     return false;
