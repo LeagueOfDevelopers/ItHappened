@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -185,27 +187,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 progressBar.setVisibility(View.VISIBLE);
                 trackingPhoto.setVisibility(View.INVISIBLE);
                 trackingPhoto.setImageBitmap(null);
-                PhotoInteractor workWithFIles = new PhotoInteractorImpl(context);
-                workWithFIles.loadImage(eventV1.getPhoto())
-                        .subscribe(new Subscriber<Bitmap>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e("ErrorWithLoadPhoto", e.getMessage());
-                            }
-
-                            @Override
-                            public void onNext(Bitmap bitmap) {
-                                trackingPhoto.setImageBitmap(ThumbnailUtils.extractThumbnail(bitmap, 100, 90));
-                                progressBar.setVisibility(View.GONE);
-                                trackingPhoto.setVisibility(View.VISIBLE);
-                            }
-                        });
-
+                Glide.with(context).load(eventV1.getPhoto()).into(trackingPhoto);
+                progressBar.setVisibility(View.GONE);
+                trackingPhoto.setVisibility(View.VISIBLE);
             }
 
             if (eventV1.getComment() != null && state == 0) {

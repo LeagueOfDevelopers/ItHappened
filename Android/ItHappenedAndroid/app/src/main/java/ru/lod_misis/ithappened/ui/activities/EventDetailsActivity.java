@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.location.Geocoder;
@@ -26,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.yandex.metrica.YandexMetrica;
 
 import org.joda.time.DateTime;
@@ -120,7 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
 
 
     private Intent intent;
-
+    private Bitmap bitmap;
     // Время, когда пользователь открыл экран.
     // Нужно для сбора данных о времени, проведенном пользователем на каждом экране
     private DateTime userOpenAnActivityDateTime;
@@ -178,23 +180,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                workWithFIles.loadImage(thisEventV1.getPhoto()).subscribe(new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        zoomImageFromThumb(photo, bitmap);
-                    }
-                });
+                zoomImageFromThumb(photo, bitmap);
             }
         });
 
@@ -303,24 +289,9 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             geopositionLogo.setVisibility(View.GONE);
         }
         if (thisEventV1.getPhoto() != null) {
-            workWithFIles.loadImage(thisEventV1.getPhoto()).subscribe(new Subscriber<Bitmap>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    Log.e("ErrorWithLoadPhoto",e.getMessage());
-                }
-
-                @Override
-                public void onNext(Bitmap bitmap) {
-                    photo.setImageBitmap(bitmap);
-                    nullsCard.setVisibility(View.GONE);
-                }
-            });
-
+            bitmap = BitmapFactory.decodeFile(thisEventV1.getPhoto());
+            Glide.with(this).load(thisEventV1.getPhoto()).into(photo);
+            nullsCard.setVisibility(View.GONE);
         } else {
             float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64f, getResources().getDisplayMetrics());
             photo.setBackgroundColor(getResources().getColor(R.color.white));

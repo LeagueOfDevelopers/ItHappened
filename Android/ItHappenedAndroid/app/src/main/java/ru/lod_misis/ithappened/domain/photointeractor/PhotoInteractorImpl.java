@@ -60,28 +60,6 @@ public class PhotoInteractorImpl implements PhotoInteractor {
     }
 
     @Override
-    public Observable<Bitmap> loadImage(final String path) {
-        return Observable.just(cache.get(path))
-                .flatMap(new Func1<Bitmap, Observable<Bitmap>>() {
-                    @Override
-                    public Observable<Bitmap> call(Bitmap bitmap) {
-                        if (bitmap != null)
-                            return Observable.just(bitmap);
-                        else
-                            return Observable.just(BitmapFactory.decodeFile(path))
-                                    .doOnNext(new Action1<Bitmap>() {
-                                @Override
-                                public void call(Bitmap bitmap) {
-                                    cache.put(path, bitmap);
-                                }
-                            });
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    @Override
     public Uri generateFileUri(int type) {
         File file = null;
         switch (type) {

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -206,6 +207,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         editTrackingPresenter.onViewAttached(this);
         billingPresenter = new BillingPresenter(this);
         billingPresenter.attachView(this);
+        billingPresenter.checkPurchase();
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_tracking));
 
@@ -533,8 +535,9 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         addTrackingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(geoposition==TrackingCustomization.None){
-                editTrackingPresenter.onEditClick();}else{
+                if (geoposition == TrackingCustomization.None) {
+                    editTrackingPresenter.onEditClick();
+                } else {
                     if (ActivityCompat.checkSelfPermission(EditTrackingActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(EditTrackingActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(EditTrackingActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -789,9 +792,29 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
             geopositionHint.setVisibility(View.GONE);
         }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         billingPresenter.detachView();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("RequestPermission", "responseAll");
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("RequestPermission", "RequestYes");
+                    createGeopositionJobService();
+                    editTrackingPresenter.onEditClick();
+
+                } else {
+                    onBackPressed();
+                }
+            }
+        }
     }
 }

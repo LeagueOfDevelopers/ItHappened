@@ -39,7 +39,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.yandex.metrica.YandexMetrica;
 
 import org.joda.time.DateTime;
@@ -356,7 +356,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Picasso.get().load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
+            Glide.with(this).load(Uri.parse(workWithFIles.getUriPhotoFromCamera())).into(photo);
             photoPath = workWithFIles.saveBitmap(Uri.parse(workWithFIles.getUriPhotoFromCamera()));
 
         }
@@ -365,7 +365,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
                 Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Picasso.get().load(data.getData()).into(photo);
+            Glide.with(this).load(data.getData()).into(photo);
             photoPath = workWithFIles.saveBitmap(data.getData());
         }
         if (requestCode == MapActivity.MAP_ACTIVITY_REQUEST_CODE) {

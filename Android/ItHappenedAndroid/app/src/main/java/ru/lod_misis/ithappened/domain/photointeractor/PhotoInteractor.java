@@ -9,8 +9,6 @@ import rx.Single;
 public interface PhotoInteractor {
     String saveBitmap (Uri uri);
 
-    Observable<Bitmap> loadImage (String path);
-
     Uri generateFileUri (int type);
 
     String getUriPhotoFromCamera ();

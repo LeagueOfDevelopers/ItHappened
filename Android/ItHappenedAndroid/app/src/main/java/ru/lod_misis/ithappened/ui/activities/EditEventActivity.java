@@ -28,7 +28,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.yandex.metrica.YandexMetrica;
 
 import org.joda.time.DateTime;
@@ -64,12 +64,13 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
     public static String TRACKING_ID = "trackingId";
     public static String EVENT_ID = "eventId";
 
-    public static void toEditEventActivity(Context context,String trackingId,String eventId){
+    public static void toEditEventActivity(Context context, String trackingId, String eventId) {
         Intent intent = new Intent(context, EditEventActivity.class);
         intent.putExtra(TRACKING_ID, trackingId);
         intent.putExtra(EVENT_ID, eventId);
         context.startActivity(intent);
     }
+
     @Inject
     EditEventContract.EditEventPresenter presenter;
     @BindView(R.id.commentEventContainer)
@@ -269,11 +270,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             scaleControl.setText(StringParse.parseDouble(scaleValue));
 
             if (scaleName != null) {
-                if (scaleName.length() >= 3) {
-                    scaleType.setText(scaleName.substring(0, 2));
-                } else {
-                    scaleType.setText(scaleName);
-                }
+                scaleType.setText(scaleName);
             }
         }
 
@@ -299,25 +296,9 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         }
         if ((photo == TrackingCustomization.Optional
                 || photo == TrackingCustomization.Required)) {
-            photoInteractor = new PhotoInteractorImpl(this);
             if (photoPath != null) {
-                EditEventActivity.this.photoPath = photoPath;
-                photoInteractor.loadImage(photoPath).subscribe(new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
+                Glide.with(context).load(photoPath).into(EditEventActivity.this.photo);
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e("ErrorWithLoadPhoto",e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        EditEventActivity.this.photo.setImageBitmap(bitmap);
-                    }
-                });
             }
         }
 
@@ -411,7 +392,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             if (!scaleControl.getText().toString().trim().isEmpty())
                 scale = Double.valueOf(scaleControl.getText().toString());
             if (ratingControl.getRating() != 0f)
-                rating = new Rating((int)(ratingControl.getRating()*2));
+                rating = new Rating((int) (ratingControl.getRating() * 2));
             try {
                 eventDate = getDate();
             } catch (ParseException e) {
@@ -452,7 +433,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             case 1:
                 break;
             case 2:
-                access.setText(access.getText().toString() + "*");
+                access.setText(access.getText().toString() + " <font color='red'>*</font>");
                 break;
             default:
                 break;
@@ -467,7 +448,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Picasso.get().load(Uri.parse(photoInteractor.getUriPhotoFromCamera())).into(photo);
+            Glide.with(this).load(Uri.parse(photoInteractor.getUriPhotoFromCamera())).into(photo);
             photoPath = photoInteractor.saveBitmap(Uri.parse(photoInteractor.getUriPhotoFromCamera()));
             flagPhoto = true;
         }
@@ -476,7 +457,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 Toast.makeText(getApplicationContext(), "Фотографию не удалось загрузить", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Picasso.get().load(data.getData()).into(photo);
+            Glide.with(this).load(data.getData()).into(photo);
             photoPath = photoInteractor.saveBitmap(data.getData());
             flagPhoto = true;
         }
