@@ -51,6 +51,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     private Context context;
     private int state = 0;
     private EventsFragmnetCallBack callBack;
+    private PhotoInteractor photoInteractor;
 
     public EventsAdapter(List<EventV1> eventV1s, Context context, int state, TrackingDataSource trackingRepository, EventsFragmnetCallBack callBack) {
         this.trackingRepository = trackingRepository;
@@ -65,6 +66,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         this.context = context;
         this.state = state;
         this.callBack = callBack;
+        photoInteractor=new PhotoInteractorImpl(context);
     }
 
     public int getItemViewType(int position) {
@@ -187,7 +189,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 progressBar.setVisibility(View.VISIBLE);
                 trackingPhoto.setVisibility(View.INVISIBLE);
                 trackingPhoto.setImageBitmap(null);
-                Glide.with(context).load(eventV1.getPhoto()).into(trackingPhoto);
+                Glide.with(context).load( photoInteractor.getBitmap(eventV1.getPhoto())).into(trackingPhoto);
                 progressBar.setVisibility(View.GONE);
                 trackingPhoto.setVisibility(View.VISIBLE);
             }

@@ -146,7 +146,8 @@ public class UserActionsActivity extends AppCompatActivity
         billingPresenter = new BillingPresenter(this);
         billingPresenter.attachView(this);
         bp = billingPresenter.getBillingProcessor();
-        billingPresenter.checkPurchase();
+        navigationView.getMenu().getItem(navigationView.getMenu().size() - 1).setVisible(false);//убрать если вернете подписку
+        //billingPresenter.checkPurchase();Для подписки
 
     }
 

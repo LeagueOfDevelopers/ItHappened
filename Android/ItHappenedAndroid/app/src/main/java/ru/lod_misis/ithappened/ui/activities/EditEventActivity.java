@@ -297,7 +297,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         if ((photo == TrackingCustomization.Optional
                 || photo == TrackingCustomization.Required)) {
             if (photoPath != null) {
-                Glide.with(context).load(photoPath).into(EditEventActivity.this.photo);
+                Glide.with(context).load(photoInteractor.getBitmap(photoPath)).into(EditEventActivity.this.photo);
 
             }
         }

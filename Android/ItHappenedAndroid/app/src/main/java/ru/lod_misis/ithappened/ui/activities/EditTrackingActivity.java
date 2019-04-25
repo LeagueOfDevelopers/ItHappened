@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -172,6 +173,8 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     TextView visbilityScaleTypeHint;
     @BindView(R.id.editTypeOfScale)
     EditText scaleType;
+    @BindView(R.id.editTypeOfScale2)
+    TextInputLayout scaleConteiner;
 
     @BindView(R.id.addTrack)
     Button addTrackingBtn;
@@ -207,7 +210,7 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
         editTrackingPresenter.onViewAttached(this);
         billingPresenter = new BillingPresenter(this);
         billingPresenter.attachView(this);
-        billingPresenter.checkPurchase();
+       // billingPresenter.checkPurchase();Для подписки
 
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_edit_tracking));
 
@@ -568,6 +571,9 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
     @Override
     protected void onResume() {
         super.onResume();
+        if(scaleType.getText().toString().length()>20){
+            scaleConteiner.setErrorEnabled(true);
+        }
         userOpenAnActivityDateTime = DateTime.now();
     }
 

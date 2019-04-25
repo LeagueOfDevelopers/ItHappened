@@ -481,6 +481,9 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     @Override
     protected void onResume() {
         super.onResume();
+        if(scaleType.getText().toString().length()>20){
+            scaleConteiner.setErrorEnabled(true);
+        }
         userOpenAnActivityDateTime = DateTime.now();
     }
 
@@ -574,7 +577,7 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
         visibilityScaleType.setVisibility(View.GONE);
         scaleType.setVisibility(View.GONE);
         scaleConteiner.setVisibility(View.GONE);
-        billingPresenter.checkPurchase();
+        //billingPresenter.checkPurchase(); Для подписки
         setupToolbar();
     }
 

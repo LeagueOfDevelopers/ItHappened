@@ -67,7 +67,7 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
         addTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                billingPresenter.checkPurchase();
+              //  billingPresenter.checkPurchase();Для подписки
             }
         });
     }

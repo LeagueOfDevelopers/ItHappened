@@ -289,8 +289,8 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             geopositionLogo.setVisibility(View.GONE);
         }
         if (thisEventV1.getPhoto() != null) {
-            bitmap = BitmapFactory.decodeFile(thisEventV1.getPhoto());
-            Glide.with(this).load(thisEventV1.getPhoto()).into(photo);
+            bitmap = workWithFIles.getBitmap(thisEventV1.getPhoto());
+            Glide.with(this).load(bitmap).into(photo);
             nullsCard.setVisibility(View.GONE);
         } else {
             float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64f, getResources().getDisplayMetrics());

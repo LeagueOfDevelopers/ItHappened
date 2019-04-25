@@ -7,9 +7,11 @@ import rx.Observable;
 import rx.Single;
 
 public interface PhotoInteractor {
-    String saveBitmap (Uri uri);
+    String saveBitmap(Uri uri);
 
-    Uri generateFileUri (int type);
+    Uri generateFileUri(int type);
 
-    String getUriPhotoFromCamera ();
+    String getUriPhotoFromCamera();
+
+    Bitmap getBitmap(String path);
 }
