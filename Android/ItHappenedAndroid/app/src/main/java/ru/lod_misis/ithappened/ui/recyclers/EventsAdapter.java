@@ -36,6 +36,7 @@ import ru.lod_misis.ithappened.domain.statistics.facts.StringParse;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.ui.activities.EventDetailsActivity;
 import ru.lod_misis.ithappened.ui.presenters.EventsFragmnetCallBack;
+import ru.lod_misis.ithappened.ui.utils.WorkWithDecimal;
 import rx.Subscriber;
 
 
@@ -66,7 +67,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         this.context = context;
         this.state = state;
         this.callBack = callBack;
-        photoInteractor=new PhotoInteractorImpl(context);
+        photoInteractor = new PhotoInteractorImpl(context);
     }
 
     public int getItemViewType(int position) {
@@ -113,7 +114,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         holder.setupClickListener(eventV1, context);
 
-        holder.setupLongClickListener(trackingId, eventV1,position);
+        holder.setupLongClickListener(trackingId, eventV1, position);
 
         Date eventDate = eventV1.getEventDate();
 
@@ -159,7 +160,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             itemLL.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    callBack.showPopupMenu(view, trackingId, event.getEventId(),position);
+                    callBack.showPopupMenu(view, trackingId, event.getEventId(), position);
                     return false;
                 }
             });
@@ -189,7 +190,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 progressBar.setVisibility(View.VISIBLE);
                 trackingPhoto.setVisibility(View.INVISIBLE);
                 trackingPhoto.setImageBitmap(null);
-                Glide.with(context).load( photoInteractor.getBitmap(eventV1.getPhoto())).into(trackingPhoto);
+                Glide.with(context).load(eventV1.getPhoto()).into(trackingPhoto);
                 progressBar.setVisibility(View.GONE);
                 trackingPhoto.setVisibility(View.VISIBLE);
             }
@@ -205,9 +206,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 if (type != null) {
                     scaleValue.setVisibility(View.VISIBLE);
                     if (type.length() >= 10 && eventV1.getScale() > 1000000 && eventV1.getRating() != null) {
-                        scaleValue.setText(StringParse.parseDouble(eventV1.getScale()) + " " + type.substring(0, 3) + ".");
+                        scaleValue.setText(WorkWithDecimal.makeDecimalWithMantisa(eventV1.getScale()) + " " + type.substring(0, 3) + ".");
                     } else {
-                        scaleValue.setText(StringParse.parseDouble(eventV1.getScale()) + " " + type);
+                        scaleValue.setText(WorkWithDecimal.makeDecimalWithMantisa(eventV1.getScale()) + " " + type);
                     }
                 }
             } else {
@@ -227,4 +228,5 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             }
         }
     }
+
 }

@@ -18,16 +18,22 @@ import static android.content.Context.LOCATION_SERVICE;
 public class MapMethodForAddGeoposition extends CommonMethodForMapAlgorithm {
     Context context;
 
-    public MapMethodForAddGeoposition (Context context) {
+    public MapMethodForAddGeoposition(Context context) {
         super();
         this.context = context;
     }
 
     @Override
-    public LatLng initStartedLocation () throws Exception{
+    public LatLng initStartedLocation() throws Exception{
         Location location = GeopositionService.myLocation;
         if (location == null) {
-            throw new Exception();
+            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+               throw  new Exception();
+
+            }
+            location = locationManager.getLastKnownLocation(locationManager.getAllProviders().get(0));
         }
         return new LatLng(location.getLatitude() , location.getLongitude());
     }

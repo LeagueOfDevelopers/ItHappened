@@ -53,7 +53,7 @@ public class PhotoInteractorImpl implements PhotoInteractor {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             fOut.write(stream.toByteArray());
             fOut.close();
-            return file.getPath();
+            return uriPhotoFromCamera;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -90,38 +90,4 @@ public class PhotoInteractorImpl implements PhotoInteractor {
                 matrix, true);
     }
 
-    @Override
-    public Bitmap getBitmap(String path) {
-        ExifInterface ei = null;
-        try {
-            ei = new ExifInterface(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(e.toString(), e.getMessage());
-            return null;
-        }
-        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED);
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        Bitmap rotatedBitmap = null;
-        switch (orientation) {
-
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                rotatedBitmap = rotateImage(bitmap, 90);
-                break;
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                rotatedBitmap = rotateImage(bitmap, 180);
-                break;
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                rotatedBitmap = rotateImage(bitmap, 270);
-                break;
-
-            case ExifInterface.ORIENTATION_NORMAL:
-            default:
-                rotatedBitmap = bitmap;
-        }
-        return rotatedBitmap;
-    }
 }

@@ -84,4 +84,6 @@
     <string name="delete_event_in_list">Удалить</string>
     <string name="edit">Изменить</string>
     <string name="ImSorryWillBeAnableInANextVersion">Будет доступно в следующей версии</string>
+    <string name="ScaleError">В значении шкалы не может быть больше 11 знаков</string>
+    <string name="PersonCreatedAnEvent">Пользователь добавил событие</string>
 </resources>

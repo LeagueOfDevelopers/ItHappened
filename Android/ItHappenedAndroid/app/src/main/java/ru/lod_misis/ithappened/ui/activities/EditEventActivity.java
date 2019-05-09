@@ -1,5 +1,6 @@
 package ru.lod_misis.ithappened.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -15,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.method.DigitsKeyListener;
 import android.text.method.KeyListener;
 import android.util.Log;
@@ -267,7 +269,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
 
         if ((scale == TrackingCustomization.Optional
                 || scale == TrackingCustomization.Required) && scaleValue != null) {
-            scaleControl.setText(StringParse.parseDouble(scaleValue));
+            scaleControl.setText(String.valueOf(scaleValue));
 
             if (scaleName != null) {
                 scaleType.setText(scaleName);
@@ -297,7 +299,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         if ((photo == TrackingCustomization.Optional
                 || photo == TrackingCustomization.Required)) {
             if (photoPath != null) {
-                Glide.with(context).load(photoInteractor.getBitmap(photoPath)).into(EditEventActivity.this.photo);
+                this.photoPath = photoPath;
+                Glide.with(context).load(photoPath).into(EditEventActivity.this.photo);
 
             }
         }
@@ -389,8 +392,14 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         if (commentFlag && ratingFlag && scaleFlag && geopositionFlag && photoFlag) {
             if (!commentControl.getText().toString().trim().isEmpty())
                 comment = commentControl.getText().toString().trim();
-            if (!scaleControl.getText().toString().trim().isEmpty())
+            if (!scaleControl.getText().toString().trim().isEmpty()) {
                 scale = Double.valueOf(scaleControl.getText().toString());
+                if (scale > 99999999999L) {
+                    showMessage(getString(R.string.ScaleError));
+                    return;
+                }
+            }
+
             if (ratingControl.getRating() != 0f)
                 rating = new Rating((int) (ratingControl.getRating() * 2));
             try {
@@ -425,6 +434,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
         this.finish();
     }
 
+    @SuppressLint("SetTextI18n")
     private void calculateContainerState(LinearLayout container, TextView access, int state) {
         switch (state) {
             case 0:
@@ -433,7 +443,8 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
             case 1:
                 break;
             case 2:
-                access.setText(access.getText().toString() + " <font color='red'>*</font>");
+                String string = access.getText().toString() + " <font color='red'>*</font>";
+                access.setText(Html.fromHtml(string), TextView.BufferType.SPANNABLE);
                 break;
             default:
                 break;

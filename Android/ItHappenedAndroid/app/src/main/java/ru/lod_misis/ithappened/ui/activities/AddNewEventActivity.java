@@ -393,7 +393,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         boolean ratingFlag = true;
         boolean geolocationFlag = true;
         boolean photoFlag = true;
-        Double scale;
+        Double scale=null;
         String comment = null;
         Rating rating = null;
 
@@ -425,8 +425,12 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
             if (!scaleControl.getText().toString().isEmpty()) {
                 try {
                     scale = Double.parseDouble(scaleControl.getText().toString().trim());
+                    if(scale>99999999999L){
+                        showMessage(getString(R.string.ScaleError));
+                        return;
+                    }
                     addNewEventPresenter.saveEvent(new EventV1(UUID.randomUUID(), trackingId, eventDate, scale, rating, comment, latitude, longitude, photoPath), trackingId);
-                    YandexMetrica.reportEvent("Пользователь добавил событие");
+                    YandexMetrica.reportEvent(getString(R.string.PersonCreatedAnEvent));
                     if (longitude != null && latitude != null) {
                         YandexMetrica.reportEvent(getString(R.string.metrica_user_add_address_to_event));
                     }

@@ -22,6 +22,7 @@ public class GeopositionService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
+        Log.d("Its geoposition service","Now it works");
         myLocation=getLastKnownLocation(getApplicationContext());
         return false;
     }

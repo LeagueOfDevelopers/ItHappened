@@ -7,15 +7,17 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.location.Geocoder;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +59,7 @@ import ru.lod_misis.ithappened.ui.dialog.DeleteEventDialog;
 import ru.lod_misis.ithappened.ui.presenters.DeleteCallback;
 import ru.lod_misis.ithappened.ui.presenters.DeleteContract;
 import ru.lod_misis.ithappened.ui.presenters.EventDetailsContract;
-import rx.Subscriber;
+import ru.lod_misis.ithappened.ui.utils.WorkWithDecimal;
 
 
 public class EventDetailsActivity extends AppCompatActivity implements DeleteContract.DeleteView, EventDetailsContract.EventDetailsView, DeleteCallback {
@@ -180,7 +182,8 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                zoomImageFromThumb(photo, bitmap);
+                zoomImageFromThumb(photo, thisEventV1.getPhoto());
+
             }
         });
 
@@ -267,7 +270,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             nullsCard.setVisibility(View.GONE);
             valuesCard.setVisibility(View.VISIBLE);
             scaleValue.setVisibility(View.VISIBLE);
-            scaleValue.setText(StringParse.parseDouble(thisEventV1.getScale()) + " " + thisTrackingV1.getScaleName());
+            scaleValue.setText(WorkWithDecimal.makeDecimalWithMantisa(thisEventV1.getScale()) + " " + thisTrackingV1.getScaleName());
         } else {
             scaleValue.setVisibility(View.GONE);
             scaleHint.setVisibility(View.GONE);
@@ -289,8 +292,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             geopositionLogo.setVisibility(View.GONE);
         }
         if (thisEventV1.getPhoto() != null) {
-            bitmap = workWithFIles.getBitmap(thisEventV1.getPhoto());
-            Glide.with(this).load(bitmap).into(photo);
+            Glide.with(this).load(thisEventV1.getPhoto()).into(photo);
             nullsCard.setVisibility(View.GONE);
         } else {
             float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64f, getResources().getDisplayMetrics());
@@ -301,6 +303,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
             backButton.setImageResource(R.drawable.ic_arraow_back_black_24dp);
         }
     }
+
 
     @Override
     public void startedConfiguration(TrackingV1 tracking) {
@@ -359,15 +362,14 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
     }
 
     //Это анимация скопировал с документации,из-за нехватки времени
-    private void zoomImageFromThumb(final View thumbView, Bitmap imageResId) {
+    private void zoomImageFromThumb(final View thumbView, String imageResId) {
 
         if (mCurrentAnimator != null) {
             mCurrentAnimator.cancel();
         }
         final ImageView expandedImageView = (ImageView) findViewById(
                 R.id.expanded_image);
-        expandedImageView.setImageBitmap(imageResId);
-
+        Glide.with(this).load(imageResId).into(expandedImageView);
         final Rect startBounds = new Rect();
         final Rect finalBounds = new Rect();
         final Point globalOffset = new Point();
@@ -496,4 +498,5 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
     public void cansel() {
         deletePresenter.canselClicked();
     }
+
 }

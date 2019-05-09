@@ -1,11 +1,19 @@
 package ru.lod_misis.ithappened.ui.fragments;
 
+import android.Manifest;
 import android.app.Fragment;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -21,7 +29,9 @@ import javax.inject.Inject;
 import ru.lod_misis.ithappened.R;
 import ru.lod_misis.ithappened.domain.models.TrackingV1;
 import ru.lod_misis.ithappened.ui.ItHappenedApplication;
+import ru.lod_misis.ithappened.ui.activities.AddNewEventActivity;
 import ru.lod_misis.ithappened.ui.activities.AddNewTrackingActivity;
+import ru.lod_misis.ithappened.ui.background.GeopositionService;
 import ru.lod_misis.ithappened.ui.presenters.BillingPresenter;
 import ru.lod_misis.ithappened.ui.presenters.BillingView;
 import ru.lod_misis.ithappened.ui.presenters.TrackingsContract;
@@ -54,6 +64,12 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
         super.onResume();
         ItHappenedApplication.getAppComponent().inject(this);
         getActivity().setTitle("Что произошло?");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                createGeopositionJobService();
+            }
+        }
         billingPresenter = new BillingPresenter(getActivity());
         billingPresenter.attachView(this);
         hintForTrackings = (TextView) getActivity().findViewById(R.id.hintForTrackingsFragment);
@@ -68,6 +84,8 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
             @Override
             public void onClick(View view) {
               //  billingPresenter.checkPurchase();Для подписки
+                Intent intent = new Intent(getActivity(), AddNewTrackingActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -109,5 +127,17 @@ public class TrackingsFragment extends Fragment implements TrackingsContract.Tra
     public void onDestroy() {
         super.onDestroy();
         billingPresenter.detachView();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void createGeopositionJobService() {
+        ComponentName notificationJobServiece = new ComponentName(getContext(), GeopositionService.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(534324, notificationJobServiece);
+        jobBuilder.setMinimumLatency(1000 * 60L);
+        JobScheduler jobScheduler =
+                (JobScheduler) getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (jobScheduler != null) {
+            jobScheduler.schedule(jobBuilder.build());
+        }
     }
 }

@@ -13,5 +13,4 @@ public interface PhotoInteractor {
 
     String getUriPhotoFromCamera();
 
-    Bitmap getBitmap(String path);
 }

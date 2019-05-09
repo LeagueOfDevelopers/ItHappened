@@ -25,7 +25,7 @@
             android:id="@+id/synchronisation"
             android:icon="@drawable/syncr"
             android:title="@string/synchronisation"
-            android:visible="true" />
+            android:visible="true"/>
         <item
             android:id="@+id/buyingPaidVersion"
             android:title="@string/paid_version"

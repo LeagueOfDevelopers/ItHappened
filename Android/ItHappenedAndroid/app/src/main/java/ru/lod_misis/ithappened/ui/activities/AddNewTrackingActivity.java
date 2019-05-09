@@ -481,7 +481,8 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
     @Override
     protected void onResume() {
         super.onResume();
-        if(scaleType.getText().toString().length()>20){
+        if (scaleType.getText().toString().length() > 20) {
+            scaleConteiner.setErrorEnabled(false);
             scaleConteiner.setErrorEnabled(true);
         }
         userOpenAnActivityDateTime = DateTime.now();
@@ -539,7 +540,8 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
 
             if ((scale == TrackingCustomization.Optional || scale == TrackingCustomization.Required) &&
                     (scaleType.getText().toString().isEmpty()
-                            || scaleType.getText().toString().trim().isEmpty())||scaleType.getText().toString().length()>20) {
+                            || scaleType.getText().toString().trim().isEmpty()
+                            || scaleType.getText().toString().length() > 20)) {
                 showMessage("Введите единицу измерения шкалы");
             } else {
                 if (scale != TrackingCustomization.None) {

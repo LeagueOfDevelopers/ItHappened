@@ -462,6 +462,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         isScrolling = false;
         if (isFilteredAdded) {
             list.clear();
+            refreshedEvents.clear();
             isFilteredAdded = false;
         }
         if (events.size() == 0) {
@@ -485,7 +486,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         if (refreshedEvents.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
         } else {
-            eventsRecycler.getAdapter().notifyItemRangeChanged(eventsRecycler.getAdapter().getItemCount()-events.size(),events.size());
+            eventsRecycler.getAdapter().notifyItemRangeChanged(eventsRecycler.getAdapter().getItemCount()-events.size(),eventsRecycler.getAdapter().getItemCount());
         }
         BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
