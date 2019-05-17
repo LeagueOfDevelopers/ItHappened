@@ -327,7 +327,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
     public void finishDetailsEventActivity() {
         deletePresenter.detachView();
         eventDetailsPresenter.detachView();
-        finish();
+        onBackPressed();
     }
 
     public void deleteEvent(UUID trackingId, UUID eventId) {
@@ -498,5 +498,7 @@ public class EventDetailsActivity extends AppCompatActivity implements DeleteCon
     public void cansel() {
         deletePresenter.canselClicked();
     }
+
+
 
 }

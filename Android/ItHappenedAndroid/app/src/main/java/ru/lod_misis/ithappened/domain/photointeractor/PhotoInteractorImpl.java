@@ -53,7 +53,7 @@ public class PhotoInteractorImpl implements PhotoInteractor {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             fOut.write(stream.toByteArray());
             fOut.close();
-            return uriPhotoFromCamera;
+            return uri.toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

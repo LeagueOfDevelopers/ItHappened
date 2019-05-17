@@ -67,6 +67,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     EventsHistoryContract.EventsHistoryPresenter eventsHistoryPresenter;
     @Inject
     TrackingDataSource collection;
+
     private RecyclerView eventsRecycler;
     private List<Boolean> selectedItems = new ArrayList<>();
     private List<Integer> selectedPositionItems = new ArrayList<>();
@@ -74,8 +75,8 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private List<UUID> idCollection = new ArrayList<>();
     private List<String> strings = new ArrayList<>();
     private List<UUID> allTrackingsId;
-    private int startPosition = 0;
-    private int endPosition = 10;
+    private int startPosition;
+    private int endPosition;
 
     private boolean isScrolling = false;
     private boolean isLastPage = false;
@@ -110,10 +111,12 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private FragmentManager fragmentManager;
 
     private Boolean isFilteredAdded = false;
+    private Boolean isFilteredCanselled = true;
     private int howManyScrolled;
     private List<EventV1> list;
     private ArrayList<EventV1> refreshedEvents;
     private int deleteItemPosition;
+    private BottomSheetBehavior behavior;
 
     @Nullable
     @Override
@@ -133,7 +136,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         YandexMetrica.reportEvent(getString(R.string.metrica_enter_events_histroy));
         eventsHistoryPresenter.onViewAttach(this);
 
-        final BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
+        behavior = BottomSheetBehavior.from(filtersScreen);
         behavior.setHideable(false);
 
         initSupportVeriables();
@@ -233,7 +236,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             selectedPositionItems.clear();
                             for (int i = 0; i < selectedArray.length; i++) {
                                 selectedArray[i] = true;
-                                selectedPositionItems.add(i);
+                                selectedPositionItems.set(i, i);
                                 trackingsPickerText.setText("Выбраны все отслеживания");
                             }
                             ListView curList = trackingsPickerDiaolg.getListView();
@@ -248,7 +251,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                         public void onClick(View view) {
                             for (int i = 0; i < selectedArray.length; i++) {
                                 selectedArray[i] = false;
-                                selectedPositionItems.clear();
+                                selectedPositionItems.set(i, -1);
                             }
 
                             ListView curList = trackingsPickerDiaolg.getListView();
@@ -297,15 +300,18 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         filtersCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                YandexMetrica.reportEvent(getString(R.string.metrica_cancel_filters));
-                eventsHistoryPresenter.filterEvents(null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        startPosition, endPosition);
+                if (!isFilteredCanselled) {
+
+                    YandexMetrica.reportEvent(getString(R.string.metrica_cancel_filters));
+                    eventsHistoryPresenter.filterEvents(null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            startPosition, endPosition);
+                }
             }
         });
         addFilters.setOnClickListener(new View.OnClickListener() {
@@ -316,6 +322,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 howManyScrolled = 0;
                 allTrackingsId = eventsHistoryPresenter.setUuidsCollection();
                 isFilteredAdded = true;
+                isFilteredCanselled = false;
                 for (int i = 0; i < selectedPositionItems.size(); i++) {
                     if (selectedPositionItems.get(i) != -1) {
                         filteredTrackingsUuids.add
@@ -339,10 +346,14 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                     if (!scaleFilter.getText().toString().isEmpty()) {
                         scaleComparison = Comparison.values()[hintsForScaleSpinner.getSelectedItemPosition()];
                         scale = Double.parseDouble(scaleFilter.getText().toString());
+                    } else {
+                        scale = null;
                     }
                     if (ratingFilter.getRating() != 0) {
                         ratingComparison = Comparison.values()[hintsForRatingSpinner.getSelectedItemPosition()];
                         rating = new Rating((int) ratingFilter.getRating() * 2);
+                    } else {
+                        rating = null;
                     }
                     YandexMetrica.reportEvent(getString(R.string.metrica_add_filters));
 
@@ -354,9 +365,11 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             scale,
                             ratingComparison,
                             rating, startPosition, endPosition);
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 } catch (NumberFormatException e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Введите нормальные данные шкалы!", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -404,7 +417,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     private void initSupportVeriables() {
         stateForHint = 0;
         howManyScrolled = 0;
-        deleteItemPosition=-1;
+        deleteItemPosition = -1;
         list = new ArrayList<>();
         refreshedEvents = new ArrayList<>();
         EventsAdapter adapter = new EventsAdapter(refreshedEvents, getActivity(), 1, collection, this);
@@ -412,7 +425,12 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     }
 
     @Override
-    public void onStart() {
+    public void onResume() {
+        clearAndUpdateList();
+        startPosition = 0;
+        endPosition = 10;
+        isScrolling=false;
+        isLastPage=false;
         eventsHistoryPresenter.filterEvents(null,//всегда ли при первом вызове null???
                 dateF,
                 dateT,
@@ -423,7 +441,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                 startPosition,
                 endPosition
         );
-        super.onStart();
+        super.onResume();
     }
 
     private void getDataFromBundle() {
@@ -461,9 +479,12 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
     public void showEvents(List<EventV1> events) {
         isScrolling = false;
         if (isFilteredAdded) {
-            list.clear();
-            refreshedEvents.clear();
+            clearAndUpdateList();
             isFilteredAdded = false;
+        }
+        if (!isFilteredCanselled) {
+            clearAndUpdateList();
+            isFilteredAdded = true;
         }
         if (events.size() == 0) {
             isLastPage = true;
@@ -485,11 +506,18 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
         }
         if (refreshedEvents.size() == 0) {
             hintForEventsHistory.setVisibility(View.VISIBLE);
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else {
-            eventsRecycler.getAdapter().notifyItemRangeChanged(eventsRecycler.getAdapter().getItemCount()-events.size(),eventsRecycler.getAdapter().getItemCount());
+            eventsRecycler.getAdapter().notifyItemRangeChanged(eventsRecycler.getAdapter().getItemCount() - events.size(), eventsRecycler.getAdapter().getItemCount());
+
         }
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(filtersScreen);
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+    }
+
+    private void clearAndUpdateList() {
+        list.clear();
+        refreshedEvents.clear();
+        eventsRecycler.getAdapter().notifyDataSetChanged();
     }
 
 
@@ -544,6 +572,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
 
     @Override
     public void finishDetailsEventActivity() {
+        refreshedEvents.remove(deleteItemPosition);
         eventsRecycler.getAdapter().notifyItemRemoved(deleteItemPosition);
     }
 
@@ -572,7 +601,7 @@ public class EventsFragment extends Fragment implements EventsHistoryContract.Ev
                             switch (item.getItemId()) {
                                 case R.id.delete:
                                     deleteEvent(trackingId, eventId);
-                                    deleteItemPosition=position;
+                                    deleteItemPosition = position;
                                     return true;
                                 case R.id.edit:
                                     EditEventActivity.toEditEventActivity(getContext(), trackingId.toString(), eventId.toString());

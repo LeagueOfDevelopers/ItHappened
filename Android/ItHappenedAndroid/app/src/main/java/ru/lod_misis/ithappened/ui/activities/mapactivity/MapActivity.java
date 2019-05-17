@@ -69,7 +69,11 @@ public class MapActivity extends AppCompatActivity {
                             algorithm = new MapMethodForDetails(getIntent().getDoubleExtra("latitude" , 0) , getIntent().getDoubleExtra("longitude" , 0));
                         }
                         case 3: {
+                            if(getIntent().getDoubleExtra("latitude" , 0)!=0 && getIntent().getDoubleExtra("longitude" , 0)!=0)
                             algorithm = new MapMethodForEditGeoposition(getIntent().getDoubleExtra("latitude" , 0) , getIntent().getDoubleExtra("longitude" , 0));
+                            else
+                                algorithm = new MapMethodForAddGeoposition(getApplicationContext());
+
                         }
                         default:
                             new Exception();

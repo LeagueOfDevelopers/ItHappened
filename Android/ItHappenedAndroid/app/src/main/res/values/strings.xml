@@ -86,4 +86,6 @@
     <string name="ImSorryWillBeAnableInANextVersion">Будет доступно в следующей версии</string>
     <string name="ScaleError">В значении шкалы не может быть больше 11 знаков</string>
     <string name="PersonCreatedAnEvent">Пользователь добавил событие</string>
+    <string name="Gallery">Галерея</string>
+    <string name="make_photo">Фото</string>
 </resources>

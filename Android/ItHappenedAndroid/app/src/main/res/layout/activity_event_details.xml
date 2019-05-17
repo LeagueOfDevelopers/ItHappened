@@ -104,7 +104,7 @@
                         android:layout_marginStart="@dimen/outer_margin"
                         android:layout_marginLeft="@dimen/outer_margin"
                         android:layout_marginTop="@dimen/outer_margin"
-                        android:src="@drawable/ic_geoposition" />
+                        tools:src="@drawable/ic_geoposition" />
 
                     <com.rey.material.widget.TextView
                         android:id="@+id/adress"

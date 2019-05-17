@@ -6,6 +6,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,12 +19,15 @@ import android.util.Log;
 import java.util.List;
 
 public class GeopositionService extends JobService {
-    public static Location myLocation;
-
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         Log.d("Its geoposition service","Now it works");
-        myLocation=getLastKnownLocation(getApplicationContext());
+        Location myLocation = getLastKnownLocation(getApplicationContext());
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MAIN_KEYS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("LatitudeCoordinate",(float) myLocation.getLatitude());
+        editor.putFloat("LongitudeCoordinate",(float) myLocation.getLongitude());
+        editor.apply();
         return false;
     }
 

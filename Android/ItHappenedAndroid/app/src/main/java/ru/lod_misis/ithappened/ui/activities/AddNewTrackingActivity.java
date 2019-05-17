@@ -435,7 +435,6 @@ public class AddNewTrackingActivity extends AppCompatActivity implements CreateT
                     @Override
                     public void onColorSelected(boolean b, int i) {
                         if (b) {
-                            Toast.makeText(getApplicationContext(), Integer.toHexString(i) + "", Toast.LENGTH_SHORT).show();
                             colorPickerDialogBuilder.setSelectedColor(i);
                             colorPickerText.setTextColor(i);
                         }

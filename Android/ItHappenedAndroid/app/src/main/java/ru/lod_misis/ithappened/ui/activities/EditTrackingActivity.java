@@ -238,7 +238,6 @@ public class EditTrackingActivity extends AppCompatActivity implements EditTrack
                     @Override
                     public void onColorSelected(boolean b, int i) {
                         if (b) {
-                            Toast.makeText(getApplicationContext(), Integer.toHexString(i) + "", Toast.LENGTH_SHORT).show();
                             colorPickerDialogBuilder.setSelectedColor(i);
                             colorPickerText.setTextColor(i);
                         }

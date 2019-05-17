@@ -220,7 +220,7 @@ public class AddNewEventActivity extends AppCompatActivity implements DatePicker
         workWithFIles = new PhotoInteractorImpl(AddNewEventActivity.this);
         AlertDialog.Builder dialog = new AlertDialog.Builder(AddNewEventActivity.this);
         dialog.setTitle(R.string.title_dialog_for_photo);
-        dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
+        dialog.setItems(new String[]{getString(R.string.Gallery), getString(R.string.make_photo)}, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 switch (i) {

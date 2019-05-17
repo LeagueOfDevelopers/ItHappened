@@ -179,7 +179,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventCon
                 photoInteractor = new PhotoInteractorImpl(context);
                 dialog = new AlertDialog.Builder(context);
                 dialog.setTitle(R.string.title_dialog_for_photo);
-                dialog.setItems(new String[]{"Галлерея", "Фото"}, new DialogInterface.OnClickListener() {
+                dialog.setItems(new String[]{getString(R.string.Gallery), getString(R.string.make_photo)}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {
